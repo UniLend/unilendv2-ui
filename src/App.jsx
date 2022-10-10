@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import  './App.scss'
 import HallOfPools from './components/hallOfPools'
+import MainRoutes from './routes';
 
 
 function App() {
@@ -13,9 +14,9 @@ function App() {
 
   return (
     <div >
-      
+      <MainRoutes/>
       <button onClick={()=> setTheme(theme == 'dark'? 'light': 'dark')} >{theme}</button>
-     <HallOfPools/>
+     {/* <HallOfPools/> */}
     </div>
   )
 }
