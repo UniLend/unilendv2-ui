@@ -1,8 +1,7 @@
 import React from 'react'
-import "./styles" 
-
+import './styles/index.scss'
 export default function HallOfPools() {
   return (
-    <div>HallOfPools</div>
+    <div><h1>Hall of Pools</h1></div>
   )
 }

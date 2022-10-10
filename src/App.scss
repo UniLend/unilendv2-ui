@@ -1,0 +1,27 @@
+$light: (
+  primary-text:black,
+  bgcolor: white
+);
+
+$dark:(
+  primary-text: white,
+  bgcolor: black
+);
+
+.light{
+ @each $name, $color in $light {
+   --#{$name}: #{$color};
+ }
+}
+
+
+
+.dark{
+  @each $name, $color in $dark {
+    --#{$name}: #{$color};
+  }
+}
+
+body{
+  background-color: var(--bgcolor);
+}
