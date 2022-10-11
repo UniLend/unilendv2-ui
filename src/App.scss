@@ -25,3 +25,12 @@ $dark:(
 body{
   background-color: var(--bgcolor);
 }
+
+.app_container{
+  width: 100%;
+  max-width: 1960px;
+}
+.app{
+  width: 80%;
+  margin: auto;
+}

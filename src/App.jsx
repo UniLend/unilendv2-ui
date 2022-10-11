@@ -11,6 +11,7 @@ function App() {
   // const [theme, setTheme] = useState('light');
   const dispatch = useDispatch();
  const themes = useSelector((state)=> state.theme)
+ 
   const handleTheme = () => {
     dispatch(setTheme(themes == 'dark'? 'light': 'dark'))
   }
@@ -21,10 +22,10 @@ function App() {
   }, [themes])
 
   return (
-    <div>
+    <div className='app_container'>
+      <div className='app'>
       <MainRoutes/>
-      <button onClick={handleTheme} >{themes}</button>
-     {/* <HallOfPools/> */}
+      </div>
     </div>
   )
 }
