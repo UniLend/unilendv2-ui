@@ -1,31 +1,30 @@
-import { useEffect } from 'react'
-import  './App.scss'
-import { setTheme } from './store/Action'
-import MainRoutes from './routes';
-import { useDispatch, useSelector } from 'react-redux';
-import Navbar from './components/Navbar';
-
+import { useEffect } from "react";
+import "./App.scss";
+import { setTheme } from "./store/Action";
+import MainRoutes from "./routes";
+import { useDispatch, useSelector } from "react-redux";
+import Navbar from "./components/Navbar";
 
 function App() {
   const dispatch = useDispatch();
-  const themes = useSelector((state)=> state.theme)
+  const state = useSelector((state) => state);
 
   const handleTheme = () => {
-    dispatch(setTheme(themes == 'dark'? 'light': 'dark'))
-  }
-  
+    dispatch(setTheme(state.theme == "dark" ? "light" : "dark"));
+  };
+
   useEffect(() => {
-   document.body.setAttribute('class', themes);
-  }, [themes])
+    document.body.setAttribute("class", state.theme);
+  }, [state.theme]);
 
   return (
-    <div className='app_container'>
-      <Navbar/>
-      <div className='app'>
-      <MainRoutes/>
+    <div className="app_container">
+      <Navbar />
+      <div className="app">
+        <MainRoutes {...state} />
       </div>
     </div>
-  )
+  );
 }
 
 export default App;
