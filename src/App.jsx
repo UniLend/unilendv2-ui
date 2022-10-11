@@ -3,6 +3,7 @@ import  './App.scss'
 import { setTheme } from './store/Action'
 import MainRoutes from './routes';
 import { useDispatch, useSelector } from 'react-redux';
+import Navbar from './components/Navbar';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
 
   return (
     <div className='app_container'>
+      <Navbar/>
       <div className='app'>
       <MainRoutes/>
       </div>

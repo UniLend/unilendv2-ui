@@ -1,12 +1,4 @@
-$light: (
-  primary-text:black,
-  bgcolor: white
-);
-
-$dark:(
-  primary-text: white,
-  bgcolor: black
-);
+@use './core/theme/theme.scss' as *;
 
 .light{
  @each $name, $color in $light {
@@ -24,6 +16,8 @@ $dark:(
 
 body{
   background-color: var(--bgcolor);
+  margin: 0px;
+  padding: 0px;
 }
 
 .app_container{
