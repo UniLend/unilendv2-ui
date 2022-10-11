@@ -15,7 +15,6 @@ function App() {
   
   useEffect(() => {
    document.body.setAttribute('class', themes);
-   
   }, [themes])
 
   return (

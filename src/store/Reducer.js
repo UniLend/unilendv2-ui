@@ -3,10 +3,10 @@ import { SET_THEME } from "./ActionTypes";
 const init= {
    web3: null,
    currentAddress: null,
-   theme: 'light'
+   theme: 'light' 
 }
 
-export const Reducer =(state=init,{ type, payload})=>{
+export const Reducer =(state=init,{ type, payload}) => {
     switch (type) {
         case SET_THEME:{
           return{
