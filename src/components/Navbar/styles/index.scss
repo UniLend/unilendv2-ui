@@ -1,0 +1,15 @@
+@use '../../../core/theme/constants.scss' as *;
+
+.nav_container{
+    height: 70px;
+    border-bottom: 1px solid gray;
+    width: 100%;
+
+    @media ($mobile) {
+        background-color: red;
+    }
+
+    @media ($tablet) {
+        background-color: blue;
+    }
+}

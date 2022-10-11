@@ -1,0 +1,31 @@
+@use './core/theme/theme.scss' as *;
+
+.light{
+ @each $name, $color in $light {
+   --#{$name}: #{$color};
+ }
+}
+
+
+
+.dark{
+  @each $name, $color in $dark {
+    --#{$name}: #{$color};
+  }
+}
+
+body{
+  background-color: var(--bgcolor);
+  margin: 0px;
+  padding: 0px;
+}
+
+.app_container{
+  width: 100%;
+  max-width: 1920px;
+  margin: auto;
+}
+.app{
+  width: 80%;
+  margin: auto;
+}
