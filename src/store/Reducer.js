@@ -2,7 +2,12 @@ import { SET_THEME } from "./ActionTypes";
 
 const init= {
    web3: null,
-   currentAddress: null,
+   isConnected: false,
+   user:{
+    address: '0x',
+    balance: null,
+    network: null
+   } ,
    theme: 'light' 
 }
 
