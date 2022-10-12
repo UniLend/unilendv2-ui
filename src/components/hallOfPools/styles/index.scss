@@ -1,3 +1,53 @@
-h1{
-    color: var(--primary-text)  
+.pool_container {
+    width: 100%;
+    max-width: 450px;
+    margin: 50px auto;
+
+    .token_container {
+        background-color: var(--pure-white);
+        border-radius: 12px;
+        margin: 10px 0px;
+        display: flex;
+        gap: 10px;
+        padding: 15px 30px;
+        justify-content: space-between;
+        & > div{
+          width: 165px;
+          border: 1px solid var(--light-blue);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 5px;
+          border-radius: 10px;
+          cursor: pointer;
+          h2{
+            margin: 0;
+            font-size: 16px;
+            font-weight: 800;
+          }
+          img{
+            width: 25px;
+            height: 25px;
+            margin: 5px;
+          }
+        }
+        .active{
+            background-color: var(--sharp-blue);
+            color: var(--pure-white);
+            img{
+                background-color: var(--pure-white);
+                padding: 3px;
+                border-radius: 50%;
+            }
+        }
+    }
+
+    .content {
+        margin: 10px 0px;
+        background-color: var(--pure-white);
+        width: 100%;
+        border-radius: 12px;
+        height: fit-content;
+        min-height: 200px;
+    }
 }
