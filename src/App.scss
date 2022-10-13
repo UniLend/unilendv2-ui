@@ -1,4 +1,5 @@
 @use './core/theme/theme.scss' as *;
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@100;200;300;400;500;600;700&display=swap');
 
 .light{
  @each $name, $color in $light {
@@ -18,6 +19,8 @@ body{
   background-color: var(--bgcolor);
   margin: 0px;
   padding: 0px;
+  font-family: 'Public Sans', sans-serif;
+
 }
 
 .app_container{

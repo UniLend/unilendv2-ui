@@ -1,0 +1,143 @@
+@use "../../../core/theme/constants.scss" as *;
+
+footer {
+  position: fixed;
+  bottom: 0px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  z-index: 2;
+  padding: 10px;
+  border-top: 1px solid #c4c4c4;
+
+  @media ($mobile) {
+    border: none;
+    box-shadow: 0px 2.00139px 4.00278px rgba(0, 0, 0, 0.05);
+  }
+
+  @media ($tablet) {
+    border: none;
+    box-shadow: 0px 2.00139px 4.00278px rgba(0, 0, 0, 0.05);
+  }
+
+  .poolFooter-copyright {
+    p {
+      margin: 0;
+      padding: 0;
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 13px;
+      color: #2b6def;
+    }
+
+    @media ($mobile) {
+      display: none;
+    }
+
+    @media ($tablet) {
+      display: none;
+    }
+  }
+
+  .poolFooter-content {
+    ul {
+      display: flex;
+      list-style: none;
+      li {
+        padding: 0 20px;
+        font-style: normal;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 15px;
+        color: #2b6def;
+      }
+    }
+
+    @media ($mobile) {
+      display: none;
+    }
+
+    @media ($tablet) {
+      display: none;
+    }
+  }
+
+  .poolFooter-socials {
+    ul {
+      display: flex;
+      list-style: none;
+      display: flex;
+      text-align: right;
+      margin: 0;
+
+      li {
+        padding: 0 30px;
+        color: #2b6def;
+      }
+    }
+
+    @media ($mobile) {
+      display: none;
+    }
+
+    @media ($tablet) {
+      display: none;
+    }
+  }
+
+  .mobile-footer {
+    display: none;
+    @media ($mobile) {
+      display: flex;
+    }
+
+    @media ($tablet) {
+      display: flex;
+    }
+
+    ul {
+      display: none;
+      @media ($mobile) {
+        justify-content: space-between;
+        display: flex;
+        margin-bottom: 0;
+        padding: 0;
+      }
+
+      @media ($tablet) {
+        justify-content: space-between;
+        display: flex;
+        margin-bottom: 0;
+        padding: 0;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      li {
+        display: flex;
+        font-weight: 600;
+        padding: 2px 7px;
+        font-size: 12px;
+        align-items: center;
+        color: #808080;
+        margin: 0px 2px;
+
+        span {
+          margin-right: 4px;
+        }
+      }
+
+      .active-tab {
+        color: #0045ff;
+
+        &:hover {
+          color: #0045ff;
+          background: #e6eef9;
+        }
+      }
+    }
+  }
+}
