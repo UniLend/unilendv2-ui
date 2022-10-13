@@ -7,6 +7,8 @@ React.useEffect(()=> {
 },[])
   
   return (
-    <div><h1>{props.theme}</h1></div>
+    <div>
+      
+    </div>
   )
 }
