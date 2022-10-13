@@ -51,14 +51,14 @@ export default function HallOfPoolsComponent(props) {
       <div className="content">
         <div className="oparation_tab">
           <div
-            onClick={() => toggleOperation("lend")}
-            className={activeOperation === "lend" && "active"}
+            onClick={() => toggleOperation(lend)}
+            className={activeOperation === lend && "active"}
           >
             Lend
           </div>
           <div
-            onClick={() => toggleOperation("redeem")}
-            className={activeOperation === "redeem" && "active"}
+            onClick={() => toggleOperation(redeem)}
+            className={activeOperation === redeem && "active"}
           >
             Redeem
           </div>
