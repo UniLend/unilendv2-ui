@@ -19,10 +19,17 @@ body{
   background: var(--light-blue);
   margin: 0px;
   padding: 0px;
-  font-family: 'Public Sans', sans-serif;
+  font-family: 'Public Sans', sans-serif !important;
+  height: max-content;
+  font-size: 0px !important;
+  font-variant: normal;
+  font-feature-settings: "aalt";
+  line-height: normal;
 }
 
-
+html, body {
+  height: max-content;
+}
 // .app_container{
 //   width: 100%;
 //   max-width: 1920px;
