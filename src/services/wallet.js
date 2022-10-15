@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import Web3Modal from 'web3modal';
+import Web3Modal from "web3modal";
 // local imports
 import { providerOptions } from '../constants/wallet';
 import { fromWei } from '../helpers/utils';
