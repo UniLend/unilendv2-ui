@@ -1,9 +1,39 @@
-import Web3 from 'web3';
+import Web3 from "web3";
 import Web3Modal from "web3modal";
 // local imports
-import { providerOptions } from '../constants/wallet';
-import { fromWei } from '../helpers/utils';
-import { networks } from '../core/networks/networks';
+import { providerOptions } from "../constants/wallet";
+import { fromWei } from "../helpers/utils";
+import { networks } from "../core/networks/networks";
+import {
+  saveToLocalStorage,
+  getFromLocalStorage,
+  removeFromLocalStorage,
+} from "../utills";
+
+const saveAccountStates = (
+  account = "",
+  networkId = "",
+  bal = "",
+  net = ""
+) => {
+  saveToLocalStorage("Account", {
+    account: account,
+    balance: bal,
+    chainId: networkId,
+    network: net,
+  });
+};
+
+// useEffect(() => {
+//   const currentAccount = getFromLocalStorage('currentAccount');
+//   if (currentAccount) {
+//     saveAccountStates(
+//       currentAccount.account,
+//       currentAccount.chainId,
+//       currentAccount.balance
+//     );
+//   }
+// }, [getFromLocalStorage('currentAccount')]);
 
 export const getProvider = async () => {
   const web3Modal = new Web3Modal({
@@ -27,27 +57,33 @@ export const connectWallet = async (web3) => {
   const accounts = await web3.eth.getAccounts();
   const bal = await web3.eth.getBalance(accounts[0]);
   const balance = fromWei(web3, bal).slice(0, 6);
+
+  saveAccountStates(accounts[0], balance, chainId, networks);
   return { address: accounts[0], balance, network: chainId };
+};
+
+export const switchNetwork = (networkId) => {
+  changeNetwork(networkId);
 };
 
 export const changeNetwork = async (networkId) => {
   try {
-    if (!window.ethereum) throw new Error('No Crypto Wallet Found');
+    if (!window.ethereum) throw new Error("No Crypto Wallet Found");
     const account = await window.ethereum.request({
-      method: 'wallet_switchEthereumChain',
+      method: "wallet_switchEthereumChain",
       params: [
         {
-          chainId: `0x${Number(Number(networkId)).toString(16)}`,
+          chainId: `0x${(5).toString(16)}`,
         },
       ],
     });
-    console.log('eth', account);
+    console.log("eth", account);
   } catch (switchError) {
     // This error code indicates that the chain has not been added to MetaMask.
     if (switchError.code === 4902) {
       try {
         await window.ethereum.request({
-          method: 'wallet_addEthereumChain',
+          method: "wallet_addEthereumChain",
           params: [
             {
               ...networks[networkId],
@@ -59,4 +95,8 @@ export const changeNetwork = async (networkId) => {
       }
     }
   }
+};
+
+export const disconnect = async () => {
+  saveAccountStates();
 };

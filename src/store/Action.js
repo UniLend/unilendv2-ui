@@ -1,4 +1,4 @@
-import { SET_THEME, SET_USER, SET_WEB3 } from './ActionTypes';
+import { SET_ISCONNECTED, SET_THEME, SET_USER, SET_WEB3 } from './ActionTypes';
 
 export const setTheme = (theme) => {
   return {
@@ -20,3 +20,4 @@ export const setUser = (user) => {
     payload: user,
   };
 };
+

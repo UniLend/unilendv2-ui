@@ -1,4 +1,4 @@
-import { SET_THEME, SET_USER, SET_WEB3 } from './ActionTypes';
+import { SET_ISCONNECTED, SET_THEME, SET_USER, SET_WEB3 } from './ActionTypes';
 
 const init = {
   web3: null,
@@ -25,12 +25,16 @@ export const Reducer = (state = init, { type, payload }) => {
         user: payload,
       };
     }
+    
     case SET_WEB3: {
       return {
         ...state,
         web3: web3,
       };
     }
+
+    
+    
     default:
       return state;
   }

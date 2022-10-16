@@ -1,0 +1,99 @@
+@use "../../../core/theme/constants.scss" as *;
+
+.popover-content {
+  width: 227.91px;
+  height: 75px;
+  border-radius: 9.65893px;
+  background-color: #ffffff;
+  position: absolute;
+  top: 85px;
+  right: 34px;
+  box-shadow: var(--box-shadow);
+  padding: 15px 16px;
+
+  .disconnect {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin: 0 auto;
+
+    .outer-radial {
+      width: 13.88px;
+      height: 13.88px;
+      border-radius: 100px;
+      background: #dbeaff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .inner-radial {
+        width: 8.33px;
+        height: 8.33px;
+        border-radius: 100px;
+        background: #14c710;
+      }
+    }
+
+    h4 {
+      font-weight: 700;
+      font-size: 13.5169px;
+      color: #808080;
+    }
+
+    .disconnectButton {
+      background: #2b6def;
+      border-radius: 3.08214px;
+      border: none;
+      padding: 8px 11px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 9.46459px;
+      color: #ffffff;
+    }
+  }
+
+  .explorer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 36px;
+    margin: 0 auto;
+
+    .copied{
+      color: #14c710;
+    }
+
+    .copy-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      .copyIcon {
+        width: 11.64px;
+        height: 11.64px;
+      }
+    }
+
+    p {
+      font-weight: 700;
+      font-size: 8.14736px;
+      color: #808080;
+    }
+
+    a {
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .explore-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .exploreIcon {
+        width: 10.48px;
+        height: 10.47px;
+      }
+    }
+  }
+}

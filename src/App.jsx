@@ -11,6 +11,8 @@ import {
   helperAddress,
 } from './core/contractData/contracts_goerli.json';
 import { getContract } from './services/contracts';
+import Footer from './components/Footer';
+import {getFromLocalStorage} from "./utills"
 
 function App() {
   const dispatch = useDispatch();
@@ -44,10 +46,13 @@ function App() {
     const userData = await connectWallet(web3);
     dispatch(setUser(userData));
   };
-  console.log('web3 from state', state.user);
+
+  // console.log('web3 from state', state.user);
   useEffect(() => {
     document.body.setAttribute('class', state.theme);
   }, [state.theme]);
+
+  
 
   return (
     <div className='app_container'>
@@ -55,7 +60,8 @@ function App() {
       <div className='app'>
         <MainRoutes {...state} />
       </div>
-      <button onClick={handleConnect}>Connect</button>
+      {/* <button onClick={handleConnect}>Connect</button> */}
+      <Footer />
     </div>
   );
 }

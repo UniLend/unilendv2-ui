@@ -1,23 +1,24 @@
 $light: (
- sharp-blue: #0045FF,
- light-blue: #E6EEF9,
- light-gray: #808080,
- dark-gray:#3B3B3B,
- pure-black:black,
- pure-white: #ffffff,
- light-green: #1ED130,
- light-red: #DB2438,
- box-shadow: '-1px -1px 3px #ECECEC, 1px 1px 1.3px #DCDCDC'
+  bgcolor:radial-gradient(69.94% 69.94% at 50.03% 30.06%, #d8e7fc 0%, #ffffff 100%),
+  sharp-blue: #0045ff,
+  light-blue: #e6eef9,
+  light-gray: #808080,
+  dark-gray: #3b3b3b,
+  pure-black: black,
+  pure-white: #ffffff,
+  light-green: #1ed130,
+  light-red: #db2438,
+  box-shadow: "-1px -1px 3px #ECECEC, 1px 1px 1.3px #DCDCDC",
 );
 
-$dark:(
-  sharp-blue: #0045FF,
-  light-blue: #E6EEF9,
+$dark: (
+  sharp-blue: #0045ff,
+  light-blue: #e6eef9,
   light-gray: #808080,
-  dark-gray:#3B3B3B,
-  pure-black:black,
+  dark-gray: #3b3b3b,
+  pure-black: black,
   pure-white: #ffffff,
-  light-green: #1ED130,
-  light-red: #DB2438,
-  box-shadow: '-1px -1px 3px #ECECEC, 1px 1px 1.3px #DCDCDC'
+  light-green: #1ed130,
+  light-red: #db2438,
+  box-shadow: "-1px -1px 3px #ECECEC, 1px 1px 1.3px #DCDCDC",
 );
