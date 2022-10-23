@@ -24,7 +24,7 @@ export default function Navbar() {
   const state = useSelector((state) => state);
   const [popupVisible, setPopupVisible] = useState(false);
 
-  const { address, balance, network } = state.user;
+  const { address, balance, network } = state?.user;
 
   console.log(address, balance, network);
 
