@@ -1,3 +1,22 @@
-h1{
-    color: var(--primary-text)  
+
+.banner{
+margin: 50px 0px;
+    img{
+        width: 100%;
+        max-height: 300px;
+        object-fit: cover;
+        object-position: 0% 100%;
+    }
+}
+
+.poolcard_container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    justify-content: center;
+    .poolcard{
+        width: calc(100%/3 - 40px);
+        min-width: 300px;
+        margin: 20px;
+    }
 }

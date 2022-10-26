@@ -14,10 +14,12 @@
   }
 }
 
-body{
+html,body{
   background-color: var(--bgcolor);
+  min-height: 100vh;
   margin: 0px;
   padding: 0px;
+  background: radial-gradient(69.94% 69.94% at 50.03% 30.06%, #D8E7FC 0%, #FFFFFF 100%);
 }
 
 .app_container{
