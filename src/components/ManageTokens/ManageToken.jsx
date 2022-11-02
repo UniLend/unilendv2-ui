@@ -62,6 +62,7 @@ const ManageToken = ({handleTokens}) => {
 
   const TokenCard = React.memo(({ token, render, index }) => {
     const handleTokensList = () => {
+      handleCloseModals();
       if (currentToken === "1") {
         setToken1(token);
         handleTokens(token, "token1");
@@ -69,7 +70,7 @@ const ManageToken = ({handleTokens}) => {
         setToken2(token);
         handleTokens(token, "token2");
       }
-      handleCloseModals();
+     
     };
 
     return (
@@ -278,7 +279,7 @@ const ManageToken = ({handleTokens}) => {
           </div>
         </div>
       </div>
-      {/* {isOpenTokenList && (
+      {isOpenTokenList && (
         <Modal
           className="antd_modal_overlay"
           visible={isOpenTokenList}
@@ -289,7 +290,7 @@ const ManageToken = ({handleTokens}) => {
         >
           {<TokenListModalBody />}
         </Modal>
-      )} */}
+      )}
       <Modal
         className="antd_modal_overlay"
         centered
