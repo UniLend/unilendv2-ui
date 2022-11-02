@@ -4,10 +4,6 @@ import PoolCard from './poolCard';
 import './styles/index.scss'
 export default function HallOfPoolsComponent(props) {
 
-React.useEffect(()=> {
-  console.log("Props", props);
-},[])
-  
   return (
     <div className='hallodpools_container'>
        <div className='banner'>
@@ -22,5 +18,5 @@ React.useEffect(()=> {
          }
        </div>
     </div>
-  )
+  );
 }

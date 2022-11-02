@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import 'antd/dist/antd.css';
 import "./App.scss";
 import { setTheme } from "./store/Action";
 import MainRoutes from "./routes";

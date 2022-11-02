@@ -1,7 +1,8 @@
 import React from 'react'
+import PoolComponent from '../../components/Pool'
 
 export default function Pool() {
   return (
-    <div>Navbar Code here</div>
+    <div> <PoolComponent/> </div>
   )
 }
