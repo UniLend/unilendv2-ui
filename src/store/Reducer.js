@@ -1,8 +1,12 @@
-import { SET_THEME, SET_USER, SET_WEB3 } from './ActionTypes';
+import { SET_CONTRACTS, SET_THEME, SET_USER, SET_WEB3 } from './ActionTypes';
 
 const init = {
   web3: null,
   isConnected: false,
+  contracts: {
+    coreContract: null,
+    helperContract: null,
+  },
   user: {
     address: '0x',
     balance: null,
@@ -28,7 +32,13 @@ export const Reducer = (state = init, { type, payload }) => {
     case SET_WEB3: {
       return {
         ...state,
-        web3: web3,
+        web3: payload,
+      };
+    }
+    case SET_CONTRACTS: {
+      return {
+        ...state,
+        contracts: payload,
       };
     }
     default:

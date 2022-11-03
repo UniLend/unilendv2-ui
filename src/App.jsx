@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import './App.scss';
-import { setTheme, setUser, setWeb3 } from './store/Action';
+import { setTheme, setUser, setWeb3, setContracts } from './store/Action';
 import MainRoutes from './routes';
 import { useDispatch, useSelector } from 'react-redux';
 import Navbar from './components/Navbar';
@@ -28,10 +28,14 @@ function App() {
   useEffect(() => {
     (async () => {
       const web3 = await getweb3Instance();
+      dispatch(setWeb3(web3));
       Promise.all(data.map((item) => getContract(web3, item.abi, item.address)))
         .then((res) => {
-          console.log(res);
-          dispatch(setWeb3(web3));
+          const payload = {
+            coreContract: res[0],
+            helperContract: res[1],
+          };
+          dispatch(setContracts(payload));
         })
         .catch((err) => {
           console.log(err);
@@ -39,12 +43,14 @@ function App() {
     })();
   }, []);
 
+  // remove this later
   const handleConnect = async () => {
     const web3 = await getweb3Instance();
     const userData = await connectWallet(web3);
     dispatch(setUser(userData));
   };
-  console.log('web3 from state', state.user);
+
+  // remove this later
   useEffect(() => {
     document.body.setAttribute('class', state.theme);
   }, [state.theme]);
