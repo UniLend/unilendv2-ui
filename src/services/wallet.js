@@ -31,22 +31,23 @@ export const connectWallet = async (web3) => {
 };
 
 export const changeNetwork = async (networkId) => {
+  const provider = await getProvider();
   try {
-    if (!window.ethereum) throw new Error('No Crypto Wallet Found');
-    const account = await window.ethereum.request({
+    if (!provider) throw new Error('No Crypto Wallet Found');
+    const account = await provider.request({
       method: 'wallet_switchEthereumChain',
       params: [
         {
-          chainId: `0x${Number(Number(networkId)).toString(16)}`,
+          chainId: `0x${networkId.toString(16)}`,
         },
       ],
     });
-    console.log('eth', account);
-  } catch (switchError) {
+    return account;
+  } catch (error) {
     // This error code indicates that the chain has not been added to MetaMask.
-    if (switchError.code === 4902) {
+    if (error.code === 4902) {
       try {
-        await window.ethereum.request({
+        await provider.request({
           method: 'wallet_addEthereumChain',
           params: [
             {
@@ -54,9 +55,29 @@ export const changeNetwork = async (networkId) => {
             },
           ],
         });
+        return true;
       } catch (err) {
-        setError(err.message);
+        console.log(err);
+        return false;
       }
     }
   }
+};
+
+// use in connect functions and dispatched on every event or can be used in useEffect; 
+
+export const MetaMaskEventHandler = (provider) => {
+  provider.on('chainChanged', (chainId) => {
+    console.log(chainId);
+    window.location.reload();
+  });
+  provider.on('accountsChanged', function (account) {
+    console.log(account);
+  });
+  provider.on('message', (message) => {
+    console.log(message);
+  });
+  provider.on('disconnect', (reason) => {
+    console.log(reason);
+  });
 };

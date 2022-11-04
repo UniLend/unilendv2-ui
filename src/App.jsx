@@ -1,16 +1,24 @@
 import { useEffect } from 'react';
-import './App.scss';
+import { useDispatch, useSelector } from 'react-redux';
+// internal imports
 import { setTheme, setUser, setWeb3, setContracts } from './store/Action';
 import MainRoutes from './routes';
-import { useDispatch, useSelector } from 'react-redux';
 import Navbar from './components/Navbar';
-import { connectWallet, getProvider, getweb3Instance } from './services/wallet';
+import {
+  changeNetwork,
+  connectWallet,
+  getProvider,
+  getweb3Instance,
+  MetaMaskEventHandler,
+} from './services/wallet';
 import { coreAbi, helperAbi } from './core/contractData/abi';
 import {
   coreAddress,
   helperAddress,
 } from './core/contractData/contracts_goerli.json';
 import { getContract } from './services/contracts';
+import './App.scss';
+// import ends here
 
 function App() {
   const dispatch = useDispatch();
@@ -24,6 +32,8 @@ function App() {
     { abi: coreAbi, address: coreAddress },
     { abi: helperAbi, address: helperAddress },
   ];
+
+  // setting contract state to store from here
 
   useEffect(() => {
     (async () => {
@@ -50,18 +60,12 @@ function App() {
     dispatch(setUser(userData));
   };
 
-  // remove this later
-  useEffect(() => {
-    document.body.setAttribute('class', state.theme);
-  }, [state.theme]);
-
   return (
     <div className='app_container'>
       <Navbar />
       <div className='app'>
         <MainRoutes {...state} />
       </div>
-      <button onClick={handleConnect}>Connect</button>
     </div>
   );
 }

@@ -79,6 +79,17 @@ export const networks = {
     rpcUrls: ['https://goerli.infura.io/v3/'],
     blockExplorerUrls: ['https://goerli.infura.io/'],
   },
+  11155111: {
+    chainId: `0x${Number(11155111).toString(16)}`,
+    chainName: 'Sepolia Test Network',
+    nativeCurrency: {
+      name: 'Ether',
+      symbol: 'SepoliaETH',
+      decimals: 18,
+    },
+    rpcUrls: ['https://sepolia.infura.io/v3/'],
+    blockExplorerUrls: ['https://sepolia.etherscan.io'],
+  },
 };
 
 export const allNetworkIds = {
@@ -87,4 +98,5 @@ export const allNetworkIds = {
   binanceMainNet: '56',
   moonMainNet: '1284',
   goerli: '5',
+  sepolia: '11155111',
 };
