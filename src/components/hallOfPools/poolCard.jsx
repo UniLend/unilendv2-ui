@@ -1,20 +1,29 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
+import { getTokenLogo } from '../../utils';
 import './styles/poolCard.scss';
 
-export default function PoolCard() {
+export default function PoolCard({pool}) {
+  const { poolAddress, tokens,supply, borrowed } = pool;
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate(`/pool/${poolAddress}`)
+  }
+
   return (
-    <div className='poolcard'>
+    <div onClick={handleNavigate} className='poolcard'>
       <div className='pool_icons'>
           <div>
           <img
-            src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
+            src={getTokenLogo(tokens[0])}
             alt=""
           />
           <h5>UFT</h5>
           </div>
           <div>
           <img
-            src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
+            src={getTokenLogo(tokens[1])}
             alt=""
           />
           <h5>USDC</h5>
@@ -24,11 +33,11 @@ export default function PoolCard() {
       <div className='pool_data'>
        <div>
         <p>Total Supply</p>
-        <h5>00.00</h5>
+        <h5>{supply}</h5>
        </div>
        <div>
        <p>Total Borrowed</p>
-        <h5>00.00</h5>
+        <h5>{borrowed}</h5>
        </div>
       </div>
       <div className='pool_footer'>
