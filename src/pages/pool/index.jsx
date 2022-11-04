@@ -3,6 +3,6 @@ import PoolComponent from '../../components/Pool'
 
 export default function Pool() {
   return (
-    <div> <PoolComponent/> </div>
+     <PoolComponent/>
   )
 }

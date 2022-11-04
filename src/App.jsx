@@ -5,6 +5,7 @@ import { setTheme } from "./store/Action";
 import MainRoutes from "./routes";
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 function App() {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ function App() {
       <div className="app">
         <MainRoutes {...state} />
       </div>
+      <Footer/>
     </div>
   );
 }

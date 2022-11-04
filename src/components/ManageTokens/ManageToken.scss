@@ -34,7 +34,7 @@
     display: flex;
     align-items: center;
    // box-shadow: 2px 2px 2px rgb(230, 230, 230);
-    box-shadow: -1px -1px 3px #ECECEC, 1px 1px 1.3px #DCDCDC;
+    box-shadow: var(--box-shadow);
     border-radius: 4px;
     &:last-child {
       width: 20%;

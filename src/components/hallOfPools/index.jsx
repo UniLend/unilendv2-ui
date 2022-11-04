@@ -6,7 +6,7 @@ import './styles/index.scss'
 export default function HallOfPoolsComponent(props) {
 
   return (
-    <div className='hallodpools_container'>
+    <div className='hallofpools_container'>
        <div className='banner'>
         <img src={banner} alt="v2-banner" />
        </div>
@@ -15,7 +15,7 @@ export default function HallOfPoolsComponent(props) {
 
        <div className='poolcard_container'>
          {
-          new Array(6).fill(0).map(() => <PoolCard />)
+          new Array(5).fill(0).map(() => <PoolCard />)
          }
        </div>
     </div>
