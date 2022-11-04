@@ -54,6 +54,19 @@
             }
         }
     }
+
+    .connect_btn{
+        display: flex;
+        align-items: center;
+        button{
+            color: var(--pure-white);
+            background-color: var(--sharp-blue);
+            border-radius: 5px;
+            height: 40px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+    }
     .wallet_connection{
         width: 100%;
         display: flex;
@@ -106,6 +119,7 @@
         .last_container{
             display: flex;
             width: 70%;
+            justify-content: end;
         }
         .nav_routes{
             display: none;
@@ -122,6 +136,7 @@
         .last_container{
             display: flex;
             width: 70%;
+            justify-content: end;
         }
         padding: 0px;
         .nav_routes{
@@ -136,4 +151,39 @@
        }
     }
 
+}
+
+.hamburger_content{
+  div{
+    display: flex;
+    padding: 8px;
+    justify-content: space-between;
+    cursor: pointer;
+    border-radius: 5px;
+    &:hover{
+        background-color: var(--light-blue);
+    }
+    a{
+        font-size: 12px;
+        color: var(--sharp-blue);
+        font-weight: 600;
+    }
+  }
+}
+
+.hamburger_popover{
+    .ant-popover-content, .ant-popover-inner{
+        width: 140px;
+        height: 150px;
+        background-color: var(--pure-white);
+        border-radius: 10px;
+        padding: 0px;
+        .ant-popover-arrow{
+            display: none;
+        }
+        .ant-popover-inner-content{
+            padding: 5px;
+        }
+    }
+  
 }

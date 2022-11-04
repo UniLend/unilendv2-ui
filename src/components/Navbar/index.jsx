@@ -1,9 +1,12 @@
 import React from 'react'
+import { Button, Popover } from 'antd'
 import { FiLock } from "react-icons/fi";
-import { LockOutlined } from '@ant-design/icons'
+import { LockOutlined, WalletFilled } from '@ant-design/icons'
 import logo from '../../assets/footerlogo.svg'
 import hamberger from '../../assets/hamburger.svg'
+import gitbook from '../../assets/gitbook.svg'
 import './styles/index.scss'
+import Sider from 'antd/lib/layout/Sider';
 
 export default function Navbar() {
 
@@ -38,7 +41,7 @@ export default function Navbar() {
       </nav>
       </div>
       <div className='last_container'>
-      <div className='wallet_connection'>
+      {/* <div className='wallet_connection'>
         <div>
            <p>Sepolia Test Network</p>
         </div>
@@ -48,11 +51,40 @@ export default function Navbar() {
         0x12524..1254
         </div>
         </div>
+      </div> */}
+      <div className='connect_btn'>
+        <Button icon={<WalletFilled />} size='large'>Connect Wallet</Button>
       </div>
       <div className='hamberger'>
+        <Popover overlayClassName='hamburger_popover'  placement="bottomRight" title='' content={<HamburgerContent/>} trigger="click">
         <img src={hamberger} alt="hamburger" />
+        </Popover>
       </div>
       </div>
+    </div>
+  )
+}
+
+
+const HamburgerContent = () => {
+  return(
+    <div className='hamburger_content'>
+     <div>
+      <a>GitBook</a>
+      <img src={gitbook} alt="" />
+     </div>
+     <div>
+     <a>Documentation</a>
+     <img src={gitbook} alt="" />
+     </div>
+     <div>
+     <a>GitBook</a>
+     <img src={gitbook} alt="" />
+     </div>
+     <div>
+     <a>GitBook</a>
+     <img src={gitbook} alt="" />
+     </div>
     </div>
   )
 }

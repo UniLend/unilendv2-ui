@@ -19,7 +19,7 @@ const ManageToken = ({handleTokens}) => {
   const [isFetching, setIsFetching] = React.useState(false);
   const [serachTokenFromList, setSerachTokenFromList] = React.useState("");
   const [fetchFrom, setFetchFrom] = React.useState({
-    coinGecko: false,
+    coinGecko: true,
   });
 
   const handleSearchToken = (e) => {
