@@ -2,14 +2,188 @@
 
 .nav_container{
     height: 70px;
-    border-bottom: 1px solid gray;
-    width: 100%;
-
-    @media ($mobile) {
-        background-color: red;
+    z-index: 1;
+    display: none;
+    background-color: var(--pure-white);
+    box-shadow: 0px 2.00139px 4.00278px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 30px;
+    div{
+        
+        height: 100%;
     }
+
+    .unilend_logo{
+        width: 15%;
+        display: grid;
+        place-items: center center;
+        img{
+            width: 70%;
+            min-width: 100px;
+            cursor: pointer;
+        }
+    }
+
+    .nav_routes{
+        width: 50%;
+        display: grid;
+        place-items: center center;
+        nav{
+            display: flex;
+            width: 80%;
+            justify-content: space-evenly;
+            a{
+                color: var(--sharp-blue);
+                padding: 5px;
+                border-radius: 5px;
+                font-size: 15px;
+                font-weight: 600;
+                display: flex;
+                &:hover{
+                    background-color: var(--light-blue);
+                }
+            }
+            .disable_route{
+               color: var(--light-gray);
+               &:hover{
+                background-color: transparent;
+                cursor: not-allowed;
+
+            }
+            }
+        }
+    }
+
+    .connect_btn{
+        display: flex;
+        align-items: center;
+        button{
+            color: var(--pure-white);
+            background-color: var(--sharp-blue);
+            border-radius: 5px;
+            height: 40px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+    }
+    .wallet_connection{
+        width: 100%;
+        display: flex;
+        gap: 10px;
+        justify-content: end;
+        align-items: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        div{
+          height: max-content;
+          width: max-content;
+          height: 40px;
+          white-space: nowrap;
+          padding: 0px 5px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          background-color: var(--mid-blue);
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          p{
+            margin: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: noWrap;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--light-gray);
+          }
+          div{
+            margin: 5px;
+            padding: 10px;
+            height: 30px;
+            background-color: var(--pure-white);
+            border-radius: 5px;
+            font-size: 13px;
+            color: var(--light-gray);
+          }
+        }
+    }
+
+    .hamberger{
+        display: none;  
+    }
+
 
     @media ($tablet) {
-        background-color: blue;
+        .last_container{
+            display: flex;
+            width: 70%;
+            justify-content: end;
+        }
+        .nav_routes{
+            display: none;
+        }
+       .hamberger{
+        display: block;
+        display: grid;
+        margin: 0px 10px;
+        place-items: center center;
+        cursor: pointer;
+       }
     }
+    @media ($mobile) {
+        .last_container{
+            display: flex;
+            width: 70%;
+            justify-content: end;
+        }
+        padding: 0px;
+        .nav_routes{
+            display: none;
+        }
+       .hamberger{
+        display: block;
+        display: grid;
+        margin: 0px 10px;
+        place-items: center center;
+        cursor: pointer;
+       }
+    }
+
+}
+
+.hamburger_content{
+  div{
+    display: flex;
+    padding: 8px;
+    justify-content: space-between;
+    cursor: pointer;
+    border-radius: 5px;
+    &:hover{
+        background-color: var(--light-blue);
+    }
+    a{
+        font-size: 12px;
+        color: var(--sharp-blue);
+        font-weight: 600;
+    }
+  }
+}
+
+.hamburger_popover{
+    .ant-popover-content, .ant-popover-inner{
+        width: 140px;
+        height: 150px;
+        background-color: var(--pure-white);
+        border-radius: 10px;
+        padding: 0px;
+        .ant-popover-arrow{
+            display: none;
+        }
+        .ant-popover-inner-content{
+            padding: 5px;
+        }
+    }
+  
 }
