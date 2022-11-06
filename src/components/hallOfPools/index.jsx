@@ -1,8 +1,11 @@
 import React from 'react'
 import ManageToken from '../ManageTokens/ManageToken';
+import { PoolsData } from '../../utils/constants';
 import PoolCard from './poolCard';
 import banner from '../../assets/banner.svg'
 import './styles/index.scss'
+
+
 export default function HallOfPoolsComponent(props) {
 
   return (
@@ -15,7 +18,7 @@ export default function HallOfPoolsComponent(props) {
 
        <div className='poolcard_container'>
          {
-          new Array(5).fill(0).map(() => <PoolCard />)
+          PoolsData.map((pool) => <PoolCard pool={pool} />)
          }
        </div>
     </div>
