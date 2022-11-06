@@ -6,6 +6,7 @@ const init = {
   contracts: {
     coreContract: null,
     helperContract: null,
+    positionContract: null,
   },
   user: {
     address: '0x',

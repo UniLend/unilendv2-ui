@@ -1,12 +1,23 @@
 import React from 'react'
+import ManageToken from '../ManageTokens/ManageToken';
+import PoolCard from './poolCard';
+import banner from '../../assets/banner.svg'
 import './styles/index.scss'
 export default function HallOfPoolsComponent(props) {
 
-React.useEffect(()=> {
-  console.log("Props", props);
-},[])
-  
   return (
-    <div><h1>{props.theme}</h1></div>
-  )
+    <div className='hallofpools_container'>
+       <div className='banner'>
+        <img src={banner} alt="v2-banner" />
+       </div>
+
+       <ManageToken/>
+
+       <div className='poolcard_container'>
+         {
+          new Array(5).fill(0).map(() => <PoolCard />)
+         }
+       </div>
+    </div>
+  );
 }

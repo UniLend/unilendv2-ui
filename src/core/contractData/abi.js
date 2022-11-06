@@ -598,7 +598,7 @@ export const coreAbi = [
   },
 ];
 
-export const poolABI = [
+export const poolAbi = [
   { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
   {
     anonymous: false,
@@ -1426,7 +1426,7 @@ export const helperAbi = [
   },
 ];
 
-export const erc20ABI = [
+export const erc20Abi = [
   {
     constant: true,
     inputs: [],
@@ -1544,7 +1544,7 @@ export const erc20ABI = [
   },
 ];
 
-export const PositionABI = [
+export const positionAbi = [
   {
     inputs: [
       {

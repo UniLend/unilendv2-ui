@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import 'antd/dist/antd.css';
 // internal imports
 import { setTheme, setUser, setWeb3, setContracts } from './store/Action';
 import MainRoutes from './routes';
-import Navbar from './components/Navbar';
 import {
   changeNetwork,
   connectWallet,
@@ -11,12 +11,11 @@ import {
   getweb3Instance,
   MetaMaskEventHandler,
 } from './services/wallet';
-import { coreAbi, helperAbi } from './core/contractData/abi';
-import {
-  coreAddress,
-  helperAddress,
-} from './core/contractData/contracts_goerli.json';
+import { coreAbi, helperAbi, positionAbi } from './core/contractData/abi';
+import { contractAddress } from './core/contractData/contracts_goerli';
 import { getContract } from './services/contracts';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import './App.scss';
 // import ends here
 
@@ -28,9 +27,12 @@ function App() {
     dispatch(setTheme(state.theme == 'dark' ? 'light' : 'dark'));
   };
 
+  const { coreAddress, helperAddress, positionAddress } = contractAddress;
+
   const data = [
     { abi: coreAbi, address: coreAddress },
     { abi: helperAbi, address: helperAddress },
+    { abi: positionAbi, address: positionAddress },
   ];
 
   // setting contract state to store from here
@@ -44,6 +46,7 @@ function App() {
           const payload = {
             coreContract: res[0],
             helperContract: res[1],
+            positionContract: res[2],
           };
           dispatch(setContracts(payload));
         })
@@ -66,6 +69,7 @@ function App() {
       <div className='app'>
         <MainRoutes {...state} />
       </div>
+      <Footer />
     </div>
   );
 }

@@ -1,0 +1,77 @@
+.poolcard {
+  min-width: 300px;
+  height: 200px;
+  background-color: var(--pure-white);
+  border-radius: 15px;
+  box-shadow: 0px 3.38681px 3.38681px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.5s;
+  &:hover{
+    transform: scale(1.05);
+  }
+  .pool_icons {
+    border-bottom: 1px solid var(--border-gray);
+    height: 100px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    div {
+      height: 100%;
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      &:first-child{
+        border-right: 1px solid var(--border-gray);
+      }
+
+      img {
+        width: 35px;
+        height: 35px;
+        margin: 20px;
+      }
+      h5 {
+        font-weight: 700;
+        font-size: 14.7387px;
+        margin: 0;
+      }
+    }
+  }
+  .pool_data{
+    display: flex;
+    height: 35%;
+    div{
+        width: 50%;
+        border-bottom: 1px solid var(--border-gray);
+        &:first-child{
+            border-right: 1px solid var(--border-gray);
+          }
+        p,h5{
+            margin: 10px;
+            text-align: center;
+        }
+        p{
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--light-gray);
+            margin-top: 15px;
+        }
+        h5{
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--sharp-blue);
+        }
+    }
+  }
+  .pool_footer{
+    text-align: center;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    p{
+        color: var(--light-gray);
+        margin: 10px;
+    }
+  }
+}
