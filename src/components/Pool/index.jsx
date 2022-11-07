@@ -3,8 +3,9 @@ import React, { useState } from "react";
 import { Slider, Button } from "antd";
 import "./styles/index.scss";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useFetcher, useParams } from "react-router-dom";
 import { contractAddress } from "../../core/contractData/contracts_sepolia";
+import { fixed2Decimals , greaterThan, decimal2Fixed, add, sub, mul, div} from "../../helpers/contracts";
 const lend = "lend";
 const borrow = "borrow";
 const redeem = "redeem";
@@ -16,6 +17,11 @@ export default function PoolComponent(props) {
   const [activeOperation, setActiveOperation] = useState(lend);
   const [selectLTV, setSelectLTV] = useState(5);
   const [poolData, setPoolData] = useState({});
+  const [methodLoaded, setMethodLoaded] = useState({
+  getPoolData: false,
+  getPoolFullData: false,
+  getOraclePrice: false
+  })
   const { poolAddress } = useParams();
 
   const toggleToken = (token) => {
@@ -43,10 +49,11 @@ export default function PoolComponent(props) {
     }
   ]
 
-  const getPoolDataCall = async () => {
+  const getPoolBasicData = async () => {
     if(contracts.helperContract && contracts.coreContract) {
        contracts.helperContract.methods.getPoolData(poolAddress).call((error, data) => {
         const pool = {
+          ...poolData,
           _address: poolAddress,
           ltv : data.ltv,
           lb : data.lb,
@@ -66,13 +73,151 @@ export default function PoolComponent(props) {
         };
         console.log(pool);
         setPoolData(pool);
+        setMethodLoaded({ ...methodLoaded, getPoolData: true})
+        return pool;
       })
   }
 }
 
+const getPoolAllData = async () => {
+  if(contracts.helperContract && contracts.coreContract) {
+     contracts.helperContract.methods.getPoolFullData(contractAddress.positionAddress, poolAddress, user.address).call((error, data) => {
+     const pool = {
+      ...poolData,
+      token0: {
+        ...poolData?.token0,
+        borrowBalance: data._borrowBalance0,
+        borrowBalanceFixed: fixed2Decimals(data._borrowBalance0, poolData.token0._decimals),
+
+        borrowShare: data._borrowShare0,
+        borrowShare: fixed2Decimals(data._borrowShare0, poolData.token0._decimals),
+
+        healthFactor18: data._healthFactor0,
+        healthFactorFixed: fixed2Decimals(data._healthFactor0, poolData.token0._decimals),
+        healthFactor: greaterThan(fixed2Decimals(data._healthFactor0, poolData.token0._decimals), 100) ? '100': Number(fixed2Decimals(data._healthFactor0, poolData.token0._decimals)).toFixed(2),
+
+        interest: data._interest0,
+        interestFixed: fixed2Decimals(data._interest0, poolData.token0._decimals),
+
+        lendBalance: data._lendBalance0,
+        lendBalanceFixed: fixed2Decimals(data._lendBalance0, poolData.token0._decimals),
+
+        lendShare: data._lendShare0,
+        lendShareFixed: fixed2Decimals(data._lendShare0, poolData.token0._decimals),
+
+        totalBorrow: data._totalBorrow0,
+        totalBorrowFixed: fixed2Decimals(data._totalBorrow0, poolData.token0._decimals),
+
+        totalBorrowShare: data._totalBorrowShare0,
+        totalBorrowShareFixed: fixed2Decimals(data._totalBorrowShare0, poolData.token0._decimals),
+
+        totalLendShare: data._totalLendShare0,
+        totalLendShareFixed: fixed2Decimals(data._totalLendShare0, poolData.token0._decimals),
+      },
+      token1:{
+        ...poolData?.token1,
+        borrowBalance: data._borrowBalance1,
+        borrowBalanceFixed: fixed2Decimals(data._borrowBalance1, poolData.token1._decimals),
+
+        borrowShare: data._borrowShare1,
+        borrowShare: fixed2Decimals(data._borrowShare1, poolData.token1._decimals),
+
+        healthFactor18: data._healthFactor1,
+        healthFactorFixed: fixed2Decimals(data._healthFactor1, poolData.token1._decimals),
+        healthFactor: greaterThan(fixed2Decimals(data._healthFactor1, poolData.token1._decimals), 100) ? '100': Number(fixed2Decimals(data._healthFactor1, poolData.token1._decimals)).toFixed(2),
+
+        interest: data._interest1,
+        interestFixed: fixed2Decimals(data._interest0, poolData.token0._decimals),
+
+        lendBalance: data._lendBalance1,
+        lendBalanceFixed: fixed2Decimals(data._lendBalance1, poolData.token1._decimals),
+
+        lendShare: data._lendShare1,
+        lendShareFixed: fixed2Decimals(data._lendShare1, poolData.token1._decimals),
+
+        totalBorrow: data._totalBorrow1,
+        totalBorrowFixed: fixed2Decimals(data._totalBorrow1, poolData.token1._decimals),
+
+        totalBorrowShare: data._totalBorrowShare1,
+        totalBorrowShareFixed: fixed2Decimals(data._totalBorrowShare1, poolData.token1._decimals),
+
+        totalLendShare: data._totalLendShare1,
+        totalLendShareFixed: fixed2Decimals(data._totalLendShare1, poolData.token1._decimals),
+      }
+     };
+      console.log("getPoolAllData", pool);
+      setMethodLoaded({ ...methodLoaded, getPoolFullData: true})
+      setPoolData(pool);
+    })
+}
+}
+
+const getOracleData = () => {
+  if(contracts.helperContract && contracts.coreContract) {
+    contracts.coreContract.methods.getOraclePrice(
+      poolData.token0._address,
+      poolData.token1._address,
+      decimal2Fixed(1, poolData.token0._decimals)
+    ).call((err, data) => {
+      const tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
+      const pool = {...poolData};
+      pool.token0.price = tmpPrice;
+      pool.token1.price = (1/tmpPrice).toString();
+      pool.token0.collateralBalance = mul(mul(pool.token1.borrowBalance,  pool.token1.price / pool.ltv  ), 100)
+      pool.token0.collateralBalanceFixed = fixed2Decimals(pool.token0.collatoralBalance, pool.token0._decimals)
+      pool.token1.collateralBalance = mul(mul(pool.token0.borrowBalance,  pool.token0.price / pool.ltv  ), 100)
+      pool.token1.collateralBalanceFixed = fixed2Decimals(pool.token1.collatoralBalance, pool.token1._decimals)
+
+      let redeem0 = sub(
+        poolData.token0.lendBalance,
+        poolData.token0.collateralBalance
+      );
+      poolData.token0.redeemBalance = redeem0 >= 0 ? redeem0 : 0;
+
+      poolData.token0.redeemBalanceFixed =  fixed2Decimals(
+        poolData.token0.redeemBalance,
+        poolData.token0._decimals
+      ) ;
+
+      let redeem1 = sub(
+        poolData.token1.lendBalance ,
+        poolData.token1.collateralBalance 
+      )
+  
+      console.log("redeem", redeem1, poolData.token1.lendBalance, poolData.token1.collateralBalance);
+      poolData.token1.redeemBalance = redeem1 >= 0 ? redeem1 : 0;
+      poolData.token1.redeemBalanceFixed = fixed2Decimals(
+        poolData.token1.redeemBalance,
+        poolData.token1._decimals
+      );
+
+      setPoolData(pool);
+
+      console.log("getOracle", pool, tmpPrice);
+    })
+  }
+  
+}
+
   useEffect(() => {
-    getPoolDataCall();
+    if(!methodLoaded.getPoolData){
+    getPoolBasicData();    
+    }
   }, [contracts])
+
+  useEffect(() => {
+    if(methodLoaded.getPoolData && !methodLoaded.getPoolFullData){
+    getPoolAllData();
+    }
+  }, [methodLoaded])
+
+
+  useEffect(() => {
+    if(methodLoaded.getPoolData && methodLoaded.getPoolFullData && !methodLoaded.getOraclePrice){
+      getOracleData();
+    }
+  }, [methodLoaded])
+
 
   return (
     <div className="pool_container">
