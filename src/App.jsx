@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import 'antd/dist/antd.css';
 // internal imports
-import { setTheme, setUser, setWeb3, setContracts } from './store/Action';
+import { setTheme, setUser, setWeb3, setContracts, setLoading } from './store/Action';
 import MainRoutes from './routes';
 import {
   changeNetwork,
@@ -12,7 +12,7 @@ import {
   MetaMaskEventHandler,
 } from './services/wallet';
 import { coreAbi, helperAbi, positionAbi } from './core/contractData/abi';
-import { contractAddress } from './core/contractData/contracts_goerli';
+import { contractAddress } from './core/contractData/contracts_sepolia';
 import { getContract } from './services/contracts';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -39,6 +39,7 @@ function App() {
 
   useEffect(() => {
     (async () => {
+      dispatch(setLoading(true))
       const web3 = await getweb3Instance();
       const user = await connectWallet();
       dispatch(setUser(user))
@@ -58,20 +59,6 @@ function App() {
     })();
   }, []);
 
-  useEffect(() => {
-   
-
-  },[])
-
-
-  
-
-  // remove this later
-  const handleConnect = async () => {
-    // const web3 = await getweb3Instance();
-    // const userData = await connectWallet(web3);
-    // dispatch(setUser(userData));
-  };
 
   return (
     <div className='app_container'>

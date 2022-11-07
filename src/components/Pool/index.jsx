@@ -2,16 +2,21 @@
 import React, { useState } from "react";
 import { Slider, Button } from "antd";
 import "./styles/index.scss";
-
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { contractAddress } from "../../core/contractData/contracts_sepolia";
 const lend = "lend";
 const borrow = "borrow";
 const redeem = "redeem";
 const repay = "repay";
 
 export default function PoolComponent(props) {
+  const { contracts, user } = props;
   const [activeToken, setActiveToken] = useState(1);
   const [activeOperation, setActiveOperation] = useState(lend);
   const [selectLTV, setSelectLTV] = useState(5);
+  const [poolData, setPoolData] = useState({});
+  const { poolAddress } = useParams();
 
   const toggleToken = (token) => {
     setActiveToken(token);
@@ -25,12 +30,56 @@ export default function PoolComponent(props) {
     setSelectLTV(value);
   };
 
+  const methodArray = [
+    {
+      contractInstance: contracts.helperContract,
+      method: contracts.helperContract?.methods?.getPoolData,
+      arguments: [poolAddress]
+    },
+    {
+      contractInstance: contracts.helperContract,
+      method: contracts.helperContract?.methods?.getPoolFullData,
+      arguments: [contractAddress.positionAddress, poolAddress, user.address]
+    }
+  ]
+
+  const getPoolDataCall = async () => {
+    if(contracts.helperContract && contracts.coreContract) {
+       contracts.helperContract.methods.getPoolData(poolAddress).call((error, data) => {
+        const pool = {
+          _address: poolAddress,
+          ltv : data.ltv,
+          lb : data.lb,
+          rf : data.rf,
+          token0: {
+            _symbol: data._symbol0,
+            _address: data._token0,
+            _decimals: data._decimals0,
+            _liquidity: data._token0Liquidity
+          },
+          token1: {
+            _symbol: data._symbol1,
+            _address: data._token1,
+            _decimals: data._decimals1,
+            _liquidity: data._token1Liquidity
+          },
+        };
+        console.log(pool);
+        setPoolData(pool);
+      })
+  }
+}
+
+  useEffect(() => {
+    getPoolDataCall();
+  }, [contracts])
+
   return (
     <div className="pool_container">
       <div className="token_container">
         <div
           onClick={() => toggleToken(1)}
-          className={activeToken === 1 && "active"}
+          className={activeToken === 1 ? "active": ''}
         >
           <img
             src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
@@ -40,7 +89,7 @@ export default function PoolComponent(props) {
         </div>
         <div
           onClick={() => toggleToken(2)}
-          className={activeToken === 2 && "active"}
+          className={activeToken === 2 ? "active": ''}
         >
           <img
             src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
@@ -53,13 +102,13 @@ export default function PoolComponent(props) {
         <div className="oparation_tab">
           <div
             onClick={() => toggleOperation(lend)}
-            className={activeOperation === lend && "active"}
+            className={activeOperation === lend ? "active" : ''}
           >
             Lend
           </div>
           <div
             onClick={() => toggleOperation(redeem)}
-            className={activeOperation === redeem && "active"}
+            className={activeOperation === redeem ? "active": ''}
           >
             Redeem
           </div>

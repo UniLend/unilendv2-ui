@@ -1,4 +1,4 @@
-import { SET_CONTRACTS, SET_THEME, SET_USER, SET_WEB3 } from './ActionTypes';
+import { SET_CONTRACTS, SET_THEME, SET_USER, SET_WEB3, SET_LOADING } from './ActionTypes';
 
 export const setTheme = (theme) => {
   return {
@@ -6,6 +6,13 @@ export const setTheme = (theme) => {
     payload: { theme },
   };
 };
+
+export const setLoading = (bool) => {
+  return {
+    type: SET_LOADING,
+    payload: bool
+  }
+}
 
 export const setWeb3 = (web3) => {
   return {

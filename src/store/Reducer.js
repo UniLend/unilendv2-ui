@@ -1,4 +1,4 @@
-import { SET_CONTRACTS, SET_THEME, SET_USER, SET_WEB3 } from './ActionTypes';
+import { SET_CONTRACTS, SET_LOADING, SET_THEME, SET_USER, SET_WEB3 } from './ActionTypes';
 
 const init = {
   web3: null,
@@ -8,6 +8,8 @@ const init = {
     helperContract: null,
     positionContract: null,
   },
+  isLoading: false,
+  isError: false,
   user: {
     address: '0x',
     balance: null,
@@ -40,7 +42,15 @@ export const Reducer = (state = init, { type, payload }) => {
       return {
         ...state,
         contracts: payload,
+        isLoading: false,
+        isError: false
       };
+    }
+    case SET_LOADING : {
+      return {
+        ...state,
+        isLoading: payload
+      }
     }
     default:
       return state;
