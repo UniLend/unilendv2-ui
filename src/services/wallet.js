@@ -5,12 +5,15 @@ import { providerOptions } from '../constants/wallet';
 import { fromWei } from '../helpers/utils';
 import { networks } from '../core/networks/networks';
 
+const web3Modal = new Web3Modal({
+  cacheProvider: true, // optional
+  providerOptions, // required
+});
+
 export const getProvider = async () => {
-  const web3Modal = new Web3Modal({
-    cacheProvider: true, // optional
-    providerOptions, // required
-  });
+
   const provider = await web3Modal.connect();
+
   return provider;
 };
 
@@ -20,9 +23,10 @@ export const getweb3Instance = async () => {
   return web3;
 };
 
-export const connectWallet = async (web3) => {
+export const connectWallet = async () => {
   //   await provider.sendAsync('eth_requestAccounts');
-  // const net = (await web3.eth.net.getNetworkType()).toUpperCase();
+  // const net = (await web3.eth.net.getNetworkType()).toUpperCase(); 
+  const web3 = await getweb3Instance();
   const chainId = await web3.eth.getChainId();
   const accounts = await web3.eth.getAccounts();
   const bal = await web3.eth.getBalance(accounts[0]);

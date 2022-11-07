@@ -40,6 +40,8 @@ function App() {
   useEffect(() => {
     (async () => {
       const web3 = await getweb3Instance();
+      const user = await connectWallet();
+      dispatch(setUser(user))
       dispatch(setWeb3(web3));
       Promise.all(data.map((item) => getContract(web3, item.abi, item.address)))
         .then((res) => {
@@ -56,11 +58,19 @@ function App() {
     })();
   }, []);
 
+  useEffect(() => {
+   
+
+  },[])
+
+
+  
+
   // remove this later
   const handleConnect = async () => {
-    const web3 = await getweb3Instance();
-    const userData = await connectWallet(web3);
-    dispatch(setUser(userData));
+    // const web3 = await getweb3Instance();
+    // const userData = await connectWallet(web3);
+    // dispatch(setUser(userData));
   };
 
   return (
