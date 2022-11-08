@@ -90,7 +90,7 @@ const getPoolAllData = async () => {
         borrowBalanceFixed: fixed2Decimals(data._borrowBalance0, poolData.token0._decimals),
 
         borrowShare: data._borrowShare0,
-        borrowShare: fixed2Decimals(data._borrowShare0, poolData.token0._decimals),
+        borrowShareFixed: fixed2Decimals(data._borrowShare0, poolData.token0._decimals),
 
         healthFactor18: data._healthFactor0,
         healthFactorFixed: fixed2Decimals(data._healthFactor0, poolData.token0._decimals),
@@ -120,7 +120,7 @@ const getPoolAllData = async () => {
         borrowBalanceFixed: fixed2Decimals(data._borrowBalance1, poolData.token1._decimals),
 
         borrowShare: data._borrowShare1,
-        borrowShare: fixed2Decimals(data._borrowShare1, poolData.token1._decimals),
+        borrowShareFixed: fixed2Decimals(data._borrowShare1, poolData.token1._decimals),
 
         healthFactor18: data._healthFactor1,
         healthFactorFixed: fixed2Decimals(data._healthFactor1, poolData.token1._decimals),
