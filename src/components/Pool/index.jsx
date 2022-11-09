@@ -1,33 +1,50 @@
+import React, { useState } from 'react';
+import { Slider, Button } from 'antd';
+import './styles/index.scss';
+import { useEffect } from 'react';
+import { useFetcher, useParams } from 'react-router-dom';
+import { contractAddress } from '../../core/contractData/contracts_sepolia';
+import {
+  getPoolBasicData,
+  getPoolAllData,
+  getTokenPrice,
+  getOracleData,
+} from '../../services/pool';
+import { useSelector } from 'react-redux';
 
-import React, { useState } from "react";
-import { Slider, Button } from "antd";
-import "./styles/index.scss";
-import { useEffect } from "react";
-import { useFetcher, useParams } from "react-router-dom";
-import { contractAddress } from "../../core/contractData/contracts_sepolia";
-import { fixed2Decimals , greaterThan, decimal2Fixed, add, sub, mul, div, getPoolBasicData, getPoolAllData, getTokenPrice, getOracleData} from "../../helpers/contracts";
-
-const lend = "lend";
-const borrow = "borrow";
-const redeem = "redeem";
-const repay = "repay";
+const lend = 'lend';
+const borrow = 'borrow';
+const redeem = 'redeem';
+const repay = 'repay';
 
 export default function PoolComponent(props) {
   const { contracts, user } = props;
-  const [activeToken, setActiveToken] = useState(1);
+  const [activeToken, setActiveToken] = useState(0);
+  const [selectedToken, setSelectedToken] = useState({});
+  const [collateralToken, setCollaterralToken] = useState({});
   const [activeOperation, setActiveOperation] = useState(lend);
   const [selectLTV, setSelectLTV] = useState(5);
   const [poolData, setPoolData] = useState({});
+  const [max, setMax] = useState(false);
   const [methodLoaded, setMethodLoaded] = useState({
-  getPoolData: false,
-  getPoolFullData: false,
-  getOraclePrice: false,
-  getPoolTokensData: false
-  })
+    getPoolData: false,
+    getPoolFullData: false,
+    getOraclePrice: false,
+    getPoolTokensData: false,
+  });
   const { poolAddress } = useParams();
+  const state = useSelector((state) => state);
+
 
   const toggleToken = (token) => {
     setActiveToken(token);
+    if (token === 0) {
+      setSelectedToken(poolData.token0);
+      setCollaterralToken(poolData.token1);
+    } else {
+      setSelectedToken(poolData.token1);
+      setCollaterralToken(poolData.token0);
+    }
   };
 
   const toggleOperation = (operation) => {
@@ -38,90 +55,132 @@ export default function PoolComponent(props) {
     setSelectLTV(value);
   };
 
-
   useEffect(() => {
-    if(contracts.helperContract && contracts.coreContract){
-      ( async function(){
-        if(!methodLoaded.getPoolData){
-          const pool = await getPoolBasicData( contracts, poolAddress, poolData);   
-           setPoolData(pool);
-           setMethodLoaded({ ...methodLoaded, getPoolData: true})
-         } else if (methodLoaded.getPoolData && !methodLoaded.getPoolFullData){
-           const pool = await getPoolAllData(contracts, poolData, contractAddress.positionAddress, poolAddress, user.address );
-           setMethodLoaded({ ...methodLoaded, getPoolFullData: true})
-           setPoolData(pool);
-         } else if (methodLoaded.getPoolData && methodLoaded.getPoolFullData && !methodLoaded.getOraclePrice){
-           const pool = await getOracleData(contracts, poolData);
-           setPoolData(pool);
-           setMethodLoaded({ ...methodLoaded, getOraclePrice: true})
-         } else if (methodLoaded.getPoolData && methodLoaded.getPoolFullData && methodLoaded.getOraclePrice && !methodLoaded.getPoolTokensData){
-          const poolTokensPrice = await getTokenPrice(contracts, poolData, poolAddress, user.address);
+    if (contracts.helperContract && contracts.coreContract) {
+      (async function () {
+        if (!methodLoaded.getPoolData) {
+          const pool = await getPoolBasicData(contracts, poolAddress, poolData);
+          setPoolData(pool);
+          setMethodLoaded({ ...methodLoaded, getPoolData: true });
+        } else if (methodLoaded.getPoolData && !methodLoaded.getPoolFullData) {
+          const pool = await getPoolAllData(
+            contracts,
+            poolData,
+            contractAddress.positionAddress,
+            poolAddress,
+            user.address
+          );
+          setMethodLoaded({ ...methodLoaded, getPoolFullData: true });
+          setPoolData(pool);
+        } else if (
+          methodLoaded.getPoolData &&
+          methodLoaded.getPoolFullData &&
+          !methodLoaded.getOraclePrice
+        ) {
+          const pool = await getOracleData(contracts, poolData);
+          setPoolData(pool);
+          setMethodLoaded({ ...methodLoaded, getOraclePrice: true });
+        } else if (
+          methodLoaded.getPoolData &&
+          methodLoaded.getPoolFullData &&
+          methodLoaded.getOraclePrice &&
+          !methodLoaded.getPoolTokensData
+        ) {
+          const poolTokensPrice = await getTokenPrice(
+            contracts,
+            poolData,
+            poolAddress,
+            user.address
+          );
           setPoolData(poolTokensPrice);
-         setMethodLoaded({ ...methodLoaded, getPoolTokensData: true})
+          setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
+          setSelectedToken(poolData.token0);
+          setCollaterralToken(poolData.token1);
         }
-      })()
-  }
-  }, [contracts, methodLoaded])
+      })();
+    }
+  }, [contracts, methodLoaded]);
 
-  useEffect(() => {
-   console.log(poolData);
-  }, [poolData])
-
+  // max trigger for sending max values in redeem, lend, borrow, repay;
+  const maxTrigger = () => {
+    setMax(true);
+    handleMax(true);
+    if (activeOperation === lend) {
+      setAmount(selectedToken.balanceFixed);
+    } else if (activeOperation === borrow) {
+      const maxBorrow = getBorrowMax(selectedToken, poolData);
+      setAmount(maxBorrow);
+      setValueLTV(poolData.ltv);
+    } else if (activeOperation === redeem) {
+      if (
+        greaterThan(
+          selectedToken.tokenLiquidityFixed,
+          selectedToken.redeemBalanceFixed
+        )
+      ) {
+        setAmount(selectedToken.redeemBalanceFixed);
+      } else {
+        setAmount(selectedToken.tokenLiquidityFixed);
+      }
+    } else if (activeOperation == repay) {
+      setAmount(selectedToken.borrowBalanceFixed);
+    }
+  };
 
   return (
-    <div className="pool_container">
-      <div className="token_container">
+    <div className='pool_container'>
+      <div className='token_container'>
         <div
-          onClick={() => toggleToken(1)}
-          className={activeToken === 1 ? "active": ''}
+          onClick={() => toggleToken(0)}
+          className={activeToken === 0 ? 'active' : ''}
         >
           <img
-            src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
-            alt=""
+            src='https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658'
+            alt=''
           />
           <h2>UFT</h2>
         </div>
         <div
-          onClick={() => toggleToken(2)}
-          className={activeToken === 2 ? "active": ''}
+          onClick={() => toggleToken(1)}
+          className={activeToken === 1 ? 'active' : ''}
         >
           <img
-            src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
-            alt=""
+            src='https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389'
+            alt=''
           />
           <h2>USDC</h2>
         </div>
       </div>
-      <div className="content">
-        <div className="oparation_tab">
+      <div className='content'>
+        <div className='oparation_tab'>
           <div
             onClick={() => toggleOperation(lend)}
-            className={activeOperation === lend ? "active" : ''}
+            className={activeOperation === lend ? 'active' : ''}
           >
             Lend
           </div>
           <div
             onClick={() => toggleOperation(redeem)}
-            className={activeOperation === redeem ? "active": ''}
+            className={activeOperation === redeem ? 'active' : ''}
           >
             Redeem
           </div>
         </div>
 
-        <div className="user_liquidity">
+        <div className='user_liquidity'>
           <p>Your Liquidity</p>
           <h1>100,00</h1>
         </div>
 
-        <div className="token_balance_container">
-          <div className="lable">
+        <div className='token_balance_container'>
+          <div className='lable'>
             <p>{activeOperation}</p>
           </div>
-          <div className="token_balance">
+          <div className='token_balance'>
             <div>
               <img
-                src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
-                alt=""
+                src='https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658'
+                alt=''
               />
               <p>UFT</p>
             </div>
@@ -129,13 +188,13 @@ export default function PoolComponent(props) {
           </div>
         </div>
 
-        <div className="input_container">
-          <input type="text" placeholder="0.0" />
-          <button className="max_btn">MAX</button>
+        <div className='input_container'>
+          <input type='text' placeholder='0.0' />
+          <button className='max_btn'>MAX</button>
         </div>
 
         {activeOperation === redeem && (
-          <div className="ltv_container">
+          <div className='ltv_container'>
             <p>
               <span>Current LTV</span>
               <span>68%</span>
@@ -143,8 +202,8 @@ export default function PoolComponent(props) {
             <p>
               <span>Select LTV</span>
               <span>
-                {" "}
-                <span>{selectLTV}%/</span>75%{" "}
+                {' '}
+                <span>{selectLTV}%/</span>75%{' '}
               </span>
             </p>
             <Slider
@@ -154,13 +213,13 @@ export default function PoolComponent(props) {
               min={5}
               max={75}
               tooltipVisible={false}
-              className="ltv_slider"
+              className='ltv_slider'
             />
           </div>
         )}
 
         {activeOperation === lend && (
-          <div className="analytics">
+          <div className='analytics'>
             <div>
               <span>Lend APY</span>
               <h3>12.25%</h3>
@@ -177,7 +236,7 @@ export default function PoolComponent(props) {
         )}
 
         {activeOperation === redeem && (
-          <div className="liquidity_factors">
+          <div className='liquidity_factors'>
             <p>
               <span>Liquidity</span>
               <span>91.967 OMATIC</span>
@@ -192,10 +251,9 @@ export default function PoolComponent(props) {
             </p>
           </div>
         )}
-        <div className="operation_btn">      
-          <Button >Lend</Button>
+        <div className='operation_btn'>
+          <Button>Lend</Button>
         </div>
-
       </div>
     </div>
   );
