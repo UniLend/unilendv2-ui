@@ -153,12 +153,12 @@ export function getSelectLTV(
   const MaxLTV = poolData.ltv / 100;
 
   const prevLTV =
-    Number(selectedToken.borrowBalanceFixed) > 0
-      ? Number(selectedToken.borrowBalanceFixed) /
-        Number(collateralToken.lendBalanceFixed)
-      : 0;
+  Number(selectedToken.borrowBalanceFixed) > 0
+    ? Number(selectedToken.borrowBalanceFixed) /
+     (Number(collateralToken.lendBalanceFixed) * Number(collateralToken.price))
+    : 0;
 
-  const ltv = prevLTV + Number(inputBorrow) / Number(collateralToken.lendBalanceFixed);
+  const ltv = prevLTV + Number(inputBorrow) / (Number(collateralToken.lendBalanceFixed) * Number(collateralToken.price));
 
   const result = ltv > MaxLTV ? MaxLTV : ltv;
 
@@ -169,7 +169,7 @@ export function getCurrentLTV(selectedToken, collateralToken) {
   const prevLTV =
     Number(selectedToken.borrowBalanceFixed) > 0
       ? Number(selectedToken.borrowBalanceFixed) /
-        Number(collateralToken.lendBalanceFixed)
+       (Number(collateralToken.lendBalanceFixed) * Number(collateralToken.price))
       : 0;
 
   return (prevLTV.toFixed(4) * 100).toFixed(2);
