@@ -1,30 +1,40 @@
-import React, { useState } from 'react';
-import { Slider, Button } from 'antd';
-import './styles/index.scss';
-import { useEffect } from 'react';
-import { useFetcher, useParams } from 'react-router-dom';
-import { contractAddress } from '../../core/contractData/contracts_sepolia';
+import React, { useState } from "react";
+import { Slider, Button } from "antd";
+import "./styles/index.scss";
+import { useEffect } from "react";
+import { useFetcher, useParams } from "react-router-dom";
+import { contractAddress } from "../../core/contractData/contracts_sepolia";
 import {
   getPoolBasicData,
   getPoolAllData,
   getTokenPrice,
   getOracleData,
-} from '../../services/pool';
-import { useSelector } from 'react-redux';
+} from "../../services/pool";
+import { useSelector } from "react-redux";
+import { getTokenLogo } from "../../utils";
+import {
+  shortNumber,
+  getBorrowMax,
+  greaterThan,
+  getCurrentLTV,
+  getSelectLTV,
+  getActionBtn
+} from "../../helpers/contracts";
 
-const lend = 'lend';
-const borrow = 'borrow';
-const redeem = 'redeem';
-const repay = 'repay';
+const lend = "lend";
+const borrow = "borrow";
+const redeem = "redeem";
+const repay = "repay";
 
 export default function PoolComponent(props) {
   const { contracts, user } = props;
   const [activeToken, setActiveToken] = useState(0);
-  const [selectedToken, setSelectedToken] = useState({});
-  const [collateralToken, setCollaterralToken] = useState({});
+  const [selectedToken, setSelectedToken] = useState(null);
+  const [collateralToken, setCollaterralToken] = useState(null);
   const [activeOperation, setActiveOperation] = useState(lend);
   const [selectLTV, setSelectLTV] = useState(5);
   const [poolData, setPoolData] = useState({});
+  const [amount, setAmount] = useState(0);
   const [max, setMax] = useState(false);
   const [methodLoaded, setMethodLoaded] = useState({
     getPoolData: false,
@@ -33,27 +43,50 @@ export default function PoolComponent(props) {
     getPoolTokensData: false,
   });
   const { poolAddress } = useParams();
-  const state = useSelector((state) => state);
 
+  const getLiquidityAmount = {
+    lend: selectedToken?.lendBalanceFixed,
+    borrow: selectedToken?.borrowBalanceFixed,
+    redeem: selectedToken?.redeemBalanceFixed,
+    repay: selectedToken?.borrowBalanceFixed,
+  };
+
+  // Operation Button Text based on values;
+  const buttonAction = getActionBtn(activeOperation, amount, selectedToken, collateralToken);
+
+  const handleAmount = (e) => {
+    setAmount(e.target.value);
+    const LtvBasedOnAmount = getSelectLTV(selectedToken, collateralToken, e.target.value, poolData)
+    setSelectLTV(LtvBasedOnAmount);
+  };
 
   const toggleToken = (token) => {
     setActiveToken(token);
+    setAmount(0);
+    setSelectLTV(5)
     if (token === 0) {
       setSelectedToken(poolData.token0);
+      setActiveOperation(poolData.token0.tabs[0]);
       setCollaterralToken(poolData.token1);
     } else {
       setSelectedToken(poolData.token1);
+      setActiveOperation(poolData.token1.tabs[0]);
       setCollaterralToken(poolData.token0);
     }
   };
 
   const toggleOperation = (operation) => {
     setActiveOperation(operation);
+    setAmount(0);
+    setSelectLTV(5)
   };
 
   const handleLTVSlider = (value) => {
     setSelectLTV(value);
+    const amountBasedOnLtv = getBorrowMax(selectedToken, collateralToken, value);
+    setAmount(amountBasedOnLtv)
   };
+
 
   useEffect(() => {
     if (contracts.helperContract && contracts.coreContract) {
@@ -96,6 +129,7 @@ export default function PoolComponent(props) {
           setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
           setSelectedToken(poolData.token0);
           setCollaterralToken(poolData.token1);
+          setActiveOperation(poolData.token0.tabs[0]);
         }
       })();
     }
@@ -104,20 +138,14 @@ export default function PoolComponent(props) {
   // max trigger for sending max values in redeem, lend, borrow, repay;
   const maxTrigger = () => {
     setMax(true);
-    handleMax(true);
     if (activeOperation === lend) {
       setAmount(selectedToken.balanceFixed);
     } else if (activeOperation === borrow) {
-      const maxBorrow = getBorrowMax(selectedToken, poolData);
+      const maxBorrow = getBorrowMax(selectedToken, collateralToken, poolData.ltv);
       setAmount(maxBorrow);
-      setValueLTV(poolData.ltv);
+      setSelectLTV(poolData.ltv);
     } else if (activeOperation === redeem) {
-      if (
-        greaterThan(
-          selectedToken.tokenLiquidityFixed,
-          selectedToken.redeemBalanceFixed
-        )
-      ) {
+      if ( Number(selectedToken.liquidityFixed) > Number(selectedToken.redeemBalanceFixed)) {
         setAmount(selectedToken.redeemBalanceFixed);
       } else {
         setAmount(selectedToken.tokenLiquidityFixed);
@@ -128,82 +156,86 @@ export default function PoolComponent(props) {
   };
 
   return (
-    <div className='pool_container'>
-      <div className='token_container'>
+    <div className="pool_container">
+      <div className="token_container">
         <div
           onClick={() => toggleToken(0)}
-          className={activeToken === 0 ? 'active' : ''}
+          className={activeToken === 0 ? "active" : ""}
         >
-          <img
-            src='https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658'
-            alt=''
-          />
-          <h2>UFT</h2>
+          <img src={getTokenLogo(poolData?.token0?._symbol)} alt="" />
+          <h2>{poolData?.token0?._symbol}</h2>
         </div>
         <div
           onClick={() => toggleToken(1)}
-          className={activeToken === 1 ? 'active' : ''}
+          className={activeToken === 1 ? "active" : ""}
         >
-          <img
-            src='https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389'
-            alt=''
-          />
-          <h2>USDC</h2>
+          <img src={getTokenLogo(poolData?.token1?._symbol)} alt="" />
+          <h2>{poolData?.token1?._symbol}</h2>
         </div>
       </div>
-      <div className='content'>
-        <div className='oparation_tab'>
+      <div className="content">
+        <div className="oparation_tab">
           <div
-            onClick={() => toggleOperation(lend)}
-            className={activeOperation === lend ? 'active' : ''}
+            onClick={() => toggleOperation(selectedToken?.tabs[0])}
+            className={
+              activeOperation === selectedToken?.tabs[0] ? "active" : ""
+            }
           >
-            Lend
+            {selectedToken ? selectedToken?.tabs[0] : "Lend"}
           </div>
           <div
-            onClick={() => toggleOperation(redeem)}
-            className={activeOperation === redeem ? 'active' : ''}
+            onClick={() => toggleOperation(selectedToken?.tabs[1])}
+            className={
+              activeOperation === selectedToken?.tabs[1] ? "active" : ""
+            }
           >
-            Redeem
+            {selectedToken ? selectedToken?.tabs[1] : "Borrow"}
           </div>
         </div>
 
-        <div className='user_liquidity'>
+        <div className="user_liquidity">
           <p>Your Liquidity</p>
-          <h1>100,00</h1>
+          <h1>
+            {selectedToken ? shortNumber(getLiquidityAmount[activeOperation]) : 0}
+          </h1>
         </div>
 
-        <div className='token_balance_container'>
-          <div className='lable'>
+        <div className="token_balance_container">
+          <div className="lable">
             <p>{activeOperation}</p>
           </div>
-          <div className='token_balance'>
+          <div className="token_balance">
             <div>
-              <img
-                src='https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658'
-                alt=''
-              />
-              <p>UFT</p>
+              <img src={getTokenLogo(selectedToken?._symbol)} alt="" />
+              <p>{selectedToken?._symbol}</p>
             </div>
-            <p>Balance: 165</p>
+            <p>Balance: {Number(selectedToken?.balanceFixed).toFixed(2)}</p>
           </div>
         </div>
 
-        <div className='input_container'>
-          <input type='text' placeholder='0.0' />
-          <button className='max_btn'>MAX</button>
+        <div className="input_container">
+          <input
+            value={amount}
+            onChange={handleAmount}
+            type="number"
+            placeholder="0.0"
+          />
+          <button onClick={maxTrigger} className="max_btn">
+            MAX
+          </button>
         </div>
 
-        {activeOperation === redeem && (
-          <div className='ltv_container'>
+        {activeOperation === borrow && (
+          <div className="ltv_container">
             <p>
               <span>Current LTV</span>
-              <span>68%</span>
+              <span>{getCurrentLTV(selectedToken, collateralToken)}%</span>
             </p>
             <p>
               <span>Select LTV</span>
               <span>
-                {' '}
-                <span>{selectLTV}%/</span>75%{' '}
+                {" "}
+                <span>{selectLTV}%/</span>{poolData.ltv}%{" "}
               </span>
             </p>
             <Slider
@@ -211,48 +243,65 @@ export default function PoolComponent(props) {
               defaultValue={Number(selectLTV)}
               onChange={handleLTVSlider}
               min={5}
-              max={75}
+              max={Number(poolData.ltv)}
               tooltipVisible={false}
-              className='ltv_slider'
+              className="ltv_slider"
             />
           </div>
         )}
 
-        {activeOperation === lend && (
-          <div className='analytics'>
-            <div>
-              <span>Lend APY</span>
-              <h3>12.25%</h3>
-            </div>
-            <div>
-              <span>Utilization rate</span>
-              <h3>85.00%</h3>
-            </div>
-            <div>
-              <span>Health Factor</span>
-              <h3>1</h3>
-            </div>
-          </div>
-        )}
-
-        {activeOperation === redeem && (
-          <div className='liquidity_factors'>
+        {(activeOperation === redeem || activeOperation === borrow) && (
+          <div className="liquidity_factors">
             <p>
               <span>Liquidity</span>
-              <span>91.967 OMATIC</span>
+              <span>
+                {Number(selectedToken?.liquidityFixed).toFixed(2)}{" "}
+                {selectedToken?._symbol}
+              </span>
             </p>
             <p>
               <span>Utilization</span>
-              <span>0.000 </span>
+              <span>{selectedToken?.utilRate} </span>
             </p>
             <p>
               <span>Oracle</span>
-              <span>1 OMATIC = 1 UFT </span>
+              <span>
+                1 {poolData.token1._symbol} = {poolData.token1.price}{" "}
+                {poolData.token0._symbol}{" "}
+              </span>
             </p>
           </div>
         )}
-        <div className='operation_btn'>
-          <Button>Lend</Button>
+
+        {(activeOperation === lend || activeOperation === borrow) && (
+          <div className="analytics">
+            <div>
+              <span>{activeOperation} APY</span>
+              <h3>
+                {activeOperation === lend
+                  ? Number(selectedToken?.lendAPY).toFixed(4)
+                  : Number(selectedToken?.borrowAPY).toFixed(4)}
+                %
+              </h3>
+            </div>
+            <div>
+              <span>Utilization rate</span>
+              <h3>{selectedToken?.utilRate}%</h3>
+            </div>
+            <div>
+              <span>Health Factor</span>
+              <h3>
+                {selectedToken?.healthFactorFixed > 100
+                  ? 100
+                  : Number(selectedToken?.healthFactorFixed).toFixed(2)}
+              </h3>
+            </div>
+          </div>
+        )}
+        <div className="operation_btn">
+          <Button loading={false} disabled={buttonAction.disable}>
+            {buttonAction.text}
+          </Button>
         </div>
       </div>
     </div>
