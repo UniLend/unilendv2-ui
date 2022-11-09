@@ -9,6 +9,7 @@ import {
   lessThan,
   mul,
   sub,
+  toAPY
 } from '../helpers/contracts';
 
 /*
@@ -226,20 +227,22 @@ export const getPoolBasicData = async (contracts, poolAddress, poolData) => {
       pool = {
         ...poolData,
         _address: poolAddress,
-        ltv: data.ltv,
+        ltv: Number(data.ltv - 0.01),
         lb: data.lb,
         rf: data.rf,
         token0: {
           _symbol: data._symbol0,
           _address: data._token0,
           _decimals: data._decimals0,
-          _liquidity: data._token0Liquidity,
+          liquidity: data._token0Liquidity,
+          liquidityFixed: fixed2Decimals(data._token0Liquidity, data._decimals0)
         },
         token1: {
           _symbol: data._symbol1,
           _address: data._token1,
           _decimals: data._decimals1,
-          _liquidity: data._token1Liquidity,
+          liquidity: data._token1Liquidity,
+          liquidityFixed: fixed2Decimals(data._token1Liquidity, data._decimals1)
         },
       };
       return pool;
@@ -261,6 +264,16 @@ export const getPoolAllData = async (
       const data = await contracts.helperContract.methods
         .getPoolFullData(positionAddr, poolAddress, userAddr)
         .call();
+
+        const totLiqFull0 = add(
+          div(mul(poolData.token0.liquidity, 100), poolData.rf),
+          data._totalBorrow0
+        )
+        const totLiqFull1 = add(
+          div(mul(poolData.token1.liquidity, 100), poolData.rf),
+          data._totalBorrow1
+        )
+
       const pool = {
         ...poolData,
         token0: {
@@ -326,6 +339,20 @@ export const getPoolAllData = async (
             data._totalLendShare0,
             poolData.token0._decimals
           ),
+          totalLiqFull: totLiqFull0,
+          utilRate: Number(mul(
+            div(data._totalBorrow0, totLiqFull0),
+            100
+          )).toFixed(2),
+          borrowAPY: toAPY(
+            fixed2Decimals(data._interest0, poolData.token0._decimals)
+          ),
+          lendAPY:  div(
+            toAPY(
+              fixed2Decimals(data._interest0, poolData.token0._decimals)
+            ),
+            div(totLiqFull0, data._totalBorrow0)
+          )
         },
         token1: {
           ...poolData?.token1,
@@ -390,6 +417,20 @@ export const getPoolAllData = async (
             data._totalLendShare1,
             poolData.token1._decimals
           ),
+          totalLiqFull: totLiqFull1,
+          utilRate: Number(mul(
+            div(data._totalBorrow1, totLiqFull1),
+            100
+          )).toFixed(4),
+          borrowAPY: toAPY(
+            fixed2Decimals(data._interest1, poolData.token1._decimals)
+          ),
+          lendAPY:  div(
+            toAPY(
+              fixed2Decimals(data._interest1, poolData.token1._decimals)
+            ),
+            div(totLiqFull1, data._totalBorrow1)
+          )
         },
       };
       return pool;
