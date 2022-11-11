@@ -60,6 +60,17 @@ export default function PoolComponent(props) {
     setSelectLTV(LtvBasedOnAmount);
   };
 
+  const handleOperation = () => {
+    switch (activeOperation) {
+      case lend:{
+       
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
   const toggleToken = (token) => {
     setActiveToken(token);
     setAmount(0);
@@ -133,7 +144,7 @@ export default function PoolComponent(props) {
         }
       })();
     }
-  }, [contracts, methodLoaded]);
+  }, [contracts, methodLoaded, user]);
 
   // max trigger for sending max values in redeem, lend, borrow, repay;
   const maxTrigger = () => {
