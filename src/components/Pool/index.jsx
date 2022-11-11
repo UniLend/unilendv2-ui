@@ -9,6 +9,10 @@ import {
   getPoolAllData,
   getTokenPrice,
   getOracleData,
+  handleLend,
+  handleRedeem,
+  handleBorrow,
+  handleRepay
 } from "../../services/pool";
 import { useSelector } from "react-redux";
 import { getTokenLogo } from "../../utils";
@@ -18,7 +22,7 @@ import {
   greaterThan,
   getCurrentLTV,
   getSelectLTV,
-  getActionBtn
+  getActionBtn,
 } from "../../helpers/contracts";
 
 const lend = "lend";
@@ -27,7 +31,7 @@ const redeem = "redeem";
 const repay = "repay";
 
 export default function PoolComponent(props) {
-  const { contracts, user } = props;
+  const { contracts, user, web3 } = props;
   const [activeToken, setActiveToken] = useState(0);
   const [selectedToken, setSelectedToken] = useState(null);
   const [collateralToken, setCollaterralToken] = useState(null);
@@ -52,29 +56,79 @@ export default function PoolComponent(props) {
   };
 
   // Operation Button Text based on values;
-  const buttonAction = getActionBtn(activeOperation, amount, selectedToken, collateralToken);
+  const buttonAction = getActionBtn(
+    activeOperation,
+    amount,
+    selectedToken,
+    collateralToken
+  );
 
   const handleAmount = (e) => {
     setAmount(e.target.value);
-    const LtvBasedOnAmount = getSelectLTV(selectedToken, collateralToken, e.target.value, poolData)
+    const LtvBasedOnAmount = getSelectLTV(
+      selectedToken,
+      collateralToken,
+      e.target.value,
+      poolData
+    );
     setSelectLTV(LtvBasedOnAmount);
   };
 
   const handleOperation = () => {
-    switch (activeOperation) {
-      case lend:{
-       
-        break;
+    if (contracts.coreContract) {
+      if (activeOperation === lend) {
+        handleLend(
+          amount,
+          selectedToken,
+          poolData,
+          contracts,
+          user.address,
+          poolAddress,
+          web3
+        );
+      } else if (activeOperation === redeem) {
+        handleRedeem(
+          amount,
+          selectedToken,
+          max,
+          poolData,
+          poolAddress,
+          user.address,
+          contracts,
+          web3
+        );
+      } else if (activeOperation === borrow) {
+        handleBorrow( 
+          selectedToken,
+          user.address,
+          collateralToken,
+          poolData,
+          contracts,
+          0,
+          amount,
+          web3)
+      } else if (activeOperation === repay){
+        handleRepay(  
+          amount,
+          selectedToken,
+          poolData,
+          max,
+          contracts,
+          poolAddress,
+          user.address,
+          web3)
       }
-      default:
-        break;
     }
-  }
+  };
+
+  useEffect(() => {
+    console.log("poolData", poolData);
+  }, [poolData]);
 
   const toggleToken = (token) => {
     setActiveToken(token);
     setAmount(0);
-    setSelectLTV(5)
+    setSelectLTV(5);
     if (token === 0) {
       setSelectedToken(poolData.token0);
       setActiveOperation(poolData.token0.tabs[0]);
@@ -89,15 +143,18 @@ export default function PoolComponent(props) {
   const toggleOperation = (operation) => {
     setActiveOperation(operation);
     setAmount(0);
-    setSelectLTV(5)
+    setSelectLTV(5);
   };
 
   const handleLTVSlider = (value) => {
     setSelectLTV(value);
-    const amountBasedOnLtv = getBorrowMax(selectedToken, collateralToken, value);
-    setAmount(amountBasedOnLtv)
+    const amountBasedOnLtv = getBorrowMax(
+      selectedToken,
+      collateralToken,
+      value
+    );
+    setAmount(amountBasedOnLtv);
   };
-
 
   useEffect(() => {
     if (contracts.helperContract && contracts.coreContract) {
@@ -152,11 +209,18 @@ export default function PoolComponent(props) {
     if (activeOperation === lend) {
       setAmount(selectedToken.balanceFixed);
     } else if (activeOperation === borrow) {
-      const maxBorrow = getBorrowMax(selectedToken, collateralToken, poolData.ltv);
+      const maxBorrow = getBorrowMax(
+        selectedToken,
+        collateralToken,
+        poolData.ltv
+      );
       setAmount(maxBorrow);
       setSelectLTV(poolData.ltv);
     } else if (activeOperation === redeem) {
-      if ( Number(selectedToken.liquidityFixed) > Number(selectedToken.redeemBalanceFixed)) {
+      if (
+        Number(selectedToken.liquidityFixed) >
+        Number(selectedToken.redeemBalanceFixed)
+      ) {
         setAmount(selectedToken.redeemBalanceFixed);
       } else {
         setAmount(selectedToken.tokenLiquidityFixed);
@@ -207,7 +271,9 @@ export default function PoolComponent(props) {
         <div className="user_liquidity">
           <p>Your Liquidity</p>
           <h1>
-            {selectedToken ? shortNumber(getLiquidityAmount[activeOperation]) : 0}
+            {selectedToken
+              ? shortNumber(getLiquidityAmount[activeOperation])
+              : 0}
           </h1>
         </div>
 
@@ -246,7 +312,8 @@ export default function PoolComponent(props) {
               <span>Select LTV</span>
               <span>
                 {" "}
-                <span>{selectLTV}%/</span>{poolData.ltv}%{" "}
+                <span>{selectLTV}%/</span>
+                {poolData.ltv}%{" "}
               </span>
             </p>
             <Slider
@@ -310,7 +377,11 @@ export default function PoolComponent(props) {
           </div>
         )}
         <div className="operation_btn">
-          <Button loading={false} disabled={buttonAction.disable}>
+          <Button
+            onClick={handleOperation}
+            loading={false}
+            disabled={buttonAction.disable}
+          >
             {buttonAction.text}
           </Button>
         </div>
