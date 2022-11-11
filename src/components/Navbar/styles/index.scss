@@ -187,3 +187,64 @@
     }
   
 }
+
+.popover-content{
+    width: 248px;
+    border-radius: 10px;
+    .disconnect{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin: 10px 0px;
+        h4{
+            margin-top: 5px;
+        }
+        div{
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #DBEAFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            p{    
+            width: 8.5px;
+            height: 8.5px;
+            border-radius: 50%;
+            background: #14C710;
+            margin: 0px;
+            }
+        }
+    }
+    .explorer{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        color: #808080;
+        a{
+            color: #808080;
+            text-decoration: none;
+        }
+        div{
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            cursor: pointer;
+
+            p{
+                font-weight: 700;
+                font-size: 10px;
+                margin: 10px;
+            }
+        }
+        .copied{
+            color: #14C710;
+           border-radius: 5px;
+        }
+    }
+}
+.antd-popover-classname{
+    .ant-popover-inner{
+        border-radius: 10px !important;
+    }
+}
