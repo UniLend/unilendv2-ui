@@ -342,3 +342,12 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+.ant-message-notice-content{
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    max-width: 500px;
+}
+.ant-message-notice {
+
+}

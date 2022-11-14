@@ -1,7 +1,7 @@
 @use '../../../core/theme/constants.scss' as *;
 footer, .footer_nav{
     position: fixed;
-    bottom: 0px;
+    bottom: 0vh;
     display: flex;
     justify-content: space-around;
    background-color: var(--pure-white);
