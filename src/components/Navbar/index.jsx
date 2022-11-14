@@ -78,7 +78,7 @@ export default function Navbar(props) {
           </Button>
         </div>
         <div className="explorer">
-          <div onClick={copyToClipboard} className={copied && "copied"}>
+          <div onClick={copyToClipboard} className={copied ? "copied": ''}>
             <img src={copyIcon} alt="copyicon" />
             <p> {copied ? "Copied" : "Copy address"}</p>
           </div>
@@ -131,8 +131,8 @@ export default function Navbar(props) {
                 trigger="click"
                 overlayClassName="antd-popover-classname"
                 placement="bottomLeft"
-                visible={visible}
-                onVisibleChange={handleVisibleChange}
+                open={visible}
+                onOpenChange={handleVisibleChange}
               >
                 <div className="address">
                   {shortenAddress(currentUser.address)}

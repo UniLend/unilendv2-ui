@@ -1,4 +1,4 @@
-
+@use '../../../core/theme/constants.scss' as *;
 .banner{
 margin: 50px 0px;
     img{
@@ -15,8 +15,14 @@ margin: 50px 0px;
     justify-content: space-between;
     justify-content: center;
     .poolcard{
-        width: calc(100%/3 - 40px);
-        min-width: 300px;
+        // width: calc(100%/3 - 30px);
+        // max-width: calc(100%/3 - 150px);
+        // min-width: 300px;
         margin: 20px;
+    }
+
+    @media ($tablet) {
+        width: 120%;
+        margin: 0px -80px;
     }
 }

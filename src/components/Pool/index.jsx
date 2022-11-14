@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { Slider, Button } from "antd";
+import React, { useState, useEffect } from "react";
+import { Slider, Button , message} from "antd";
 import "./styles/index.scss";
-import { useEffect } from "react";
 import { useFetcher, useParams } from "react-router-dom";
 import { contractAddress } from "../../core/contractData/contracts_sepolia";
 import {
@@ -12,14 +11,12 @@ import {
   handleLend,
   handleRedeem,
   handleBorrow,
-  handleRepay
+  handleRepay,
 } from "../../services/pool";
-import { useSelector } from "react-redux";
 import { getTokenLogo } from "../../utils";
 import {
   shortNumber,
   getBorrowMax,
-  greaterThan,
   getCurrentLTV,
   getSelectLTV,
   getActionBtn,
@@ -40,6 +37,7 @@ export default function PoolComponent(props) {
   const [poolData, setPoolData] = useState({});
   const [amount, setAmount] = useState(0);
   const [max, setMax] = useState(false);
+  const [isOperationLoading, setIsOperationLoading] = useState(false);
   const [methodLoaded, setMethodLoaded] = useState({
     getPoolData: false,
     getPoolFullData: false,
@@ -65,6 +63,7 @@ export default function PoolComponent(props) {
 
   const handleAmount = (e) => {
     setAmount(e.target.value);
+    setMax(false);
     const LtvBasedOnAmount = getSelectLTV(
       selectedToken,
       collateralToken,
@@ -74,56 +73,92 @@ export default function PoolComponent(props) {
     setSelectLTV(LtvBasedOnAmount);
   };
 
-  const handleOperation = () => {
-    if (contracts.coreContract) {
-      if (activeOperation === lend) {
-        handleLend(
-          amount,
-          selectedToken,
-          poolData,
-          contracts,
-          user.address,
-          poolAddress,
-          web3
-        );
-      } else if (activeOperation === redeem) {
-        handleRedeem(
-          amount,
-          selectedToken,
-          max,
-          poolData,
-          poolAddress,
-          user.address,
-          contracts,
-          web3
-        );
-      } else if (activeOperation === borrow) {
-        handleBorrow( 
-          selectedToken,
-          user.address,
-          collateralToken,
-          poolData,
-          contracts,
-          0,
-          amount,
-          web3)
-      } else if (activeOperation === repay){
-        handleRepay(  
-          amount,
-          selectedToken,
-          poolData,
-          max,
-          contracts,
-          poolAddress,
-          user.address,
-          web3)
-      }
+
+  const checkTxnStatus = (hash, txnData) => {
+    if (web3) {
+      web3.eth.getTransactionReceipt(hash, function (err, receipt) {
+        if (receipt) {
+          message.success(`Transaction for ${txnData.method} of ${txnData.amount} for token ${txnData.tokenSymbol}`, 5)
+          setMethodLoaded({ ...methodLoaded, getPoolFullData: false, getOraclePrice: false, getPoolTokensData: false });
+          setAmount(0);
+          setMax(false);
+          setIsOperationLoading(false);
+        } else {
+          setTimeout(function () {
+            checkTxnStatus(hash, txnData);
+          }, 1000);
+        }
+      });
     }
   };
 
-  useEffect(() => {
-    console.log("poolData", poolData);
-  }, [poolData]);
+  const checkTxnError = (error) => {
+    setAmount(0);
+    setMax(false);
+    setIsOperationLoading(false);
+    const errorText = "Error: " + String(error.message).split(":")[1]
+    message.error( error?.message ? errorText : 'Error: Transaction Error')
+  };
+
+  const handleOperation = () => {
+    (async () => {
+      setIsOperationLoading(true);
+      if (contracts.coreContract) {
+        if (activeOperation === lend) {
+          handleLend(
+            amount,
+            selectedToken,
+            poolData,
+            contracts,
+            user.address,
+            poolAddress,
+            web3,
+            checkTxnStatus,
+            checkTxnError
+          );
+        } else if (activeOperation === redeem) {
+          handleRedeem(
+            amount,
+            selectedToken,
+            max,
+            poolData,
+            poolAddress,
+            user.address,
+            contracts,
+            checkTxnStatus,
+            checkTxnError
+          );
+        } else if (activeOperation === borrow) {
+          handleBorrow(
+            selectedToken,
+            user.address,
+            collateralToken,
+            poolData,
+            contracts,
+            0,
+            amount,
+            web3,
+            checkTxnStatus,
+            checkTxnError
+          );
+        } else if (activeOperation === repay) {
+          handleRepay(
+            amount,
+            selectedToken,
+            poolData,
+            max,
+            contracts,
+            poolAddress,
+            user.address,
+            web3,
+            checkTxnStatus,
+            checkTxnError
+          );
+        }
+      }
+    })();
+  };
+
 
   const toggleToken = (token) => {
     setActiveToken(token);
@@ -156,6 +191,7 @@ export default function PoolComponent(props) {
     setAmount(amountBasedOnLtv);
   };
 
+  // get contract data
   useEffect(() => {
     if (contracts.helperContract && contracts.coreContract) {
       (async function () {
@@ -195,11 +231,15 @@ export default function PoolComponent(props) {
           );
           setPoolData(poolTokensPrice);
           setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
-          setSelectedToken(poolData.token0);
-          setCollaterralToken(poolData.token1);
-          setActiveOperation(poolData.token0.tabs[0]);
         }
       })();
+      const isAllTrue = Object.values(methodLoaded).find((el) => el === false);
+      if (isAllTrue === undefined) {
+        setSelectedToken(poolData.token0);
+        setCollaterralToken(poolData.token1);
+        setActiveOperation(poolData.token0.tabs[0]);
+        setActiveToken(0)
+      }
     }
   }, [contracts, methodLoaded, user]);
 
@@ -379,7 +419,7 @@ export default function PoolComponent(props) {
         <div className="operation_btn">
           <Button
             onClick={handleOperation}
-            loading={false}
+            loading={isOperationLoading}
             disabled={buttonAction.disable}
           >
             {buttonAction.text}
