@@ -1,22 +1,29 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import 'antd/dist/antd.css';
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import "antd/dist/antd.css";
 // internal imports
-import { setTheme, setUser, setWeb3, setContracts, setLoading } from './store/Action';
-import MainRoutes from './routes';
+import {
+  setTheme,
+  setUser,
+  setWeb3,
+  setContracts,
+  setLoading,
+} from "./store/Action";
+import MainRoutes from "./routes";
 import {
   changeNetwork,
   connectWallet,
   getProvider,
   getweb3Instance,
   MetaMaskEventHandler,
-} from './services/wallet';
-import { coreAbi, helperAbi, positionAbi } from './core/contractData/abi';
-import { contractAddress } from './core/contractData/contracts_sepolia';
-import { getContract } from './services/contracts';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import './App.scss';
+} from "./services/wallet";
+import { coreAbi, helperAbi, positionAbi } from "./core/contractData/abi";
+import { contractAddress } from "./core/contractData/contracts_sepolia";
+import { getContract } from "./services/contracts";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import "./App.scss";
+import { getFromLocalStorage } from "./utils";
 // import ends here
 
 function App() {
@@ -24,7 +31,7 @@ function App() {
   const state = useSelector((state) => state);
 
   const handleTheme = () => {
-    dispatch(setTheme(state.theme == 'dark' ? 'light' : 'dark'));
+    dispatch(setTheme(state.theme == "dark" ? "light" : "dark"));
   };
 
   const { coreAddress, helperAddress, positionAddress } = contractAddress;
@@ -37,37 +44,47 @@ function App() {
 
   // setting contract state to store from here
 
+  const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
+
   useEffect(() => {
     (async () => {
-      dispatch(setLoading(true))
-      const web3 = await getweb3Instance();
-      const user = await connectWallet();
-      dispatch(setUser(user))
-      dispatch(setWeb3(web3));
-      Promise.all(data.map((item) => getContract(web3, item.abi, item.address)))
-        .then((res) => {
-          const payload = {
-            coreContract: res[0],
-            helperContract: res[1],
-            positionContract: res[2],
-          };
-          dispatch(setContracts(payload));
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      try {
+        dispatch(setLoading(true));
+        const web3 = await getweb3Instance();
+        const user = await connectWallet();
+        dispatch(setUser(user));
+        dispatch(setWeb3(web3));
+        Promise.all(
+          data.map((item) => getContract(web3, item.abi, item.address))
+        )
+          .then((res) => {
+            const payload = {
+              coreContract: res[0],
+              helperContract: res[1],
+              positionContract: res[2],
+            };
+            dispatch(setContracts(payload));
+          })
+          .catch((err) => {
+            throw err;
+          });
+      } catch (error) {
+        console.error(error.message);
+        alert(error.message);
+      }
     })();
-  }, []);
-
+  }, [isSame, getFromLocalStorage("ethEvent")]);
 
   return (
-    <div className='app_container'>
-      <Navbar />
-      <div className='app'>
-        <MainRoutes {...state} />
+    <>
+      <Navbar {...state} />
+      <div className="app_container">
+        <div className="app">
+          <MainRoutes {...state} />
+        </div>
       </div>
       <Footer />
-    </div>
+    </>
   );
 }
 

@@ -6,6 +6,10 @@ const { contracts, user } = store.getState();
 // function timestamp() {
 //     return Math.round(new Date().getTime()/1000);
 // }
+const lend = "lend";
+const borrow = "borrow";
+const redeem = "redeem";
+const repay = "repay";
 
 export function count_leading_zeros(x) {
   let splitted = x.split("");
@@ -80,6 +84,10 @@ export function greaterThan(amount, amount1) {
   return new BigNumber(amount).isGreaterThan(amount1);
 }
 
+export const shortNumber = (num) => {
+  return Number(num).toFixed(4);
+};
+
 export function toDecimals(x, po) {
   var parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -127,52 +135,76 @@ export function totLiqFull(token, localDB) {
   );
 }
 
-export function getBorrowMax(selectedToken, poolData, LTV = poolData.ltv) {
-  const lendToken =
-    poolData?.token0.address === selectedToken.address
-      ? poolData?.token1
-      : poolData?.token0;
-  const borrowedToken = selectedToken;
-  let result;
-  result =
-    Number(lendToken.lendBalanceFixed) * (Number(LTV) / 100) -
-    Number(borrowedToken.borrowBalanceFixed);
-  return result;
+export function getBorrowMax(selectedToken, collateralToken, ltv) {
+  const result =
+    Number(collateralToken.lendBalanceFixed * collateralToken.price) *
+      (Number(ltv) / 100) -
+    Number(selectedToken.borrowBalanceFixed);
+  return result > 0 ? result : 0;
 }
 
-export function getLTV(selectedToken, poolData, inputBorrow) {
-  const lendToken =
-    poolData?.token0.address === selectedToken.address
-      ? poolData?.token1
-      : poolData?.token0;
-  const borrowedToken = selectedToken;
-  const prevLTV =
-    Number(borrowedToken.borrowBalanceFixed) > 0
-      ? Number(borrowedToken.borrowBalanceFixed) /
-        Number(lendToken.lendBalanceFixed)
-      : 0;
-  const currentLTV = Number(inputBorrow) / Number(lendToken.lendBalanceFixed);
-  let result = prevLTV + currentLTV;
+export function getSelectLTV(
+  selectedToken,
+  collateralToken,
+  inputBorrow,
+  poolData
+) {
 
-  if (result >= Number(poolData.ltv) / 100) {
-    return (result = Number(poolData.ltv));
-  }
+  const MaxLTV = poolData.ltv / 100;
+
+  const prevLTV =
+  Number(selectedToken.borrowBalanceFixed) > 0
+    ? Number(selectedToken.borrowBalanceFixed) /
+     (Number(collateralToken.lendBalanceFixed) * Number(collateralToken.price))
+    : 0;
+
+  const ltv = prevLTV + Number(inputBorrow) / (Number(collateralToken.lendBalanceFixed) * Number(collateralToken.price));
+
+  const result = ltv > MaxLTV ? MaxLTV : ltv;
+
   return inputBorrow ? (result.toFixed(4) * 100).toFixed(2) : 0;
 }
 
-export function getCurrentLTV(selectedToken, poolData) {
-  const lendToken =
-    poolData?.token0.address === selectedToken.address
-      ? poolData?.token1
-      : poolData?.token0;
-  const borrowedToken = selectedToken;
+export function getCurrentLTV(selectedToken, collateralToken) {
   const prevLTV =
-    Number(borrowedToken.borrowBalanceFixed) > 0
-      ? Number(borrowedToken.borrowBalanceFixed) /
-        Number(lendToken.lendBalanceFixed)
+    Number(selectedToken.borrowBalanceFixed) > 0
+      ? Number(selectedToken.borrowBalanceFixed) /
+       (Number(collateralToken.lendBalanceFixed) * Number(collateralToken.price))
       : 0;
 
   return (prevLTV.toFixed(4) * 100).toFixed(2);
 }
 
- 
+export const getActionBtn = (activeOperation, amount, selectedToken, collateralToken) => {
+  let btn = {
+    text: `${activeOperation} ${selectedToken?._symbol}`,
+    disable: false,
+  };
+  if (amount <= 0) {
+    btn = { text: "Enter Amount", disable: true };
+  } else if (amount && activeOperation === lend) {
+    if ( Number(selectedToken?.allowance) <= 0) {
+      btn = { text: "Approve " + selectedToken?._symbol };
+    } else if (amount > Number(selectedToken.balanceFixed)) {
+      btn = { text: "Low Balance in Wallet", disable: true };
+    }
+  } else if (amount && activeOperation === borrow) {
+    if ( Number(collateralToken?.allowance) <= 0) {
+      btn = { text: "Approve " + collateralToken?._symbol };
+    } else if (amount > Number(selectedToken.liquidityFixed)) {
+      btn = { text: "Not Enough Liquidity", disabled: true };
+    }
+  } else if (amount && activeOperation === redeem) {
+    if (amount > Number(selectedToken.lendBalanceFixed)) {
+      btn = { text: "Not Enough Amount Lend", disable: true };
+    } else if (amount > Number(selectedToken.liquidityFixed)) {
+      btn = { text: "Not Enough Liquidity", disabled: true };
+    }
+  } else if (amount && activeOperation === repay) {
+    if (amount > Number(selectedToken.balanceFixed)) {
+      btn = { text: "Low Balance in Wallet", disable: true };
+    }
+  }
+
+  return btn;
+};

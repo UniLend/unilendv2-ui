@@ -81,6 +81,7 @@
                 font-size: 17px;
                 font-weight: 700;
                 cursor: pointer;
+                text-transform: capitalize;
             }
 
             .active {
@@ -228,6 +229,7 @@
                 font-size: 18px;
                 font-weight: 700;
                 cursor: pointer;
+                text-transform: capitalize;
 
                 &:disabled {
                     background-color: var(--light-blue);
@@ -328,4 +330,24 @@
             }
         }
     }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+.ant-message-notice-content{
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    max-width: 500px;
+}
+.ant-message-notice {
+
 }

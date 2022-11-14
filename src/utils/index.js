@@ -1,5 +1,10 @@
 import {tokensBYSymbol, tokensByAddress } from './constants';
 
+export const fromWei = (web3, val) => {
+    const result = web3.utils.fromWei(val, 'ether');
+    return result;
+  };
+
 export function getTokenLogo(address){
     if(tokensBYSymbol[address]){
         return tokensBYSymbol[address]['logo'];
@@ -46,3 +51,18 @@ export function getTokenByAddress(addr){
     return token;
    }
 }
+
+export const shortenAddress = (address) => `${address.slice(0,5)}....${address.slice(address.length - 4)}`
+
+export const saveToLocalStorage = (key, value) => {
+    sessionStorage.setItem(key, JSON.stringify(value))
+  }
+  
+  export const getFromLocalStorage = (key) => {
+    return JSON.parse(sessionStorage.getItem(key))
+  }
+  
+  export const removeFromLocalStorage = (key) => {
+    sessionStorage.removeItem(key)
+  }
+  

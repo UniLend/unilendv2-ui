@@ -1,8 +1,17 @@
+import { getFromLocalStorage } from '../utils';
 import { SET_CONTRACTS, SET_LOADING, SET_THEME, SET_USER, SET_WEB3 } from './ActionTypes';
+const user = {
+  address: '0x',
+  balance: null,
+  network: {
+    id: null,
+    name: null
+  },
+  isConnected: false,
+}
 
 const init = {
   web3: null,
-  isConnected: false,
   contracts: {
     coreContract: null,
     helperContract: null,
@@ -10,11 +19,7 @@ const init = {
   },
   isLoading: false,
   isError: false,
-  user: {
-    address: '0x',
-    balance: null,
-    network: null,
-  },
+  user: getFromLocalStorage('user') ? getFromLocalStorage('user'): user,
   theme: 'light',
 };
 
@@ -29,7 +34,7 @@ export const Reducer = (state = init, { type, payload }) => {
     case SET_USER: {
       return {
         ...state,
-        user: payload,
+        user: payload
       };
     }
     case SET_WEB3: {

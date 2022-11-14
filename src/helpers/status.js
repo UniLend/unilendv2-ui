@@ -1,25 +1,28 @@
-export const checkTxnStatus = (hash, txnData, web3) => {
+export const checkTxnStatus =  (hash, txnData, web3, methodCallBack) => {
   if (web3) {
     web3.eth.getTransactionReceipt(hash, function (err, receipt) {
       if (receipt) {
-        setLoadingFull(true);
-        setAmount('');
         // change txnId to actual id from receipt
-        setNotification({
-          message: `Transaction for ${txnData.method} of ${txnData.amount} for token ${txnData.tokenSymbol}`,
-          txnId: receipt,
-          data: txnData,
-          visible: true,
-          date: date,
-        });
-        if (txnData.method !== 'approval') {
-          setShareModal(true);
-        }
+        // setNotification({
+        //   message: `Transaction for ${txnData.method} of ${txnData.amount} for token ${txnData.tokenSymbol}`,
+        //   txnId: receipt,
+        //   data: txnData,
+        //   visible: true,
+        //   date: date,
+        // });
+        // if (txnData.method !== 'approval') {
+        //   setShareModal(true);
+        // }
 
-        setLoading(false);
+        // setLoading(false);
+        console.log("checkTxnStatus", hash, txnData);
+        if(methodCallBack){
+          methodCallBack("checkTxnStatus", {})
+        }
+      
       } else {
         setTimeout(function () {
-          checkTxnStatus(hash, txnData);
+          checkTxnStatus(hash, txnData, web3);
         }, 1000);
       }
     });

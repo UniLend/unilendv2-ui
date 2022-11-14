@@ -2,7 +2,7 @@ import Web3 from 'web3';
 import Web3Modal from 'web3modal';
 // local imports
 import { providerOptions } from '../constants/wallet';
-import { fromWei } from '../helpers/utils';
+import { fromWei, saveToLocalStorage } from '../utils';
 import { networks } from '../core/networks/networks';
 
 const web3Modal = new Web3Modal({
@@ -11,27 +11,48 @@ const web3Modal = new Web3Modal({
 });
 
 export const getProvider = async () => {
-
+ try {
   const provider = await web3Modal.connect();
 
   return provider;
+ } catch (error) {
+  // console.error("provider",error.message);
+
+  throw error;
+ }
+
 };
 
 export const getweb3Instance = async () => {
-  const provider = await getProvider();
-  const web3 = new Web3(provider);
-  return web3;
+  try {
+    const provider = await getProvider();
+    const web3 = new Web3(provider);
+    return web3;
+  } catch (error) {
+    throw error;
+  }
+
 };
 
 export const connectWallet = async () => {
   //   await provider.sendAsync('eth_requestAccounts');
   // const net = (await web3.eth.net.getNetworkType()).toUpperCase(); 
-  const web3 = await getweb3Instance();
-  const chainId = await web3.eth.getChainId();
-  const accounts = await web3.eth.getAccounts();
-  const bal = await web3.eth.getBalance(accounts[0]);
-  const balance = fromWei(web3, bal).slice(0, 6);
-  return { address: accounts[0], balance, network: chainId };
+  try {
+    const web3 = await getweb3Instance();
+    const chainId = await web3.eth.getChainId();
+    const accounts = await web3.eth.getAccounts();
+    const bal = await web3.eth.getBalance(accounts[0]);
+    const balance = fromWei(web3, bal).slice(0, 6);
+    const networkByWeb3 = (await web3.eth.net.getNetworkType()).toUpperCase();
+    const Currentnetwork = networks[chainId] ? networks[chainId].chainName: networkByWeb3
+    const obj = { address: accounts[0], balance, network: {id: chainId, name: Currentnetwork} , isConnected: true}
+    saveToLocalStorage('user', obj)
+    return obj;
+  } catch (error) {
+    // console.error("Meaterror",error.message);
+    throw error;
+  }
+
 };
 
 export const changeNetwork = async (networkId) => {
