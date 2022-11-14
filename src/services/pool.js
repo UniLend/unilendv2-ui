@@ -626,7 +626,7 @@ export const handleRepay = (
           checkTxnStatus(hash, txn);
         })
         .on("error", function (error) {
-          checkTxnError(checkTxnError)
+          checkTxnError(error)
           throw error;
         });
     } else {
