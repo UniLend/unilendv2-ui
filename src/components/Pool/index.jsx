@@ -233,6 +233,7 @@ export default function PoolComponent(props) {
           setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
         }
       })();
+      
       const isAllTrue = Object.values(methodLoaded).find((el) => el === false);
       if (isAllTrue === undefined) {
         setSelectedToken(poolData.token0);
