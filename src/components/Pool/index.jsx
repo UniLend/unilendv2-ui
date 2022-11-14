@@ -96,6 +96,7 @@ export default function PoolComponent(props) {
     setAmount(0);
     setMax(false);
     setIsOperationLoading(false);
+    console.log("checkError:", error.message);
     const errorText = "Error: " + String(error.message).split(":")[1]
     message.error( error?.message ? errorText : 'Error: Transaction Error')
   };
@@ -235,7 +236,16 @@ export default function PoolComponent(props) {
       })();
       
       const isAllTrue = Object.values(methodLoaded).find((el) => el === false);
-      if (isAllTrue === undefined) {
+      if (isAllTrue === undefined && selectedToken !==null && selectedToken?._symbol === poolData.token0._symbol) {
+        setSelectedToken(poolData.token0);
+        setCollaterralToken(poolData.token1);
+        setActiveOperation(poolData.token0.tabs[0]);
+        setActiveToken(0)
+      } else if(isAllTrue === undefined && selectedToken !== null){
+        setSelectedToken(poolData.token1);
+        setCollaterralToken(poolData.token0);
+        setActiveOperation(poolData.token1.tabs[0]);
+      } else if(isAllTrue === undefined) {
         setSelectedToken(poolData.token0);
         setCollaterralToken(poolData.token1);
         setActiveOperation(poolData.token0.tabs[0]);
