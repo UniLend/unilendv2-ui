@@ -162,7 +162,7 @@ export function getSelectLTV(
 
   const result = ltv > MaxLTV ? MaxLTV : ltv;
 
-  return inputBorrow ? (result.toFixed(4) * 100).toFixed(2) : 0;
+  return inputBorrow ? (ltv.toFixed(4) * 100).toFixed(2) : 0;
 }
 
 export function getCurrentLTV(selectedToken, collateralToken) {
