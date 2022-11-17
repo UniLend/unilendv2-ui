@@ -266,6 +266,7 @@ if(selectedToken && collateralToken){
           setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
         }
       })();
+      
       const isAllTrue = Object.values(methodLoaded).find((el) => el === false);
       if (isAllTrue === undefined && selectedToken !==null && selectedToken?._symbol === poolData.token0._symbol) {
         setSelectedToken(poolData.token0);

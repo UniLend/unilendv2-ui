@@ -208,3 +208,8 @@ export const getActionBtn = (activeOperation, amount, selectedToken, collateralT
 
   return btn;
 };
+
+export const getAllContracts = async (contractAddress, abi, web3) => {
+  const contract = new web3.eth.Contract(abi, contractAddress);
+  return contract;
+};

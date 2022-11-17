@@ -8,22 +8,23 @@ import {
   setWeb3,
   setContracts,
   setLoading,
-} from "./store/Action";
-import MainRoutes from "./routes";
+} from './store/Action';
+import MainRoutes from './routes';
 import {
-  changeNetwork,
+  // changeNetwork,
   connectWallet,
-  getProvider,
+  // getProvider,
   getweb3Instance,
-  MetaMaskEventHandler,
-} from "./services/wallet";
-import { coreAbi, helperAbi, positionAbi } from "./core/contractData/abi";
-import { contractAddress } from "./core/contractData/contracts_sepolia";
-import { getContract } from "./services/contracts";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import "./App.scss";
-import { getFromLocalStorage } from "./utils";
+  // MetaMaskEventHandler,
+} from './services/wallet';
+import { coreAbi, helperAbi, positionAbi } from './core/contractData/abi';
+import { contractAddress } from './core/contractData/contracts_sepolia';
+import { getContract } from './services/contracts';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import './App.scss';
+import { getFromLocalStorage } from './utils';
+
 // import ends here
 
 function App() {
@@ -44,7 +45,7 @@ function App() {
 
   // setting contract state to store from here
 
-  const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
+  const isSame = state?.user?.address != getFromLocalStorage('user')?.address;
 
   useEffect(() => {
     (async () => {
@@ -73,7 +74,7 @@ function App() {
         alert(error.message);
       }
     })();
-  }, [isSame, getFromLocalStorage("ethEvent")]);
+  }, [isSame, getFromLocalStorage('ethEvent')]);
 
   return (
     <>
