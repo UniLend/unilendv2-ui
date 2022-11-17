@@ -5,8 +5,7 @@ import { LockOutlined, WalletFilled } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
 import { saveToLocalStorage, shortenAddress } from '../../utils';
-// import { connectWallet } from "../../services/wallet";
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { connectWallet } from "../../services/wallet";
 
 import logo from '../../assets/footerlogo.svg';
 import hamberger from '../../assets/hamburger.svg';
@@ -40,10 +39,10 @@ export default function Navbar(props) {
   }, [user]);
 
   const handleConnect = async () => {
-    // const user = await connectWallet();
+    const user = await connectWallet();
 
     console.log('user', user);
-    // setCurrentUser(user);
+    setCurrentUser(user);
     dispatch(setUser(user));
   };
 
