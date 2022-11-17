@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Slider, Button , message} from "antd";
+import { Slider, Button , message, Modal} from "antd";
 import "./styles/index.scss";
 import { useFetcher, useParams } from "react-router-dom";
 import { contractAddress } from "../../core/contractData/contracts_sepolia";
@@ -20,6 +20,7 @@ import {
   getCurrentLTV,
   getSelectLTV,
   getActionBtn,
+  mul,
 } from "../../helpers/contracts";
 
 const lend = "lend";
@@ -38,6 +39,9 @@ export default function PoolComponent(props) {
   const [amount, setAmount] = useState(0);
   const [max, setMax] = useState(false);
   const [isOperationLoading, setIsOperationLoading] = useState(false);
+  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
+  const [isMoreThanPoolLTV, setIsMoreThanPoolLTV] = useState(false)
+  const [colleteral, setColleteral] = useState(0)
   const [methodLoaded, setMethodLoaded] = useState({
     getPoolData: false,
     getPoolFullData: false,
@@ -70,8 +74,34 @@ export default function PoolComponent(props) {
       e.target.value,
       poolData
     );
-    setSelectLTV(LtvBasedOnAmount);
+
+    if(LtvBasedOnAmount > poolData.ltv){
+      setIsMoreThanPoolLTV(true);
+    } else {
+      setIsMoreThanPoolLTV(false);
+    }
+
+    const LTV = LtvBasedOnAmount > poolData.ltv  ? poolData.ltv  : LtvBasedOnAmount;
+    setSelectLTV(LTV);
   };
+
+  const getCollateral = () => {
+     let colleteral;
+     if(amount > 0){
+       colleteral = (( Number(amount) + Number(selectedToken.borrowBalanceFixed)) * Number(selectedToken.price)) / (selectLTV/100) - Number(collateralToken.lendBalanceFixed)
+       colleteral = (colleteral > 1 * 10 * -10)  && isMoreThanPoolLTV ? colleteral: 0
+       setColleteral(colleteral)
+     } else {
+      setColleteral(0)
+     }
+      //  colleteral = isNaN(colleteral) ? 0 :  colleteral > 3 * 10 ** - 4 ? colleteral :0
+  }
+
+  useEffect(() => {
+if(selectedToken && collateralToken){
+  getCollateral()
+}
+  },[amount, selectLTV])
 
 
   const checkTxnStatus = (hash, txnData) => {
@@ -96,7 +126,6 @@ export default function PoolComponent(props) {
     setAmount(0);
     setMax(false);
     setIsOperationLoading(false);
-    console.log("checkError:", error.message);
     const errorText = "Error: " + String(error.message).split(":")[1]
     message.error( error?.message ? errorText : 'Error: Transaction Error')
   };
@@ -136,7 +165,7 @@ export default function PoolComponent(props) {
             collateralToken,
             poolData,
             contracts,
-            0,
+            colleteral,
             amount,
             web3,
             checkTxnStatus,
@@ -184,12 +213,15 @@ export default function PoolComponent(props) {
 
   const handleLTVSlider = (value) => {
     setSelectLTV(value);
-    const amountBasedOnLtv = getBorrowMax(
-      selectedToken,
-      collateralToken,
-      value
-    );
-    setAmount(amountBasedOnLtv);
+    if(colleteral <= 0) {
+      const amountBasedOnLtv = getBorrowMax(
+        selectedToken,
+        collateralToken,
+        value
+      );
+      setAmount(amountBasedOnLtv);
+
+    }
   };
 
   // get contract data
@@ -281,6 +313,40 @@ export default function PoolComponent(props) {
     }
   };
 
+  const handleCloseModals = () => {
+    setIsOpenConfirmModal(false);
+  };
+  const handleOperationWithConfirmation = () => {
+    if (colleteral > 0 && activeOperation === borrow && !isOpenConfirmModal) {
+      setIsOpenConfirmModal(true);
+    } else {
+      handleOperation();
+      handleCloseModals();
+    }
+  };
+
+  const ConfirmationModal = () => {
+    return (
+      <div className='ConfirmModel'>
+        <div className='collateral_icon'>
+          <img
+            className='ticker_img'
+            src={getTokenLogo(collateralToken?._symbol)}
+          />
+          {collateralToken?._symbol}
+        </div>
+        <h1> { Number(colleteral).toFixed(4)}</h1>
+        <p>
+          Additional Collateral Required <br /> From Wallet
+        </p>
+        <div className='buttons'>
+          <button onClick={handleCloseModals}>Cancel</button>
+          <button onClick={handleOperationWithConfirmation}>Confirm</button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="pool_container">
       <div className="token_container">
@@ -352,6 +418,17 @@ export default function PoolComponent(props) {
             MAX
           </button>
         </div>
+        {
+          <div className={`colleteral_req ${activeOperation === borrow && colleteral > 0 ? 'show_colleteral_req': 'hide_colleteral_req'}`}>
+            <p>Additional Collateral Required From Wallet</p>
+           
+            <div>
+            <h5>{ Number(colleteral).toFixed(5)}</h5>
+              <img src={getTokenLogo(collateralToken?._symbol)} alt="" />
+              <p>{selectedToken?._symbol}</p>
+            </div>
+          </div>
+        }
 
         {activeOperation === borrow && (
           <div className="ltv_container">
@@ -429,7 +506,7 @@ export default function PoolComponent(props) {
         )}
         <div className="operation_btn">
           <Button
-            onClick={handleOperation}
+            onClick={handleOperationWithConfirmation}
             loading={isOperationLoading}
             disabled={buttonAction.disable}
           >
@@ -437,6 +514,16 @@ export default function PoolComponent(props) {
           </Button>
         </div>
       </div>
+      <Modal
+        className='antd_modal_overlay'
+        visible={isOpenConfirmModal}
+        centered
+        onCancel={handleCloseModals}
+        footer={null}
+        closable={false}
+      >
+        {<ConfirmationModal />}
+      </Modal>
     </div>
   );
 }

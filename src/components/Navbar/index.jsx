@@ -18,17 +18,16 @@ import Sider from 'antd/lib/layout/Sider';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../store/Action';
 
-export default function Navbar( state) {
-  const { user } = state;
-  const [currentUser, setCurrentUser] = useState({
-    address: '0x',
-    balance: null,
-    network: {
-      id: null,
-      name: null,
-    },
-    isConnected: false,
-  });
+export default function Navbar(props) {
+  const { user } = props;
+  const pathname = window.location.pathname;
+  const [currentUser, setCurrentUser] = useState( {address: '0x',
+  balance: null,
+  network: {
+    id: null,
+    name: null
+  },
+  isConnected: false});
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
 
@@ -100,8 +99,8 @@ export default function Navbar( state) {
       </div>
       <div className='nav_routes'>
         <nav>
-          <a href='/'>Pools</a>
-          <a href='#' className='disable_route'>
+          <a href="/" className={`${pathname === '/' ? 'active': ''}`} >Pools</a>
+          <a href="#" className="disable_route">
             Dashboard
             <LockOutlined style={{ marginLeft: '5px' }} />
           </a>
@@ -113,8 +112,8 @@ export default function Navbar( state) {
             Rewards
             <LockOutlined style={{ marginLeft: '5px' }} />
           </a>
-          <a href='/history'>History</a>
-          <a href='#'>Faucet</a>
+          <a href="/history" className={`${pathname === '/history' ? 'active': ''}`}>History</a>
+          <a href="#">Faucet</a>
         </nav>
       </div>
       <div className='last_container'>
