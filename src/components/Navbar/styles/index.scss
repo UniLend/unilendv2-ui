@@ -44,6 +44,9 @@
                     background-color: var(--light-blue);
                 }
             }
+            .active{
+                background-color: var(--light-blue);
+            }
             .disable_route{
                color: var(--light-gray);
                &:hover{

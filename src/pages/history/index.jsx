@@ -1,7 +1,8 @@
 import React from 'react'
+import HistoryComponent from '../../components/History'
 
-export default function History() {
+export default function History(props) {
   return (
-    <div>History Pages</div>
+  <HistoryComponent {...props}/> 
   )
 }

@@ -18,6 +18,7 @@ import { setUser } from "../../store/Action";
 
 export default function Navbar(props) {
   const { user } = props;
+  const pathname = window.location.pathname;
   const [currentUser, setCurrentUser] = useState( {address: '0x',
   balance: null,
   network: {
@@ -93,7 +94,6 @@ export default function Navbar(props) {
     );
   };
 
-
   return (
     <div className="nav_container">
       <div className="unilend_logo">
@@ -101,7 +101,7 @@ export default function Navbar(props) {
       </div>
       <div className="nav_routes">
         <nav>
-          <a href="/">Pools</a>
+          <a href="/" className={`${pathname === '/' ? 'active': ''}`} >Pools</a>
           <a href="#" className="disable_route">
             Dashboard
             <LockOutlined style={{ marginLeft: "5px" }} />
@@ -114,7 +114,7 @@ export default function Navbar(props) {
             Rewards
             <LockOutlined style={{ marginLeft: "5px" }} />
           </a>
-          <a href="/history">History</a>
+          <a href="/history" className={`${pathname === '/history' ? 'active': ''}`}>History</a>
           <a href="#">Faucet</a>
         </nav>
       </div>
