@@ -22,6 +22,7 @@ import {
   getActionBtn,
   mul,
 } from "../../helpers/contracts";
+import PoolSkeleton from "../Loader/PoolSkeleton";
 
 const lend = "lend";
 const borrow = "borrow";
@@ -29,7 +30,7 @@ const redeem = "redeem";
 const repay = "repay";
 
 export default function PoolComponent(props) {
-  const { contracts, user, web3 } = props;
+  const { contracts, user, web3, isLoading, isError  } = props;
   const [activeToken, setActiveToken] = useState(0);
   const [selectedToken, setSelectedToken] = useState(null);
   const [collateralToken, setCollaterralToken] = useState(null);
@@ -39,6 +40,7 @@ export default function PoolComponent(props) {
   const [amount, setAmount] = useState(0);
   const [max, setMax] = useState(false);
   const [isOperationLoading, setIsOperationLoading] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(false)
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
   const [isMoreThanPoolLTV, setIsMoreThanPoolLTV] = useState(false)
   const [colleteral, setColleteral] = useState(0)
@@ -64,6 +66,8 @@ export default function PoolComponent(props) {
     selectedToken,
     collateralToken
   );
+
+  console.log("Button", buttonAction);
 
   const handleAmount = (e) => {
     setAmount(e.target.value);
@@ -226,6 +230,7 @@ if(selectedToken && collateralToken){
 
   // get contract data
   useEffect(() => {
+   if(selectedToken === null) setIsPageLoading(true)
     if (contracts.helperContract && contracts.coreContract) {
       (async function () {
         if (!methodLoaded.getPoolData) {
@@ -273,15 +278,18 @@ if(selectedToken && collateralToken){
         setCollaterralToken(poolData.token1);
         setActiveOperation(poolData.token0.tabs[0]);
         setActiveToken(0)
+        setIsPageLoading(false)
       } else if(isAllTrue === undefined && selectedToken !== null){
         setSelectedToken(poolData.token1);
         setCollaterralToken(poolData.token0);
         setActiveOperation(poolData.token1.tabs[0]);
+        setIsPageLoading(false)
       } else if(isAllTrue === undefined) {
         setSelectedToken(poolData.token0);
         setCollaterralToken(poolData.token1);
         setActiveOperation(poolData.token0.tabs[0]);
         setActiveToken(0)
+        setIsPageLoading(false)
       }
     }
   }, [contracts, methodLoaded, user]);
@@ -348,6 +356,8 @@ if(selectedToken && collateralToken){
   };
 
   return (
+    <>
+    { (isPageLoading)? <PoolSkeleton/> :
     <div className="pool_container">
       <div className="token_container">
         <div
@@ -525,5 +535,7 @@ if(selectedToken && collateralToken){
         {<ConfirmationModal />}
       </Modal>
     </div>
+}
+    </>
   );
 }

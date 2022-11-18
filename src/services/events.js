@@ -1,5 +1,6 @@
 import { poolAbi } from "../core/contractData/abi";
 import { getAllContracts } from "../helpers/contracts";
+import { poolDataByAddr } from "../utils/constants";
 
 export const getAllEvents = async (contract, event) => {
   try {
@@ -70,21 +71,26 @@ export const allTransaction = async (
       newData[i],
       userAddress
     );
+    const poolInfo = poolDataByAddr[newData[i]];
     const poolContract = await getAllContracts(
       newData[i],
       poolAbi,
       web3
     );
+    
+    poolContract.poolInfo = poolInfo;
+    
     const eventNames = ['Borrow', 'Lend', 'Redeem', 'RepayBorrow'];
     for (let j = 0; j < eventNames.length; j++) {
      
       const events = await getEventsWithFilter(poolContract, eventNames[j], {
         _positionID: `${position}`,
       });
-      array.push(...events);
+      const eventsWithPoolInfo = events.map((el)=> el = {...el, poolInfo: poolInfo, event: el.event === 'RepayBorrow'? 'Repay': el.event})
+      array.push(...eventsWithPoolInfo);
    
     }
   }
-  console.log("all array", array);
+  // console.log("all array", array);
   return array;
 };

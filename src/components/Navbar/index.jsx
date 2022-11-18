@@ -80,12 +80,12 @@ export default function Navbar(props) {
             <img src={copyIcon} alt='copyicon' />
             <p> {copied ? 'Copied' : 'Copy address'}</p>
           </div>
-          <Link to='/history'>
+          <a href={`https://sepolia.etherscan.io/address/${user.address}`} target='_blank'>
             <div>
               <img src={viewExplorer} alt='viewExplorericon' />
               <p>TXN History</p>
             </div>
-          </Link>
+          </a>
         </div>
       </div>
     );
