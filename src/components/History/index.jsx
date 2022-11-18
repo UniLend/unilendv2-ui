@@ -6,6 +6,7 @@ import { shortenAddress,getTokenByAddress, getTokenLogo } from '../../utils';
 import { allTransaction } from '../../services/events';
 import { poolDataByAddr, tokensByAddress } from '../../utils/constants';
 import txIcon from '../../assets/tx.svg';
+import noTxt from '../../assets/notxt.svg'
 import { fixed2Decimals } from '../../helpers/contracts';
 import HistorySkeleton from '../Loader/HistorySkeleton';
 
@@ -18,7 +19,7 @@ export default function HistoryComponent(props) {
    const [currentPage, setCurrentPage] = useState(1)
    const [itemPerPage, setItemPerPage] = useState(6)
    const [sortIndex, setSortIndex] = useState(1)
-   const [isPageLoading, setIsPageLoading] = useState(false)
+   const [isPageLoading, setIsPageLoading] = useState(true)
    const [search, setSearch] = useState("")
  
    const handleVisibleChange = (newVisible) => {
@@ -68,6 +69,9 @@ export default function HistoryComponent(props) {
   };
 
    const getTransactionData = async () => {
+    try {
+      
+  
     setIsPageLoading(true)
      const txtArray = await allTransaction(
       contracts.coreContract,
@@ -75,6 +79,7 @@ export default function HistoryComponent(props) {
       user.address,
       web3
      )
+     console.log("transaction", txtArray);
      if (txtArray.length > 0) {
       const sort = txtArray.sort(function (a, b) {
         // Compare the 2 dates
@@ -86,8 +91,12 @@ export default function HistoryComponent(props) {
       console.log("sort", sort);
       setTxtData(sort)
       setTxtDataBackup(sort)
-      setIsPageLoading(false)
+      
    }
+   setIsPageLoading(false)
+  } catch (error) {
+    setIsPageLoading(false)
+  }
   }
 
 useEffect(() => {
@@ -191,9 +200,15 @@ const SortContent = () => {
                 </div>
               </div>
             ))
-        ) : (
+        ) : isPageLoading ? (
+
           <HistorySkeleton />
-        )}
+        ):
+        <div className='no_transaction'>
+          <img src={noTxt} alt="" />
+          <h1>No Transactions Found</h1>
+        </div>
+        }
       </div>
       <div className="pagination">
         <Pagination

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Popover } from 'antd';
+import { Button, Popover, Modal } from 'antd';
 import { FiLock } from 'react-icons/fi';
 import { LockOutlined, WalletFilled } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
@@ -16,10 +16,12 @@ import './styles/index.scss';
 import Sider from 'antd/lib/layout/Sider';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../store/Action';
+import { changeNetwork } from '../../services/wallet';
 
 export default function Navbar(props) {
   const { user } = props;
   const pathname = window.location.pathname;
+  const [wrongNetworkModal, setWrongNetworkModal] = useState(false);
   const [currentUser, setCurrentUser] = useState( {address: '0x',
   balance: null,
   network: {
@@ -34,14 +36,22 @@ export default function Navbar(props) {
     setVisible(newVisible);
   };
 
+  const handleCloseModal = () => {
+    setWrongNetworkModal(false)
+  }
+
   useEffect(() => {
+    console.log(user);
+    if(user.network.id != '11155111'){
+      setWrongNetworkModal(true)
+    } else {
+      setWrongNetworkModal(false)
+    }
     setCurrentUser(user);
   }, [user]);
 
   const handleConnect = async () => {
     const user = await connectWallet();
-
-    console.log('user', user);
     setCurrentUser(user);
     dispatch(setUser(user));
   };
@@ -57,6 +67,23 @@ export default function Navbar(props) {
       });
     }
   }, []);
+
+  const WalletModalBody = () => {
+    return (
+      <div className='walletModel'>
+        <h1>Wrong Network</h1>
+        <p>
+          UniLend V2 is in testnet phase. <br /> Please connect to the SEPOLIA
+          network.
+        </p>
+        {/* <div>
+          <button onClick={() => changeNetwork('11155111')}>
+            Switch Network
+          </button>
+        </div> */}
+      </div>
+    );
+  };
 
   const PopoverContent = () => {
     const [copied, setCopied] = useState(false);
@@ -160,6 +187,15 @@ export default function Navbar(props) {
           </Popover>
         </div>
       </div>
+      <Modal 
+      className='antd_modal_overlay'
+      visible={wrongNetworkModal}
+      centered
+      footer={null}
+      closable={false}
+      >
+        <WalletModalBody/>
+      </Modal>
     </div>
   );
 }
