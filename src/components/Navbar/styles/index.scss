@@ -305,3 +305,18 @@
       }
     }
   }
+
+  .btn_class{
+    color: var(--pure-white);
+    background-color: var(--sharp-blue);
+    border-radius: 10px;
+    height: 40px;
+    width: max-content;
+    font-size: 15px;
+    font-weight: 700;
+    &:hover{
+        background-color: var(--mid-blue);
+        color: var(--sharp-blue);
+        border: 1px solid var(--sharp-blue);
+    }
+}

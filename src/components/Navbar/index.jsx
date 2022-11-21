@@ -100,7 +100,7 @@ export default function Navbar(props) {
             <p></p>
           </div>
           <h4>{shortenAddress(user.address)}</h4>
-          <Button className='style-active'>Disconnect</Button>
+          <Button className='btn_class'>Disconnect</Button>
         </div>
         <div className='explorer'>
           <div onClick={copyToClipboard} className={copied ? 'copied' : ''}>
@@ -170,6 +170,7 @@ export default function Navbar(props) {
               icon={<WalletFilled />}
               size="large"
               onClick={handleConnect}
+
             >
               Connect Wallet
             </Button>

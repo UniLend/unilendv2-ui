@@ -91,7 +91,8 @@ export const setAllowance = (
   amount,
   poolAddress,
   web3,
-  checkTxnStatus
+  checkTxnStatus,
+  checkTxnError
 ) => {
   var ERC20 = new web3.eth.Contract(erc20Abi, token._address);
   var maxAllow =
@@ -112,6 +113,7 @@ export const setAllowance = (
     })
     .on("error", function (error) {
       console.error("Aproove:", error);
+      checkTxnError(error)
       throw error;
     });
 };
@@ -512,7 +514,8 @@ export const handleLend = (
         amount,
         poolAddress,
         web3,
-        checkTxnStatus
+        checkTxnStatus,
+        checkTxnError
       );
     }
   } catch (error) {
@@ -569,9 +572,10 @@ export const handleBorrow = (
         collateralToken,
         userAddr,
         amount,
-        poolAddress,
+        poolData._address,
         web3,
-        checkTxnStatus
+        checkTxnStatus,
+        checkTxnError
       );
     }
   } catch (error) {
@@ -636,7 +640,8 @@ export const handleRepay = (
         amount,
         poolAddress,
         web3,
-        checkTxnStatus
+        checkTxnStatus,
+        checkTxnError
       );
     }
   } catch (error) {
