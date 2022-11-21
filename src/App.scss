@@ -67,3 +67,20 @@ html, body {
 ::-webkit-scrollbar-thumb:hover {
   background: #3a7cff;
 }
+
+// skeleton loading animation
+.skeleton{
+  background: linear-gradient(90deg, var(--border-gray) 20px, rgb(250 250 250 / 90%) 60px, var(--border-gray) 80px);
+  background-size: 300%;
+  background-position: 100% 0;
+  width: 100%;
+  animation: shimmer 2s infinite;
+}
+
+
+@keyframes shimmer {
+  to{
+      background-color: #ffff;
+      background-position: -100%;
+  }
+}

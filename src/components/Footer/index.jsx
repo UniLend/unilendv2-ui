@@ -60,7 +60,7 @@ export default function Footer() {
       </div>
     </footer>
     <nav className='footer_nav'>
-        <a href="#">
+        <a href="/">
           Pools
         </a>
         <a href="#" className='disable_route'>
@@ -75,7 +75,7 @@ export default function Footer() {
           Rewards
           <LockOutlined style={{marginLeft: '5px'}}/>
         </a>
-        <a href="#">
+        <a href="history">
           History
         </a>
       </nav>

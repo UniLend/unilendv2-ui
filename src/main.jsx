@@ -5,10 +5,11 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { store } from './store/Store';
 import './index.css';
+import Ring from './components/Loader/Ring';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <Suspense fallback={<h1>Loading...</h1>}>
+    <Suspense fallback={<Ring />}>
     <Provider store={store} >
     <BrowserRouter>
       <App />

@@ -87,7 +87,12 @@ export const networks = {
       symbol: 'SepoliaETH',
       decimals: 18,
     },
-    rpcUrls: ['https://sepolia.infura.io/v3/'],
+    rpcUrls: ['https://sepolia.infura.io/v3/' ,
+    'https://rpc.sepolia.dev',
+    'https://rpc.sepolia.online',
+    'https://www.sepoliarpc.space',
+    'https://rpc.sepolia.org',
+    'https://rpc-sepolia.rockx.com'],
     blockExplorerUrls: ['https://sepolia.etherscan.io'],
   },
 };
