@@ -71,7 +71,7 @@ function App() {
           });
       } catch (error) {
         console.error(error.message);
-        alert(error.message);
+       
       }
     })();
   }, [isSame, getFromLocalStorage('ethEvent')]);
