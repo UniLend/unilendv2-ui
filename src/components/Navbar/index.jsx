@@ -42,7 +42,7 @@ export default function Navbar(props) {
 
   useEffect(() => {
     console.log(user);
-    if(user.network.id != '11155111'){
+    if( user.network.id && user.network.id != '11155111' ){
       setWrongNetworkModal(true)
     } else {
       setWrongNetworkModal(false)
