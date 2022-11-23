@@ -2,10 +2,10 @@ import Web3 from 'web3';
 import Web3Modal from 'web3modal';
 // local imports
 import { providerOptions } from '../constants/wallet';
-import { fromWei, saveToLocalStorage } from '../utils';
+import { fromWei, removeFromLocalStorage, saveToLocalStorage } from '../utils';
 import { networks } from '../core/networks/networks';
 
-const web3Modal = new Web3Modal({
+export const web3Modal = new Web3Modal({
   cacheProvider: true, // optional
   providerOptions, // required
 });
@@ -32,6 +32,12 @@ export const getweb3Instance = async () => {
     throw error;
   }
 
+};
+
+export const handleDisconnect = async () => {
+  await web3Modal.clearCachedProvider();
+  removeFromLocalStorage('user');
+  window.location.reload();
 };
 
 export const connectWallet = async () => {
