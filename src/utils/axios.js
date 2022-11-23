@@ -5,3 +5,10 @@ export const  fetchCoinGeckoTokens = async () => {
     .then((response) => response.data)
     
 }
+
+export const fetchCoinLogo = async (token) => {
+    return axios.get(`https://api.coingecko.com/api/v3/search?query=${token}`)
+    .then((response) => {
+    response.data
+    })
+}

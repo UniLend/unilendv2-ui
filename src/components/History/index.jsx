@@ -119,7 +119,7 @@ const SortContent = () => {
     <div className="history_table_container">
       <div className="action_container">
         <div className="input_container">
-          <input type="text" disabled={txtData.length === 0} placeholder="Search Txt/Token/Type" value={search} onChange={handleSearch} />
+          <input type="text" disabled={txtData.length === 0 && !search} placeholder="Search Txt/Token/Type" value={search} onChange={handleSearch} />
         </div>
         <Popover
           content={<SortContent />}
