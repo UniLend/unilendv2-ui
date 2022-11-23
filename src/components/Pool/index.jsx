@@ -67,7 +67,6 @@ export default function PoolComponent(props) {
     collateralToken
   );
 
-  console.log("Button", buttonAction);
 
   const handleAmount = (e) => {
     setAmount(e.target.value);
@@ -114,7 +113,8 @@ if(selectedToken && collateralToken){
         if (receipt) {
           message.success(`Transaction for ${txnData.method} of ${txnData.amount} for token ${txnData.tokenSymbol}`, 5)
           setMethodLoaded({ ...methodLoaded, getPoolFullData: false, getOraclePrice: false, getPoolTokensData: false });
-          setAmount(0);
+
+          if(txnData.method !== 'approval') setAmount(0);
           setMax(false);
           setIsOperationLoading(false);
         } else {
@@ -325,7 +325,7 @@ if(selectedToken && collateralToken){
     setIsOpenConfirmModal(false);
   };
   const handleOperationWithConfirmation = () => {
-    if (colleteral > 0 && activeOperation === borrow && !isOpenConfirmModal) {
+    if (colleteral > 0 && activeOperation === borrow && !isOpenConfirmModal && !buttonAction.text.includes('Approve')) {
       setIsOpenConfirmModal(true);
     } else {
       handleOperation();
