@@ -21,6 +21,7 @@
     "redux": "^4.2.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.1",
+    "rollup-plugin-polyfill-node": "^0.11.0",
     "sass": "^1.55.0",
     "wagmi": "^0.7.15",
     "web3": "^1.8.0",
