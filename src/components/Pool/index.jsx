@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Slider, Button , message, Modal} from "antd";
 import "./styles/index.scss";
-import { useFetcher, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import { contractAddress } from "../../core/contractData/contracts_sepolia";
 import {
   getPoolBasicData,
@@ -13,7 +13,7 @@ import {
   handleBorrow,
   handleRepay,
 } from "../../services/pool";
-import { getTokenLogo, imgError } from "../../utils";
+import { imgError } from "../../utils";
 import {
   shortNumber,
   getBorrowMax,
@@ -24,6 +24,7 @@ import {
 } from "../../helpers/contracts";
 import PoolSkeleton from "../Loader/PoolSkeleton";
 import TwitterModal from "../Common/TwitterModal";
+import faucet from '../../assets/faucet.svg';
 
 const lend = "lend";
 const borrow = "borrow";
@@ -53,6 +54,7 @@ export default function PoolComponent(props) {
     getPoolTokensData: false,
   });
   const { poolAddress } = useParams();
+  const navigate = useNavigate();
 
   const getLiquidityAmount = {
     lend: selectedToken?.lendBalanceFixed,
@@ -103,6 +105,9 @@ export default function PoolComponent(props) {
   }
 
   useEffect(() => {
+    if(!user.isConnected){
+      navigate('/')
+    }
 if(selectedToken && collateralToken){
   getCollateral()
 }
@@ -297,7 +302,7 @@ if(selectedToken && collateralToken){
         setIsPageLoading(false)
       }
     }
-    console.log("poollist", poolData);
+    console.log("pool", poolData);
   }, [contracts, methodLoaded, user, poolList]);
 
   // max trigger for sending max values in redeem, lend, borrow, repay;
@@ -413,6 +418,16 @@ if(selectedToken && collateralToken){
         <div className="token_balance_container">
           <div className="lable">
             <p>{activeOperation}</p>
+            <div>
+              {' '}
+              <a
+                href={`https://chaindrop.org/?chainid=${user?.network?.id}&token=${selectedToken?._address}`}
+                target='_blank'
+              >
+                {' '}
+                <img src={faucet} alt='faucet icon' />{' '}
+              </a>
+            </div>
           </div>
           <div className="token_balance">
             <div>

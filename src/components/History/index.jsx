@@ -80,7 +80,6 @@ const navigate = useNavigate()
       user.address,
       web3
      )
-     console.log("transaction", txtArray);
      if (txtArray.length > 0) {
       const sort = txtArray.sort(function (a, b) {
         // Compare the 2 dates
@@ -89,7 +88,6 @@ const navigate = useNavigate()
         return 0;
       });
 
-      console.log("sort", sort);
       setTxtData(sort)
       setTxtDataBackup(sort)
       
@@ -101,7 +99,7 @@ const navigate = useNavigate()
   }
 
 useEffect(() => {
-  if(user.address == '0x'){
+  if(!user.isConnected){
     navigate('/')
   }
   if ((user.address && contracts?.coreContract?._address, web3?.version)) {

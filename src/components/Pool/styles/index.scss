@@ -124,6 +124,8 @@
                 font-weight: 700;
                 color: var(--dark-gray);
                 text-transform: capitalize;
+                display: flex;
+                gap: 5px;
             }
 
             .token_balance {

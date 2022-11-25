@@ -151,14 +151,13 @@ export const getTokenPrice = async (
         data._balance1,
         poolData.token1._decimals
       );
-
       pool.token0.allowance = data._allowance0;
       pool.token0.allowanceFixed = fixed2Decimals(
         data._allowance0,
         poolData.token0._decimals
       );
 
-      pool.token1.allowance = data._allowance0;
+      pool.token1.allowance = data._allowance1;
       pool.token1.allowanceFixed = fixed2Decimals(
         data._allowance1,
         poolData.token1._decimals
