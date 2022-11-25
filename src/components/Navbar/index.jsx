@@ -121,7 +121,7 @@ export default function Navbar(props) {
   return (
     <div className='nav_container'>
       <div className='unilend_logo'>
-        <img src={logo} alt='unilend_logo' />
+       <a href="/"> <img src={logo} alt='unilend_logo' /></a>
       </div>
       <div className='nav_routes'>
         <nav>

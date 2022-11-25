@@ -230,6 +230,7 @@ export const getOracleData = async (contracts, poolData) => {
         poolData.token1.redeemBalance,
         poolData.token1._decimals
       );
+      
       return pool;
     } catch (error) {
       return error;
@@ -242,7 +243,7 @@ export const getOracleData = async (contracts, poolData) => {
 pool basic data;
 */
 
-export const getPoolBasicData = async (contracts, poolAddress, poolData) => {
+export const getPoolBasicData = async (contracts, poolAddress, poolData, poolTokens) => {
   let pool;
   if (contracts.helperContract && contracts.coreContract) {
     try {
@@ -264,6 +265,7 @@ export const getPoolBasicData = async (contracts, poolAddress, poolData) => {
             data._token0Liquidity,
             data._decimals0
           ),
+          ...poolTokens.token0
         },
         token1: {
           _symbol: data._symbol1,
@@ -274,6 +276,7 @@ export const getPoolBasicData = async (contracts, poolAddress, poolData) => {
             data._token1Liquidity,
             data._decimals1
           ),
+          ...poolTokens.token1
         },
       };
       return pool;

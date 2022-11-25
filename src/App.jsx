@@ -8,6 +8,8 @@ import {
   setWeb3,
   setContracts,
   setLoading,
+  setPools,
+  setError,
 } from './store/Action';
 import MainRoutes from './routes';
 import {
@@ -17,13 +19,15 @@ import {
   getweb3Instance,
   // MetaMaskEventHandler,
 } from './services/wallet';
-import { coreAbi, helperAbi, positionAbi } from './core/contractData/abi';
+import { coreAbi, helperAbi, positionAbi, erc20Abi } from './core/contractData/abi';
 import { contractAddress } from './core/contractData/contracts_sepolia';
 import { getContract } from './services/contracts';
+import { getAllEvents } from "./services/events";
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import './App.scss';
 import { getFromLocalStorage } from './utils';
+import { fetchCoinLogo } from "./utils/axios";
 
 // import ends here
 
@@ -71,10 +75,45 @@ function App() {
           });
       } catch (error) {
         console.error(error.message);
-       
+        dispatch( setError(error));
       }
     })();
   }, [isSame, getFromLocalStorage('ethEvent')]);
+
+  useEffect(() => {
+    if (state.contracts.coreContract) { 
+      try { 
+        (async () => {
+          const web3 = await getweb3Instance();
+          const result = await getAllEvents(
+            state.contracts.coreContract,
+            'PoolCreated'
+            );
+            const array =[];
+            const tokenList = {}
+            for (const pool of result) {
+              array.push(pool.token0, pool.token1)
+            }
+            const poolTokens = [...new Set(array)];     
+            const ERC20contracts =  await Promise.all(poolTokens.map((addr) => getContract(web3, erc20Abi, addr)))
+            const Symbols = await Promise.all(ERC20contracts.map((contract, i)=>  contract.methods.symbol().call()))
+            Symbols.forEach((symbol, i) => tokenList[poolTokens[i]] = {symbol})
+            const logos = await Promise.all(Symbols.map((sym, i) =>  fetchCoinLogo(sym)))
+            
+            logos.forEach((logo , i) => tokenList[poolTokens[i]] = {...tokenList[poolTokens[i]], logo})
+            const poolData = {}
+            const reverseResult = result.reverse()
+            for (const poolElement of reverseResult) {
+              poolData[poolElement.pool] = { poolAddress: poolElement.pool, token0: {...tokenList[poolElement.token0], address:poolElement.token0 }, token1:  {...tokenList[poolElement.token1], address:poolElement.token1 }}
+            }
+            dispatch( setPools({poolData, tokenList}))
+          })();
+        } catch (error) {
+          console.error(error)
+          dispatch( setError(error));
+        }
+        }
+  }, [state.contracts]);
 
   return (
     <>
