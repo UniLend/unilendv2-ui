@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import Web3 from "web3";
 import { useDispatch, useSelector } from "react-redux";
 import "antd/dist/antd.css";
 // internal imports

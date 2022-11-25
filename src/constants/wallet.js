@@ -7,13 +7,13 @@ export const providerOptions = {
     package: CoinbaseWalletSDK,
     options: {
       appName: 'unilend Finance',
-      infuraId: import.meta.env.REACT_APP_INFURA_ID,
+      infuraId: ''//import.meta.env.REACT_APP_INFURA_ID,
     },
   },
   walletconnect: {
     package: WalletConnectProvider,
     options: {
-      infuraId: import.meta.env.REACT_APP_INFURA_ID,
+      infuraId: ''//import.meta.env.REACT_APP_INFURA_ID,
     },
   },
 };

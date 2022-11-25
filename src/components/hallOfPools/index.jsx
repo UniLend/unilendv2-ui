@@ -17,9 +17,10 @@ export default function HallOfPoolsComponent(props) {
   const [token1, setToken1] = useState({});
   const [token2, setToken2] = useState({});
   const [pools, setPools] = useState({});
+  // const [user, setUser] = useState({});
   const [poolBackup, setPoolBackup] = useState({})
   const [isLoading, setIsLoading] = useState(true)
-  const { contracts, web3, poolList, isLoadingPoolData } = state;
+  const { contracts, web3, poolList, isLoadingPoolData, user } = state;
 
   useEffect(() => {
     if (Object.values(poolList).length > 0) {
@@ -27,6 +28,10 @@ export default function HallOfPoolsComponent(props) {
       setPoolBackup(poolList)
         }
   }, [poolList]);
+
+  useEffect(() => {
+
+  }, [])
 
   useEffect(() => {
     let filtredData;
@@ -97,21 +102,33 @@ export default function HallOfPoolsComponent(props) {
         pools={pools}
       />
 
-      {(Object.values(pools).length > 0 && !isLoadingPoolData )? (
+      {(Object.values(pools).length > 0 && !isLoadingPoolData && user.address != '0x' )? (
         <div className="poolcard_container">
           { Object.values(pools).map((pool, i) => (
             <PoolCard pool={pool} key={i} />
           ))}
         </div>
-      ) : isLoadingPoolData ? <PoolListSkeleton/> :(
-        <div className="no_pool_container">
-          <NoPoolFound
-            token1={token1}
-            token2={token2}
-            createPool={createPool}
-          />
-        </div>
-      )}
+      ) : ( user.address != '0x' && <PoolListSkeleton/>)}
+
+      {
+        user.address == '0x' &&  Object.values(pools).length == 0 && <div className="no_pool_container">
+               <NoPoolFound
+                 token1={token1}
+                 token2={token2}
+                 createPool={createPool}
+               />
+            </div>
+      }
     </div>
   );
 }
+
+
+// : (!isLoadingPoolData && user.address == '0x')? 
+//       (<div className="no_pool_container">
+//       <NoPoolFound
+//         token1={token1}
+//         token2={token2}
+//         createPool={createPool}
+//       />
+//     </div>): <PoolListSkeleton/>}

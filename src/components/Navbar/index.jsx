@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Popover, Modal } from 'antd';
 import { FiLock } from 'react-icons/fi';
 import { LockOutlined, WalletFilled } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link  } from 'react-router-dom';
 
 import {
   shortenAddress,
@@ -149,12 +149,12 @@ export default function Navbar(props) {
             Rewards
             <LockOutlined style={{ marginLeft: '5px' }} />
           </a>
-          <a
+          { user.address != '0x' &&   <a
             href='/history'
             className={`${pathname === '/history' ? 'active' : ''}`}
           >
             History
-          </a>
+          </a>}
           <a href='#'>Faucet</a>
         </nav>
       </div>

@@ -1,10 +1,16 @@
 import React from 'react';
 import { Modal, Button, message } from 'antd';
+import {  WalletFilled } from '@ant-design/icons';
 import downoutline from "../../assets/downoutline.svg";
 import './styles/index.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { connectWallet } from '../../services/wallet';
+import { setUser } from '../../store/Action';
 
 export default function NoPoolFound({ token1, token2, createPool }) {
     const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
+    const {user} =  useSelector((state) => state); 
+    const dispatch = useDispatch()
 
     const handleCloseModal = () => {
       setIsCreateModalOpen(false);
@@ -13,6 +19,11 @@ export default function NoPoolFound({ token1, token2, createPool }) {
     const handleCreate = async () => {
       await createPool(token1, token2);
     };
+
+    const handleConnect = async () => {
+      const user = await connectWallet()
+      dispatch(setUser(user))
+    }
   
     const handleOpenModal = () => {
       if (token1.symbol && token2.symbol) {
@@ -33,9 +44,16 @@ export default function NoPoolFound({ token1, token2, createPool }) {
               DeFi.
             </p>
   
-            <Button onClick={handleOpenModal} className='btn_class'>
+           { user.address == '0x'?   <Button
+              icon={<WalletFilled />}
+              size='large'
+              className='btn_class'
+              onClick={handleConnect}
+            >
+              Connect Wallet
+            </Button> :  <Button onClick={handleOpenModal} className='btn_class'>
               Create Pool
-            </Button>
+            </Button>}
           </div>
         </div>
         {isCreateModalOpen && (

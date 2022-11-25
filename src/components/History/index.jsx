@@ -1,6 +1,7 @@
 import React , {useEffect, useState}from 'react';
 import './styles/index.scss';
 import { Popover, Pagination} from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { DownOutlined  } from '@ant-design/icons'
 import { shortenAddress,getTokenByAddress, getTokenLogo, imgError } from '../../utils';
 import { allTransaction } from '../../services/events';
@@ -21,7 +22,7 @@ export default function HistoryComponent(props) {
    const [sortIndex, setSortIndex] = useState(1)
    const [isPageLoading, setIsPageLoading] = useState(true)
    const [search, setSearch] = useState("")
- 
+const navigate = useNavigate() 
    const handleVisibleChange = (newVisible) => {
      setVisible(newVisible);
    };
@@ -100,6 +101,9 @@ export default function HistoryComponent(props) {
   }
 
 useEffect(() => {
+  if(user.address == '0x'){
+    navigate('/')
+  }
   if ((user.address && contracts?.coreContract?._address, web3?.version)) {
     getTransactionData();
   }
