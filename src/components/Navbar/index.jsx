@@ -4,8 +4,10 @@ import { FiLock } from 'react-icons/fi';
 import { LockOutlined, WalletFilled } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
-import { saveToLocalStorage, shortenAddress } from '../../utils';
-import { connectWallet } from "../../services/wallet";
+import {
+  shortenAddress,
+} from '../../utils';
+import { connectWallet, handleDisconnect, } from '../../services/wallet';
 
 import logo from '../../assets/footerlogo.svg';
 import hamberger from '../../assets/hamburger.svg';
@@ -22,13 +24,15 @@ export default function Navbar(props) {
   const { user } = props;
   const pathname = window.location.pathname;
   const [wrongNetworkModal, setWrongNetworkModal] = useState(false);
-  const [currentUser, setCurrentUser] = useState( {address: '0x',
-  balance: null,
-  network: {
-    id: null,
-    name: null
-  },
-  isConnected: false});
+  const [currentUser, setCurrentUser] = useState({
+    address: '0x',
+    balance: null,
+    network: {
+      id: null,
+      name: null,
+    },
+    isConnected: false,
+  });
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
 
@@ -37,15 +41,15 @@ export default function Navbar(props) {
   };
 
   const handleCloseModal = () => {
-    setWrongNetworkModal(false)
-  }
+    setWrongNetworkModal(false);
+  };
 
   useEffect(() => {
-    console.log(user);
-    if( user.network.id && user.network.id != '11155111' ){
-      setWrongNetworkModal(true)
+    // console.log("my current chain",chain)
+    if (user.network.id && user.network.id != '11155111') {
+      setWrongNetworkModal(true);
     } else {
-      setWrongNetworkModal(false)
+      setWrongNetworkModal(false);
     }
     setCurrentUser(user);
   }, [user]);
@@ -76,11 +80,11 @@ export default function Navbar(props) {
           UniLend V2 is in testnet phase. <br /> Please connect to the SEPOLIA
           network.
         </p>
-        {/* <div>
-          <button onClick={() => changeNetwork('11155111')}>
+        <div>
+          <button onClick={() => changeNetwork(11155111)}>
             Switch Network
           </button>
-        </div> */}
+        </div>
       </div>
     );
   };
@@ -100,14 +104,19 @@ export default function Navbar(props) {
             <p></p>
           </div>
           <h4>{shortenAddress(user.address)}</h4>
-          <Button className='btn_class'>Disconnect</Button>
+          <Button className='btn_class' onClick={() => handleDisconnect()}>
+            Disconnect
+          </Button>
         </div>
         <div className='explorer'>
           <div onClick={copyToClipboard} className={copied ? 'copied' : ''}>
             <img src={copyIcon} alt='copyicon' />
             <p> {copied ? 'Copied' : 'Copy address'}</p>
           </div>
-          <a href={`https://sepolia.etherscan.io/address/${user.address}`} target='_blank'>
+          <a
+            href={`https://sepolia.etherscan.io/address/${user.address}`}
+            target='_blank'
+          >
             <div>
               <img src={viewExplorer} alt='viewExplorericon' />
               <p>TXN History</p>
@@ -125,8 +134,10 @@ export default function Navbar(props) {
       </div>
       <div className='nav_routes'>
         <nav>
-          <a href="/" className={`${pathname === '/' ? 'active': ''}`} >Pools</a>
-          <a href="#" className="disable_route">
+          <a href='/' className={`${pathname === '/' ? 'active' : ''}`}>
+            Pools
+          </a>
+          <a href='#' className='disable_route'>
             Dashboard
             <LockOutlined style={{ marginLeft: '5px' }} />
           </a>
@@ -138,8 +149,13 @@ export default function Navbar(props) {
             Rewards
             <LockOutlined style={{ marginLeft: '5px' }} />
           </a>
-          <a href="/history" className={`${pathname === '/history' ? 'active': ''}`}>History</a>
-          <a href="#">Faucet</a>
+          <a
+            href='/history'
+            className={`${pathname === '/history' ? 'active' : ''}`}
+          >
+            History
+          </a>
+          <a href='#'>Faucet</a>
         </nav>
       </div>
       <div className='last_container'>
@@ -165,12 +181,11 @@ export default function Navbar(props) {
             </div>
           </div>
         ) : (
-          <div className="connect_btn">
+          <div className='connect_btn'>
             <Button
               icon={<WalletFilled />}
-              size="large"
+              size='large'
               onClick={handleConnect}
-
             >
               Connect Wallet
             </Button>
@@ -188,14 +203,14 @@ export default function Navbar(props) {
           </Popover>
         </div>
       </div>
-      <Modal 
-      className='antd_modal_overlay'
-      visible={wrongNetworkModal}
-      centered
-      footer={null}
-      closable={false}
+      <Modal
+        className='antd_modal_overlay'
+        visible={wrongNetworkModal}
+        centered
+        footer={null}
+        closable={false}
       >
-        <WalletModalBody/>
+        <WalletModalBody />
       </Modal>
     </div>
   );
@@ -223,5 +238,3 @@ const HamburgerContent = () => {
     </div>
   );
 };
-
-
