@@ -102,14 +102,14 @@ export default function HallOfPoolsComponent(props) {
         pools={pools}
       />
 
-      {(Object.values(pools).length > 0 && !isLoadingPoolData && user.isConnected)? (
+      {(Object.values(pools).length > 0 && !isLoadingPoolData )? (
         <div className="poolcard_container">
           { Object.values(pools).map((pool, i) => (
             <PoolCard pool={pool} key={i} />
           ))}
         </div>
-      ) : ( user.isConnected && <PoolListSkeleton/>)}
-
+      ) : ( <PoolListSkeleton/>)}
+{/* 
       {
         !user.isConnected &&  Object.values(pools).length == 0 && <div className="no_pool_container">
                <NoPoolFound
@@ -118,7 +118,7 @@ export default function HallOfPoolsComponent(props) {
                  createPool={createPool}
                />
             </div>
-      }
+      } */}
     </div>
   );
 }

@@ -16,6 +16,7 @@ import MainRoutes from './routes';
 import {
   // changeNetwork,
   connectWallet,
+  defProv,
   // getProvider,
   getweb3Instance,
   // MetaMaskEventHandler,
@@ -56,14 +57,20 @@ function App() {
     (async () => {
       try {
         dispatch(setLoading(true));
-        const web3 = await getweb3Instance();
-        const user = await connectWallet();
-        dispatch(setUser(user));
+        let web3 = defProv();
+        if(state.user.isConnected){
+           web3 = await getweb3Instance();
+           const user = await connectWallet();
+           dispatch(setUser(user));
+        } 
+        
         dispatch(setWeb3(web3));
+        console.log("web3", web3);
         Promise.all(
           data.map((item) => getContract(web3, item.abi, item.address))
         )
           .then((res) => {
+            
             const payload = {
               coreContract: res[0],
               helperContract: res[1],
@@ -85,7 +92,10 @@ function App() {
     if (state.contracts.coreContract) { 
       try { 
         (async () => {
-          const web3 = await getweb3Instance();
+          let web3 = defProv();
+          if(state.user.isConnected){
+             web3 = await getweb3Instance();
+          } 
           const result = await getAllEvents(
             state.contracts.coreContract,
             'PoolCreated'

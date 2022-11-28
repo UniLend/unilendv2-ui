@@ -23,6 +23,15 @@ export const getProvider = async () => {
 
 };
 
+ export const defProv = () => {
+  const provider = new Web3.providers.HttpProvider(
+    'https://sepolia.infura.io/v3/fd88775ae0d44888b49711c0acf5bc62')
+
+    const web3 = new Web3(provider);
+   return web3;
+}
+
+
 export const getweb3Instance = async () => {
   try {
     const provider = await getProvider();

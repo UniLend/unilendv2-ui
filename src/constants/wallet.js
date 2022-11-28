@@ -13,7 +13,12 @@ export const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider,
     options: {
-      infuraId: ''//import.meta.env.REACT_APP_INFURA_ID,
+      rpc:{
+      11155111:'https://rpc.sepolia.org'
+      },
+      infuraId: import.meta.env.REACT_APP_INFURA_ID,
     },
   },
 };
+
+console.log("Env", import.meta.env.REACT_APP_INFURA_ID);
