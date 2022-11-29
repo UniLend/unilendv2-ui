@@ -1,5 +1,5 @@
 import { getFromLocalStorage } from '../utils';
-import { SET_CONTRACTS, SET_LOADING, SET_THEME, SET_USER, SET_WEB3 } from './ActionTypes';
+import { SET_CONTRACTS, SET_ERROR, SET_LOADING, SET_POOLS, SET_THEME, SET_USER, SET_WEB3 } from './ActionTypes';
 const user = {
   address: '0x',
   balance: null,
@@ -21,6 +21,9 @@ const init = {
   isError: false,
   user: getFromLocalStorage('user') ? getFromLocalStorage('user'): user,
   theme: 'light',
+  poolList: {},
+  tokenList: {},
+  isLoadingPoolData: false
 };
 
 export const Reducer = (state = init, { type, payload }) => {
@@ -54,7 +57,24 @@ export const Reducer = (state = init, { type, payload }) => {
     case SET_LOADING : {
       return {
         ...state,
-        isLoading: payload
+        isLoading: payload,
+        isLoadingPoolData: payload
+      }
+    }
+    case SET_ERROR : {
+      return {
+        ...state,
+        isLoading: false,
+        isLoadingPoolData: false,
+        isError: payload
+      }
+    }
+    case SET_POOLS : {
+      return {
+        ...state,
+        poolList: payload.poolData,
+        tokenList: payload.tokenList,
+        isLoadingPoolData: false
       }
     }
     default:

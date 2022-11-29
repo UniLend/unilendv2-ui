@@ -151,14 +151,13 @@ export const getTokenPrice = async (
         data._balance1,
         poolData.token1._decimals
       );
-
       pool.token0.allowance = data._allowance0;
       pool.token0.allowanceFixed = fixed2Decimals(
         data._allowance0,
         poolData.token0._decimals
       );
 
-      pool.token1.allowance = data._allowance0;
+      pool.token1.allowance = data._allowance1;
       pool.token1.allowanceFixed = fixed2Decimals(
         data._allowance1,
         poolData.token1._decimals
@@ -230,6 +229,7 @@ export const getOracleData = async (contracts, poolData) => {
         poolData.token1.redeemBalance,
         poolData.token1._decimals
       );
+      
       return pool;
     } catch (error) {
       return error;
@@ -242,7 +242,7 @@ export const getOracleData = async (contracts, poolData) => {
 pool basic data;
 */
 
-export const getPoolBasicData = async (contracts, poolAddress, poolData) => {
+export const getPoolBasicData = async (contracts, poolAddress, poolData, poolTokens) => {
   let pool;
   if (contracts.helperContract && contracts.coreContract) {
     try {
@@ -264,6 +264,7 @@ export const getPoolBasicData = async (contracts, poolAddress, poolData) => {
             data._token0Liquidity,
             data._decimals0
           ),
+          ...poolTokens.token0
         },
         token1: {
           _symbol: data._symbol1,
@@ -274,6 +275,7 @@ export const getPoolBasicData = async (contracts, poolAddress, poolData) => {
             data._token1Liquidity,
             data._decimals1
           ),
+          ...poolTokens.token1
         },
       };
       return pool;
@@ -500,7 +502,6 @@ export const handleLend = (
             poolAddress: poolAddress,
             chainId: "",
           }; //will hold the value of the transaction
-          console.log("methodCallBack", "lend");
           checkTxnStatus(hash, txn);
         })
         .on("error", function (error) {

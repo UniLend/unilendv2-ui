@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Slider, Button , message, Modal} from "antd";
 import "./styles/index.scss";
-import { useFetcher, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import { contractAddress } from "../../core/contractData/contracts_sepolia";
 import {
   getPoolBasicData,
@@ -13,7 +13,7 @@ import {
   handleBorrow,
   handleRepay,
 } from "../../services/pool";
-import { getTokenLogo } from "../../utils";
+import { imgError } from "../../utils";
 import {
   shortNumber,
   getBorrowMax,
@@ -23,6 +23,8 @@ import {
   mul,
 } from "../../helpers/contracts";
 import PoolSkeleton from "../Loader/PoolSkeleton";
+import TwitterModal from "../Common/TwitterModal";
+import faucet from '../../assets/faucet.svg';
 
 const lend = "lend";
 const borrow = "borrow";
@@ -30,7 +32,7 @@ const redeem = "redeem";
 const repay = "repay";
 
 export default function PoolComponent(props) {
-  const { contracts, user, web3, isLoading, isError  } = props;
+  const { contracts, user, web3, isLoading, isError, poolList  } = props;
   const [activeToken, setActiveToken] = useState(0);
   const [selectedToken, setSelectedToken] = useState(null);
   const [collateralToken, setCollaterralToken] = useState(null);
@@ -42,6 +44,7 @@ export default function PoolComponent(props) {
   const [isOperationLoading, setIsOperationLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false)
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
+  const [showTwitterModal, setShowTwitterModal] = useState(false)
   const [isMoreThanPoolLTV, setIsMoreThanPoolLTV] = useState(false)
   const [colleteral, setColleteral] = useState(0)
   const [methodLoaded, setMethodLoaded] = useState({
@@ -51,6 +54,7 @@ export default function PoolComponent(props) {
     getPoolTokensData: false,
   });
   const { poolAddress } = useParams();
+  const navigate = useNavigate();
 
   const getLiquidityAmount = {
     lend: selectedToken?.lendBalanceFixed,
@@ -101,6 +105,9 @@ export default function PoolComponent(props) {
   }
 
   useEffect(() => {
+    if(!user.isConnected){
+      navigate('/')
+    }
 if(selectedToken && collateralToken){
   getCollateral()
 }
@@ -114,7 +121,10 @@ if(selectedToken && collateralToken){
           message.success(`Transaction for ${txnData.method} of ${txnData.amount} for token ${txnData.tokenSymbol}`, 5)
           setMethodLoaded({ ...methodLoaded, getPoolFullData: false, getOraclePrice: false, getPoolTokensData: false });
 
-          if(txnData.method !== 'approval') setAmount(0);
+          if(txnData.method !== 'approval') {
+            setAmount(0);
+            setShowTwitterModal(true)
+          }
           setMax(false);
           setIsOperationLoading(false);
         } else {
@@ -231,10 +241,10 @@ if(selectedToken && collateralToken){
   // get contract data
   useEffect(() => {
    if(selectedToken === null) setIsPageLoading(true)
-    if (contracts.helperContract && contracts.coreContract) {
+    if (contracts.helperContract && contracts.coreContract && Object.values(poolList).length > 0) {
       (async function () {
         if (!methodLoaded.getPoolData) {
-          const pool = await getPoolBasicData(contracts, poolAddress, poolData);
+          const pool = await getPoolBasicData(contracts, poolAddress, poolData, poolList[poolAddress]);
           setPoolData(pool);
           setMethodLoaded({ ...methodLoaded, getPoolData: true });
         } else if (methodLoaded.getPoolData && !methodLoaded.getPoolFullData) {
@@ -292,7 +302,8 @@ if(selectedToken && collateralToken){
         setIsPageLoading(false)
       }
     }
-  }, [contracts, methodLoaded, user]);
+
+  }, [contracts, methodLoaded, user, poolList]);
 
   // max trigger for sending max values in redeem, lend, borrow, repay;
   const maxTrigger = () => {
@@ -339,7 +350,7 @@ if(selectedToken && collateralToken){
         <div className='collateral_icon'>
           <img
             className='ticker_img'
-            src={getTokenLogo(collateralToken?._symbol)}
+            src={collateralToken?.logo}
           />
           {collateralToken?._symbol}
         </div>
@@ -364,14 +375,14 @@ if(selectedToken && collateralToken){
           onClick={() => toggleToken(0)}
           className={activeToken === 0 ? "active" : ""}
         >
-          <img src={getTokenLogo(poolData?.token0?._symbol)} alt="" />
+          <img src={poolData?.token0?.logo} onError={imgError} alt="" />
           <h2>{poolData?.token0?._symbol}</h2>
         </div>
         <div
           onClick={() => toggleToken(1)}
           className={activeToken === 1 ? "active" : ""}
         >
-          <img src={getTokenLogo(poolData?.token1?._symbol)} alt="" />
+          <img src={poolData?.token1?.logo} onError={imgError} alt="" />
           <h2>{poolData?.token1?._symbol}</h2>
         </div>
       </div>
@@ -407,10 +418,20 @@ if(selectedToken && collateralToken){
         <div className="token_balance_container">
           <div className="lable">
             <p>{activeOperation}</p>
+            <div>
+              {' '}
+              <a
+                href={`https://chaindrop.org/?chainid=${user?.network?.id}&token=${selectedToken?._address}`}
+                target='_blank'
+              >
+                {' '}
+                <img src={faucet} alt='faucet icon' />{' '}
+              </a>
+            </div>
           </div>
           <div className="token_balance">
             <div>
-              <img src={getTokenLogo(selectedToken?._symbol)} alt="" />
+              <img src={selectedToken?.logo} alt="" />
               <p>{selectedToken?._symbol}</p>
             </div>
             <p>Balance: {Number(selectedToken?.balanceFixed).toFixed(2)}</p>
@@ -434,7 +455,7 @@ if(selectedToken && collateralToken){
            
             <div>
             <h5>{ Number(colleteral).toFixed(5)}</h5>
-              <img src={getTokenLogo(collateralToken?._symbol)} alt="" />
+              <img src={collateralToken?.logo} alt="" />
               <p>{selectedToken?._symbol}</p>
             </div>
           </div>
@@ -533,6 +554,16 @@ if(selectedToken && collateralToken){
         closable={false}
       >
         {<ConfirmationModal />}
+      </Modal>
+      <Modal
+        className='antd_modal_overlay'
+        visible={showTwitterModal}
+        centered
+        onCancel={() => setShowTwitterModal(false)}
+        footer={null}
+        closable={false}
+      >
+        {<TwitterModal />}
       </Modal>
     </div>
 }

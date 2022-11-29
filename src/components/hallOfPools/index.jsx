@@ -7,57 +7,62 @@ import './styles/index.scss';
 import { useSelector } from 'react-redux';
 import { getAllEvents } from '../../services/events';
 import { erc20Abi } from '../../core/contractData/abi';
+import { getContract, getERC20Logo } from '../../services/contracts';
 import NoPoolFound from '../NoPoolFound';
+import { fetchCoinLogo } from '../../utils/axios';
+import PoolListSkeleton from '../Loader/PoolListSkeleton';
 
 export default function HallOfPoolsComponent(props) {
   const state = useSelector((state) => state);
   const [token1, setToken1] = useState({});
   const [token2, setToken2] = useState({});
-  const [pools, setPools] = useState(PoolsData);
-  const { contracts, web3 } = state;
+  const [pools, setPools] = useState({});
+  // const [user, setUser] = useState({});
+  const [poolBackup, setPoolBackup] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
+  const { contracts, web3, poolList, isLoadingPoolData, user } = state;
 
   useEffect(() => {
-    if (contracts.coreContract) {
-      (async () => {
-        const result = await getAllEvents(
-          contracts.coreContract,
-          'PoolCreated'
-        );
-        console.log("createdPools", result);
-        // tokenData();
-        //setPools(result);
-      })();
-    }
-  }, [contracts]);
+    if (Object.values(poolList).length > 0) {
+      setPools(poolList)
+      setPoolBackup(poolList)
+        }
+  }, [poolList]);
+
+  useEffect(() => {
+
+  }, [])
 
   useEffect(() => {
     let filtredData;
-    if (token1.symbol && token2.symbol) {
-      filtredData = pools.filter(
-        (item) =>
-          item.tokens
-            .map((sy) => sy.toLowerCase())
-            .includes(token1.symbol.toLowerCase()) &&
-          item.tokens
-            .map((sy) => sy.toLowerCase())
-            .includes(token2.symbol.toLowerCase())
-      );
-    } else if (token1.symbol && !token2.symbol) {
-      filtredData = pools.filter((item) =>
-        item.tokens
-          .map((sy) => sy.toLowerCase())
-          .includes(token1.symbol.toLowerCase())
-      );
-    } else if (!token1.symbol && token2.symbol) {
-      filtredData = pools.filter((item) =>
-        item.tokens
-          .map((sy) => sy.toLowerCase())
-          .includes(token2.symbol.toLowerCase())
-      );
-    } else if (!token1.symbol && !token2.symbol) {
-      filtredData = PoolsData;
-    }
-    setPools(filtredData);
+  //   if(Object.values(poolBackup).length > 0){
+  //   if (token1.symbol && token2.symbol) {
+  //     filtredData = pools.filter(
+  //       (item) =>
+  //         item.tokens
+  //           .map((sy) => sy.toLowerCase())
+  //           .includes(token1.symbol.toLowerCase()) &&
+  //         item.tokens
+  //           .map((sy) => sy.toLowerCase())
+  //           .includes(token2.symbol.toLowerCase())
+  //     );
+  //   } else if (token1.symbol && !token2.symbol) {
+  //     filtredData = pools.filter((item) =>
+  //       item.tokens
+  //         .map((sy) => sy.toLowerCase())
+  //         .includes(token1.symbol.toLowerCase())
+  //     );
+  //   } else if (!token1.symbol && token2.symbol) {
+  //     filtredData = pools.filter((item) =>
+  //       item.tokens
+  //         .map((sy) => sy.toLowerCase())
+  //         .includes(token2.symbol.toLowerCase())
+  //     );
+  //   } else if (!token1.symbol && !token2.symbol) {
+  //     filtredData = PoolsData;
+  //   }
+  //   setPools(filtredData);
+  // }
   }, [token1, token2]);
 
   // const tokenData = async (address) => {
@@ -97,21 +102,33 @@ export default function HallOfPoolsComponent(props) {
         pools={pools}
       />
 
-      {pools.length > 0 ? (
+      {(Object.values(pools).length > 0 && !isLoadingPoolData )? (
         <div className="poolcard_container">
-          {pools.map((pool, i) => (
+          { Object.values(pools).map((pool, i) => (
             <PoolCard pool={pool} key={i} />
           ))}
         </div>
-      ) : (
-        <div className="no_pool_container">
-          <NoPoolFound
-            token1={token1}
-            token2={token2}
-            createPool={createPool}
-          />
-        </div>
-      )}
+      ) : ( <PoolListSkeleton/>)}
+{/* 
+      {
+        !user.isConnected &&  Object.values(pools).length == 0 && <div className="no_pool_container">
+               <NoPoolFound
+                 token1={token1}
+                 token2={token2}
+                 createPool={createPool}
+               />
+            </div>
+      } */}
     </div>
   );
 }
+
+
+// : (!isLoadingPoolData && user.address == '0x')? 
+//       (<div className="no_pool_container">
+//       <NoPoolFound
+//         token1={token1}
+//         token2={token2}
+//         createPool={createPool}
+//       />
+//     </div>): <PoolListSkeleton/>}

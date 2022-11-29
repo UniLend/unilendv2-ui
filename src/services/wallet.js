@@ -13,15 +13,40 @@ export const web3Modal = new Web3Modal({
 export const getProvider = async () => {
  try {
   const provider = await web3Modal.connect();
-
+  // Subscribe to events
+  MetaMaskEventHandler(provider)
   return provider;
  } catch (error) {
-  // console.error("provider",error.message);
-
   throw error;
  }
 
 };
+
+// function detectMob() {
+//   const toMatch = [
+//       /Android/i,
+//       /webOS/i,
+//       /iPhone/i,
+//       /iPad/i,
+//       /iPod/i,
+//       /BlackBerry/i,
+//       /Windows Phone/i
+//   ];
+  
+//   return toMatch.some((toMatchItem) => {
+//       return window.navigator.userAgent.match(toMatchItem);
+//   });
+// }
+
+ export const defProv = () => {
+  const provider = new Web3.providers.HttpProvider(
+    'https://sepolia.infura.io/v3/fd88775ae0d44888b49711c0acf5bc62')
+
+    const web3 = new Web3(provider);
+    web3.default = true;
+   return web3;
+}
+
 
 export const getweb3Instance = async () => {
   try {
@@ -29,7 +54,7 @@ export const getweb3Instance = async () => {
     const web3 = new Web3(provider);
     return web3;
   } catch (error) {
-    throw error;
+    return defProv()
   }
 
 };
@@ -37,6 +62,7 @@ export const getweb3Instance = async () => {
 export const handleDisconnect = async () => {
   await web3Modal.clearCachedProvider();
   removeFromLocalStorage('user');
+  localStorage.removeItem('walletconnect')
   window.location.reload();
 };
 
@@ -88,7 +114,7 @@ export const changeNetwork = async (networkId) => {
         });
         return true;
       } catch (err) {
-        console.log(err);
+        console.error(err);
         return false;
       }
     }
@@ -99,11 +125,10 @@ export const changeNetwork = async (networkId) => {
 
 export const MetaMaskEventHandler = (provider) => {
   provider.on('chainChanged', (chainId) => {
-    console.log(chainId);
     window.location.reload();
   });
   provider.on('accountsChanged', function (account) {
-    console.log(account);
+    window.location.reload();
   });
   provider.on('message', (message) => {
     console.log(message);

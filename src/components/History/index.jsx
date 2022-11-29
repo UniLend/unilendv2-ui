@@ -1,8 +1,9 @@
 import React , {useEffect, useState}from 'react';
 import './styles/index.scss';
 import { Popover, Pagination} from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { DownOutlined  } from '@ant-design/icons'
-import { shortenAddress,getTokenByAddress, getTokenLogo } from '../../utils';
+import { shortenAddress,getTokenByAddress, getTokenLogo, imgError } from '../../utils';
 import { allTransaction } from '../../services/events';
 import { poolDataByAddr, tokensByAddress } from '../../utils/constants';
 import txIcon from '../../assets/tx.svg';
@@ -11,7 +12,7 @@ import { fixed2Decimals } from '../../helpers/contracts';
 import HistorySkeleton from '../Loader/HistorySkeleton';
 
 export default function HistoryComponent(props) {
-    const { contracts, user, web3 } = props;
+    const { contracts, user, web3, poolList, tokenList } = props;
    const newArray = new Array(50).fill(0).map((el, i) => i +1) 
    const [txtData, setTxtData] = useState([])
    const [txtDataBackup, setTxtDataBackup] = useState([])
@@ -21,7 +22,7 @@ export default function HistoryComponent(props) {
    const [sortIndex, setSortIndex] = useState(1)
    const [isPageLoading, setIsPageLoading] = useState(true)
    const [search, setSearch] = useState("")
- 
+const navigate = useNavigate() 
    const handleVisibleChange = (newVisible) => {
      setVisible(newVisible);
    };
@@ -56,7 +57,7 @@ export default function HistoryComponent(props) {
       if (value === '') {
         return data;
       } else if (
-        getTokenByAddress(data.returnValues._asset)
+        tokenList[data.returnValues._asset]
           ['symbol'].toLowerCase()
           .includes(search.toLocaleLowerCase()) ||
         data.transactionHash.toLowerCase().includes(search.toLocaleLowerCase()) ||
@@ -79,7 +80,6 @@ export default function HistoryComponent(props) {
       user.address,
       web3
      )
-     console.log("transaction", txtArray);
      if (txtArray.length > 0) {
       const sort = txtArray.sort(function (a, b) {
         // Compare the 2 dates
@@ -88,7 +88,6 @@ export default function HistoryComponent(props) {
         return 0;
       });
 
-      console.log("sort", sort);
       setTxtData(sort)
       setTxtDataBackup(sort)
       
@@ -100,6 +99,9 @@ export default function HistoryComponent(props) {
   }
 
 useEffect(() => {
+  if(!user.isConnected){
+    navigate('/')
+  }
   if ((user.address && contracts?.coreContract?._address, web3?.version)) {
     getTransactionData();
   }
@@ -160,18 +162,18 @@ const SortContent = () => {
           txtData
             .slice((currentPage - 1) * itemPerPage, currentPage * itemPerPage)
             .map((txt, i) => (
-              <div className="table_item">
+              <div key={i} className="table_item">
                 <div>
-                  <div>
-                    <img src={getTokenLogo(txt.poolInfo.tokens[0])} alt="" />
-                    <img src={getTokenLogo(txt.poolInfo.tokens[1])} alt="" />
+                  <div> 
+                    <img src={poolList[txt.address]?.token0?.logo}  onError={imgError} alt={poolList[txt.address]?.token0?.symbol} />
+                    <img src={poolList[txt.address]?.token1?.logo}  onError={imgError} alt={poolList[txt.address]?.token1?.symbol} />
                   </div>
                   <p className="hide_for_mobile hide_for_tab">
-                    {txt.poolInfo.tokens[0] + "/" + txt.poolInfo.tokens[1]}
+                    {poolList[txt.address]?.token0?.symbol + "/" + poolList[txt.address]?.token1?.symbol}
                   </p>
                 </div>
                 <div>
-                  <p>{getTokenByAddress(txt.returnValues._asset)['symbol']}</p>
+                  <p>{tokenList[txt.returnValues._asset]?.symbol}</p>
                 </div>
                 <div>
                   <p>{txt.event}</p>
