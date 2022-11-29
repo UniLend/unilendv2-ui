@@ -58,14 +58,13 @@ function App() {
       try {
         dispatch(setLoading(true));
         let web3 = defProv();
-        if(state.user.isConnected){
-           web3 = await getweb3Instance();
+        const walletconnect = JSON.parse(localStorage.getItem('walletconnect'))
+        if(state?.user?.isConnected || walletconnect?.connected ){
+           web3 = await getweb3Instance();  
            const user = await connectWallet();
            dispatch(setUser(user));
         } 
-        
         dispatch(setWeb3(web3));
-        console.log("web3", web3);
         Promise.all(
           data.map((item) => getContract(web3, item.abi, item.address))
         )

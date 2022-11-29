@@ -7,18 +7,18 @@ export const providerOptions = {
   //   package: CoinbaseWalletSDK,
   //   options: {
   //     appName: 'unilend Finance',
-  //     infuraId: ''//import.meta.env.REACT_APP_INFURA_ID,
+  //     infuraId: import.meta.env.REACT_APP_INFURA_ID,
   //   },
   // },
   walletconnect: {
     package: WalletConnectProvider,
     options: {
       rpc:{
-      11155111:'https://rpc.sepolia.org'
+      11155111:`https://sepolia.infura.io/v3/${import.meta.env.REACT_APP_INFURA_ID}`,
+      11155111: 'https://rpc.sepolia.org'
       },
       infuraId: import.meta.env.REACT_APP_INFURA_ID,
     },
-  },
+  }
 };
 
-console.log("Env", import.meta.env.REACT_APP_INFURA_ID);

@@ -109,6 +109,13 @@
             border-radius: 5px;
             font-size: 13px;
             color: var(--light-gray);
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            p{
+                margin: 0px;
+            }
           }
         }
     }
@@ -201,6 +208,10 @@
         margin: 10px 0px;
         h4{
             margin-top: 5px;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: 'nowrap'
         }
         div{
             width: 14px;

@@ -502,7 +502,6 @@ export const handleLend = (
             poolAddress: poolAddress,
             chainId: "",
           }; //will hold the value of the transaction
-          console.log("methodCallBack", "lend");
           checkTxnStatus(hash, txn);
         })
         .on("error", function (error) {

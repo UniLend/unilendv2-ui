@@ -1,16 +1,22 @@
 import React from 'react'
-import { Avatar } from 'antd';
+import { Avatar, message } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { getTokenLogo, imgError  } from '../../utils';
 import './styles/poolCard.scss';
+import { useSelector } from 'react-redux';
 
 export default function PoolCard({pool}) {
   const { poolAddress, token0, token1 } = pool;
+  const {user} = useSelector((state)=> state )
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate(`/pool/${poolAddress}`)
+    if(user.isConnected){
+      navigate(`/pool/${poolAddress}`)
+    } else {
+      message.info("Please Connect to the Wallet")
+    }
   }
 
 

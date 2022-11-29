@@ -5,34 +5,31 @@ import { LockOutlined, WalletFilled } from '@ant-design/icons';
 import { Link  } from 'react-router-dom';
 
 import {
+  getFromLocalStorage,
   shortenAddress,
 } from '../../utils';
-import { connectWallet, handleDisconnect, } from '../../services/wallet';
+import { connectWallet, getProvider, handleDisconnect, } from '../../services/wallet';
 
 import logo from '../../assets/footerlogo.svg';
 import hamberger from '../../assets/hamburger.svg';
 import gitbook from '../../assets/gitbook.svg';
+import faq from '../../assets/faq.svg'
 import copyIcon from '../../assets/copyIcon.svg';
+import doc from '../../assets/document.svg';
+import career from '../../assets/career.svg';
 import viewExplorer from '../../assets/viewExplorerIcon.svg';
 import './styles/index.scss';
 import Sider from 'antd/lib/layout/Sider';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../store/Action';
 import { changeNetwork } from '../../services/wallet';
+import { fetchUserDomain } from '../../utils/axios';
 
 export default function Navbar(props) {
   const { user } = props;
   const pathname = window.location.pathname;
   const [wrongNetworkModal, setWrongNetworkModal] = useState(false);
-  const [currentUser, setCurrentUser] = useState({
-    address: '0x',
-    balance: null,
-    network: {
-      id: null,
-      name: null,
-    },
-    isConnected: false,
-  });
+  const [currentUser, setCurrentUser] = useState({...user, domain: shortenAddress(user.address)});
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
 
@@ -51,26 +48,24 @@ export default function Navbar(props) {
     } else {
       setWrongNetworkModal(false);
     }
-    setCurrentUser(user);
+    handleDomain(user)
   }, [user]);
 
   const handleConnect = async () => {
     const user = await connectWallet();
-    setCurrentUser(user);
+    handleDomain(user)
     dispatch(setUser(user));
   };
 
-  useEffect(() => {
-    if (window.ethereum) {
-      window.ethereum.on('accountsChanged', function (accounts) {
-        window.location.reload();
-      });
-
-      window.ethereum.on('chainChanged', async (chain) => {
-        window.location.reload();
-      });
+  const handleDomain = async (user) => {
+    const meta = await fetchUserDomain(user.address);
+    const domain = meta.reverse ? meta.domain : shortenAddress(user.address)
+    const UserData = {
+      ...user, domain
     }
-  }, []);
+    setCurrentUser(UserData)
+  }
+
 
   const WalletModalBody = () => {
     return (
@@ -100,10 +95,11 @@ export default function Navbar(props) {
     return (
       <div className='popover-content'>
         <div className='disconnect'>
+          {/* Active green signal */}
           <div>
             <p></p>
           </div>
-          <h4>{shortenAddress(user.address)}</h4>
+          <h4>{currentUser.domain}</h4>
           <Button className='btn_class' onClick={() => handleDisconnect()}>
             Disconnect
           </Button>
@@ -155,11 +151,11 @@ export default function Navbar(props) {
           >
             History
           </a>}
-          <a href='#'>Faucet</a>
+          <a href='https://chaindrop.org/?chainid=11155111&token=0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' target='_blank'>Faucet</a>
         </nav>
       </div>
       <div className='last_container'>
-        {currentUser?.isConnected ? (
+        {user?.isConnected ? (
           <div className='wallet_connection'>
             <div>
               <p>{currentUser?.network?.name}</p>
@@ -175,7 +171,7 @@ export default function Navbar(props) {
                 onOpenChange={handleVisibleChange}
               >
                 <div className='address'>
-                  {shortenAddress(currentUser.address)}
+                  <p>{currentUser.domain}</p>
                 </div>
               </Popover>
             </div>
@@ -220,20 +216,24 @@ const HamburgerContent = () => {
   return (
     <div className='hamburger_content'>
       <div>
-        <a>GitBook</a>
+        <a  href='https://unilend.gitbook.io/unilend-finance/'
+              target='_blank'
+              >GitBook</a>
         <img src={gitbook} alt='' />
       </div>
       <div>
-        <a>Documentation</a>
-        <img src={gitbook} alt='' />
+        <a href='https://unilend.gitbook.io/unilend-finance/whitepaper'
+              target='_blank' >Documentation</a>
+        <img src={doc} alt='' />
       </div>
       <div>
-        <a>GitBook</a>
-        <img src={gitbook} alt='' />
+        <a  href='https://twitter.com/UniLend_Finance'
+              target='_blank'>Career</a>
+        <img src={career} alt='' />
       </div>
       <div>
-        <a>GitBook</a>
-        <img src={gitbook} alt='' />
+        <a href='https://unilend.gitbook.io/unilend-finance/v/unilend-v1/the-protocol/faq'  target='_blank'>FAQ</a>
+        <img src={faq} alt='' />
       </div>
     </div>
   );

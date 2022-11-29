@@ -302,7 +302,7 @@ if(selectedToken && collateralToken){
         setIsPageLoading(false)
       }
     }
-    console.log("pool", poolData);
+
   }, [contracts, methodLoaded, user, poolList]);
 
   // max trigger for sending max values in redeem, lend, borrow, repay;

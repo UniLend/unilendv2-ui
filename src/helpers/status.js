@@ -15,7 +15,7 @@ export const checkTxnStatus =  (hash, txnData, web3, methodCallBack) => {
         // }
 
         // setLoading(false);
-        console.log("checkTxnStatus", hash, txnData);
+
         if(methodCallBack){
           methodCallBack("checkTxnStatus", {})
         }
