@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const API = import.meta.env.VITE_UNSTOPPABLE_API;
+
 export const  fetchCoinGeckoTokens = async () => {
     return axios.get('https://tokens.coingecko.com/uniswap/all.json?t=1658742391')
     .then((response) => response.data)
@@ -21,7 +23,7 @@ export const fetchUserDomain = async (addr) => {
 
     return axios.get(`https://resolve.unstoppabledomains.com/reverse/${addr}`, {
         headers: { 
-          'Authorization': 'Bearer 49a08088-b294-4dd7-9631-5adc41920bbb'
+          'Authorization': `Bearer ${API}`
         }
       })
     .then((response) => {

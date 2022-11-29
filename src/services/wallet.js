@@ -5,6 +5,8 @@ import { providerOptions } from '../constants/wallet';
 import { fromWei, removeFromLocalStorage, saveToLocalStorage } from '../utils';
 import { networks } from '../core/networks/networks';
 
+const API = import.meta.env.VITE_INFURA_ID;
+
 export const web3Modal = new Web3Modal({
   cacheProvider: true, // optional
   providerOptions, // required
@@ -22,25 +24,9 @@ export const getProvider = async () => {
 
 };
 
-// function detectMob() {
-//   const toMatch = [
-//       /Android/i,
-//       /webOS/i,
-//       /iPhone/i,
-//       /iPad/i,
-//       /iPod/i,
-//       /BlackBerry/i,
-//       /Windows Phone/i
-//   ];
-  
-//   return toMatch.some((toMatchItem) => {
-//       return window.navigator.userAgent.match(toMatchItem);
-//   });
-// }
-
  export const defProv = () => {
   const provider = new Web3.providers.HttpProvider(
-    'https://sepolia.infura.io/v3/fd88775ae0d44888b49711c0acf5bc62')
+    `https://sepolia.infura.io/v3/${API}`)
 
     const web3 = new Web3(provider);
     web3.default = true;

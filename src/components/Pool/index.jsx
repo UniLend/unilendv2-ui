@@ -56,6 +56,13 @@ export default function PoolComponent(props) {
   const { poolAddress } = useParams();
   const navigate = useNavigate();
 
+  const liquidityText = {
+    lend: "Your Liquidity",
+    redeem: "Redeemable Amount",
+    borrow: "Borrowed Amount",
+    repay: "Repay Amount"
+  }
+
   const getLiquidityAmount = {
     lend: selectedToken?.lendBalanceFixed,
     borrow: selectedToken?.borrowBalanceFixed,
@@ -407,7 +414,7 @@ if(selectedToken && collateralToken){
         </div>
 
         <div className="user_liquidity">
-          <p>Your Liquidity</p>
+          <p>{liquidityText[activeOperation]}</p>
           <h1>
             {selectedToken
               ? shortNumber(getLiquidityAmount[activeOperation])
@@ -456,7 +463,7 @@ if(selectedToken && collateralToken){
             <div>
             <h5>{ Number(colleteral).toFixed(5)}</h5>
               <img src={collateralToken?.logo} alt="" />
-              <p>{selectedToken?._symbol}</p>
+              <p>{collateralToken?._symbol}</p>
             </div>
           </div>
         }

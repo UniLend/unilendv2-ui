@@ -198,9 +198,11 @@ export const getActionBtn = (activeOperation, amount, selectedToken, collateralT
     }
   } else if (amount && activeOperation === redeem) {
     if (amount > Number(selectedToken.lendBalanceFixed)) {
-      btn = { text: "Not Enough Amount Lend", disable: true };
+      btn = { text: "Not Enough Amount Lent", disable: true };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
       btn = { text: "Not Enough Liquidity", disable: true };
+    } else if (amount > Number(selectedToken.redeemBalance)) {
+      btn = { text: "Not Enough Amount Lent", disable: true };
     }
   } else if (amount && activeOperation === repay) {
     if (amount > Number(selectedToken.balanceFixed)) {
