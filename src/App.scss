@@ -39,16 +39,17 @@ html, body {
   width: 100%;
   max-width: 1920px;
   margin: auto;
+  position: relative;
 }
 .app{
  width: 80%;
- margin: 50px auto;
+ margin:  auto;
 
 }
 
 /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
   border-radius: 50%;
 }
 
