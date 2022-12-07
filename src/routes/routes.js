@@ -16,4 +16,9 @@ export const openRoutes = [
     exact: true,
     element: lazy(() => import('../pages/pool')),
   },
+  {
+    path: '/dashboard',
+    exact: true,
+    element: lazy(() => import('../pages/userDashboard')),
+  },
 ];
