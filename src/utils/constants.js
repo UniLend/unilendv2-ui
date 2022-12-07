@@ -74,42 +74,42 @@ const tokensBYSymbol = {
   "NED":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "BUSD",
-    "logo": "https://assets.coingecko.com/coins/images/9576/thumb/BUSD.png?1568947766"
+    "logo": "https://i.imgur.com/6Mb7lGh.png"
   },
   "ARG":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
-    "symbol": "BUSD",
-    "logo": "https://assets.coingecko.com/coins/images/9576/thumb/BUSD.png?1568947766"
+    "symbol": "ARG",
+    "logo": "https://i.imgur.com/4KJ1joW.png"
   },
   "VATRENI":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
-    "symbol": "BUSD",
-    "logo": "https://assets.coingecko.com/coins/images/9576/thumb/BUSD.png?1568947766"
+    "symbol": "VATRENI",
+    "logo": "https://i.imgur.com/V1Qu1dH.png"
   },
   "BFT":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
-    "symbol": "BUSD",
-    "logo": "https://assets.coingecko.com/coins/images/9576/thumb/BUSD.png?1568947766"
+    "symbol": "BFT",
+    "logo": "https://i.imgur.com/i7tQBRB.png"
   },
   "ENG":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
-    "symbol": "BUSD",
-    "logo": "https://assets.coingecko.com/coins/images/9576/thumb/BUSD.png?1568947766"
+    "symbol": "ENG",
+    "logo": "https://i.imgur.com/4MSfC2n.png"
   },
   "FRA":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "BUSD",
-    "logo": "https://assets.coingecko.com/coins/images/9576/thumb/BUSD.png?1568947766"
+    "logo": "https://i.imgur.com/BujfKUe.png"
   },
   "MAR":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "BUSD",
-    "logo": "https://assets.coingecko.com/coins/images/9576/thumb/BUSD.png?1568947766"
+    "logo": "https://i.imgur.com/7TbmWIV.png"
   },
   "POR":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "BUSD",
-    "logo": "https://assets.coingecko.com/coins/images/9576/thumb/BUSD.png?1568947766"
+    "logo": "https://i.imgur.com/SYrKUWv.png"
   }
 
 }
