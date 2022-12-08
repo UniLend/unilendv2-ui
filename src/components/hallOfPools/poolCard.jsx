@@ -48,7 +48,7 @@ export default function PoolCard({pool}) {
        </div>
        <div>
        <p>Total Borrowed</p>
-        <h5>$1,88,558</h5>
+        <h5>$30,000</h5>
        </div>
       </div>
       <div className='pool_footer'>
