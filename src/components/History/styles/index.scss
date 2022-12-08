@@ -6,6 +6,7 @@
     box-shadow: var(--box-shadow);
     background-color: var(--pure-white);
     padding: 20px;
+   margin: 50px auto;
     .action_container{
         height: 50px;
         width: 100%;
@@ -165,7 +166,7 @@
 @media ($mobile) {
     .history_table_container{
         width: 115%;
-        margin: -25px;
+        margin: 50px -25px;
         padding: 5px;
     }
 
