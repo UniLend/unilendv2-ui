@@ -2,7 +2,7 @@
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 
-const infuraAPI = import.meta.env.VITE_INFURA_ID;
+const infuraAPI =  import.meta.env.VITE_INFURA_ID;
 
 export const providerOptions = {
   // coinbasewallet: {
@@ -24,4 +24,3 @@ export const providerOptions = {
   },
 };
 
-console.log('providerOptions', providerOptions);

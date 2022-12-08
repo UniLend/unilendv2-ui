@@ -145,7 +145,7 @@ export default function Navbar(props) {
             Rewards
             <LockOutlined style={{ marginLeft: '5px' }} />
           </a>
-          { user.isConnected &&   <a
+          { true && <a
             href='/history'
             className={`${pathname === '/history' ? 'active' : ''}`}
           >
