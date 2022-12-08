@@ -4,15 +4,21 @@ import banner from "../../assets/dashboardbanner.svg";
 import walletIcon from "../../assets/wallet.svg";
 import { SearchOutlined, DownOutlined } from "@ant-design/icons";
 import { Input, Progress, Popover } from "antd";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function UserDashboardComponent(props) {
   const { contracts, user, web3, isLoading, isError, poolList } = props;
   const [lendingVisible, setLendingVisible] = useState(false);
   const [borrowingVisible, setBorrowingVisible] = useState(false);
-
+ const navigate = useNavigate()
   const handleLendingVisibleChange = (visible) => {
     setLendingVisible(visible);
   };
+
+  useEffect(() => {
+    navigate('/')
+  }, [])
 
   const SortContent = () => {
     return (
