@@ -99,9 +99,9 @@ const navigate = useNavigate()
   }
 
 useEffect(() => {
-  if(!user.isConnected){
-    navigate('/')
-  }
+  // if(!user.isConnected){
+  //   navigate('/')
+  // }
   if ((user.address && contracts?.coreContract?._address, web3?.version)) {
     getTransactionData();
   }
@@ -158,7 +158,7 @@ const SortContent = () => {
         </div>
       </div>
       <div className="table_list_container">
-        {(txtData.length > 0 && !isPageLoading)? (
+        {(txtData.length > 0 && !isPageLoading && user.isConnected)? (
           txtData
             .slice((currentPage - 1) * itemPerPage, currentPage * itemPerPage)
             .map((txt, i) => (
@@ -202,7 +202,7 @@ const SortContent = () => {
                 </div>
               </div>
             ))
-        ) : isPageLoading ? (
+        ) : isPageLoading && user.isConnected? (
 
           <HistorySkeleton />
         ):
