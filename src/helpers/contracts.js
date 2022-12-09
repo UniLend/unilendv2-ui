@@ -193,11 +193,8 @@ export const getActionBtn = (activeOperation, amount, selectedToken, collateralT
       btn = { text: "Approve " + collateralToken?._symbol };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
       btn = { text: "Not Enough Liquidity", disable: true };
-    } else if (amount > Number(collateralToken?.balanceFixed)){
-      if (collateral > collateralToken?.balanceFixed) {
-        console.log("borrow error",amount, (collateralToken));
+    } else if (collateral > Number(collateralToken?.balanceFixed)){
         btn = { text: "Low Balance in Wallet " + collateralToken?._symbol, disable: true };
-      }
     }
   } else if (amount && activeOperation === redeem) {
     if (amount > Number(selectedToken.lendBalanceFixed)) {
