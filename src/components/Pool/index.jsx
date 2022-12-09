@@ -75,7 +75,8 @@ export default function PoolComponent(props) {
     activeOperation,
     amount,
     selectedToken,
-    collateralToken
+    collateralToken,
+    colleteral
   );
 
 
@@ -241,7 +242,6 @@ if(selectedToken && collateralToken){
         value
       );
       setAmount(amountBasedOnLtv);
-
     }
   };
 

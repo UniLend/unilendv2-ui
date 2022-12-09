@@ -175,7 +175,7 @@ export function getCurrentLTV(selectedToken, collateralToken) {
   return (prevLTV.toFixed(4) * 100).toFixed(2);
 }
 
-export const getActionBtn = (activeOperation, amount, selectedToken, collateralToken) => {
+export const getActionBtn = (activeOperation, amount, selectedToken, collateralToken, collateral) => {
   let btn = {
     text: `${activeOperation} ${selectedToken?._symbol}`,
     disable: false,
@@ -194,7 +194,10 @@ export const getActionBtn = (activeOperation, amount, selectedToken, collateralT
     } else if (amount > Number(selectedToken.liquidityFixed)) {
       btn = { text: "Not Enough Liquidity", disable: true };
     } else if (amount > Number(collateralToken?.balanceFixed)){
-      btn = { text: "Low Balance in Wallet " + collateralToken?._symbol, disable: true };
+      if (collateral > collateralToken?.balanceFixed) {
+        console.log("borrow error",amount, (collateralToken));
+        btn = { text: "Low Balance in Wallet " + collateralToken?._symbol, disable: true };
+      }
     }
   } else if (amount && activeOperation === redeem) {
     if (amount > Number(selectedToken.lendBalanceFixed)) {
