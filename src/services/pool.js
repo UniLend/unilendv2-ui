@@ -10,9 +10,9 @@ import {
   mul,
   sub,
   toAPY,
-} from "../helpers/contracts";
+} from '../helpers/contracts';
 
-import { checkTxnError } from "../helpers/status";
+import { checkTxnError } from '../helpers/status';
 
 /*
 @dev 
@@ -38,7 +38,7 @@ export const handleRedeem = async (
   let actnCont;
   try {
     if (max) {
-      if (selectedToken.collateralBalance > "0") {
+      if (selectedToken.collateralBalance > '0') {
         maxAmount = selectedToken.redeemBalance;
         if (selectedToken._address == poolData.token0._address) {
           maxAmount = mul(maxAmount, -1);
@@ -59,24 +59,24 @@ export const handleRedeem = async (
 
     actnCont
       .send({ from: userAddr })
-      .on("transactionHash", (hash) => {
+      .on('transactionHash', (hash) => {
         const txnData = {
-          method: "redeem",
+          method: 'redeem',
           amount: amount,
           tokenAddress: selectedToken._address,
           tokenSymbol: selectedToken._symbol,
           poolAddress: poolAddress,
-          chainId: "",
+          chainId: '',
         };
         checkTxnStatus(hash, txnData);
       })
-      .on("error", function (error) {
-        checkTxnError(error)
+      .on('error', function (error) {
+        checkTxnError(error);
         throw error;
         //   checkTxnError(error);
       });
   } catch (error) {
-    console.error("Redeem:", error);
+    console.error('Redeem:', error);
     checkTxnError(error);
     return error;
   }
@@ -96,35 +96,35 @@ export const setAllowance = (
 ) => {
   var ERC20 = new web3.eth.Contract(erc20Abi, token._address);
   var maxAllow =
-    "115792089237316195423570985008687907853269984665640564039457584007913129639935";
+    '115792089237316195423570985008687907853269984665640564039457584007913129639935';
   ERC20.methods
     .approve(contractAddress.coreAddress, maxAllow)
     .send({ from: userAddr })
-    .on("transactionHash", (hash) => {
+    .on('transactionHash', (hash) => {
       const txn = {
-        method: "approval",
+        method: 'approval',
         amount: amount,
         tokenAddress: token._address,
         tokenSymbol: token._symbol,
         poolAddress: poolAddress,
-        chainId: "",
+        chainId: '',
       };
       checkTxnStatus(hash, txn);
     })
-    .on("error", function (error) {
-      console.error("Aproove:", error);
-      checkTxnError(error)
+    .on('error', function (error) {
+      console.error('Aproove:', error);
+      checkTxnError(error);
       throw error;
     });
 };
 
 export const getTabs = (token) => {
   if (token.lendBalance && token.lendBalance > 0) {
-    return ["lend", "redeem"];
+    return ['lend', 'redeem'];
   } else if (token.borrowBalance && token.borrowBalance > 0) {
-    return ["borrow", "repay"];
+    return ['borrow', 'repay'];
   } else {
-    return ["lend", "borrow"];
+    return ['lend', 'borrow'];
   }
 };
 
@@ -229,7 +229,7 @@ export const getOracleData = async (contracts, poolData) => {
         poolData.token1.redeemBalance,
         poolData.token1._decimals
       );
-      
+
       return pool;
     } catch (error) {
       return error;
@@ -242,7 +242,12 @@ export const getOracleData = async (contracts, poolData) => {
 pool basic data;
 */
 
-export const getPoolBasicData = async (contracts, poolAddress, poolData, poolTokens) => {
+export const getPoolBasicData = async (
+  contracts,
+  poolAddress,
+  poolData,
+  poolTokens
+) => {
   let pool;
   if (contracts.helperContract && contracts.coreContract) {
     try {
@@ -264,7 +269,7 @@ export const getPoolBasicData = async (contracts, poolAddress, poolData, poolTok
             data._token0Liquidity,
             data._decimals0
           ),
-          ...poolTokens.token0
+          ...poolTokens.token0,
         },
         token1: {
           _symbol: data._symbol1,
@@ -275,7 +280,7 @@ export const getPoolBasicData = async (contracts, poolAddress, poolData, poolTok
             data._token1Liquidity,
             data._decimals1
           ),
-          ...poolTokens.token1
+          ...poolTokens.token1,
         },
       };
       return pool;
@@ -332,7 +337,7 @@ export const getPoolAllData = async (
             fixed2Decimals(data._healthFactor0, poolData.token0._decimals),
             100
           )
-            ? "100"
+            ? '100'
             : Number(
                 fixed2Decimals(data._healthFactor0, poolData.token0._decimals)
               ).toFixed(2),
@@ -407,7 +412,7 @@ export const getPoolAllData = async (
             fixed2Decimals(data._healthFactor1, poolData.token1._decimals),
             100
           )
-            ? "100"
+            ? '100'
             : Number(
                 fixed2Decimals(data._healthFactor1, poolData.token1._decimals)
               ).toFixed(2),
@@ -493,19 +498,19 @@ export const handleLend = (
       contracts.coreContract.methods
         .lend(poolData._address, Amount)
         .send({ from: userAddr })
-        .on("transactionHash", (hash) => {
+        .on('transactionHash', (hash) => {
           const txn = {
-            method: "lend",
+            method: 'lend',
             amount: amount,
             tokenAddress: selectedToken._address,
             tokenSymbol: selectedToken._symbol,
             poolAddress: poolAddress,
-            chainId: "",
+            chainId: '',
           }; //will hold the value of the transaction
           checkTxnStatus(hash, txn);
         })
-        .on("error", function (error) {
-          checkTxnError(error)
+        .on('error', function (error) {
+          checkTxnError(error);
           throw error;
         });
     } else {
@@ -520,8 +525,8 @@ export const handleLend = (
       );
     }
   } catch (error) {
-    console.error("Lend:", error);
-    checkTxnError(error)
+    console.error('Lend:', error);
+    checkTxnError(error);
     return error;
   }
 };
@@ -553,19 +558,19 @@ export const handleBorrow = (
       contracts.coreContract.methods
         .borrow(poolData._address, Amount, Collateral, userAddr)
         .send({ from: userAddr })
-        .on("transactionHash", (hash) => {
+        .on('transactionHash', (hash) => {
           const txn = {
-            method: "borrow",
+            method: 'borrow',
             amount: amount,
             tokenAddress: selectedToken._address,
             tokenSymbol: selectedToken._symbol,
             poolAddress: poolData._address,
-            chainId: "",
+            chainId: '',
           };
           checkTxnStatus(hash, txn);
         })
-        .on("error", function (error) {
-          checkTxnError(error)
+        .on('error', function (error) {
+          checkTxnError(error);
           throw error;
         });
     } else {
@@ -580,8 +585,8 @@ export const handleBorrow = (
       );
     }
   } catch (error) {
-    console.error("Borrow:", error);
-    checkTxnError(error)
+    console.error('Borrow:', error);
+    checkTxnError(error);
     return error;
   }
 };
@@ -603,13 +608,11 @@ export const handleRepay = (
   checkTxnError
 ) => {
   let Max =
-    "57896044618658097711785492504343953926634992332820282019728792003956564819967";
+    '57896044618658097711785492504343953926634992332820282019728792003956564819967';
   let Amount = decimal2Fixed(amount, selectedToken._decimals);
   if (selectedToken._address == poolData.token0._address) {
     Amount = mul(Amount, -1);
-    Max = new BigNumber(
-      "-57896044618658097711785492504343953926634992332820282019728792003956564819967"
-    );
+    Max = new BigNumber('-57896044618658097711785492504343953926634992332820282019728792003956564819967');
   }
   if (max) {
     Amount = Max;
@@ -619,19 +622,19 @@ export const handleRepay = (
       contracts.coreContract.methods
         .repay(poolAddress, Amount, userAddr)
         .send({ from: userAddr })
-        .on("transactionHash", (hash) => {
+        .on('transactionHash', (hash) => {
           const txn = {
-            method: "repay",
+            method: 'repay',
             amount: amount,
             tokenAddress: selectedToken._address,
             tokenSymbol: selectedToken._symbol,
             poolAddress: poolAddress,
-            chainId: "",
+            chainId: '',
           };
           checkTxnStatus(hash, txn);
         })
-        .on("error", function (error) {
-          checkTxnError(error)
+        .on('error', function (error) {
+          checkTxnError(error);
           throw error;
         });
     } else {
@@ -646,8 +649,8 @@ export const handleRepay = (
       );
     }
   } catch (error) {
-    console.error("Repay:", error);
-    checkTxnError(error)
+    console.error('Repay:', error);
+    checkTxnError(error);
     return error;
   }
 };
