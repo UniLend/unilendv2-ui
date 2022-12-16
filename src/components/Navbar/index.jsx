@@ -11,6 +11,8 @@ import {
 import { connectWallet, getProvider, handleDisconnect, } from '../../services/wallet';
 
 import logo from '../../assets/footerlogo.svg';
+import unilendIcon from '../../assets/unilendIcon.svg';
+import stars from '../../assets/stars.svg';
 import hamberger from '../../assets/hamburger.svg';
 import gitbook from '../../assets/gitbook.svg';
 import faq from '../../assets/faq.svg'
@@ -124,9 +126,14 @@ export default function Navbar(props) {
   };
 
   return (
+    <>
+    <div className='chrismus_stars'>
+  <img src={stars} alt="chrismus_stars" />
+  <img src={stars} alt="chrismus_stars" />
+    </div>
     <div className='nav_container'>
       <div className='unilend_logo'>
-       <a href="/"> <img src={logo} alt='unilend_logo' /></a>
+       <a href="/"> <img src={unilendIcon} alt='unilend_logo' /></a>
       </div>
       <div className='nav_routes'>
         <nav>
@@ -145,12 +152,12 @@ export default function Navbar(props) {
             Rewards
             <LockOutlined style={{ marginLeft: '5px' }} />
           </a>
-          { true && <a
+           <a
             href='/history'
             className={`${pathname === '/history' ? 'active' : ''}`}
           >
             History
-          </a>}
+          </a>
           <a href='https://chaindrop.org/?chainid=11155111&token=0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' target='_blank'>Faucet</a>
         </nav>
       </div>
@@ -209,6 +216,7 @@ export default function Navbar(props) {
         <WalletModalBody />
       </Modal>
     </div>
+    </>
   );
 }
 
@@ -236,5 +244,6 @@ const HamburgerContent = () => {
         <img src={faq} alt='' />
       </div>
     </div>
+   
   );
 };

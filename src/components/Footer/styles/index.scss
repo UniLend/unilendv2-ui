@@ -4,12 +4,12 @@ footer, .footer_nav{
     bottom: 0vh;
     display: flex;
     justify-content: space-around;
-   background-color: var(--pure-white);
+//    background-color: var(--pure-white);
     align-items: center;
     width: 100%;
     z-index: 2;
     padding: 10px;
-    border-top: 1px solid var(--border-gray);
+    // border-top: 1px solid var(--border-gray);
     color: var(--sharp-blue);
     div{
         width: calc(100%/3);

@@ -9,11 +9,14 @@ import {
 } from 'react-icons/fa';
 import { LockOutlined } from '@ant-design/icons'
 import './styles/index.scss';
+import ChrismasFooter from './chrismasFooter';
 
 export default function Footer() {
   return (
     <>
+      <ChrismasFooter />
     <footer>
+  
       <div className='poolFooter-copyright'>
         <p>©2022 UniLend. All Rights Reserved.</p>
       </div>

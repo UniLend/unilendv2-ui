@@ -30,6 +30,7 @@ import Footer from './components/Footer';
 import './App.scss';
 import { getFromLocalStorage } from './utils';
 import { fetchCoinLogo } from "./utils/axios";
+import SnowFlakes from "./components/snowflakes";
 
 // import ends here
 
@@ -127,6 +128,7 @@ function App() {
 
   return (
     <>
+    <SnowFlakes/>
       <Navbar {...state} />
       <div className="app_container">
         <div className="app">
