@@ -3,7 +3,8 @@ import { Button, Popover, Modal } from 'antd';
 import { FiLock } from 'react-icons/fi';
 import { LockOutlined, WalletFilled } from '@ant-design/icons';
 import { Link  } from 'react-router-dom';
-
+import { GiHamburgerMenu } from "react-icons/gi"
+import {IconContext} from "react-icons";
 import {
   getFromLocalStorage,
   shortenAddress,
@@ -20,6 +21,7 @@ import copyIcon from '../../assets/copyIcon.svg';
 import doc from '../../assets/document.svg';
 import career from '../../assets/career.svg';
 import viewExplorer from '../../assets/viewExplorerIcon.svg';
+import whitelogo from "../../assets/unilendLogoWhite.svg"
 import './styles/index.scss';
 import Sider from 'antd/lib/layout/Sider';
 import { useDispatch } from 'react-redux';
@@ -133,7 +135,7 @@ export default function Navbar(props) {
     </div>
     <div className='nav_container'>
       <div className='unilend_logo'>
-       <a href="/"> <img src={unilendIcon} alt='unilend_logo' /></a>
+       <a href="/"> <img src={whitelogo} alt='unilend_logo' /></a>
       </div>
       <div className='nav_routes'>
         <nav>
@@ -202,7 +204,8 @@ export default function Navbar(props) {
             content={<HamburgerContent />}
             trigger='click'
           >
-            <img src={hamberger} alt='hamburger' />
+            {/* <img src={} alt='hamburger' /> */}
+            <GiHamburgerMenu color='var(--pure-white)' size={25} />
           </Popover>
         </div>
       </div>

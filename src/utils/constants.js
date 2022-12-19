@@ -74,42 +74,42 @@ const tokensBYSymbol = {
   "NED":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "BUSD",
-    "logo": "https://i.imgur.com/6Mb7lGh.png"
+    "logo": "https://i.imgur.com/JqKNrg3.png"
   },
   "ARG":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "ARG",
-    "logo": "https://i.imgur.com/4KJ1joW.png"
+    "logo": "https://i.imgur.com/QZxMU2H.png"
   },
   "VATRENI":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "VATRENI",
-    "logo": "https://i.imgur.com/V1Qu1dH.png"
+    "logo": "https://i.imgur.com/dhQeXfe.png"
   },
   "BFT":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "BFT",
-    "logo": "https://i.imgur.com/i7tQBRB.png"
+    "logo": "https://i.imgur.com/d9x0GkT.png"
   },
   "ENG":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "ENG",
-    "logo": "https://i.imgur.com/4MSfC2n.png"
+    "logo": "https://i.imgur.com/kDsnLdo.png"
   },
   "FRA":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "BUSD",
-    "logo": "https://i.imgur.com/BujfKUe.png"
+    "logo": "https://i.imgur.com/V824oSR.png"
   },
   "MAR":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "BUSD",
-    "logo": "https://i.imgur.com/7TbmWIV.png"
+    "logo": "https://i.imgur.com/0lGiSbo.png"
   },
   "POR":{
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "BUSD",
-    "logo": "https://i.imgur.com/SYrKUWv.png"
+    "logo": "https://i.imgur.com/owRvfOY.png"
   }
 
 }

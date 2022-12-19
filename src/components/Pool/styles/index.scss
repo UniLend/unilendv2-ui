@@ -4,7 +4,6 @@
     margin: 50px auto;
     margin-bottom: 100px;
     height: max-content;
-    z-index: 5;
    
     .token_container { //tokentabs
         background-color: var(--pure-white);
@@ -479,4 +478,8 @@ input[type=number] {
         padding: 0;
       }
     }
+  }
+
+  .snowflake_container{
+    z-index: 0;
   }

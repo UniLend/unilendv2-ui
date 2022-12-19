@@ -7,7 +7,7 @@ footer, .footer_nav{
 //    background-color: var(--pure-white);
     align-items: center;
     width: 100%;
-    z-index: 2;
+    z-index: 11;
     padding: 10px;
     // border-top: 1px solid var(--border-gray);
     color: var(--sharp-blue);
@@ -53,6 +53,7 @@ footer, .footer_nav{
     .footer_nav{
         display: flex;
         justify-content: space-evenly;
+        background-color: var(--pure-white);
         a{
             color: var(--sharp-blue);
             padding: 5px;
@@ -82,6 +83,7 @@ footer, .footer_nav{
     .footer_nav{
         display: flex;
         justify-content: space-evenly;
+        background-color: var(--pure-white);
         a{
             color: var(--sharp-blue);
             padding: 5px;

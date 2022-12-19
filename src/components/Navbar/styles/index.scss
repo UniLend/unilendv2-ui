@@ -24,14 +24,18 @@
     }
 
     .unilend_logo{
-        width: 10%;
+        width: 15%;
         display: grid;
         place-items: center center;
         img{
-            width: 70%;
+            width: 100%;
             min-width: 50px;
             cursor: pointer;
         }
+
+       @media($mobile){
+        width: 25%;
+       } 
 
     }
 
@@ -52,12 +56,12 @@
                 font-weight: 600;
                 display: flex;
                 &:hover{
-                    background-color: var(--light-blue);
+                    background-color: #4B4D85;
                 }
             }
             .active{
-                background-color: var(--light-blue);
-                color: var(--sharp-blue);
+                background-color: #4B4D85;
+                color: var(--pure-white);
             }
             .disable_route{
                color: var(--light-gray);
@@ -75,12 +79,12 @@
         align-items: center;
         button{
             color: var(--pure-white);
-            background-color: var(--sharp-blue);
+            background-color: transparent;
             border-radius: 5px;
             height: 40px;
             font-size: 13px;
             font-weight: 700;
-            border: 0;
+            border: 1px solid var(--pure-white);
         }
     }
     .wallet_connection{

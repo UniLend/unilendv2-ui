@@ -1,6 +1,7 @@
 @use '../../../core/theme/constants.scss' as *;
 .history_table_container{
     width: 100%;
+    z-index: 2;
     height: 650px;
     border-radius: 20px;
     box-shadow: var(--box-shadow);
@@ -296,3 +297,6 @@ a{
         }
     }
 }
+.snowflake_container{
+    z-index: 0;
+  }
