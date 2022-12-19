@@ -1,16 +1,16 @@
 @use '../../../core/theme/constants.scss' as *;
 
 .chrismas_footer{
-    position: fixed;
-    margin-top: 100px;
-    bottom: 0;
+    // position: fixed;
+    position: relative;
+    bottom: -40px;
     width: 100%;
-    z-index: 10;
+    z-index: 2;
 @media ($tablet){
-    bottom: 45px;
+    bottom: 0px;
 }
 @media ($mobile){
-    bottom: 45px;
+    bottom: 0px;
 }
     .footer_ice{
         width: 100%;

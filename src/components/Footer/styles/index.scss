@@ -1,13 +1,14 @@
 @use '../../../core/theme/constants.scss' as *;
 footer, .footer_nav{
-    position: fixed;
+    // position: fixed;
     bottom: 0vh;
+    position: relative;
     display: flex;
     justify-content: space-around;
 //    background-color: var(--pure-white);
     align-items: center;
     width: 100%;
-    z-index: 11;
+    z-index: 2;
     padding: 10px;
     // border-top: 1px solid var(--border-gray);
     color: var(--sharp-blue);
