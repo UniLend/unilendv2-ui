@@ -80,7 +80,10 @@ html, body {
   width: 100%;
   animation: shimmer 5s infinite;
 }
-
+//wallet connect moadal
+.uYscM{
+z-index: 99999;
+}
 
 @keyframes shimmer {
   to{
