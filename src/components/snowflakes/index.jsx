@@ -12,8 +12,9 @@ export default function SnowFlakes() {
     const createSnowFlake = () => {
         const snowflake = document.createElement("span");
         snowflake.classList.add("material-symbols-outlined");
-        // snowflake.textContent = "❄️";
-        snowflake.textContent = "ac_unit";
+        const snowArray = [ "fiber_manual_record","ac_unit"]
+        snowflake.textContent = snowArray[Math.floor(getRandomNumber(0, 2))];
+        // snowflake.textContent = "ac_unit";
         snowflake.classList.add(`snowflake`);
        
         // document.body.appendChild(snowflake)

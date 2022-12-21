@@ -89,6 +89,7 @@ function App() {
   }, [isSame, getFromLocalStorage('ethEvent')]);
 
   useEffect(() => {
+    const ignoredPools = ['0x170128193e519421608eD7B52ad9B64F46732429', '0xae9db1103Bd58Af62eEecEdf7a4dA66999D7E881','0xF605595EB60cb1365688515d7b29b3deBE1CFa64','0x3C2bde3279f6EDE0666C632FF3a5013C82291802','0xe21340de05A77179F0B2A55394bB3e479865061d', '0x0367B8fBc7ef37FCFda55a74e62a9e439CcB6Af1', '0x04D3eF50171b7B74E2921519A397C2Cf215De3e1']
     if (state.contracts.coreContract) { 
       try { 
         (async () => {
@@ -100,10 +101,15 @@ function App() {
             state.contracts.coreContract,
             'PoolCreated'
             );
+            const filteredPools = []
             const array =[];
             const tokenList = {}
             for (const pool of result) {
-              array.push(pool.token0, pool.token1)
+              const ignoredPool = ignoredPools.includes(pool.pool)
+              if(!ignoredPool){
+                array.push(pool.token0, pool.token1)
+                filteredPools.push(pool)
+              } 
             }
             const poolTokens = [...new Set(array)];     
             const ERC20contracts =  await Promise.all(poolTokens.map((addr) => getContract(web3, erc20Abi, addr)))
@@ -113,7 +119,7 @@ function App() {
             
             logos.forEach((logo , i) => tokenList[poolTokens[i]] = {...tokenList[poolTokens[i]], logo})
             const poolData = {}
-            const reverseResult = result.reverse()
+            const reverseResult = filteredPools.reverse()
             for (const poolElement of reverseResult) {
               poolData[poolElement.pool] = { poolAddress: poolElement.pool, token0: {...tokenList[poolElement.token0], address:poolElement.token0 }, token1:  {...tokenList[poolElement.token1], address:poolElement.token1 }}
             }

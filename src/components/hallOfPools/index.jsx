@@ -3,14 +3,9 @@ import ManageToken from '../ManageTokens/ManageToken';
 import { PoolsData } from '../../utils/constants';
 import PoolCard from './poolCard';
 // import banner from '../../assets/banner.svg';
-import banner from '../../assets/chrismasposter.svg';
+import banner from '../../assets/christmasposter1.svg';
 import './styles/index.scss';
 import { useSelector } from 'react-redux';
-import { getAllEvents } from '../../services/events';
-import { erc20Abi } from '../../core/contractData/abi';
-import { getContract, getERC20Logo } from '../../services/contracts';
-import NoPoolFound from '../NoPoolFound';
-import { fetchCoinLogo } from '../../utils/axios';
 import PoolListSkeleton from '../Loader/PoolListSkeleton';
 
 export default function HallOfPoolsComponent(props) {
