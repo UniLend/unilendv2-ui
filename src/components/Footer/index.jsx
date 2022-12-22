@@ -78,7 +78,7 @@ export default function Footer() {
           Rewards
           <LockOutlined style={{marginLeft: '5px'}}/>
         </a>
-        <a href="history">
+        <a href="/history">
           History
         </a>
       </nav>

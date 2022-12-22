@@ -251,9 +251,11 @@ export const getPoolBasicData = async (
   let pool;
   if (contracts.helperContract && contracts.coreContract) {
     try {
+    
       const data = await contracts.helperContract.methods
         .getPoolData(poolAddress)
         .call();
+        
       pool = {
         ...poolData,
         _address: poolAddress,
@@ -283,6 +285,7 @@ export const getPoolBasicData = async (
           ...poolTokens.token1,
         },
       };
+      console.log("poolData", "1", pool);
       return pool;
     } catch (error) {
       return error;

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Popover, Modal } from 'antd';
 import { FiLock } from 'react-icons/fi';
+import Lottie from 'react-lottie';
+import hat from "../../assets/christmashat.json"
 import { LockOutlined, WalletFilled } from '@ant-design/icons';
 import { Link  } from 'react-router-dom';
 import { GiHamburgerMenu } from "react-icons/gi"
@@ -36,6 +38,15 @@ export default function Navbar(props) {
   const [currentUser, setCurrentUser] = useState({...user, domain: shortenAddress(user.address)});
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true, 
+    animationData: hat,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice'
+    }
+  };
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -135,6 +146,9 @@ export default function Navbar(props) {
     </div>
     <div className='nav_container'>
       <div className='unilend_logo'>
+      {/* <div className='christmas_hat_logo' >
+        <Lottie  options={defaultOptions}  />
+         </div> */}
        <a href="/"> <img src={whitelogo} alt='unilend_logo' /></a>
       </div>
       <div className='nav_routes'>

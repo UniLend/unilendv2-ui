@@ -39,7 +39,7 @@ export default function SnowFlakes() {
 
     useEffect(() => {
 
-        setInterval(createSnowFlake, 300); // Create snowflake every 50ms (lower interval more snowflakes)
+       setInterval(createSnowFlake, 300); // Create snowflake every 50ms (lower interval more snowflakes)
         
     }, [])
   return (

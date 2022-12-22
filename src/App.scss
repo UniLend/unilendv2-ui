@@ -30,7 +30,7 @@ body{
 
 html, body {
   height: max-content;
- min-height: 110vh;
+ min-height: 100vh;
  overflow-x: hidden;
  -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
@@ -39,6 +39,7 @@ html, body {
 .app_container{
   width: 100%;
   max-width: 1920px;
+  min-height: 80vh;
   margin: auto;
   position: relative;
 }

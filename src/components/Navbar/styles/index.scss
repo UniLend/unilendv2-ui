@@ -1,350 +1,351 @@
-@use '../../../core/theme/constants.scss' as *;
+@use "../../../core/theme/constants.scss" as *;
 
-.chrismus_stars{
-    position: fixed;
-    top: 0;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+.chrismus_stars {
+  position: fixed;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.nav_container{
-    height: 70px;
-    z-index: 1;
-    display: none;
+.nav_container {
+  height: 70px;
+  z-index: 1;
+  display: none;
+  z-index: 200;
+  // box-shadow: 0px 2.00139px 4.00278px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 30px;
+  div {
+    height: 100%;
     z-index: 200;
-    // box-shadow: 0px 2.00139px 4.00278px rgba(0, 0, 0, 0.05);
+  }
+
+  .unilend_logo {
+    width: 15%;
+    position: relative;
+    display: grid;
+    place-items: center center;
+    img {
+      width: 100%;
+      min-width: 50px;
+      cursor: pointer;
+    }
+
+    .christmas_hat_logo {
+      position: absolute;
+      left: -10%;
+      top: -1%;
+    }
+
+    @media ($mobile) {
+      width: 25%;
+    }
+  }
+
+  .nav_routes {
+    width: 50%;
+    display: grid;
+    z-index: 200;
+    place-items: center center;
+    nav {
+      display: flex;
+      width: 80%;
+      justify-content: space-evenly;
+      a {
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 15px;
+        font-weight: 600;
+        display: flex;
+        &:hover {
+          background-color: #4b4d85;
+        }
+      }
+      .active {
+        background-color: #4b4d85;
+        color: var(--pure-white);
+      }
+      .disable_route {
+        color: var(--light-gray);
+        &:hover {
+          background-color: transparent;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  .connect_btn {
     display: flex;
-    justify-content: space-between;
-    padding: 0px 30px;
-    div{
-        
-        height: 100%;
-        z-index: 200;
+    align-items: center;
+    button {
+      color: var(--pure-white);
+      background-color: transparent;
+      border-radius: 5px;
+      height: 40px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid var(--pure-white);
     }
-
-    .unilend_logo{
-        width: 15%;
-        display: grid;
-        place-items: center center;
-        img{
-            width: 100%;
-            min-width: 50px;
-            cursor: pointer;
-        }
-
-       @media($mobile){
-        width: 25%;
-       } 
-
-    }
-
-    .nav_routes{
-        width: 50%;
-        display: grid;
-        z-index: 200;
-        place-items: center center;
-        nav{
-            display: flex;
-            width: 80%;
-            justify-content: space-evenly;
-            a{
-                color: white;
-                padding: 5px;
-                border-radius: 5px;
-                font-size: 15px;
-                font-weight: 600;
-                display: flex;
-                &:hover{
-                    background-color: #4B4D85;
-                }
-            }
-            .active{
-                background-color: #4B4D85;
-                color: var(--pure-white);
-            }
-            .disable_route{
-               color: var(--light-gray);
-               &:hover{
-                background-color: transparent;
-                cursor: not-allowed;
-
-            }
-            }
-        }
-    }
-
-    .connect_btn{
-        display: flex;
-        align-items: center;
-        button{
-            color: var(--pure-white);
-            background-color: transparent;
-            border-radius: 5px;
-            height: 40px;
-            font-size: 13px;
-            font-weight: 700;
-            border: 1px solid var(--pure-white);
-        }
-    }
-    .wallet_connection{
-        width: 100%;
-        display: flex;
-        gap: 10px;
-        justify-content: end;
-        align-items: center;
-        white-space: nowrap;
+  }
+  .wallet_connection {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    justify-content: end;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    div {
+      height: max-content;
+      width: max-content;
+      height: 40px;
+      white-space: nowrap;
+      padding: 0px 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background-color: var(--mid-blue);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      p {
+        margin: 5px;
         overflow: hidden;
         text-overflow: ellipsis;
-        div{
-          height: max-content;
-          width: max-content;
-          height: 40px;
-          white-space: nowrap;
-          padding: 0px 5px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          background-color: var(--mid-blue);
-          border-radius: 5px;
-          display: flex;
-          align-items: center;
-          cursor: pointer;
-          p{
-            margin: 5px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: noWrap;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--light-gray);
-          }
-          div{
-            margin: 5px;
-            padding: 10px;
-            height: 30px;
-            background-color: var(--pure-white);
-            border-radius: 5px;
-            font-size: 13px;
-            color: var(--light-gray);
-            max-width: 120px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            p{
-                margin: 0px;
-            }
-          }
+        white-space: noWrap;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--light-gray);
+      }
+      div {
+        margin: 5px;
+        padding: 10px;
+        height: 30px;
+        background-color: var(--pure-white);
+        border-radius: 5px;
+        font-size: 13px;
+        color: var(--light-gray);
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        p {
+          margin: 0px;
         }
+      }
     }
+  }
 
-    .hamberger{
-        display: none;  
+  .hamberger {
+    display: none;
+  }
+
+  @media ($tablet) {
+    .last_container {
+      display: flex;
+      width: 70%;
+      justify-content: end;
     }
-
-
-    @media ($tablet) {
-        .last_container{
-            display: flex;
-            width: 70%;
-            justify-content: end;
-        }
-        .nav_routes{
-            display: none;
-        }
-       .hamberger{
-        display: block;
-        display: grid;
-        margin: 0px 10px;
-        place-items: center center;
-        cursor: pointer;
-       }
+    .nav_routes {
+      display: none;
     }
-    @media ($mobile) {
-        .last_container{
-            display: flex;
-            width: 70%;
-            justify-content: end;
-        }
-        padding: 5px;
-        .nav_routes{
-            display: none;
-        }
-       .hamberger{
-        display: block;
-        display: grid;
-        margin: 0px 10px;
-        place-items: center center;
-        cursor: pointer;
-       }
+    .hamberger {
+      display: block;
+      display: grid;
+      margin: 0px 10px;
+      place-items: center center;
+      cursor: pointer;
     }
-
+  }
+  @media ($mobile) {
+    .last_container {
+      display: flex;
+      width: 70%;
+      justify-content: end;
+    }
+    padding: 5px;
+    .nav_routes {
+      display: none;
+    }
+    .hamberger {
+      display: block;
+      display: grid;
+      margin: 0px 10px;
+      place-items: center center;
+      cursor: pointer;
+    }
+  }
 }
 
-.hamburger_content{
-  div{
+.hamburger_content {
+  div {
     display: flex;
     padding: 8px;
     justify-content: space-between;
     cursor: pointer;
     border-radius: 5px;
-    &:hover{
-        background-color: var(--light-blue);
+    &:hover {
+      background-color: var(--light-blue);
     }
-    a{
-        font-size: 12px;
-        color: var(--sharp-blue);
-        font-weight: 600;
+    a {
+      font-size: 12px;
+      color: var(--sharp-blue);
+      font-weight: 600;
     }
   }
 }
 
-.hamburger_popover{
-    .ant-popover-content, .ant-popover-inner{
-        width: 140px;
-        height: 150px;
-        background-color: var(--pure-white);
-        border-radius: 10px;
-        padding: 0px;
-        .ant-popover-arrow{
-            display: none;
-        }
-        .ant-popover-inner-content{
-            padding: 5px;
-        }
-    }
-  
-}
-
-.popover-content{
-    width: 248px;
+.hamburger_popover {
+  .ant-popover-content,
+  .ant-popover-inner {
+    width: 140px;
+    height: 150px;
+    background-color: var(--pure-white);
     border-radius: 10px;
-    .disconnect{
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        margin: 10px 0px;
-        h4{
-            margin-top: 5px;
-            max-width: 120px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: 'nowrap'
-        }
-        div{
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #DBEAFF;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            p{    
-            width: 8.5px;
-            height: 8.5px;
-            border-radius: 50%;
-            background: #14C710;
-            margin: 0px;
-            }
-        }
+    padding: 0px;
+    .ant-popover-arrow {
+      display: none;
     }
-    .explorer{
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        color: #808080;
-        a{
-            color: #808080;
-            text-decoration: none;
-        }
-        div{
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            cursor: pointer;
-            p{
-                font-weight: 700;
-                font-size: 10px;
-                margin: 10px;
-            }
-        }
-        .copied{
-            color: #14C710;
-           border-radius: 5px;
-        }
+    .ant-popover-inner-content {
+      padding: 5px;
     }
-}
-.antd-popover-classname{
-    .ant-popover-inner{
-        border-radius: 10px !important;
-    }
+  }
 }
 
-
-// wrong network modal
-
-.walletModel{
-    width: 100%;
-    height: 270px;
-    h1{
-        color: #DB2438;
-        width: 100%;
-        text-align: center;
-        margin: 40px 0px;
+.popover-content {
+  width: 248px;
+  border-radius: 10px;
+  .disconnect {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 10px 0px;
+    h4 {
+      margin-top: 5px;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: "nowrap";
     }
-    p{
-        font-style: normal;
-        font-weight: 600;
-        font-size: 18px;
-        line-height: 21px;
-        text-align: center;
-        color: #3B3B3B;
-        padding: 0px 20px;
-        }
-        div{
-            width: 100%;
-            height: 100px;
-            margin-top: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-top: 0.5px solid #C4C4C4;
-            button {
-                background: #2B6DEF;
-                color: white;
-                padding: 15px 20px;
-                border: none;
-                border-radius: 10px;
-                font-size: 15px;
-                font-weight: 600;
-                letter-spacing: 1.5px;
-                cursor: pointer;
-                &:hover{
-                    background: #1a4db3;
-                }
-            }
-        }   
-}
-.antd_modal_overlay {
-    width: 430px !important;
-    .ant-modal-content {
-      border-radius: 22px;
-      .ant-modal-body {
-        padding: 1px !important;
+    div {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #dbeaff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      p {
+        width: 8.5px;
+        height: 8.5px;
+        border-radius: 50%;
+        background: #14c710;
+        margin: 0px;
       }
     }
   }
-
-  .btn_class{
-    color: var(--pure-white);
-    background-color: var(--sharp-blue);
-    border-radius: 5px;
-    height: 40px;
-    width: max-content;
-    font-size: 15px;
-    font-weight: 700;
-    &:hover{
-        background-color: var(--mid-blue);
-        color: var(--sharp-blue);
-        border: 1px solid var(--sharp-blue);
+  .explorer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: #808080;
+    a {
+      color: #808080;
+      text-decoration: none;
     }
+    div {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      cursor: pointer;
+      p {
+        font-weight: 700;
+        font-size: 10px;
+        margin: 10px;
+      }
+    }
+    .copied {
+      color: #14c710;
+      border-radius: 5px;
+    }
+  }
+}
+.antd-popover-classname {
+  .ant-popover-inner {
+    border-radius: 10px !important;
+  }
+}
+
+// wrong network modal
+
+.walletModel {
+  width: 100%;
+  height: 270px;
+  h1 {
+    color: #db2438;
+    width: 100%;
+    text-align: center;
+    margin: 40px 0px;
+  }
+  p {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 21px;
+    text-align: center;
+    color: #3b3b3b;
+    padding: 0px 20px;
+  }
+  div {
+    width: 100%;
+    height: 100px;
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 0.5px solid #c4c4c4;
+    button {
+      background: #2b6def;
+      color: white;
+      padding: 15px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      &:hover {
+        background: #1a4db3;
+      }
+    }
+  }
+}
+.antd_modal_overlay {
+  width: 430px !important;
+  .ant-modal-content {
+    border-radius: 22px;
+    .ant-modal-body {
+      padding: 1px !important;
+    }
+  }
+}
+
+.btn_class {
+  color: var(--pure-white);
+  background-color: var(--sharp-blue);
+  border-radius: 5px;
+  height: 40px;
+  width: max-content;
+  font-size: 15px;
+  font-weight: 700;
+  &:hover {
+    background-color: var(--mid-blue);
+    color: var(--sharp-blue);
+    border: 1px solid var(--sharp-blue);
+  }
 }

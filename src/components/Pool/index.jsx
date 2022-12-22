@@ -252,6 +252,7 @@ if(selectedToken && collateralToken){
       (async function () {
         if (!methodLoaded.getPoolData) {
           const pool = await getPoolBasicData(contracts, poolAddress, poolData, poolList[poolAddress]);
+          console.log("poolData", pool);
           setPoolData(pool);
           setMethodLoaded({ ...methodLoaded, getPoolData: true });
         } else if (methodLoaded.getPoolData && !methodLoaded.getPoolFullData) {

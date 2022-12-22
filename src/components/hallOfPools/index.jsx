@@ -101,7 +101,7 @@ export default function HallOfPoolsComponent(props) {
       {(Object.values(pools).length > 0 && !isLoadingPoolData )? (
         <div className="poolcard_container">
           { Object.values(pools).map((pool, i) => (
-            <PoolCard pool={pool} key={i} />
+            <PoolCard pool={pool} index={i} key={i} />
           ))}
         </div>
       ) : ( <PoolListSkeleton/>)}
