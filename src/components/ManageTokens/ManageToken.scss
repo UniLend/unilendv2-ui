@@ -21,6 +21,7 @@
   width: 40%;
   height: 100%;
   background-color: white;
+  box-shadow: 0px 3.38681px 3.38681px rgba(0, 0, 0, 0.1);
   min-width: 650px;
   border-radius: 10px;
   display: flex;
@@ -34,7 +35,7 @@
     display: flex;
     align-items: center;
    // box-shadow: 2px 2px 2px rgb(230, 230, 230);
-    box-shadow: -1px -1px 3px #ECECEC, 1px 1px 1.3px #DCDCDC;
+    box-shadow: var(--box-shadow);
     border-radius: 4px;
     &:last-child {
       width: 20%;
@@ -125,20 +126,12 @@
     padding: 10px 10px;
   }
 
-  @media only screen and (min-width: 400px) and (max-width: 420px) {
-    width: 81%;
+
+  @media only screen and (max-width: 600px) {
+    width: 100%;
     height: auto;
   }
 
-  @media only screen and (max-width: 400px) {
-    width: 90%;
-    height: auto;
-  }
-
-  @media only screen and (min-width: 390px) and (max-width: 395px) {
-    width: 85%;
-    height: auto;
-  }
 
 }
 

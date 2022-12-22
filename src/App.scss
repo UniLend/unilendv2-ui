@@ -18,27 +18,70 @@
 html,body{
   margin: 0px;
   padding: 0px;
-  background: radial-gradient( 51.86% 143.56% at 50.03% 30.06%, #e2edfc 0.09%, #d8e7fc 0.1%, #eaf2fd 51.04%, #ffffff 73.96% );
 }
 body{
-  margin: 0px;
-  padding: 0px;
   font-family: 'Public Sans', sans-serif !important;
-  font-size: 0px !important;
   font-variant: normal;
   font-feature-settings: "aalt";
   line-height: normal;
+  background: radial-gradient( 51.86% 143.56% at 50.03% 30.06%, #e2edfc 0.09%, #d8e7fc 0.1%, #eaf2fd 51.04%, #ffffff 73.96% );
 }
 
 html, body {
   height: max-content;
+ min-height: 110vh;
+ overflow-x: hidden;
+ -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 .app_container{
   width: 100%;
   max-width: 1920px;
   margin: auto;
+  position: relative;
 }
 .app{
-  width: 80%;
-  margin: auto;
+ width: 80%;
+ margin:  auto;
+
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 50%;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(58, 124, 255, 0.81);
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #3a7cff;
+}
+
+// skeleton loading animation
+.skeleton{
+  background: linear-gradient(90deg, var(--border-gray) 20px, rgb(250 250 250 / 90%) 60px, var(--border-gray) 80px);
+  background-size: 250%;
+  background-position: 100% 0;
+  width: 100%;
+  animation: shimmer 5s infinite;
+}
+
+
+@keyframes shimmer {
+  to{
+      background-color: #ffff;
+      background-position: -100%;
+  }
 }

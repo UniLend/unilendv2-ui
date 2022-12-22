@@ -1,34 +1,54 @@
 import React from 'react'
+import { Avatar, message } from 'antd';
+import { HomeOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { getTokenLogo, imgError  } from '../../utils';
 import './styles/poolCard.scss';
+import { useSelector } from 'react-redux';
 
-export default function PoolCard() {
+export default function PoolCard({pool}) {
+  const { poolAddress, token0, token1 } = pool;
+  const {user} = useSelector((state)=> state )
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    if(user.isConnected){
+      navigate(`/pool/${poolAddress}`)
+    } else {
+      message.info("Please Connect to the Wallet")
+    }
+  }
+
+
   return (
-    <div className='poolcard'>
+    <div onClick={handleNavigate} className='poolcard'>
       <div className='pool_icons'>
           <div>
           <img
-            src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
+            src={token0?.logo}
+            onError={imgError}
             alt=""
           />
-          <h5>UFT</h5>
+          <h5>{token0?.symbol}</h5>
           </div>
           <div>
           <img
-            src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
+            src={token1?.logo}
+            onError={imgError}
             alt=""
           />
-          <h5>USDC</h5>
+          <h5>{token1?.symbol}</h5>
           </div>
       </div>
 
       <div className='pool_data'>
        <div>
         <p>Total Supply</p>
-        <h5>00.00</h5>
+        <h5>$1,25,000</h5>
        </div>
        <div>
        <p>Total Borrowed</p>
-        <h5>00.00</h5>
+        <h5>$30,000</h5>
        </div>
       </div>
       <div className='pool_footer'>

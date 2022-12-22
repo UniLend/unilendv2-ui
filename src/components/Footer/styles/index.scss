@@ -1,0 +1,105 @@
+@use '../../../core/theme/constants.scss' as *;
+footer, .footer_nav{
+    position: fixed;
+    bottom: 0vh;
+    display: flex;
+    justify-content: space-around;
+   background-color: var(--pure-white);
+    align-items: center;
+    width: 100%;
+    z-index: 2;
+    padding: 10px;
+    border-top: 1px solid var(--border-gray);
+    color: var(--sharp-blue);
+    div{
+        width: calc(100%/3);
+    }
+}
+.poolFooter-copyright{
+    p{
+        margin: 0px;
+         text-align: center;
+         font-weight: 600;
+    }
+}
+.poolFooter-content{
+    display: flex;
+    justify-content: center;
+    a{
+        margin: 0px 10px;
+        color: var(--sharp-blue);
+        font-weight: 600;
+    }
+}
+
+.poolFooter-socials{
+    div{
+        display: flex;
+        justify-content: space-evenly;
+        width: 200px;
+        margin: auto;
+    }
+   
+}
+
+.footer_nav{
+    display: none;
+}
+
+@media ($tablet) {
+    footer{
+        display: none;
+    }
+    .footer_nav{
+        display: flex;
+        justify-content: space-evenly;
+        a{
+            color: var(--sharp-blue);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            &:hover{
+                background-color: var(--light-blue);
+            }
+        }
+        .disable_route{
+           color: var(--light-gray);
+           &:hover{
+            background-color: transparent;
+            cursor: not-allowed;
+    
+        }
+        }
+    }
+}
+
+@media ($mobile){
+    footer{
+        display: none;
+    }
+    .footer_nav{
+        display: flex;
+        justify-content: space-evenly;
+        a{
+            color: var(--sharp-blue);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            &:hover{
+                background-color: var(--light-blue);
+            }
+        }
+        .disable_route{
+           color: var(--light-gray);
+           &:hover{
+            background-color: transparent;
+            cursor: not-allowed;
+    
+        }
+        }
+    }
+}

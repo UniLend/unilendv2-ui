@@ -12,8 +12,13 @@ export const openRoutes = [
     element: lazy(() => import('../pages/history')),
   },
   {
-    path: '/pool/:address',
+    path: '/pool/:poolAddress',
     exact: true,
     element: lazy(() => import('../pages/pool')),
   },
+  // {
+  //   path: '/dashboard',
+  //   exact: true,
+  //   element: lazy(() => import('../pages/userDashboard')),
+  // },
 ];

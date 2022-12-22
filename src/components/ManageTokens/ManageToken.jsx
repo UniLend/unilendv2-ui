@@ -8,7 +8,7 @@ import { fetchCoinGeckoTokens } from "../../utils/axios";
 //import Modal from "../Modal";
 import "./ManageToken.scss";
 
-const ManageToken = ({handleTokens}) => {
+const ManageToken = ({handleTokens, tokens, pools}) => {
   const [isOpenTokenList, setIsOpenTokenList] = React.useState(false);
   const [isOpenMangeToken, setIsOpenMangeToken] = React.useState(false);
   const [currentToken, setCurrentToken] = React.useState("");
@@ -19,7 +19,7 @@ const ManageToken = ({handleTokens}) => {
   const [isFetching, setIsFetching] = React.useState(false);
   const [serachTokenFromList, setSerachTokenFromList] = React.useState("");
   const [fetchFrom, setFetchFrom] = React.useState({
-    coinGecko: false,
+    coinGecko: true,
   });
 
   const handleSearchToken = (e) => {
@@ -37,6 +37,12 @@ const ManageToken = ({handleTokens}) => {
     setCurrentToken(token);
     setIsOpenTokenList(true);
   };
+
+  const clearTokens = () => {
+    setToken1("")
+    setToken2("")
+    handleTokens({}, 'clear')
+  }
 
   const handleCloseModals = () => {
     setIsOpenTokenList(false);
@@ -275,7 +281,10 @@ const ManageToken = ({handleTokens}) => {
             <img src={downoutline} alt="" />
           </div>
           <div className="section">
-            <h5 onClick={() => setIsOpenMangeToken(true)}>Manage Tokens</h5>
+            {
+              (tokens.token1?.symbol && tokens.token2?.symbol) || pools.length === 0 ?  <h5 onClick={clearTokens}> Clear Tokens</h5>:  <h5 onClick={() => setIsOpenMangeToken(true)}> Manage Tokens</h5>
+            }
+           
           </div>
         </div>
       </div>

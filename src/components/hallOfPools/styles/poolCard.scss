@@ -1,9 +1,10 @@
 .poolcard {
-  min-width: 300px;
+  // min-width: 320px;
+  
   height: 200px;
   background-color: var(--pure-white);
   border-radius: 15px;
-  box-shadow: 0px 3.38681px 3.38681px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--box-shadow);
   cursor: pointer;
   transition: all 0.5s;
   &:hover{
@@ -70,7 +71,8 @@
     align-items: center;
     justify-content: center;
     p{
-        color: var(--light-gray);;
+        color: var(--light-gray);
+        margin: 10px;
     }
   }
 }

@@ -1,4 +1,4 @@
-
+@use '../../../core/theme/constants.scss' as *;
 .banner{
 margin: 50px 0px;
     img{
@@ -10,13 +10,25 @@ margin: 50px 0px;
 }
 
 .poolcard_container{
-    display: flex;
-    flex-wrap: wrap;
+
+    margin-bottom: 100px;
+    display: grid;
+    grid-template-columns: repeat(3, calc(100%/3) );
     justify-content: space-between;
-    justify-content: center;
     .poolcard{
-        width: calc(100%/3 - 40px);
-        min-width: 300px;
-        margin: 20px;
+
+        margin: 10px;
+    }
+
+    @media (1520px < width){
+        grid-template-columns: repeat(4, calc(100%/4) );
+    }
+
+    @media ($tablet) {
+        grid-template-columns: repeat(2, calc(100%/2));
+    }
+
+    @media ($mobile){
+        grid-template-columns: repeat(1, 100%);
     }
 }

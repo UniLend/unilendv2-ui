@@ -1,7 +1,44 @@
 import axios from 'axios';
+import { getToken } from '.';
+
+const API = import.meta.env.VITE_UNSTOPPABLE_API;
 
 export const  fetchCoinGeckoTokens = async () => {
     return axios.get('https://tokens.coingecko.com/uniswap/all.json?t=1658742391')
     .then((response) => response.data)
     
+}
+
+export const fetchCoinLogo = async (token) => {
+
+    const tokenObj = getToken(token)
+    
+    if(tokenObj?.logo){
+        console.log("Tokens", token,tokenObj.logo);
+        return tokenObj?.logo;
+    }
+
+    return axios.get(`https://api.coingecko.com/api/v3/search?query=${token}`)
+    .then((response) => {
+        const logo = response.data.coins[0].large;
+        return logo;
+    })
+    .catch(() => {
+        return "https://e7.pngegg.com/pngimages/407/710/png-clipart-ethereum-cryptocurrency-bitcoin-cash-smart-contract-bitcoin-blue-angle-thumbnail.png"
+    })
+}
+
+export const fetchUserDomain = async (addr) => {
+
+    return axios.get(`https://resolve.unstoppabledomains.com/reverse/${addr}`, {
+        headers: { 
+          'Authorization': `Bearer ${API}`
+        }
+      })
+    .then((response) => {
+      return  response.data.meta;
+    })
+    .catch(() => {
+        return {reverse : false};
+    })
 }
