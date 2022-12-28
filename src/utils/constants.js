@@ -110,6 +110,12 @@ const tokensBYSymbol = {
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "BUSD",
     "logo": "https://i.imgur.com/owRvfOY.png"
+  },
+  "SANTA":{
+    "logo": "https://i.imgur.com/70sMFN7.png"
+  }, 
+  "GIFT":{
+    "logo":"https://i.imgur.com/tWu6HLM.png"
   }
 
 }

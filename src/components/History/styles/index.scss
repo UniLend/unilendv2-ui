@@ -243,13 +243,17 @@
     .ant-popover-inner-content{
      padding: 5px;
      border-radius: 5px;
+     background-color: var(--pure-white);
+     box-shadow: 1px 1px 10px var(--mid-blue);
     }
     .ant-popover-inner{
         border-radius: 5px;
+        
     }
 
     .sort_popover{
         width: 110px;
+        background-color: var(--pure-white);
         p {
           width: 100%;
           padding: 10px;
@@ -281,7 +285,7 @@ a{
 .ant-pagination-item-active{
     border-color: var(--sharp-blue);
     a{
-        color: var(--sharp-blue);
+        color: var(--sharp-blue) !important;
         &:hover{
             color: var(--sharp-blue) !important;
         }
@@ -289,10 +293,18 @@ a{
 }
 
 .ant-pagination-item, .ant-pagination-next, .ant-pagination-prev{
+    color: var(--pure-black) !important;
+    a{
+        color: var(--pure-black) ;
+    }
     &:hover{
         color: var(--sharp-blue) !important;
         a{
             color: var(--sharp-blue) !important;
         }
     }
+}
+
+.ant-pagination-prev button, .ant-pagination-next button {
+    color: var(--pure-black) !important;
 }

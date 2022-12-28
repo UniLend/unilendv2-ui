@@ -10,7 +10,7 @@ import {
 } from '../../utils';
 import { connectWallet, getProvider, handleDisconnect, } from '../../services/wallet';
 
-import logo from '../../assets/footerlogo.svg';
+import logo from '../../assets/logo.svg';
 import hamberger from '../../assets/hamburger.svg';
 import gitbook from '../../assets/gitbook.svg';
 import faq from '../../assets/faq.svg'

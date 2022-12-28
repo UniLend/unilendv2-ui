@@ -8,8 +8,9 @@
         margin: 10px;
         height: 200px;
         border-radius: 15px;
-        box-shadow: var(--box-shadow);
+        box-shadow: var(--box-shadow) !important;
         width: inherit;
+        background-color: white;
     }
 
     @media (1520px < width){
