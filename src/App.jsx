@@ -41,7 +41,7 @@ function App() {
     dispatch(setTheme(state.theme == "dark" ? "light" : "dark"));
   };
 
-  
+  document.body.className = getFromLocalStorage("unilendV2Theme")
 
   const { coreAddress, helperAddress, positionAddress } = contractAddress;
 

@@ -6,6 +6,7 @@ import { Link  } from 'react-router-dom';
 
 import {
   getFromLocalStorage,
+  saveToLocalStorage,
   shortenAddress,
 } from '../../utils';
 import { connectWallet, getProvider, handleDisconnect, } from '../../services/wallet';
@@ -17,6 +18,8 @@ import faq from '../../assets/faq.svg'
 import copyIcon from '../../assets/copyIcon.svg';
 import doc from '../../assets/document.svg';
 import career from '../../assets/career.svg';
+import sun from '../../assets/sun.svg';
+import moon from '../../assets/moon.svg';
 import viewExplorer from '../../assets/viewExplorerIcon.svg';
 import './styles/index.scss';
 import Sider from 'antd/lib/layout/Sider';
@@ -40,7 +43,8 @@ export default function Navbar(props) {
   const handleTheme = () => {
     const changeTo = theme == "dark" ? "light" : "dark"
     dispatch(setTheme(theme == "dark" ? "light" : "dark"));
-    document.body.className = document.body.className.replace( theme , changeTo);
+    document.body.className = changeTo;
+    saveToLocalStorage("unilendV2Theme", changeTo)
   };
 
 
@@ -164,6 +168,7 @@ export default function Navbar(props) {
       </div>
       <div className='last_container'>
         {user?.isConnected ? (
+          <>
           <div className='wallet_connection'>
             <div>
               <p>{currentUser?.network?.name}</p>
@@ -184,6 +189,9 @@ export default function Navbar(props) {
               </Popover>
             </div>
           </div>
+      
+     </>
+          
         ) : (
           <div className='connect_btn'>
             <Button
@@ -203,13 +211,18 @@ export default function Navbar(props) {
             content={<HamburgerContent />}
             trigger='click'
           >
+            
             <img src={hamberger} alt='hamburger' />
           </Popover>
         </div>
+   
       </div>
-      <div>
-        <button onClick={handleTheme} >toggle</button>
+      <div className='theme_toggle'>
+       {
+        theme == 'dark' ? <img src={sun} onClick={handleTheme} alt="sun" /> : <img src={moon} onClick={handleTheme}  alt="moon"/>
+       }
       </div>
+   
       <Modal
         className='antd_modal_overlay'
         visible={wrongNetworkModal}

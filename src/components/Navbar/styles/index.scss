@@ -4,11 +4,12 @@
     height: 70px;
     z-index: 1;
     display: none;
-    // background-color: var(--pure-white);
-    // box-shadow: 0px 2.00139px 4.00278px rgba(0, 0, 0, 0.05);
+    background-color: var(--pure-white);
+    box-shadow: 0px 2.00139px 4.00278px rgba(0, 0, 0, 0.05);
     display: flex;
     justify-content: space-between;
     padding: 0px 30px;
+    position: relative;
     div{
         
         height: 100%;
@@ -57,7 +58,17 @@
             }
         }
     }
-
+    .theme_toggle{
+        display: grid;
+        place-items: center;
+        width: 10px;
+        position: absolute;
+        right: 20px;
+        top: 0px;
+    }
+.last_container{
+    margin-right: 10px;
+}
     .connect_btn{
         display: flex;
         align-items: center;
@@ -68,6 +79,7 @@
             height: 40px;
             font-size: 13px;
             font-weight: 700;
+            border: 0px;
         }
     }
     .wallet_connection{
@@ -140,6 +152,7 @@
         margin: 0px 10px;
         place-items: center center;
         cursor: pointer;
+        
        }
     }
     @media ($mobile) {
@@ -158,6 +171,7 @@
         margin: 0px 10px;
         place-items: center center;
         cursor: pointer;
+        margin-right: 20px;
        }
     }
 
