@@ -41,6 +41,8 @@ function App() {
     dispatch(setTheme(state.theme == "dark" ? "light" : "dark"));
   };
 
+  
+
   const { coreAddress, helperAddress, positionAddress } = contractAddress;
 
   const data = [
@@ -128,7 +130,7 @@ function App() {
   return (
     <>
       <Navbar {...state} />
-      <div className="app_container">
+      <div  className="app_container">
         <div className="app">
           <MainRoutes {...state} />
         </div>

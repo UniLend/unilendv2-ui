@@ -1,7 +1,7 @@
 @use './core/theme/theme.scss' as *;
 @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@100;200;300;400;500;600;700&display=swap');
 
-.light{
+.light, .body{
  @each $name, $color in $light {
    --#{$name}: #{$color};
  }
@@ -75,7 +75,7 @@ html, body {
   background-size: 250%;
   background-position: 100% 0;
   width: 100%;
-  animation: shimmer 5s infinite;
+  animation: shimmer 3s infinite;
 }
 
 

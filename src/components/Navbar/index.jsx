@@ -21,12 +21,12 @@ import viewExplorer from '../../assets/viewExplorerIcon.svg';
 import './styles/index.scss';
 import Sider from 'antd/lib/layout/Sider';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../../store/Action';
+import { setTheme, setUser } from '../../store/Action';
 import { changeNetwork } from '../../services/wallet';
 import { fetchUserDomain } from '../../utils/axios';
 
 export default function Navbar(props) {
-  const { user } = props;
+  const { user, theme } = props;
   const pathname = window.location.pathname;
   const [wrongNetworkModal, setWrongNetworkModal] = useState(false);
   const [currentUser, setCurrentUser] = useState({...user, domain: shortenAddress(user.address)});
@@ -36,6 +36,14 @@ export default function Navbar(props) {
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
   };
+
+  const handleTheme = () => {
+    const changeTo = theme == "dark" ? "light" : "dark"
+    dispatch(setTheme(theme == "dark" ? "light" : "dark"));
+    document.body.className = document.body.className.replace( theme , changeTo);
+  };
+
+
 
   const handleCloseModal = () => {
     setWrongNetworkModal(false);
@@ -198,6 +206,9 @@ export default function Navbar(props) {
             <img src={hamberger} alt='hamburger' />
           </Popover>
         </div>
+      </div>
+      <div>
+        <button onClick={handleTheme} >toggle</button>
       </div>
       <Modal
         className='antd_modal_overlay'

@@ -4,14 +4,79 @@
     display: grid;
     grid-template-columns: repeat(3, calc(100%/3) );
     justify-content: space-between;
-    div{
+    .skeleton_card{
         margin: 10px;
         height: 200px;
         border-radius: 15px;
         box-shadow: var(--box-shadow) !important;
         width: inherit;
         background-color: white;
+
+
+        height: 200px;
+  background-color: var(--pure-white);
+  border-radius: 15px;
+  box-shadow: var(--box-shadow);
+  cursor: pointer;
+  transition: all 0.5s;
+  &:hover{
+    transform: scale(1.05);
+  }
+  .pool_icons {
+    border-bottom: 1px solid var(--border-gray);
+    height: 100px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    .div {
+      height: 100%;
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      &:first-child{
+        border-right: 1px solid var(--border-gray);
+      }
+
+      div {
+        width: 55px;
+        height: 55px;
+        margin: 20px;
+        border-radius: 50%;
+      }
     }
+  }
+  .pool_data{
+    display: flex;
+    height: 35%;
+    .div1{
+        width: 50%;
+        border-bottom: 1px solid var(--border-gray);
+        &:first-child{
+            border-right: 1px solid var(--border-gray);
+          }
+        div{
+            margin: 20px;
+            text-align: center;
+            height: 30px;
+            width: 80%;
+        }
+    }
+  }
+  .pool_footer{
+    text-align: center;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    div{
+        width: 30%;
+        height: 10px;
+        margin: 10px;
+    }
+  }
+    }
+
 
     @media (1520px < width){
         grid-template-columns: repeat(4, calc(100%/4) );

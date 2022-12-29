@@ -24,7 +24,7 @@ export default function HallOfPoolsComponent(props) {
 
   useEffect(() => {
     if (Object.values(poolList).length > 0) {
-      setPools(poolList)
+     setPools(poolList)
       setPoolBackup(poolList)
         }
   }, [poolList]);

@@ -432,7 +432,7 @@ if(selectedToken && collateralToken){
                 target='_blank'
               >
                 {' '}
-                <img src={faucet} alt='faucet icon' />{' '}
+                {/* <img src={faucet} alt='faucet icon' />{' '} */}
               </a>
             </div>
           </div>

@@ -284,6 +284,7 @@ a{
 
 .ant-pagination-item-active{
     border-color: var(--sharp-blue);
+    background-color: transparent;
     a{
         color: var(--sharp-blue) !important;
         &:hover{
@@ -305,6 +306,6 @@ a{
     }
 }
 
-.ant-pagination-prev button, .ant-pagination-next button {
+.ant-pagination-prev button, .ant-pagination-next button, .ant-pagination-item-ellipsis {
     color: var(--pure-black) !important;
 }
