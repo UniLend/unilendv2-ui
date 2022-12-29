@@ -48,7 +48,7 @@ export default function TwitterModal() {
             target='_blank'
           >
             <div className='shareBtn'>
-              <BsTwitter color='#fff' fontSize={24} />
+              <BsTwitter fontSize={24} />
               Share
             </div>
           </a>

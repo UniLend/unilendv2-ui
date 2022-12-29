@@ -44,7 +44,7 @@ export default function PoolComponent(props) {
   const [isOperationLoading, setIsOperationLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false)
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
-  const [showTwitterModal, setShowTwitterModal] = useState(false)
+  const [showTwitterModal, setShowTwitterModal] = useState(true)
   const [isMoreThanPoolLTV, setIsMoreThanPoolLTV] = useState(false)
   const [colleteral, setColleteral] = useState(0)
   const [methodLoaded, setMethodLoaded] = useState({
