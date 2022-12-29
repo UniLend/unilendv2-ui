@@ -55,12 +55,12 @@ html, body {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--pure-white);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: rgba(58, 124, 255, 0.81);
+  background: var(--sharp-blue);
   border-radius: 5px;
 }
 
