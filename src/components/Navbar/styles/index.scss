@@ -215,6 +215,7 @@
 .popover-content{
     width: 248px;
     border-radius: 10px;
+    background: var(--pure-white);
     .disconnect{
         display: flex;
         justify-content: space-around;
@@ -225,7 +226,8 @@
             max-width: 120px;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: 'nowrap'
+            white-space: 'nowrap';
+            color: var(--dark-gray);
         }
         div{
             width: 14px;
@@ -273,6 +275,7 @@
 .antd-popover-classname{
     .ant-popover-inner{
         border-radius: 10px !important;
+        background: var(--pure-white);
     }
 }
 
@@ -325,6 +328,7 @@
     width: 430px !important;
     .ant-modal-content {
       border-radius: 22px;
+      background: var(--pure-white) !important;
       .ant-modal-body {
         padding: 1px !important;
       }
@@ -339,6 +343,7 @@
     width: max-content;
     font-size: 15px;
     font-weight: 700;
+    border: 0px;
     &:hover{
         background-color: var(--mid-blue);
         color: var(--sharp-blue);
