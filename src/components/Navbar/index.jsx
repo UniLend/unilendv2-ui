@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Popover, Modal } from 'antd';
 import { FiLock } from 'react-icons/fi';
+import { GiHamburgerMenu } from 'react-icons/gi'
 import { LockOutlined, WalletFilled } from '@ant-design/icons';
 import { Link  } from 'react-router-dom';
 
@@ -211,8 +212,8 @@ export default function Navbar(props) {
             content={<HamburgerContent />}
             trigger='click'
           >
-            
-            <img src={hamberger} alt='hamburger' />
+            <GiHamburgerMenu/>
+            {/* <img src={hamberger} alt='hamburger' /> */}
           </Popover>
         </div>
    
