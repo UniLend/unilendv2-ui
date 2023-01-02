@@ -3,7 +3,7 @@ import './styles/index.scss';
 import { Popover, Pagination} from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { DownOutlined  } from '@ant-design/icons'
-import { shortenAddress,getTokenByAddress, getTokenLogo, imgError } from '../../utils';
+import { shortenAddress, imgError } from '../../utils';
 import { allTransaction } from '../../services/events';
 import { poolDataByAddr, tokensByAddress } from '../../utils/constants';
 import txIcon from '../../assets/tx.svg';

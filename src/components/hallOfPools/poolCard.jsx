@@ -2,7 +2,7 @@ import React from 'react'
 import { Avatar, message } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { getTokenLogo, imgError  } from '../../utils';
+import { imgError  } from '../../utils';
 import './styles/poolCard.scss';
 import { useSelector } from 'react-redux';
 
