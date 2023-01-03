@@ -30,7 +30,6 @@ import Footer from './components/Footer';
 import './App.scss';
 import { getFromLocalStorage } from './utils';
 import { fetchCoinLogo } from "./utils/axios";
-import { getTokenData } from "./services/scripts";
 
 // import ends here
 
@@ -51,10 +50,6 @@ function App() {
   // setting contract state to store from here
 
   const isSame = state?.user?.address != getFromLocalStorage('user')?.address;
-
-  useEffect(() => {
-    getTokenData()
-  }, [])
 
   useEffect(() => {
     (async () => {

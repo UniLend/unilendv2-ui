@@ -20,5 +20,3 @@ import fs from 'fs'
     fs.writeFileSync('tokensbysymbol.json', JSON.stringify(bySymbol))
    })
 }
-
-getTokenData()

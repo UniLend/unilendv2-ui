@@ -21,9 +21,9 @@ export default function PoolCard({pool}) {
     }
   }
 
-  if(ignoredPools.includes(poolAddress)){
-    return null
-  }
+  // if(ignoredPools.includes(poolAddress)){
+  //   return null
+  // }
 
 
   return (

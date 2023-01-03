@@ -1,0 +1,39 @@
+.pool_carousel_container{
+  width: 100%;
+
+    .carousel_row{
+        .forwardBtnProps{
+            width: 30px;
+            height: 30px;
+            align-self: center;
+            background-color: var(--pure-white);
+            border: 1px solid var(--border-gray);
+            border-radius: 7px;
+            color: var(--sharp-blue);
+            // margin: 20px;
+        }
+        .backwardBtnProps{
+            width: 30px;
+            height: 30px;
+            align-self: center;
+            background-color: var(--pure-white);
+            border: 1px solid var(--border-gray);
+            border-radius: 7px;
+            color: var(--sharp-blue);
+            // margin: 20px;
+        }
+        .containerProps{
+            width: 100% !important ;
+            justify-content: space-between !important;
+        }
+.innerclass{
+    max-width: 90% !important;
+}
+    }
+}
+
+.poolcard{
+    min-width: 325px;
+    margin: 10px;
+}
+

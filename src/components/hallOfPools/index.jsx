@@ -11,6 +11,7 @@ import { getContract, getERC20Logo } from '../../services/contracts';
 import NoPoolFound from '../NoPoolFound';
 import { fetchCoinLogo } from '../../utils/axios';
 import PoolListSkeleton from '../Loader/PoolListSkeleton';
+import PoolCarousel from '../PoolsCarousel';
 
 export default function HallOfPoolsComponent(props) {
   const state = useSelector((state) => state);
@@ -103,12 +104,17 @@ export default function HallOfPoolsComponent(props) {
       />
 
       {(Object.values(pools).length > 0 && !isLoadingPoolData )? (
-        <div className="poolcard_container">
-          { Object.values(pools).map((pool, i) => (
-            <PoolCard pool={pool} key={i} />
-          ))}
-        </div>
+        // <div className="poolcard_container">
+        //   { Object.values(pools).map((pool, i) => (
+        //     <PoolCard pool={pool} key={i} />
+        //   ))}
+        // </div>
+        <>
+        <PoolCarousel pools={pools}/>
+        <PoolCarousel pools={pools}/>
+        </>
       ) : ( <PoolListSkeleton/>)}
+     
 {/* 
       {
         !user.isConnected &&  Object.values(pools).length == 0 && <div className="no_pool_container">
