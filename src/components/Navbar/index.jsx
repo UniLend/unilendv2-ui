@@ -1,32 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Popover, Modal } from 'antd';
 import { FiLock } from 'react-icons/fi';
+import { GiHamburgerMenu } from 'react-icons/gi'
 import { LockOutlined, WalletFilled } from '@ant-design/icons';
 import { Link  } from 'react-router-dom';
 
 import {
   getFromLocalStorage,
+  saveToLocalStorage,
   shortenAddress,
 } from '../../utils';
 import { connectWallet, getProvider, handleDisconnect, } from '../../services/wallet';
 
-import logo from '../../assets/footerlogo.svg';
+import logo from '../../assets/logo.svg';
 import hamberger from '../../assets/hamburger.svg';
 import gitbook from '../../assets/gitbook.svg';
 import faq from '../../assets/faq.svg'
 import copyIcon from '../../assets/copyIcon.svg';
 import doc from '../../assets/document.svg';
 import career from '../../assets/career.svg';
+import sun from '../../assets/sun.svg';
+import moon from '../../assets/moon.svg';
 import viewExplorer from '../../assets/viewExplorerIcon.svg';
 import './styles/index.scss';
 import Sider from 'antd/lib/layout/Sider';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../../store/Action';
+import { setTheme, setUser } from '../../store/Action';
 import { changeNetwork } from '../../services/wallet';
 import { fetchUserDomain } from '../../utils/axios';
 
 export default function Navbar(props) {
-  const { user } = props;
+  const { user, theme } = props;
   const pathname = window.location.pathname;
   const [wrongNetworkModal, setWrongNetworkModal] = useState(false);
   const [currentUser, setCurrentUser] = useState({...user, domain: shortenAddress(user.address)});
@@ -36,6 +40,15 @@ export default function Navbar(props) {
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
   };
+
+  const handleTheme = () => {
+    const changeTo = theme == "dark" ? "light" : "dark"
+    dispatch(setTheme(theme == "dark" ? "light" : "dark"));
+    document.body.className = changeTo;
+    saveToLocalStorage("unilendV2Theme", changeTo)
+  };
+
+
 
   const handleCloseModal = () => {
     setWrongNetworkModal(false);
@@ -156,6 +169,7 @@ export default function Navbar(props) {
       </div>
       <div className='last_container'>
         {user?.isConnected ? (
+          <>
           <div className='wallet_connection'>
             <div>
               <p>{currentUser?.network?.name}</p>
@@ -176,6 +190,9 @@ export default function Navbar(props) {
               </Popover>
             </div>
           </div>
+      
+     </>
+          
         ) : (
           <div className='connect_btn'>
             <Button
@@ -195,10 +212,18 @@ export default function Navbar(props) {
             content={<HamburgerContent />}
             trigger='click'
           >
-            <img src={hamberger} alt='hamburger' />
+            <GiHamburgerMenu/>
+            {/* <img src={hamberger} alt='hamburger' /> */}
           </Popover>
         </div>
+   
       </div>
+      <div className='theme_toggle'>
+       {
+        theme == 'dark' ? <img src={sun} onClick={handleTheme} alt="sun" /> : <img src={moon} onClick={handleTheme}  alt="moon"/>
+       }
+      </div>
+   
       <Modal
         className='antd_modal_overlay'
         visible={wrongNetworkModal}

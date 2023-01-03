@@ -20,7 +20,7 @@ const init = {
   isLoading: false,
   isError: false,
   user: getFromLocalStorage('user') ? getFromLocalStorage('user'): user,
-  theme: 'light',
+  theme: getFromLocalStorage('unilendV2Theme')  || 'light',
   poolList: {},
   tokenList: {},
   isLoadingPoolData: false

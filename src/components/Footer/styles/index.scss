@@ -38,6 +38,9 @@ footer, .footer_nav{
         justify-content: space-evenly;
         width: 200px;
         margin: auto;
+        a{
+            color: var(--sharp-blue);
+        }
     }
    
 }

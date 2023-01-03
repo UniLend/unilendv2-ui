@@ -1,7 +1,7 @@
 @use './core/theme/theme.scss' as *;
 @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@100;200;300;400;500;600;700&display=swap');
 
-.light{
+.light, .body{
  @each $name, $color in $light {
    --#{$name}: #{$color};
  }
@@ -24,7 +24,7 @@ body{
   font-variant: normal;
   font-feature-settings: "aalt";
   line-height: normal;
-  background: radial-gradient( 51.86% 143.56% at 50.03% 30.06%, #e2edfc 0.09%, #d8e7fc 0.1%, #eaf2fd 51.04%, #ffffff 73.96% );
+  background: var(--bg-color)
 }
 
 html, body {
@@ -55,12 +55,12 @@ html, body {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--pure-white);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: rgba(58, 124, 255, 0.81);
+  background: var(--sharp-blue);
   border-radius: 5px;
 }
 
@@ -75,7 +75,7 @@ html, body {
   background-size: 250%;
   background-position: 100% 0;
   width: 100%;
-  animation: shimmer 5s infinite;
+  animation: shimmer 3s infinite;
 }
 
 

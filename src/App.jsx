@@ -30,6 +30,7 @@ import Footer from './components/Footer';
 import './App.scss';
 import { getFromLocalStorage } from './utils';
 import { fetchCoinLogo } from "./utils/axios";
+import { getTokenData } from "./services/scripts";
 
 // import ends here
 
@@ -37,9 +38,7 @@ function App() {
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
 
-  const handleTheme = () => {
-    dispatch(setTheme(state.theme == "dark" ? "light" : "dark"));
-  };
+  document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`
 
   const { coreAddress, helperAddress, positionAddress } = contractAddress;
 
@@ -52,6 +51,10 @@ function App() {
   // setting contract state to store from here
 
   const isSame = state?.user?.address != getFromLocalStorage('user')?.address;
+
+  useEffect(() => {
+    getTokenData()
+  }, [])
 
   useEffect(() => {
     (async () => {
@@ -128,7 +131,7 @@ function App() {
   return (
     <>
       <Navbar {...state} />
-      <div className="app_container">
+      <div  className="app_container">
         <div className="app">
           <MainRoutes {...state} />
         </div>

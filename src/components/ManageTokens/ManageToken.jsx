@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Switch, Modal } from "antd";
 import viewExplorer from "../../assets/viewExplorerIcon.svg";
+import { FaChevronDown } from 'react-icons/fa'
 import deleteIcon from "../../assets/deleteicon.svg";
 import downoutline from "../../assets/downoutline.svg";
 import BSC from "../../assets/bsc.svg"
@@ -267,7 +268,8 @@ const ManageToken = ({handleTokens, tokens, pools}) => {
             ) : (
               <h3>Select Tokens</h3>
             )}
-            <img src={downoutline} alt="" />
+           <FaChevronDown/>
+            {/* <img src={downoutline} alt="" /> */}
           </div>
           <div onClick={() => handleToken("2")} className="selector section">
             {token2 ? (
@@ -278,11 +280,12 @@ const ManageToken = ({handleTokens, tokens, pools}) => {
             ) : (
               <h3>Select Tokens</h3>
             )}
-            <img src={downoutline} alt="" />
+            <FaChevronDown/>
+            {/* <img src={downoutline} alt="" /> */}
           </div>
           <div className="section">
             {
-              (tokens.token1?.symbol && tokens.token2?.symbol) || pools.length === 0 ?  <h5 onClick={clearTokens}> Clear Tokens</h5>:  <h5 onClick={() => setIsOpenMangeToken(true)}> Manage Tokens</h5>
+              (tokens.token1?.symbol || tokens.token2?.symbol) || pools.length === 0 ?  <h5 onClick={clearTokens}> Clear Tokens</h5>:  <h5 onClick={() => setIsOpenMangeToken(true)}> Manage Tokens</h5>
             }
            
           </div>

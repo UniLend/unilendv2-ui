@@ -9,18 +9,19 @@
     display: flex;
     justify-content: space-between;
     padding: 0px 30px;
+    position: relative;
     div{
         
         height: 100%;
     }
 
     .unilend_logo{
-        width: 15%;
+        width: 5%;
         display: grid;
         place-items: center center;
         img{
             width: 70%;
-            min-width: 100px;
+            min-width: 40px;
             cursor: pointer;
         }
     }
@@ -57,7 +58,23 @@
             }
         }
     }
-
+    .theme_toggle{
+        display: grid;
+        place-items: center;
+        width: 15px;
+        position: absolute;
+        right: 20px;
+        top: 0px;
+        @media($mobile){
+            right: 50px;
+        }
+        @media($tablet){
+            right: 60px;
+        }
+    }
+.last_container{
+    margin-right: 20px;
+}
     .connect_btn{
         display: flex;
         align-items: center;
@@ -68,6 +85,7 @@
             height: 40px;
             font-size: 13px;
             font-weight: 700;
+            border: 0px;
         }
     }
     .wallet_connection{
@@ -122,6 +140,8 @@
 
     .hamberger{
         display: none;  
+        color: var(--sharp-blue);
+        font-size: 20px;
     }
 
 
@@ -140,6 +160,8 @@
         margin: 0px 10px;
         place-items: center center;
         cursor: pointer;
+        position: relative;
+        left: 30px;
        }
     }
     @media ($mobile) {
@@ -158,6 +180,9 @@
         margin: 0px 10px;
         place-items: center center;
         cursor: pointer;
+        margin-right: 25px;
+        position: relative;
+        left: 30px;
        }
     }
 
@@ -201,6 +226,7 @@
 .popover-content{
     width: 248px;
     border-radius: 10px;
+    background: var(--pure-white);
     .disconnect{
         display: flex;
         justify-content: space-around;
@@ -211,7 +237,8 @@
             max-width: 120px;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: 'nowrap'
+            white-space: 'nowrap';
+            color: var(--dark-gray);
         }
         div{
             width: 14px;
@@ -234,9 +261,9 @@
         display: flex;
         justify-content: space-around;
         align-items: center;
-        color: #808080;
+        color: var(--dark-gray);
         a{
-            color: #808080;
+            color: var(--dark-gray);;
             text-decoration: none;
         }
         div{
@@ -259,6 +286,7 @@
 .antd-popover-classname{
     .ant-popover-inner{
         border-radius: 10px !important;
+        background: var(--pure-white);
     }
 }
 
@@ -311,6 +339,7 @@
     width: 430px !important;
     .ant-modal-content {
       border-radius: 22px;
+      background: var(--pure-white) !important;
       .ant-modal-body {
         padding: 1px !important;
       }
@@ -321,10 +350,11 @@
     color: var(--pure-white);
     background-color: var(--sharp-blue);
     border-radius: 5px;
-    height: 40px;
+    height: 35px;
     width: max-content;
-    font-size: 15px;
+    font-size: 12px;
     font-weight: 700;
+    border: 0px;
     &:hover{
         background-color: var(--mid-blue);
         color: var(--sharp-blue);

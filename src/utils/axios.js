@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken } from '.';
+import { getToken } from '../utils';
 
 const API = import.meta.env.VITE_UNSTOPPABLE_API;
 
@@ -12,7 +12,7 @@ export const  fetchCoinGeckoTokens = async () => {
 export const fetchCoinLogo = async (token) => {
 
     const tokenObj = getToken(token)
-    
+    console.log("getToken", tokenObj, token);
     if(tokenObj?.logo){
         console.log("Tokens", token,tokenObj.logo);
         return tokenObj?.logo;
