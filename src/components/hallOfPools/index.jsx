@@ -103,7 +103,7 @@ export default function HallOfPoolsComponent(props) {
         pools={pools}
       />
 
-      {(Object.values(pools).length > 0 && !isLoadingPoolData )? (
+      {/* {(Object.values(pools).length > 0 && !isLoadingPoolData )? (
         // <div className="poolcard_container">
         //   { Object.values(pools).map((pool, i) => (
         //     <PoolCard pool={pool} key={i} />
@@ -113,7 +113,8 @@ export default function HallOfPoolsComponent(props) {
         <PoolCarousel pools={pools}/>
         <PoolCarousel pools={pools}/>
         </>
-      ) : ( <PoolListSkeleton/>)}
+      ) : ( <PoolListSkeleton/>)} */}
+       <PoolCarousel pools={pools} isLoading={!isLoadingPoolData}/>
      
 {/* 
       {

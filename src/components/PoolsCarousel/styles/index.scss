@@ -1,6 +1,7 @@
+@use '../../../core/theme/constants.scss' as *;
 .pool_carousel_container{
-  width: 100%;
-
+  width: 90%;
+ margin: auto;
     .carousel_row{
         .forwardBtnProps{
             width: 30px;
@@ -10,6 +11,10 @@
             border: 1px solid var(--border-gray);
             border-radius: 7px;
             color: var(--sharp-blue);
+            cursor: pointer;
+            &:disabled{
+              cursor: not-allowed;
+            }
             // margin: 20px;
         }
         .backwardBtnProps{
@@ -20,11 +25,20 @@
             border: 1px solid var(--border-gray);
             border-radius: 7px;
             color: var(--sharp-blue);
+            cursor: pointer;
+            &:disabled{
+                cursor: not-allowed;
+            }
             // margin: 20px;
         }
         .containerProps{
             width: 100% !important ;
             justify-content: space-between !important;
+            flex-flow: nowrap !important;
+            //    @media ($mobile) {
+            //     width: 115% !important;
+            //     margin-left: -20px;
+            //    }
         }
 .innerclass{
     max-width: 90% !important;
@@ -32,8 +46,20 @@
     }
 }
 
-.poolcard{
-    min-width: 325px;
-    margin: 10px;
+.poolcard_div{
+    padding: 10px 20px;
+    @media ($mobile) {
+        padding: 10px;
+       }
+}
+
+.poolcard, .skeleton_card{
+    min-width: 350px;
+   @media ($tablet) {
+    min-width: 300px;
+   }
+   @media ($mobile) {
+    min-width: 280px;
+   }
 }
 
