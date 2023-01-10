@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Carousel from "react-simply-carousel";
+import { FaChevronDown } from 'react-icons/fa'
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import PoolCard from "../hallOfPools/poolCard";
 import "./styles/index.scss";
@@ -12,13 +13,14 @@ export default function PoolCarousel({ pools, isLoading }) {
   return (
     <div className="pool_carousel_container">
       <div className="carousel_row">
-        <div>
+        <div className="title_sort_container" >
             <h2>New Pools</h2>
-            <div>
-                
-            </div>
+            <div className='sortBy'>
+            <p>Sort By</p>
+            <FaChevronDown />
+          </div>
         </div>
-        <div>
+        <div className="carousel_container ">
           <Carousel
             containerProps={{
               className: "containerProps",
@@ -59,7 +61,15 @@ export default function PoolCarousel({ pools, isLoading }) {
                 ))}
           </Carousel>
         </div>
-        <div>
+        <br />
+        <div className="title_sort_container" >
+            <h2>New Pools</h2>
+            <div className='sortBy'>
+            <p>Sort By</p>
+            <FaChevronDown />
+          </div>
+        </div>
+        <div className="carousel_container" >
           <Carousel
             containerProps={{
               className: "containerProps",

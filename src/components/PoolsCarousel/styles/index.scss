@@ -2,7 +2,37 @@
 .pool_carousel_container{
   width: 90%;
  margin: auto;
+
     .carousel_row{
+
+        .title_sort_container{
+            display: flex;
+            justify-content: space-between;
+            width: 88%;
+            margin: 10px auto;
+            h2{
+                margin: 10px;
+                color: var(--light-gray);
+                font-size: 20px;
+                font-weight: 700;
+            }
+            .sortBy{
+                display: flex;
+                width: 120px;
+                cursor: pointer;
+                background-color: var(--light-blue);
+                border-radius: 5px;
+                color: var(--light-gray);
+                font-weight: 700;
+                place-items: center center;
+                justify-content: space-between;
+                padding: 12px;
+                p{
+                    margin: 0px 0px;
+                }
+            }
+        }
+
         .forwardBtnProps{
             width: 30px;
             height: 30px;
@@ -28,6 +58,7 @@
             cursor: pointer;
             &:disabled{
                 cursor: not-allowed;
+                visibility: hidden;
             }
             // margin: 20px;
         }

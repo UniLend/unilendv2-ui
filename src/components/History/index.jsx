@@ -2,7 +2,7 @@ import React , {useEffect, useState}from 'react';
 import './styles/index.scss';
 import { Popover, Pagination} from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { DownOutlined  } from '@ant-design/icons'
+import { FaChevronDown } from 'react-icons/fa'
 import { shortenAddress, imgError } from '../../utils';
 import { allTransaction } from '../../services/events';
 import { poolDataByAddr, tokensByAddress } from '../../utils/constants';
@@ -133,7 +133,7 @@ const SortContent = () => {
         >
           <div className={`sortBy ${txtData.length ===0 ? 'disableSort': ''}`}>
             <p>Sort By</p>
-            <DownOutlined />
+            <FaChevronDown />
           </div>
         </Popover>
       </div>
