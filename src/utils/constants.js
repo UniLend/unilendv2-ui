@@ -119,6 +119,9 @@ const tokensBYSymbol = {
   "GIFT":{
     "logo":"https://i.imgur.com/tWu6HLM.png"
   },
+  "pBTC":{
+    "logo":"https://s2.coinmarketcap.com/static/img/coins/64x64/5434.png"
+  },
 ...tokensbysymbol 
 }
 
