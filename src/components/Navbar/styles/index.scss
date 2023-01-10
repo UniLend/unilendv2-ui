@@ -65,6 +65,9 @@
         position: absolute;
         right: 20px;
         top: 0px;
+        img{
+            cursor: pointer;
+        }
         @media($mobile){
             right: 50px;
         }
