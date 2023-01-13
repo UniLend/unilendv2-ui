@@ -82,15 +82,15 @@
     @media ($mobile) {
         padding: 10px;
        }
+       .poolcard, .skeleton_card{
+           min-width: 350px;
+          @media ($tablet) {
+           min-width: 300px;
+          }
+          @media ($mobile) {
+           min-width: 280px;
+          }
+       }
 }
 
-.poolcard, .skeleton_card{
-    min-width: 350px;
-   @media ($tablet) {
-    min-width: 300px;
-   }
-   @media ($mobile) {
-    min-width: 280px;
-   }
-}
 

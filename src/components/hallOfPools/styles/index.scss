@@ -10,12 +10,78 @@
     }
 }
 
-.poolcard_container{
+.analytics_container{
+ background-color: var(--sharp-blue);
+ height: 255px;
+ position: relative;
+ margin-bottom: 50px;
+ .managepool_container{
+    position: relative;
+    top: 220px;
+    .manage_token_component{
+        box-shadow: none;
+        border: 1px solid var(--border-gray);
+    }
+ }
 
+ @media ($tablet){
+    margin-bottom: 100px;
+ }
+ @media ($mobile){
+    margin-bottom: 100px;
+ }
+}
+
+.pool_filter_container{
+    display: flex;
+    width: 80%;
+    margin: auto;
+    justify-content: space-between;
+
+    .pool_tans{
+        .pool_btn{
+            margin: 10px;
+            background-color: var(--pure-white);
+            color: var(--sharp-blue);
+            border: 1px solid var(--border-gray);
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .active_btn{
+            background-color: var(--sharp-blue);
+            color: var(--pure-white);
+        }
+    }
+
+    .sortBy{
+        display: flex;
+        margin: 10px;
+        width: 100px;
+        cursor: pointer;
+        background-color: var(--sharp-blue);
+        border-radius: 5px;
+        color: var(--pure-white);
+        font-weight: 700;
+        place-items: center center;
+        justify-content: space-between;
+        padding: 10px;
+        height: 32px;
+        p{
+            margin: 0px 0px;
+            font-size: 12px;
+        }
+    }
+}
+
+.poolcard_container{
+    width: 80%;
+    margin: auto;
     margin-bottom: 100px;
     display: grid;
     grid-template-columns: repeat(3, calc(100%/3) );
     justify-content: space-between;
+ 
     .poolcard{
 
         margin: 10px;

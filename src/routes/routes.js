@@ -4,6 +4,11 @@ export const openRoutes = [
   {
     path: '/',
     exact: true,
+    element: lazy(() => import('../pages/heroPage')),
+  },
+  {
+    path: '/pools',
+    exact: true,
     element: lazy(() => import('../pages/hallOfPools')),
   },
   {
