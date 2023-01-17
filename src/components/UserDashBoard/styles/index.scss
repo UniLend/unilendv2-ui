@@ -271,6 +271,10 @@
       font-weight: 700;
       color: var(--sharp-blue);
     }
+    .react_icons{
+      color: var(--sharp-blue);
+      font-size: 35px;
+    }
   }
   h2{
     margin: 0;
@@ -331,6 +335,9 @@
  @media($mobile){
   .title_div{
     span{
+      .react_icons{
+        font-size: 25px;
+      }
       img{
         width: 25px
       }
@@ -468,15 +475,45 @@
         color: var(--dark-gray);
         width: 30%;
         &:first-child{
-          width: 50%;
+          width: 60%;
         }
-        &:last-child{
-          width: 20%;
+        // &:last-child{
+        //   width: 0% !important;
+        //   text-align: center;
+        // }
+
+        &:nth-child(7),&:nth-child(8),&:nth-child(9),&:nth-child(10){
+          display: none !important;
         }
+
+        @media($tablet){
+          &:first-child{
+            width: 30%;
+          }
+          &:nth-child(1),&:nth-child(2),&:nth-child(3),&:nth-child(4) ,&:nth-child(5),&:nth-child(6) {
+           display: none !important;
+          }
+          &:nth-child(7),&:nth-child(8),&:nth-child(9),&:nth-child(10){
+            display: block !important;
+          }
+        }
+
+        @media($mobile){
+          &:first-child{
+            width: 30%;
+          }
+          &:nth-child(1),&:nth-child(2),&:nth-child(3),&:nth-child(4) ,&:nth-child(5),&:nth-child(6) {
+           display: none !important;
+          }
+          &:nth-child(7),&:nth-child(8),&:nth-child(9),&:nth-child(10){
+            display: block !important;
+          }
+        }
+
       }
     }
     .tbody{
-      margin: 30px 0px;
+      margin: 10px 0px;
       overflow: hidden;
       .tbody_row{
         padding: 15px 0px;
@@ -502,17 +539,7 @@
 }
 
 }
-.hide_for_monitor{
-  display: none ;
-}
-@media($mobile){
-  .hide_for_mobile{
-    display: none !important;
-  }
-  .hide_for_monitor{
-    display: block ;
-  }
-}
+
 
  }
 
@@ -559,4 +586,14 @@
           background-color: var(--mid-blue);
       }
   }
+}
+
+.hide_for_monitor{
+  display: none !important;
+}
+@media($mobile){
+  .hide_for_mobile{
+    display: none !important;
+  }
+
 }

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./styles/index.scss";
 import { FiPercent } from "react-icons/fi";
+import { ImStack } from 'react-icons/im'
+import { FaWallet} from 'react-icons/fa'
 import banner from "../../assets/dashboardbanner.svg";
 import walletIcon from "../../assets/wallet.svg";
 import { SearchOutlined, DownOutlined } from "@ant-design/icons";
@@ -13,7 +15,7 @@ export default function UserDashboardComponent(props) {
   const { contracts, user, web3, isLoading, isError, poolList } = props;
   const [lendingVisible, setLendingVisible] = useState(false);
   const [borrowingVisible, setBorrowingVisible] = useState(false);
-  const [isLendTab, setIsLentab] = useState(false);
+  const [isLendTab, setIsLentab] = useState(true);
   const navigate = useNavigate();
   const handleLendingVisibleChange = (visible) => {
     setLendingVisible(visible);
@@ -150,7 +152,7 @@ export default function UserDashboardComponent(props) {
           <div className="title_div">
             <span>
               {" "}
-              <img src={walletIcon} alt="wallet_icon" /> <h2>Wallet</h2>{" "}
+              <FaWallet className="react_icons"/> <h2>Wallet</h2>{" "}
             </span>
             <h2>$130,000,500</h2>
           </div>
@@ -189,7 +191,7 @@ export default function UserDashboardComponent(props) {
         <div className="lending_container">
           <div className="title_div">
             <span>
-              <h2>Lending</h2>
+            <ImStack className="react_icons"/> <h2>Pool Positions</h2>{" "}
             </span>
           </div>
           <div className="lending_table">
@@ -227,21 +229,19 @@ export default function UserDashboardComponent(props) {
                     </div>
                   </Popover>
                 </div>
-                <div className="thead hide_for_mobile">
+                <div className="thead">
+                  <span >Pool</span>
+                  <span >Token</span>
+                  <span >Amount</span>
+                  <span >APY</span>
+                  <span >Max LTV</span>
+                  <span > Interest Earned </span>
                   <span>Pool</span>
                   <span>Token</span>
-                  <span>Amount</span>
-                  <span>Lend APY</span>
-                  <span>Max LTV</span>
-                  <span> Interest Earned </span>
-                </div>
-                <div className="thead hide_for_monitor">
-                  <span>Pool</span>
-                  <span>Token</span>
-                  <span>Lend APY</span>
+                  <span>APY</span>
                   <span>Max LTV</span>
                 </div>
-                <div className="tbody hide_for_mobile">
+                <div className="tbody">
                   {new Array(6).fill(0).map(() => {
                     return (
                       <div className="tbody_row">
@@ -256,16 +256,30 @@ export default function UserDashboardComponent(props) {
                           />
                           <p className="hide_for_mobile">UFT / USDC </p>
                         </span>
+                        <span >UFT</span>
+                        <span >00</span>
+                        <span >74.99%</span>
+                        <span >74.99%</span>
+                        <span >20.23</span>
+                        <span>
+                          <img
+                            src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
+                            alt="uft"
+                          />
+                          <img
+                            src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
+                            alt="uft"
+                          />
+                          
+                        </span>
                         <span>UFT</span>
-                        <span>200</span>
                         <span>00</span>
                         <span>74.99%</span>
-                        <span>20.23</span>
                       </div>
                     );
                   })}
                 </div>
-                <div className="tbody hide_for_monitor">
+                {/* <div className="tbody hide_for_monitor">
                   {new Array(6).fill(0).map(() => {
                     return (
                       <div className="tbody_row">
@@ -278,17 +292,15 @@ export default function UserDashboardComponent(props) {
                             src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
                             alt="uft"
                           />
-                          <p className="hide_for_mobile">UFT / USDC </p>
+                          
                         </span>
                         <span>UFT</span>
-                        <span>200</span>
                         <span>00</span>
                         <span>74.99%</span>
-                        <span>20.23</span>
                       </div>
                     );
                   })}
-                </div>
+                </div> */}
               </div>
             ) : (
               <div>
@@ -311,12 +323,16 @@ export default function UserDashboardComponent(props) {
                   </Popover>
                 </div>
                 <div className="thead">
+                  <span >Pool</span>
+                  <span >Token</span>
+                  <span >Amount</span>
+                  <span >APY</span>
+                  <span >Current LTV</span>
+                  <span > Liq. Price </span>
                   <span>Pool</span>
                   <span>Token</span>
-                  <span>Amount</span>
                   <span>APY</span>
                   <span>Current LTV</span>
-                  <span>Liq.Price</span>
                 </div>
                 <div className="tbody">
                   {new Array(6).fill(0).map(() => {
@@ -331,17 +347,53 @@ export default function UserDashboardComponent(props) {
                             src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
                             alt="uft"
                           />
-                          <p>UFT / USDC </p>
+                          <p className="hide_for_mobile">UFT / USDC </p>
+                        </span>
+                        <span >UFT</span>
+                        <span >00</span>
+                        <span >74.99%</span>
+                        <span >74.99%</span>
+                        <span >20.23</span>
+                        <span>
+                          <img
+                            src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
+                            alt="uft"
+                          />
+                          <img
+                            src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
+                            alt="uft"
+                          />
+                          
                         </span>
                         <span>UFT</span>
-                        <span>200</span>
                         <span>00</span>
                         <span>74.99%</span>
-                        <span>20.23</span>
                       </div>
                     );
                   })}
                 </div>
+                {/* <div className="tbody hide_for_monitor">
+                  {new Array(6).fill(0).map(() => {
+                    return (
+                      <div className="tbody_row">
+                        <span>
+                          <img
+                            src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
+                            alt="uft"
+                          />
+                          <img
+                            src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
+                            alt="uft"
+                          />
+                          
+                        </span>
+                        <span>UFT</span>
+                        <span>00</span>
+                        <span>74.99%</span>
+                      </div>
+                    );
+                  })}
+                </div> */}
               </div>
             )}
           </div>
