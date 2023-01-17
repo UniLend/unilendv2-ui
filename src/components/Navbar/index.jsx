@@ -146,7 +146,7 @@ export default function Navbar(props) {
           <a href='/' className={`${pathname === '/' ? 'active' : ''}`}>
             Pools
           </a>
-          <a href='#' className='disable_route'>
+          <a href='/dashboard' className='disable_route'>
             Dashboard
             <LockOutlined style={{ marginLeft: '5px' }} />
           </a>
