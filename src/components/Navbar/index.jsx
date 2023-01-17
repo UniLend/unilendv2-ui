@@ -24,28 +24,30 @@ import moon from '../../assets/moon.svg';
 import viewExplorer from '../../assets/viewExplorerIcon.svg';
 import './styles/index.scss';
 import Sider from 'antd/lib/layout/Sider';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setTheme, setUser } from '../../store/Action';
 import { changeNetwork } from '../../services/wallet';
 import { fetchUserDomain } from '../../utils/axios';
 
 export default function Navbar(props) {
-  const { user, theme } = props;
+  const { user, theme } = useSelector((state) => state) ;
+  // const CurrentTheme = useSelector((state) => state.theme)
   const pathname = window.location.pathname;
   const [wrongNetworkModal, setWrongNetworkModal] = useState(false);
   const [currentUser, setCurrentUser] = useState({...user, domain: shortenAddress(user.address)});
   const [visible, setVisible] = useState(false);
+  const [ currentTheme, setCurrentTheme] = useState(theme);
   const dispatch = useDispatch();
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
   };
 
-  const handleTheme = () => {
-    const changeTo = theme == "dark" ? "light" : "dark"
-    dispatch(setTheme(theme == "dark" ? "light" : "dark"));
-    document.body.className = changeTo;
-    saveToLocalStorage("unilendV2Theme", changeTo)
+  const handleTheme = (theme) => {
+    saveToLocalStorage("unilendV2Theme", theme)
+    setCurrentTheme(theme)
+    dispatch(setTheme(theme));
+    document.body.className = theme;  
   };
 
 
@@ -220,7 +222,7 @@ export default function Navbar(props) {
       </div>
       <div className='theme_toggle'>
        {
-        theme == 'dark' ? <img src={sun} onClick={handleTheme} alt="sun" /> : <img src={moon} onClick={handleTheme}  alt="moon"/>
+        currentTheme == 'dark' ? <img src={sun} onClick={() => handleTheme("light")} alt="sun" /> : <img src={moon} onClick={() => handleTheme("dark")}  alt="moon"/>
        }
       </div>
    

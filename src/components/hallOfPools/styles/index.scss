@@ -30,5 +30,10 @@ margin: 50px 0px;
 
     @media ($mobile){
         grid-template-columns: repeat(1, 100%);
+        .poolcard{
+
+            margin: 10px 0px;
+           min-width: 100%;
+        }
     }
 }

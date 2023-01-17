@@ -45,6 +45,11 @@ html, body {
  width: 80%;
  margin: 50px auto;
 
+ @media(width < 600px ){
+  width: 90%;
+ }
+
+
 }
 
 /* width */
