@@ -191,7 +191,7 @@ export default function UserDashboardComponent(props) {
         <div className="lending_container">
           <div className="title_div">
             <span>
-            <ImStack className="react_icons"/> <h2>Pool Positions</h2>{" "}
+            <ImStack className="react_icons"/> <h2>Open Positions</h2>{" "}
             </span>
           </div>
           <div className="lending_table">
