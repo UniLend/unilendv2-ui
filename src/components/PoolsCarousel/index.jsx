@@ -43,7 +43,7 @@ export default function PoolCarousel({ pools, isLoading }) {
               ),
               className: "backwardBtnProps",
             }}
-            itemsToShow={3}
+            itemsToShow={2}
             speed={400}
           >
             {Object.values(pools).length > 0 && isLoading
@@ -92,7 +92,7 @@ export default function PoolCarousel({ pools, isLoading }) {
               ),
               className: "backwardBtnProps",
             }}
-            itemsToShow={3}
+            itemsToShow={2}
             speed={400}
           >
             {Object.values(pools).length > 0 && isLoading

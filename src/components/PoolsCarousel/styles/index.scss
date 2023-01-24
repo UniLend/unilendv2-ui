@@ -58,13 +58,13 @@
             cursor: pointer;
             &:disabled{
                 cursor: not-allowed;
-                visibility: hidden;
+                
             }
             // margin: 20px;
         }
         .containerProps{
             width: 100% !important ;
-            justify-content: space-between !important;
+            justify-content: space-between ;
             flex-flow: nowrap !important;
             //    @media ($mobile) {
             //     width: 115% !important;

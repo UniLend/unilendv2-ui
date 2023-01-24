@@ -4,6 +4,8 @@ import banner from '../../assets/banner.svg';
 import './styles/index.scss';
 import { useSelector } from 'react-redux';
 import PoolCarousel from '../PoolsCarousel';
+import PoolCard from '../hallOfPools/poolCard';
+import PoolListSkeleton from '../Loader/PoolListSkeleton';
 
 export default function HeroComponent(props) {
   const state = useSelector((state) => state);
@@ -102,7 +104,7 @@ export default function HeroComponent(props) {
           ))}
         </div>
       ) : ( <PoolListSkeleton/>)} */}
-       {/* <PoolCarousel pools={pools} isLoading={!isLoadingPoolData}/> */}
+       <PoolCarousel pools={pools} isLoading={!isLoadingPoolData}/>
      
 {/* 
       {
