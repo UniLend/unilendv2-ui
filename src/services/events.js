@@ -4,19 +4,22 @@ import { poolDataByAddr } from "../utils/constants";
 
 export const getAllEvents = async (contract, event) => {
   try {
-    const result = await contract.getPastEvents(
-      event,
-      {
-        fromBlock: 0,
-        toBlock: 'latest',
-      },
-      function (error, events) {
-        if (error) {
-          console.log(error);
-        }
-      }
-    );
-    return result.map((item) => item.returnValues);
+    // const result = await contract.getPastEvents(
+    //   event,
+    //   {
+    //     fromBlock: 0,
+    //     toBlock: 'latest',
+    //   },
+    //   function (error, events) {
+    //     if (error) {
+    //       console.log(error);
+    //     }
+    //   }
+    // );
+
+    const result = await contract.queryFilter('PoolCreated')
+   console.log("PoolCreated", "result", result);
+    return result.map((item) => item.args);
   } catch (error) {
     return error;
   }

@@ -96,17 +96,13 @@ export default function HeroComponent(props) {
       />
 
       {/* {(Object.values(pools).length > 0 && !isLoadingPoolData )? (
-        // <div className="poolcard_container">
-        //   { Object.values(pools).map((pool, i) => (
-        //     <PoolCard pool={pool} key={i} />
-        //   ))}
-        // </div>
-        <>
-        <PoolCarousel pools={pools}/>
-        <PoolCarousel pools={pools}/>
-        </>
+        <div className="poolcard_container">
+          { Object.values(pools).map((pool, i) => (
+            <PoolCard pool={pool} key={i} />
+          ))}
+        </div>
       ) : ( <PoolListSkeleton/>)} */}
-       <PoolCarousel pools={pools} isLoading={!isLoadingPoolData}/>
+       {/* <PoolCarousel pools={pools} isLoading={!isLoadingPoolData}/> */}
      
 {/* 
       {

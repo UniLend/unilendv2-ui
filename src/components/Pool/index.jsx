@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Slider, Button , message, Modal} from "antd";
 import "./styles/index.scss";
 import {  useNavigate, useParams } from "react-router-dom";
-import { contractAddress } from "../../core/contractData/contracts_sepolia";
+import { contractAddress } from "../../core/contractData/contracts";
 import {
   getPoolBasicData,
   getPoolAllData,
@@ -120,6 +120,10 @@ if(selectedToken && collateralToken){
   getCollateral()
 }
   },[amount, selectLTV])
+
+  useEffect(() => {
+  console.log("poolData", poolData);
+  }, [])
 
 
   const checkTxnStatus = (hash, txnData) => {
@@ -258,7 +262,6 @@ if(selectedToken && collateralToken){
           const pool = await getPoolAllData(
             contracts,
             poolData,
-            contractAddress.positionAddress,
             poolAddress,
             user.address
           );
@@ -290,7 +293,7 @@ if(selectedToken && collateralToken){
       })();
       
       const isAllTrue = Object.values(methodLoaded).find((el) => el === false);
-      if (isAllTrue === undefined && selectedToken !==null && selectedToken?._symbol === poolData.token0._symbol) {
+      if (isAllTrue === undefined && selectedToken !==null && selectedToken?._symbol === poolData?.token0?._symbol) {
         setSelectedToken(poolData.token0);
         setCollaterralToken(poolData.token1);
         setActiveOperation(poolData.token0.tabs[0]);
@@ -299,12 +302,12 @@ if(selectedToken && collateralToken){
       } else if(isAllTrue === undefined && selectedToken !== null){
         setSelectedToken(poolData.token1);
         setCollaterralToken(poolData.token0);
-        setActiveOperation(poolData.token1.tabs[0]);
+        setActiveOperation(poolData?.token1?.tabs[0]);
         setIsPageLoading(false)
       } else if(isAllTrue === undefined) {
         setSelectedToken(poolData.token0);
         setCollaterralToken(poolData.token1);
-        setActiveOperation(poolData.token0.tabs[0]);
+        setActiveOperation(poolData?.token0?.tabs[0]);
         setActiveToken(0)
         setIsPageLoading(false)
       }

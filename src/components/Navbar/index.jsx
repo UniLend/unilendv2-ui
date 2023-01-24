@@ -10,7 +10,7 @@ import {
   saveToLocalStorage,
   shortenAddress,
 } from '../../utils';
-import { connectWallet, getProvider, handleDisconnect, } from '../../services/wallet';
+import { connectWallet, handleDisconnect, } from '../../services/wallet';
 
 import logo from '../../assets/logo.svg';
 import hamberger from '../../assets/hamburger.svg';
@@ -57,7 +57,7 @@ export default function Navbar(props) {
   useEffect(() => {
     // console.log("my current chain",chain)
     if (user.network.id && user.network.id != '11155111') {
-      setWrongNetworkModal(true);
+     // setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);
     }

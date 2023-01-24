@@ -11,10 +11,14 @@
   "dependencies": {
     "@ant-design/plots": "^1.2.3",
     "@coinbase/wallet-sdk": "^3.6.0",
+    "@metamask/detect-provider": "^2.0.0",
+    "@wagmi/core": "^0.8.18",
     "@walletconnect/web3-provider": "^1.8.0",
     "antd": "^4.23.4",
     "axios": "^1.1.0",
     "bignumber.js": "^9.1.0",
+    "buffer": "^6.0.3",
+    "ethers": "^5.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
@@ -28,7 +32,7 @@
     "sass": "^1.55.0",
     "wagmi": "^0.7.15",
     "web3": "^1.8.0",
-    "web3modal": "^1.9.9"
+    "web3modal": "^1.9.11"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",

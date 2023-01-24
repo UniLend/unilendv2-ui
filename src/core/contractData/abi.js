@@ -137,26 +137,26 @@ export const coreAbi = [
     name: 'PoolCreated',
     type: 'event',
   },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'token',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'pool',
-        type: 'address',
-      },
-      { indexed: false, internalType: 'uint256', name: '', type: 'uint256' },
-    ],
-    name: 'PoolCreated',
-    type: 'event',
-  },
+  // {
+  //   anonymous: false,
+  //   inputs: [
+  //     {
+  //       indexed: true,
+  //       internalType: 'address',
+  //       name: 'token',
+  //       type: 'address',
+  //     },
+  //     {
+  //       indexed: false,
+  //       internalType: 'address',
+  //       name: 'pool',
+  //       type: 'address',
+  //     },
+  //     { indexed: false, internalType: 'uint256', name: '', type: 'uint256' },
+  //   ],
+  //   name: 'PoolCreated',
+  //   type: 'event',
+  // },
   {
     inputs: [],
     name: 'defaultInterestRate',

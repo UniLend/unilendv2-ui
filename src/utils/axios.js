@@ -12,9 +12,7 @@ export const  fetchCoinGeckoTokens = async () => {
 export const fetchCoinLogo = async (token) => {
 
     const tokenObj = getToken(token)
-    console.log("getToken", tokenObj, token);
     if(tokenObj?.logo){
-        console.log("Tokens", token,tokenObj.logo);
         return tokenObj?.logo;
     }
 

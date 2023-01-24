@@ -1,9 +1,11 @@
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
+import { createClient, configureChains, getNetwork, connect, fetchEnsName, switchNetwork, fetchBalance , prepareWriteContract, writeContract , getProvider, readContract, fetchToken, watchContractEvent, waitForTransaction } from "@wagmi/core";
 // local imports
 import { providerOptions } from '../constants/wallet';
 import { fromWei, removeFromLocalStorage, saveToLocalStorage } from '../utils';
 import { networks } from '../core/networks/networks';
+import { MetaMaskconnector } from '../App';
 
 const API = import.meta.env.VITE_INFURA_ID;
 
@@ -12,23 +14,23 @@ export const web3Modal = new Web3Modal({
   providerOptions, // required
 });
 
-export const getProvider = async () => {
- try {
-  const provider = await web3Modal.connect();
-  // Subscribe to events
-  MetaMaskEventHandler(provider)
-  return provider;
- } catch (error) {
-  throw error;
- }
+// export const getProvider = async () => {
+//  try {
+//   const provider = await web3Modal.connect();
+//   // Subscribe to events
+//   MetaMaskEventHandler(provider)
+//   return provider;
+//  } catch (error) {
+//   throw error;
+//  }
 
-};
+// };
 
  export const defProv = () => {
   const provider = new Web3.providers.HttpProvider(
     `https://sepolia.infura.io/v3/${API}`)
 
-    const web3 = new Web3(provider);
+    const web3 = new Web3(`https://polygon-mumbai.g.alchemy.com/v2/NWRaRuKnQbi8M2HMuf44rZS8Tro6FIH8`);
     web3.default = true;
    return web3;
 }
@@ -36,8 +38,9 @@ export const getProvider = async () => {
 
 export const getweb3Instance = async () => {
   try {
-    const provider = await getProvider();
+    const provider = getProvider();
     const web3 = new Web3(provider);
+    console.log("Provider", web3);
     return web3;
   } catch (error) {
     return defProv()
@@ -55,15 +58,27 @@ export const handleDisconnect = async () => {
 export const connectWallet = async () => {
   //   await provider.sendAsync('eth_requestAccounts');
   // const net = (await web3.eth.net.getNetworkType()).toUpperCase(); 
+
+
+      
   try {
-    const web3 = await getweb3Instance();
-    const chainId = await web3.eth.getChainId();
-    const accounts = await web3.eth.getAccounts();
-    const bal = await web3.eth.getBalance(accounts[0]);
-    const balance = fromWei(web3, bal).slice(0, 6);
-    const networkByWeb3 = (await web3.eth.net.getNetworkType()).toUpperCase();
+    const { account } = await connect({
+      connector: MetaMaskconnector,
+    }).then((res) => {
+      return res;
+    })
+    const { chain, chains } = getNetwork()
+    const chainId = chain.id
+    const accounts = account;;
+    const bal =  await fetchBalance({
+      address: account,
+    })
+   
+    // const balance = fromWei(web3, bal).slice(0, 6);
+    const networkByWeb3 = chain.name.toUpperCase()
     const Currentnetwork = networks[chainId] ? networks[chainId].chainName: networkByWeb3
-    const obj = { address: accounts[0], balance, network: {id: chainId, name: Currentnetwork} , isConnected: true}
+    const obj = { address: accounts, balance: Number(bal?.formatted ).toFixed(4), network: {id: chainId, name: Currentnetwork} , isConnected: true}
+    console.log("user", obj);
     saveToLocalStorage('user', obj)
     return obj;
   } catch (error) {
@@ -74,7 +89,7 @@ export const connectWallet = async () => {
 };
 
 export const changeNetwork = async (networkId) => {
-  const provider = await getProvider();
+  const provider = getProvider();
   try {
     if (!provider) throw new Error('No Crypto Wallet Found');
     const account = await provider.request({
