@@ -66,6 +66,7 @@ export default function Navbar(props) {
 
   const handleConnect = async () => {
     const user = await connectWallet();
+     window.location.reload()
     handleDomain(user)
     dispatch(setUser(user));
   };

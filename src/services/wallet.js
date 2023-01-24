@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
-import { createClient, configureChains, getNetwork, connect, fetchEnsName, switchNetwork, fetchBalance , prepareWriteContract, writeContract , getProvider, readContract, fetchToken, watchContractEvent, waitForTransaction } from "@wagmi/core";
+import { createClient, configureChains, disconnect, getNetwork, connect, fetchEnsName, switchNetwork, fetchBalance , prepareWriteContract, writeContract , getProvider, readContract, fetchToken, watchContractEvent, waitForTransaction } from "@wagmi/core";
 // local imports
 import { providerOptions } from '../constants/wallet';
 import { fromWei, removeFromLocalStorage, saveToLocalStorage } from '../utils';
@@ -30,7 +30,7 @@ export const web3Modal = new Web3Modal({
   const provider = new Web3.providers.HttpProvider(
     `https://sepolia.infura.io/v3/${API}`)
 
-    const web3 = new Web3(`https://polygon-mumbai.g.alchemy.com/v2/NWRaRuKnQbi8M2HMuf44rZS8Tro6FIH8`);
+    const web3 = new Web3(provider)
     web3.default = true;
    return web3;
 }
@@ -49,7 +49,8 @@ export const getweb3Instance = async () => {
 };
 
 export const handleDisconnect = async () => {
-  await web3Modal.clearCachedProvider();
+  // await web3Modal.clearCachedProvider();
+  await disconnect()
   removeFromLocalStorage('user');
   localStorage.removeItem('walletconnect')
   window.location.reload();
@@ -57,10 +58,7 @@ export const handleDisconnect = async () => {
 
 export const connectWallet = async () => {
   //   await provider.sendAsync('eth_requestAccounts');
-  // const net = (await web3.eth.net.getNetworkType()).toUpperCase(); 
-
-
-      
+  // const net = (await web3.eth.net.getNetworkType()).toUpperCase();  
   try {
     const { account } = await connect({
       connector: MetaMaskconnector,
