@@ -1,6 +1,6 @@
 import { coreAbi, erc20Abi, helperAbi } from "../core/contractData/abi";
 import { contractAddress } from "../core/contractData/contracts_sepolia";
-import { createClient, configureChains, getContract, getProvider, readContract, fetchToken, watchContractEvent, waitForTransaction } from "@wagmi/core";
+import { createClient, prepareWriteContract, writeContract ,configureChains, getContract, getProvider, readContract, fetchToken, watchContractEvent, waitForTransaction } from "@wagmi/core";
 import {
   add,
   decimal2Fixed,
@@ -18,20 +18,49 @@ import { ethers } from "ethers";
 
 import { checkTxnError } from '../helpers/status';
 
+
+
+export const handleWrite = async ( contractAddr, abi, fnName, args ) => {
+
+  try {
+  const config = await prepareWriteContract({
+    address: contractAddr,
+    abi: abi,
+    functionName: fnName,
+    args: args,
+    overrides:{
+      gasLimit: 210000
+    }
+  })
+  const { hash } = await writeContract(config)
+  return hash
+} catch (error) {
+    throw error
+}
+}
+
+/*
+@dev 
+read data from contract function here;
+*/
+
+const handleRead = async (address, abi, fnName, args) => {
+  const contract = await readContract({
+     address: address,
+     abi: abi,
+     functionName: fnName,
+     args: args
+   })
+   return contract;
+ }
+
+
 /*
 @dev 
 redeem function here;
 */
 
-const handleRead = async (address, abi, fnName, args) => {
- const contract = await readContract({
-    address: address,
-    abi: abi,
-    functionName: fnName,
-    args: args
-  })
-  return contract;
-}
+
 
 export const handleRedeem = async (
   amount,
@@ -51,6 +80,7 @@ export const handleRedeem = async (
     maxAmount = mul(maxAmount, -1);
   }
   let actnCont;
+  let hash;
   try {
     if (max) {
       if (selectedToken.collateralBalance > '0') {
@@ -59,37 +89,44 @@ export const handleRedeem = async (
           maxAmount = mul(maxAmount, -1);
         }
       }
-      actnCont = await contracts.coreContract.methods.redeem(
-        poolAddress,
-        maxAmount,
-        userAddr
-      );
+ 
+      hash = await handleWrite(contracts.coreContract.address, coreAbi, 'redeem', [poolAddress, maxAmount, userAddr])
+
+
+      // actnCont = await contracts.coreContract.methods.redeem(
+      //   poolAddress,
+      //   maxAmount,
+      //   userAddr
+      // );
     } else {
-      actnCont = await contracts.coreContract.methods.redeemUnderlying(
-        poolAddress,
-        Amount,
-        userAddr
-      );
+      hash = await handleWrite(contracts.coreContract.address, coreAbi, 'redeemUnderlying', [poolAddress, Amount, userAddr])
+      // actnCont = await contracts.coreContract.methods.redeemUnderlying(
+      //   poolAddress,
+      //   Amount,
+      //   userAddr
+      // );
     }
 
-    actnCont
-      .send({ from: userAddr })
-      .on('transactionHash', (hash) => {
-        const txnData = {
-          method: 'redeem',
-          amount: amount,
-          tokenAddress: selectedToken._address,
-          tokenSymbol: selectedToken._symbol,
-          poolAddress: poolAddress,
-          chainId: '',
-        };
-        checkTxnStatus(hash, txnData);
-      })
-      .on('error', function (error) {
-        checkTxnError(error);
-        throw error;
-        //   checkTxnError(error);
-      });
+    const txnData = {
+      method: 'redeem',
+      amount: amount,
+      tokenAddress: selectedToken._address,
+      tokenSymbol: selectedToken._symbol,
+      poolAddress: poolAddress,
+      chainId: '',
+    };
+    checkTxnStatus(hash, txnData);
+
+    // actnCont
+    //   .send({ from: userAddr })
+    //   .on('transactionHash', (hash) => {
+
+    //   })
+    //   .on('error', function (error) {
+    //     checkTxnError(error);
+    //     throw error;
+    //     //   checkTxnError(error);
+    //   });
   } catch (error) {
     console.error('Redeem:', error);
     checkTxnError(error);
@@ -100,23 +137,24 @@ export const handleRedeem = async (
 @dev 
  setting Allowance for selected and collateralToken;
 */
-export const setAllowance = (
+export const setAllowance = async (
   token,
   userAddr,
   amount,
   poolAddress,
   web3,
   checkTxnStatus,
-  checkTxnError
+  checkTxnError,
+  contracts
 ) => {
-  var ERC20 = new web3.eth.Contract(erc20Abi, token._address);
+  
   var maxAllow =
     '115792089237316195423570985008687907853269984665640564039457584007913129639935';
-  ERC20.methods
-    .approve(contractAddress.coreAddress, maxAllow)
-    .send({ from: userAddr })
-    .on('transactionHash', (hash) => {
-      const txn = {
+ try {
+   
+  const hash = await handleWrite(token._address, erc20Abi, 'approve', [contracts.coreContract.address, maxAllow])
+
+        const txn = {
         method: 'approval',
         amount: amount,
         tokenAddress: token._address,
@@ -125,12 +163,31 @@ export const setAllowance = (
         chainId: '',
       };
       checkTxnStatus(hash, txn);
-    })
-    .on('error', function (error) {
-      console.error('Aproove:', error);
+
+ } catch (error) {
+  console.error('Aproove:', error);
       checkTxnError(error);
       throw error;
-    });
+ }
+  // ERC20.methods
+  //   .approve(contractAddress.coreAddress, maxAllow)
+  //   .send({ from: userAddr })
+  //   .on('transactionHash', (hash) => {
+  //     const txn = {
+  //       method: 'approval',
+  //       amount: amount,
+  //       tokenAddress: token._address,
+  //       tokenSymbol: token._symbol,
+  //       poolAddress: poolAddress,
+  //       chainId: '',
+  //     };
+  //     checkTxnStatus(hash, txn);
+  //   })
+  //   .on('error', function (error) {
+  //     console.error('Aproove:', error);
+  //     checkTxnError(error);
+  //     throw error;
+  //   });
 };
 
 export const getTabs = (token) => {
@@ -500,7 +557,7 @@ export const getPoolAllData = async (
 lend function
 */
 
-export const handleLend = (
+export const handleLend = async (
   amount,
   selectedToken,
   poolData,
@@ -519,11 +576,10 @@ export const handleLend = (
   console.log("Amount", Amount);
   try {
     if (greaterThan(selectedToken.allowance, amount)) {
-      contracts.coreContract.methods
-        .lend(poolData._address, Amount)
-        .send({ from: userAddr })
-        .on('transactionHash', (hash) => {
-          const txn = {
+
+      const hash  = await handleWrite(contracts.coreContract.address, coreAbi, 'lend', [poolData._address, Amount])
+
+               const txn = {
             method: 'lend',
             amount: amount,
             tokenAddress: selectedToken._address,
@@ -532,11 +588,25 @@ export const handleLend = (
             chainId: '',
           }; //will hold the value of the transaction
           checkTxnStatus(hash, txn);
-        })
-        .on('error', function (error) {
-          checkTxnError(error);
-          throw error;
-        });
+
+      // contracts.coreContract.methods
+      //   .lend(poolData._address, Amount)
+      //   .send({ from: userAddr })
+      //   .on('transactionHash', (hash) => {
+      //     const txn = {
+      //       method: 'lend',
+      //       amount: amount,
+      //       tokenAddress: selectedToken._address,
+      //       tokenSymbol: selectedToken._symbol,
+      //       poolAddress: poolAddress,
+      //       chainId: '',
+      //     }; //will hold the value of the transaction
+      //     checkTxnStatus(hash, txn);
+      //   })
+      //   .on('error', function (error) {
+      //     checkTxnError(error);
+      //     throw error;
+      //   });
     } else {
       setAllowance(
         selectedToken,
@@ -545,7 +615,8 @@ export const handleLend = (
         poolAddress,
         web3,
         checkTxnStatus,
-        checkTxnError
+        checkTxnError,
+        contracts
       );
     }
   } catch (error) {
@@ -560,7 +631,7 @@ export const handleLend = (
 borrow
 */
 
-export const handleBorrow = (
+export const handleBorrow = async (
   selectedToken,
   userAddr,
   collateralToken,
@@ -579,11 +650,11 @@ export const handleBorrow = (
   }
   try {
     if (greaterThan(collateralToken.allowance, collateral)) {
-      contracts.coreContract.methods
-        .borrow(poolData._address, Amount, Collateral, userAddr)
-        .send({ from: userAddr })
-        .on('transactionHash', (hash) => {
-          const txn = {
+
+
+      const hash = await handleWrite(contracts.coreContract.address, coreAbi, 'borrow', [poolData._address, Amount, Collateral, userAddr])
+
+                const txn = {
             method: 'borrow',
             amount: amount,
             tokenAddress: selectedToken._address,
@@ -592,11 +663,25 @@ export const handleBorrow = (
             chainId: '',
           };
           checkTxnStatus(hash, txn);
-        })
-        .on('error', function (error) {
-          checkTxnError(error);
-          throw error;
-        });
+
+      // contracts.coreContract.methods
+      //   .borrow(poolData._address, Amount, Collateral, userAddr)
+      //   .send({ from: userAddr })
+      //   .on('transactionHash', (hash) => {
+      //     const txn = {
+      //       method: 'borrow',
+      //       amount: amount,
+      //       tokenAddress: selectedToken._address,
+      //       tokenSymbol: selectedToken._symbol,
+      //       poolAddress: poolData._address,
+      //       chainId: '',
+      //     };
+      //     checkTxnStatus(hash, txn);
+      //   })
+      //   .on('error', function (error) {
+      //     checkTxnError(error);
+      //     throw error;
+      //   });
     } else {
       setAllowance(
         collateralToken,
@@ -605,7 +690,8 @@ export const handleBorrow = (
         poolData._address,
         web3,
         checkTxnStatus,
-        checkTxnError
+        checkTxnError,
+        contracts
       );
     }
   } catch (error) {
@@ -619,7 +705,7 @@ export const handleBorrow = (
 @dev
 repay
 */
-export const handleRepay = (
+export const handleRepay = async (
   amount,
   selectedToken,
   poolData,
@@ -643,10 +729,9 @@ export const handleRepay = (
   }
   try {
     if (greaterThan(selectedToken.allowance, amount)) {
-      contracts.coreContract.methods
-        .repay(poolAddress, Amount, userAddr)
-        .send({ from: userAddr })
-        .on('transactionHash', (hash) => {
+
+      const hash = await handleWrite(contracts.coreContract.address, coreAbi, 'repay', [poolAddress, Amount, userAddr])
+
           const txn = {
             method: 'repay',
             amount: amount,
@@ -656,11 +741,24 @@ export const handleRepay = (
             chainId: '',
           };
           checkTxnStatus(hash, txn);
-        })
-        .on('error', function (error) {
-          checkTxnError(error);
-          throw error;
-        });
+      // contracts.coreContract.methods
+      //   .repay(poolAddress, Amount, userAddr)
+      //   .send({ from: userAddr })
+      //   .on('transactionHash', (hash) => {
+      //     const txn = {
+      //       method: 'repay',
+      //       amount: amount,
+      //       tokenAddress: selectedToken._address,
+      //       tokenSymbol: selectedToken._symbol,
+      //       poolAddress: poolAddress,
+      //       chainId: '',
+      //     };
+      //     checkTxnStatus(hash, txn);
+      //   })
+      //   .on('error', function (error) {
+      //     checkTxnError(error);
+      //     throw error;
+      //   });
     } else {
       setAllowance(
         selectedToken,
@@ -669,7 +767,8 @@ export const handleRepay = (
         poolAddress,
         web3,
         checkTxnStatus,
-        checkTxnError
+        checkTxnError,
+        contracts
       );
     }
   } catch (error) {

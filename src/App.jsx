@@ -87,7 +87,7 @@ const client = createClient({
 function App() {
   const dispatch = useDispatch();
   const provider = getProvider();
-  const { chain, chains } = getNetwork();
+  
   // const etherProvider = new ethers.providers.getDefaultProvider("sepolia");
   const state = useSelector((state) => state);
   const [contractAddresses, setContractAddresses] = useState(contractAddress['11155111'])
@@ -102,8 +102,8 @@ function App() {
   const isSame = state?.user?.address != getFromLocalStorage('user')?.address;
 
   useEffect(() => {
-
-    const { coreAddress, helperAddress, positionAddress } = contractAddress[ chain.id || '80001'];
+    const { chain, chains } = getNetwork();
+    const { coreAddress, helperAddress, positionAddress } = contractAddress[ chain?.id || '80001'];
 
     const data = [
       { abi: coreAbi, address: coreAddress },

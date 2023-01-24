@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Slider, Button , message, Modal} from "antd";
+import {waitForTransaction } from '@wagmi/core'
 import "./styles/index.scss";
 import {  useNavigate, useParams } from "react-router-dom";
 import { contractAddress } from "../../core/contractData/contracts";
@@ -126,24 +127,40 @@ if(selectedToken && collateralToken){
   }, [])
 
 
-  const checkTxnStatus = (hash, txnData) => {
+  const checkTxnStatus =  (hash, txnData) => {
+
+   console.log("loading", "true");
+      waitForTransaction({
+      hash,
+    })
+    .then((receipt)=> {
+      if (receipt.status == 1) {
+        message.success(`Transaction for ${txnData.method} of ${txnData.amount} for token ${txnData.tokenSymbol}`, 5)
+        setMethodLoaded({ ...methodLoaded, getPoolFullData: false, getOraclePrice: false, getPoolTokensData: false });
+
+        if(txnData.method !== 'approval') {
+          setAmount(0);
+          setShowTwitterModal(true)
+        }
+        setMax(false);
+        setIsOperationLoading(false);
+      } else {
+        setTimeout(function () {
+          checkTxnStatus(hash, txnData);
+        }, 1000);
+      }
+    })
+    .catch(() => {
+      
+        setTimeout(function () {
+          checkTxnStatus(hash, txnData);
+        }, 1000);
+      
+    })
+    
     if (web3) {
       web3.eth.getTransactionReceipt(hash, function (err, receipt) {
-        if (receipt) {
-          message.success(`Transaction for ${txnData.method} of ${txnData.amount} for token ${txnData.tokenSymbol}`, 5)
-          setMethodLoaded({ ...methodLoaded, getPoolFullData: false, getOraclePrice: false, getPoolTokensData: false });
 
-          if(txnData.method !== 'approval') {
-            setAmount(0);
-            setShowTwitterModal(true)
-          }
-          setMax(false);
-          setIsOperationLoading(false);
-        } else {
-          setTimeout(function () {
-            checkTxnStatus(hash, txnData);
-          }, 1000);
-        }
       });
     }
   };
