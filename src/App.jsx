@@ -128,31 +128,11 @@ function App() {
   const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
   
 
-  // useEffect(() => {
-  //   const a = getFromLocalStorage('user')
-  // console.log("account", "local", account, a);
-  // }, [])
+
 
   useEffect(() => {
     
-    // if (true) {
-    //   const { coreAddress, helperAddress, positionAddress } =
-    //     contractAddress[chain?.id || "11155111"];
-
-    //   const preparedData = [
-    //     { abi: coreAbi, address: coreAddress },
-    //     { abi: helperAbi, address: helperAddress },
-    //     { abi: positionAbi, address: positionAddress },
-    //   ];
-
-    //   console.log("chainId", chain?.id, preparedData);
-    //   setChainId(chain?.id || 0);
-    //   setData(preparedData);
-    // }
     const provider = getProvider()
-
-    console.log("getProvider", provider);
-
     provider.on("chainChanged", (chainId) => {
       window.location.reload();
       window.location.href = window.location.origin;
@@ -190,7 +170,6 @@ function App() {
         }
         // dispatch(setWeb3(web3));
         const { chain : nextChain, chains } = getNetwork();
-        console.log("chain", "data", data, chain?.id, nextChain?.id,  chainId);
         const { coreAddress, helperAddress, positionAddress } =
         contractAddress[chain?.id || nextChain?.id || "11155111"];
 
@@ -214,7 +193,6 @@ function App() {
               helperContract: res[1],
               positionContract: res[2],
             };
-            console.log("chain", "res", payload);
             dispatch(setContracts(payload));
           })
           .catch((err) => {
@@ -298,7 +276,6 @@ function App() {
               (token, i) =>
                 (tokenList[poolTokens[i]] = { symbol: token.symbol })
             );
-            console.log("PoolCreated", "Pool", tokenList);
             const logos = await Promise.all(
               ercTokens.map((token, i) => fetchCoinLogo(token.symbol))
             );

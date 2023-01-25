@@ -40,7 +40,6 @@ export const getweb3Instance = async () => {
   try {
     const provider = getProvider();
     const web3 = new Web3(provider);
-    console.log("Provider", web3);
     return web3;
   } catch (error) {
     return defProv()
@@ -101,10 +100,9 @@ export const connectWallet = async (wallet) => {
     const Currentnetwork = networks[chainId] ? networks[chainId].chainName: networkByWeb3
     const obj = { address: account, balance: Number(bal?.formatted ).toFixed(4), network: {id: chainId, name: Currentnetwork} , isConnected: true}
     saveToLocalStorage('user', obj)
-    console.log("user", obj);
     return obj;
   } catch (error) {
-    // console.error("Meaterror",error.message);
+    console.error("Walleterror",error.message);
     throw error;
   }
 

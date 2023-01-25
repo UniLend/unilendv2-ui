@@ -69,7 +69,6 @@ const handleOpenSwitchNetwork = (visible) => {
   };
 
   useEffect(() => {
-    // console.log("my current chain",chain)
     if (user.network.id && user.network.id != '11155111') {
      // setWrongNetworkModal(true);
     } else {
