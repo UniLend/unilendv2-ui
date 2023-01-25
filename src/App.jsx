@@ -81,6 +81,15 @@ const { chains, provider, webSocketProvider } = configureChains(
 export const MetaMaskconnector = new MetaMaskConnector({
   chains: [mainnet, polygonMumbai, sepolia],
 });
+
+export const WalletConnector =  new WalletConnectConnector({
+  chains,
+  options: {
+    qrcode: true,
+    version: 2,
+    projectId: projectId,
+  }});
+
 // window.Buffer = window.Buffer || require("buffer").Buffer;
 
 const client = createClient({
