@@ -1,11 +1,11 @@
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
-import { createClient, configureChains, disconnect, getNetwork, connect, fetchEnsName, switchNetwork, fetchBalance , prepareWriteContract, writeContract , getProvider, readContract, fetchToken, watchContractEvent, waitForTransaction } from "@wagmi/core";
+import { createClient, configureChains, disconnect, getNetwork, connect, fetchEnsName, switchNetwork, fetchBalance , prepareWriteContract, writeContract , getProvider, readContract, fetchToken, watchContractEvent, waitForTransaction, getAccount } from "@wagmi/core";
 // local imports
 import { providerOptions } from '../constants/wallet';
 import { fromWei, removeFromLocalStorage, saveToLocalStorage } from '../utils';
 import { networks } from '../core/networks/networks';
-import { MetaMaskconnector } from '../App';
+import { MetaMaskconnector, WalletConnector } from '../App';
 
 const API = import.meta.env.VITE_INFURA_ID;
 
@@ -56,28 +56,52 @@ export const handleDisconnect = async () => {
   window.location.reload();
 };
 
-export const connectWallet = async () => {
+export const connectWallet = async (wallet) => {
   //   await provider.sendAsync('eth_requestAccounts');
   // const net = (await web3.eth.net.getNetworkType()).toUpperCase();  
+  const trigerWallet = wallet || localStorage.getItem('wallet');
   try {
-    const { account } = await connect({
-      connector: MetaMaskconnector,
-    }).then((res) => {
-      return res;
-    })
+    if(trigerWallet == 'metamask'){
+      try {
+        const data = await connect({
+          connector: MetaMaskconnector,
+        }).then((res) => {
+          return res;
+        })
+        localStorage.setItem('wallet', 'metamask')
+      } catch (error) {
+        const data = await connect({
+          connector: WalletConnector,
+        }).then((res) => {
+          return res;
+        })
+        localStorage.setItem('wallet', 'walletConnect')
+      }
+  
+    } else if (trigerWallet == 'walletConnect'){
+      const data = await connect({
+        connector: WalletConnector,
+      }).then((res) => {
+        return res;
+      })
+      localStorage.setItem('wallet', 'walletConnect')
+    }
+ 
+    const user = getAccount()
     const { chain, chains } = getNetwork()
     const chainId = chain.id
-    const accounts = account;;
+    const account = user.address;;
     const bal =  await fetchBalance({
       address: account,
     })
    
+ 
     // const balance = fromWei(web3, bal).slice(0, 6);
     const networkByWeb3 = chain.name.toUpperCase()
     const Currentnetwork = networks[chainId] ? networks[chainId].chainName: networkByWeb3
-    const obj = { address: accounts, balance: Number(bal?.formatted ).toFixed(4), network: {id: chainId, name: Currentnetwork} , isConnected: true}
-    console.log("user", obj);
+    const obj = { address: account, balance: Number(bal?.formatted ).toFixed(4), network: {id: chainId, name: Currentnetwork} , isConnected: true}
     saveToLocalStorage('user', obj)
+    console.log("user", obj);
     return obj;
   } catch (error) {
     // console.error("Meaterror",error.message);

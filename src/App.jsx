@@ -149,6 +149,17 @@ function App() {
     //   setChainId(chain?.id || 0);
     //   setData(preparedData);
     // }
+    const provider = getProvider()
+
+    console.log("getProvider", provider);
+
+    provider.on("chainChanged", (chainId) => {
+      window.location.reload();
+      window.location.href = window.location.origin;
+    });
+    provider.on("accountsChanged", function (account) {
+      window.location.reload();
+    });
 
     if (window.ethereum) {
       window.ethereum.on("chainChanged", (chainId) => {

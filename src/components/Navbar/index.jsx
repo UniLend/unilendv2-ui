@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Popover, Modal } from 'antd';
 import { FiLock } from 'react-icons/fi';
+import { FaChevronDown } from 'react-icons/fa'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { LockOutlined, WalletFilled } from '@ant-design/icons';
 import { Link  } from 'react-router-dom';
 
 import {
   getFromLocalStorage,
+  removeFromLocalStorage,
   saveToLocalStorage,
   shortenAddress,
 } from '../../utils';
@@ -21,6 +23,8 @@ import doc from '../../assets/document.svg';
 import career from '../../assets/career.svg';
 import sun from '../../assets/sun.svg';
 import moon from '../../assets/moon.svg';
+import metamaskicon from '../../assets/metamaskicon.svg';
+import walletconnecticon from '../../assets/walletconnecticon.png'
 import viewExplorer from '../../assets/viewExplorerIcon.svg';
 import './styles/index.scss';
 import Sider from 'antd/lib/layout/Sider';
@@ -28,13 +32,16 @@ import { useDispatch } from 'react-redux';
 import { setTheme, setUser } from '../../store/Action';
 import { changeNetwork } from '../../services/wallet';
 import { fetchUserDomain } from '../../utils/axios';
+import { switchNetwork } from '@wagmi/core';
 
 export default function Navbar(props) {
   const { user, theme } = props;
   const pathname = window.location.pathname;
   const [wrongNetworkModal, setWrongNetworkModal] = useState(false);
+  const [isWalletModalVisible, setIsWalletModalVisible] = useState(false)
   const [currentUser, setCurrentUser] = useState({...user, domain: shortenAddress(user.address)});
   const [visible, setVisible] = useState(false);
+  const [isNetworkVisible, setIsNetworkVisible] = useState(false)
   const dispatch = useDispatch();
 
   const handleVisibleChange = (newVisible) => {
@@ -48,7 +55,14 @@ export default function Navbar(props) {
     saveToLocalStorage("unilendV2Theme", changeTo)
   };
 
+const handleOpenWalletModal =() => {
+  setIsWalletModalVisible(true)
 
+}
+
+const handleOpenSwitchNetwork = (visible) => {
+  setIsNetworkVisible(visible)
+}
 
   const handleCloseModal = () => {
     setWrongNetworkModal(false);
@@ -64,8 +78,9 @@ export default function Navbar(props) {
     handleDomain(user)
   }, [user]);
 
-  const handleConnect = async () => {
-    const user = await connectWallet();
+  const handleConnect = async (action) => {
+    setIsWalletModalVisible(false)
+    const user = await connectWallet(action);
      window.location.reload()
     handleDomain(user)
     dispatch(setUser(user));
@@ -94,6 +109,44 @@ export default function Navbar(props) {
             Switch Network
           </button>
         </div>
+      </div>
+    );
+  };
+
+  const handleSwitchNetwork = async (id) => {
+    const network = await switchNetwork({
+      chainId: id,
+    })
+    const connector = localStorage.getItem('wallet')
+    if(connector == 'walletConnect'){
+      setTimeout(() => {
+        window.location.reload()
+        // removeFromLocalStorage('user')
+      }, 1000);
+      
+    }
+  }
+
+  const SortContent = () => {
+    return (
+      <div className="sort_popover">
+        <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
+        <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
+      </div>
+    );
+  };
+
+  const WalletConnectModal = () => {
+    return (
+      <div className='walletConnectModal'>
+         <div onClick={()=> handleConnect('metamask')}>
+            <img src={metamaskicon} alt="metamask icon" />
+            <p>Connect to Metamask Wallet</p>
+         </div>
+         <div onClick={()=> handleConnect('walletConnect')}>
+         <img src={walletconnecticon} alt="walletconnect icon" />
+         <p>Connect to WalletConnect Wallet</p>
+         </div>
       </div>
     );
   };
@@ -172,9 +225,19 @@ export default function Navbar(props) {
         {user?.isConnected ? (
           <>
           <div className='wallet_connection'>
-            <div>
+          <Popover
+          content={<SortContent />}
+          trigger="click"
+          overlayClassName="sort_dropDown"
+          placement="bottomLeft"
+          open={isNetworkVisible}
+          onOpenChange={handleOpenSwitchNetwork}
+        >
+            <div className='network_chamber' >
               <p>{currentUser?.network?.name}</p>
+              <FaChevronDown />
             </div>
+            </Popover>
             <div>
               <p>{currentUser.balance}ETH</p>
               <Popover
@@ -199,7 +262,7 @@ export default function Navbar(props) {
             <Button
               icon={<WalletFilled />}
               size='large'
-              onClick={handleConnect}
+              onClick={handleOpenWalletModal}
             >
               Connect Wallet
             </Button>
@@ -233,6 +296,16 @@ export default function Navbar(props) {
         closable={false}
       >
         <WalletModalBody />
+      </Modal>
+      <Modal
+        className='antd_modal_overlay'
+        visible={isWalletModalVisible}
+        centered
+        footer={null}
+        onCancel={() => setIsWalletModalVisible(false)}
+        closable={false}
+      >
+        <WalletConnectModal />
       </Modal>
     </div>
   );

@@ -97,6 +97,9 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        .network_chamber{
+            color: var(--light-gray);
+        }
         div{
           height: max-content;
           width: max-content;
@@ -335,6 +338,47 @@
             }
         }   
 }
+
+.walletConnectModal{
+    width: 100%;
+    height: 300px;
+    background: var(--pure-white);
+    border-radius: 20px;
+    div{
+        height: 50%;
+        width: 100%;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+        
+        &:first-child{
+            border-bottom: 1px solid var(--border-gray);
+        }
+        cursor: pointer;
+        &:hover{
+            img{
+                transform: scale(1.1);
+            }
+        }
+        img{
+            width: 100px;
+            transition:  all 0.3s ease-in-out;
+            
+        }
+        p{
+            width: 100%;
+            text-align: center;
+            color: var(--dark-gray);
+            transition:  all 0.5s ease-in-out;
+        }
+    }
+
+
+
+}
+
 .antd_modal_overlay {
     width: 430px !important;
     .ant-modal-content {
