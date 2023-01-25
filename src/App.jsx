@@ -14,10 +14,6 @@ import {
   fetchToken,
   watchContractEvent,
   waitForTransaction,
-} from "@wagmi/core";
-import { publicProvider } from "@wagmi/core/providers/public";
-
-import {
   connect,
   fetchEnsName,
   switchNetwork,
@@ -25,6 +21,8 @@ import {
   prepareWriteContract,
   writeContract,
 } from "@wagmi/core";
+import { publicProvider } from "@wagmi/core/providers/public";
+
 import { InjectedConnector } from "@wagmi/core/connectors/injected";
 import { MetaMaskConnector } from "@wagmi/core/connectors/metaMask";
 import { alchemyProvider } from "@wagmi/core/providers/alchemy";
@@ -126,27 +124,27 @@ function App() {
   const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
   
 
-  useEffect(() => {
-    const a = getFromLocalStorage('user')
-  console.log("account", "local", account, a);
-  }, [])
+  // useEffect(() => {
+  //   const a = getFromLocalStorage('user')
+  // console.log("account", "local", account, a);
+  // }, [])
 
   useEffect(() => {
     
-    if (true) {
-      const { coreAddress, helperAddress, positionAddress } =
-        contractAddress[chain?.id || "11155111"];
+    // if (true) {
+    //   const { coreAddress, helperAddress, positionAddress } =
+    //     contractAddress[chain?.id || "11155111"];
 
-      const preparedData = [
-        { abi: coreAbi, address: coreAddress },
-        { abi: helperAbi, address: helperAddress },
-        { abi: positionAbi, address: positionAddress },
-      ];
+    //   const preparedData = [
+    //     { abi: coreAbi, address: coreAddress },
+    //     { abi: helperAbi, address: helperAddress },
+    //     { abi: positionAbi, address: positionAddress },
+    //   ];
 
-      console.log("chainId", chain?.id, preparedData);
-      setChainId(chain?.id || 0);
-      setData(preparedData);
-    }
+    //   console.log("chainId", chain?.id, preparedData);
+    //   setChainId(chain?.id || 0);
+    //   setData(preparedData);
+    // }
 
     if (window.ethereum) {
       window.ethereum.on("chainChanged", (chainId) => {
@@ -157,7 +155,7 @@ function App() {
         window.location.reload();
       });
     }
-  }, [chain?.id]);
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -212,11 +210,10 @@ function App() {
         dispatch(setError(error));
       }
     })();
-  }, [isSame, getFromLocalStorage("ethEvent"), data, chain?.id]);
+  }, [isSame, getFromLocalStorage("ethEvent")]);
 
   useEffect(() => {
     if (state.contracts.coreContract) {
-      console.log("account", account);
       try {
         (async () => {
           const web3 = defProv();
@@ -322,7 +319,7 @@ function App() {
         dispatch(setError(error));
       }
     }
-  }, [state.contracts, chain?.id, account, getFromLocalStorage("user")]);
+  }, [state.contracts, chain?.id]);
 
   return (
     <>

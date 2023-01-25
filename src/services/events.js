@@ -1,6 +1,7 @@
-import { poolAbi } from "../core/contractData/abi";
+import { poolAbi, positionAbi } from "../core/contractData/abi";
 import { getAllContracts } from "../helpers/contracts";
 import { poolDataByAddr } from "../utils/constants";
+import { readContract } from "@wagmi/core";
 
 export const getAllEvents = async (contract, event) => {
   try {
@@ -18,7 +19,6 @@ export const getAllEvents = async (contract, event) => {
     // );
 
     const result = await contract.queryFilter('PoolCreated')
-   console.log("PoolCreated", "result", result);
     return result.map((item) => item.args);
   } catch (error) {
     return error;
@@ -52,9 +52,15 @@ export const positionId = async (
   poolAddress,
   userAddress
 ) => {
-  const id = await positionContract.methods
-    .getNftId(poolAddress, userAddress)
-    .call();
+  // const id = await positionContract.methods
+  //   .getNftId(poolAddress, userAddress)
+  //   .call();
+  const id = await readContract({
+    address: positionContract.address,
+    abi: positionAbi,
+    functionName: 'getNftId',
+    args: [poolAddress, userAddress]
+  })
   return id;
 };
 
@@ -67,13 +73,15 @@ export const allTransaction = async (
   const data = await getAllEvents(coreContract, 'PoolCreated');
   // array of all pools address
   const newData = data.map((event) => event.pool);
+
   let array = [];
   for (let i = 0; i < newData.length; i++) {
     const position = await positionId(
       positionContract,
       newData[i],
       userAddress
-    );
+      );
+      console.log("newData", position);
     const poolInfo = poolDataByAddr[newData[i]];
     const poolContract = await getAllContracts(
       newData[i],

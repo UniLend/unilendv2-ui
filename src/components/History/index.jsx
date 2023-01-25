@@ -71,8 +71,6 @@ const navigate = useNavigate()
 
    const getTransactionData = async () => {
     try {
-      
-  
     setIsPageLoading(true)
      const txtArray = await allTransaction(
       contracts.coreContract,
@@ -102,7 +100,8 @@ useEffect(() => {
   // if(!user.isConnected){
   //   navigate('/')
   // }
-  if ((user.address && contracts?.coreContract?._address, web3?.version)) {
+  if ((user.address && contracts?.coreContract?.address)) {
+
     getTransactionData();
   }
 }, [contracts, user, web3]);
