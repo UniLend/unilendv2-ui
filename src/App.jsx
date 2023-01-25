@@ -50,13 +50,8 @@ import {
 } from "./store/Action";
 import MainRoutes from "./routes";
 import {
-  // changeNetwork,
   connectWallet,
-  defProv,
-  // getProvider,
-  getweb3Instance,
-  MetaMaskEventHandler,
-  // MetaMaskEventHandler,
+  defProv
 } from "./services/wallet";
 import {
   coreAbi,

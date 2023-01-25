@@ -11,7 +11,8 @@
 }
 
 .poolcard_container{
-
+    width: 80%;
+    margin: auto;
     margin-bottom: 100px;
     display: grid;
     grid-template-columns: repeat(3, calc(100%/3) );

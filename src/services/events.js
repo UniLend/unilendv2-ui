@@ -1,7 +1,7 @@
 import { poolAbi, positionAbi } from "../core/contractData/abi";
 import { getAllContracts } from "../helpers/contracts";
 import { poolDataByAddr } from "../utils/constants";
-import { readContract } from "@wagmi/core";
+import { readContract, getContract, getProvider } from "@wagmi/core";
 
 export const getAllEvents = async (contract, event) => {
   try {
@@ -18,32 +18,34 @@ export const getAllEvents = async (contract, event) => {
     //   }
     // );
 
-    const result = await contract.queryFilter('PoolCreated')
+    const result = await contract.queryFilter(event)
     return result.map((item) => item.args);
   } catch (error) {
     return error;
   }
 };
 
-export const getEventsWithFilter = (contract, event, filter) => {
-  const events = contract
-    .getPastEvents(
-      event,
-      {
-        filter: filter,
-        fromBlock: 0,
-        toBlock: 'latest',
-      },
-      function (error, events) {
-        if (error) {
-          console.log(error);
-        }
-      }
-    )
-    .then((events) => {
+export const getEventsWithFilter = async (contract, event, filter) => {
+  // const events = contract
+  //   .getPastEvents(
+  //     event,
+  //     {
+  //       filter: filter,
+  //       fromBlock: 0,
+  //       toBlock: 'latest',
+  //     },
+  //     function (error, events) {
+  //       if (error) {
+  //         console.log(error);
+  //       }
+  //     }
+  //   )
+  //   .then((events) => {
       
-      return events;
-    });
+  //     return events;
+  //   });
+  const events = await contract.queryFilter(event)
+  console.log("events", events);
     return events;
 };
 
@@ -68,7 +70,7 @@ export const allTransaction = async (
   coreContract,
   positionContract,
   userAddress,
-  web3
+  poollist
 ) => {
   const data = await getAllEvents(coreContract, 'PoolCreated');
   // array of all pools address
@@ -81,13 +83,18 @@ export const allTransaction = async (
       newData[i],
       userAddress
       );
-      console.log("newData", position);
-    const poolInfo = poolDataByAddr[newData[i]];
-    const poolContract = await getAllContracts(
-      newData[i],
-      poolAbi,
-      web3
-    );
+      const poolInfo = poollist[newData[i]];
+      const poolContract =  getContract({
+        address: newData[i],
+        abi: poolAbi,
+        signerOrProvider: getProvider()
+      }) 
+      console.log("newData", position, poolContract, poolInfo);
+    // getAllContracts(
+    //   newData[i],
+    //   poolAbi,
+    //   web3
+    // );
     
     poolContract.poolInfo = poolInfo;
     
@@ -102,6 +109,6 @@ export const allTransaction = async (
    
     }
   }
-  // console.log("all array", array);
+   console.log("all array", array);
   return array;
 };

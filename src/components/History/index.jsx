@@ -8,7 +8,7 @@ import { allTransaction } from '../../services/events';
 import { poolDataByAddr, tokensByAddress } from '../../utils/constants';
 import txIcon from '../../assets/tx.svg';
 import noTxt from '../../assets/notxt.svg'
-import { fixed2Decimals } from '../../helpers/contracts';
+import { fixed2Decimals, fromBigNumber } from '../../helpers/contracts';
 import HistorySkeleton from '../Loader/HistorySkeleton';
 
 export default function HistoryComponent(props) {
@@ -76,7 +76,7 @@ const navigate = useNavigate()
       contracts.coreContract,
       contracts.positionContract,
       user.address,
-      web3
+      poolList
      )
      if (txtArray.length > 0) {
       const sort = txtArray.sort(function (a, b) {
@@ -88,7 +88,6 @@ const navigate = useNavigate()
 
       setTxtData(sort)
       setTxtDataBackup(sort)
-      
    }
    setIsPageLoading(false)
   } catch (error) {
@@ -168,18 +167,19 @@ const SortContent = () => {
                     <img src={poolList[txt.address]?.token1?.logo}  onError={imgError} alt={poolList[txt.address]?.token1?.symbol} />
                   </div>
                   <p className="hide_for_mobile hide_for_tab">
-                    {poolList[txt.address]?.token0?.symbol + "/" + poolList[txt.address]?.token1?.symbol}
+                    {/* {poolList[txt.address]?.token0?.symbol + "/" + poolList[txt.address]?.token1?.symbol} */}
                   </p>
                 </div>
                 <div>
-                  <p>{tokenList[txt.returnValues._asset]?.symbol}</p>
+                  <p>{tokenList[txt?.args?._asset]?.symbol}</p>
                 </div>
                 <div>
                   <p>{txt.event}</p>
                 </div>
                 <div>
                   <p>
-                    {(Number(txt.returnValues._amount) / 10 ** 18).toFixed(4)}
+                    { Number( fromBigNumber(txt?.args?._amount)/10**18 ).toFixed(4) }
+                    {/* {(Number(txt.returnValues._amount) / 10 ** 18).toFixed(4)} */}
                   </p>
                 </div>
                 <div className="hide_for_mobile">
