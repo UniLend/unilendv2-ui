@@ -10,16 +10,7 @@ import {
   configureChains,
   getContract,
   getProvider,
-  readContract,
   fetchToken,
-  watchContractEvent,
-  waitForTransaction,
-  connect,
-  fetchEnsName,
-  switchNetwork,
-  fetchBalance,
-  prepareWriteContract,
-  writeContract,
   fetchSigner,
 } from "@wagmi/core";
 import { publicProvider } from "@wagmi/core/providers/public";

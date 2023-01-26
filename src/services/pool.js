@@ -1,6 +1,5 @@
 import { coreAbi, erc20Abi, helperAbi } from "../core/contractData/abi";
-import { contractAddress } from "../core/contractData/contracts_sepolia";
-import { createClient, prepareWriteContract ,writeContract ,configureChains, getContract, getProvider, readContract, fetchToken, watchContractEvent, waitForTransaction, fetchSigner } from "@wagmi/core";
+import { getContract, readContract, fetchSigner } from "@wagmi/core";
 import {
   add,
   decimal2Fixed,
@@ -14,11 +13,6 @@ import {
   fromBigNumber
 } from '../helpers/contracts';
 import BigNumber from "bignumber.js";
-import { ethers } from "ethers";
-
-import { checkTxnError } from '../helpers/status';
-
-
 
 export const getContractInstance = async ( contractAddr, abi, fnName, args ) => {
 
@@ -43,7 +37,6 @@ export const getContractInstance = async ( contractAddr, abi, fnName, args ) => 
   // const { hash } = await writeContract(config)
   return instance;
 } catch (error) {
-  checkTxnError(error)
     throw error
 }
 }
@@ -649,7 +642,7 @@ export const handleLend = async (
   } catch (error) {
     console.error('Lend:', error);
     console.log({error});
-    // checkTxnError(error);
+    checkTxnError(error);
     return error;
   }
 };

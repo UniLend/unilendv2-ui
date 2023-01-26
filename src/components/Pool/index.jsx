@@ -3,7 +3,6 @@ import { Slider, Button , message, Modal} from "antd";
 import {waitForTransaction } from '@wagmi/core'
 import "./styles/index.scss";
 import {  useNavigate, useParams } from "react-router-dom";
-import { contractAddress } from "../../core/contractData/contracts";
 import {
   getPoolBasicData,
   getPoolAllData,
@@ -21,11 +20,9 @@ import {
   getCurrentLTV,
   getSelectLTV,
   getActionBtn,
-  mul,
 } from "../../helpers/contracts";
 import PoolSkeleton from "../Loader/PoolSkeleton";
 import TwitterModal from "../Common/TwitterModal";
-import faucet from '../../assets/faucet.svg';
 
 const lend = "lend";
 const borrow = "borrow";
@@ -170,7 +167,8 @@ if(selectedToken && collateralToken){
     setAmount(0);
     setMax(false);
     setIsOperationLoading(false);
-    const errorText = "Error: " + String(error.message).split(":")[1]
+    console.log("Error", {error});
+    const errorText = "Error: " + String(error.reason)
     message.error( error?.message ? errorText : 'Error: Transaction Error')
   };
 
