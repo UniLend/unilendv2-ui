@@ -20,6 +20,7 @@ import {
   fetchBalance,
   prepareWriteContract,
   writeContract,
+  fetchSigner,
 } from "@wagmi/core";
 import { publicProvider } from "@wagmi/core/providers/public";
 
@@ -160,6 +161,8 @@ function App() {
         const walletconnect = JSON.parse(localStorage.getItem("walletconnect"));
         const account = getAccount();
         let provider = etherProvider;
+        const signer = await fetchSigner()
+        console.log("Signer", signer);
         if (
           state?.user?.isConnected ||
           (walletconnect?.connected && account.isConnected)
@@ -212,10 +215,10 @@ function App() {
           const web3 = defProv();
           const poolData = {};
           const account = getAccount();
-          let provider = etherProvider;
-          if (state?.user?.isConnected && account.isConnected) {
-            provider = getProvider();
-          }
+          // let provider = etherProvider;
+          // if (state?.user?.isConnected && account.isConnected) {
+          //   provider = getProvider();
+          // }
           const result = await getAllEvents(
             state.contracts.coreContract,
             "PoolCreated"

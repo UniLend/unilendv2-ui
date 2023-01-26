@@ -1,6 +1,6 @@
 import { coreAbi, erc20Abi, helperAbi } from "../core/contractData/abi";
 import { contractAddress } from "../core/contractData/contracts_sepolia";
-import { createClient, prepareWriteContract, writeContract ,configureChains, getContract, getProvider, readContract, fetchToken, watchContractEvent, waitForTransaction } from "@wagmi/core";
+import { createClient, prepareWriteContract ,writeContract ,configureChains, getContract, getProvider, readContract, fetchToken, watchContractEvent, waitForTransaction, fetchSigner } from "@wagmi/core";
 import {
   add,
   decimal2Fixed,
@@ -20,21 +20,30 @@ import { checkTxnError } from '../helpers/status';
 
 
 
-export const handleWrite = async ( contractAddr, abi, fnName, args ) => {
+export const getContractInstance = async ( contractAddr, abi, fnName, args ) => {
 
   try {
-  const config = await prepareWriteContract({
-    address: contractAddr,
-    abi: abi,
-    functionName: fnName,
-    args: args,
-    overrides:{
-      gasLimit: 210000
-    }
-  })
-  const { hash } = await writeContract(config)
-  return hash
+    const signer = await fetchSigner()
+    const instance = getContract({
+      address: contractAddr,
+      abi: abi,
+      signerOrProvider: signer
+    })
+
+  //  const hash = await instance.[fnName](...args)
+  // const config = await prepareWriteContract({
+  //   address: contractAddr,
+  //   abi: abi,
+  //   functionName: fnName,
+  //   args: args,
+  //   overrides:{
+  //     gasLimit: 210000
+  //   }
+  // })
+  // const { hash } = await writeContract(config)
+  return instance;
 } catch (error) {
+  checkTxnError(error)
     throw error
 }
 }
@@ -82,6 +91,9 @@ export const handleRedeem = async (
   let actnCont;
   let hash;
   try {
+
+    const instance = await getContractInstance(contracts.coreContract.address, coreAbi, 'redeem', [poolAddress, maxAmount, userAddr])
+
     if (max) {
       if (selectedToken.collateralBalance > '0') {
         maxAmount = selectedToken.redeemBalance;
@@ -90,16 +102,19 @@ export const handleRedeem = async (
         }
       }
  
-      hash = await handleWrite(contracts.coreContract.address, coreAbi, 'redeem', [poolAddress, maxAmount, userAddr])
+      const txn = await instance.redeem(poolAddress, maxAmount, userAddr)
 
-
+      hash = txn?.hash
       // actnCont = await contracts.coreContract.methods.redeem(
       //   poolAddress,
       //   maxAmount,
       //   userAddr
       // );
     } else {
-      hash = await handleWrite(contracts.coreContract.address, coreAbi, 'redeemUnderlying', [poolAddress, Amount, userAddr])
+      const txn = await instance.redeemUnderlying(poolAddress, Amount, userAddr)
+
+      hash = txn?.hash
+      // hash = await getContractInstance(contracts.coreContract.address, coreAbi, 'redeemUnderlying', [poolAddress, Amount, userAddr])
       // actnCont = await contracts.coreContract.methods.redeemUnderlying(
       //   poolAddress,
       //   Amount,
@@ -152,8 +167,10 @@ export const setAllowance = async (
     '115792089237316195423570985008687907853269984665640564039457584007913129639935';
  try {
    
-  const hash = await handleWrite(token._address, erc20Abi, 'approve', [contracts.coreContract.address, maxAllow])
+  const instance = await getContractInstance(token._address, erc20Abi, 'approve', [contracts.coreContract.address, maxAllow])
 
+  const { hash } = await instance.approve(contracts.coreContract.address, maxAllow);
+ 
         const txn = {
         method: 'approval',
         amount: amount,
@@ -545,7 +562,6 @@ export const getPoolAllData = async (
     //  console.log("getPoolData", "full",pool);
       return pool;
     } catch (error) {
-      alert("error")
       console.error(error);
       return error;
     }
@@ -577,7 +593,18 @@ export const handleLend = async (
   try {
     if (greaterThan(selectedToken.allowance, amount)) {
 
-      const hash  = await handleWrite(contracts.coreContract.address, coreAbi, 'lend', [poolData._address, Amount])
+       const instance  = await getContractInstance(contracts.coreContract.address, coreAbi)
+      // const signer = await fetchSigner()
+      // const instance = getContract({
+      //   address: contracts.coreContract.address,
+      //   abi: coreAbi,
+      //   signerOrProvider: signer
+      // })
+
+
+      const transaction = await instance.lend(poolData._address, Amount)
+
+      console.log("transaction", transaction);
 
                const txn = {
             method: 'lend',
@@ -587,7 +614,7 @@ export const handleLend = async (
             poolAddress: poolAddress,
             chainId: '',
           }; //will hold the value of the transaction
-          checkTxnStatus(hash, txn);
+          checkTxnStatus(transaction?.hash, txn);
 
       // contracts.coreContract.methods
       //   .lend(poolData._address, Amount)
@@ -621,7 +648,8 @@ export const handleLend = async (
     }
   } catch (error) {
     console.error('Lend:', error);
-    checkTxnError(error);
+    console.log({error});
+    // checkTxnError(error);
     return error;
   }
 };
@@ -652,8 +680,10 @@ export const handleBorrow = async (
     if (greaterThan(collateralToken.allowance, collateral)) {
 
 
-      const hash = await handleWrite(contracts.coreContract.address, coreAbi, 'borrow', [poolData._address, Amount, Collateral, userAddr])
+      const instance = await getContractInstance(contracts.coreContract.address, coreAbi, 'borrow', [poolData._address, Amount, Collateral, userAddr])
 
+      const transaction = await instance.borrow(poolData._address, Amount, Collateral, userAddr);
+      console.log("transaction", transaction);
                 const txn = {
             method: 'borrow',
             amount: amount,
@@ -662,7 +692,8 @@ export const handleBorrow = async (
             poolAddress: poolData._address,
             chainId: '',
           };
-          checkTxnStatus(hash, txn);
+
+          checkTxnStatus(transaction?.hash, txn);
 
       // contracts.coreContract.methods
       //   .borrow(poolData._address, Amount, Collateral, userAddr)
@@ -730,8 +761,8 @@ export const handleRepay = async (
   try {
     if (greaterThan(selectedToken.allowance, amount)) {
 
-      const hash = await handleWrite(contracts.coreContract.address, coreAbi, 'repay', [poolAddress, Amount, userAddr])
-
+      const instance = await getContractInstance(contracts.coreContract.address, coreAbi, 'repay', [poolAddress, Amount, userAddr])
+     const {hash} = await instance.repay(poolAddress, Amount, userAddr)
           const txn = {
             method: 'repay',
             amount: amount,

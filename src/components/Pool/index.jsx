@@ -135,7 +135,7 @@ if(selectedToken && collateralToken){
     })
     .then((receipt)=> {
       if (receipt.status == 1) {
-        message.success(`Transaction for ${txnData.method} of ${txnData.amount} for token ${txnData.tokenSymbol}`, 5)
+        message.success(`Transaction for ${txnData.method} of ${Number(txnData.amount).toFixed(4)} for token ${txnData.tokenSymbol}`, 5)
         setMethodLoaded({ ...methodLoaded, getPoolFullData: false, getOraclePrice: false, getPoolTokensData: false });
 
         if(txnData.method !== 'approval') {
@@ -150,8 +150,9 @@ if(selectedToken && collateralToken){
         }, 1000);
       }
     })
-    .catch(() => {
-      
+    .catch((error) => {
+      console.error("status:", error);
+      console.log({error});
         setTimeout(function () {
           checkTxnStatus(hash, txnData);
         }, 1000);
