@@ -1,4 +1,5 @@
 import { lazy } from 'react';
+import UserDashboardComponent from '../components/UserDashBoard';
 
 export const openRoutes = [
   {
@@ -24,6 +25,6 @@ export const openRoutes = [
   {
     path: '/dashboard',
     exact: true,
-    element: lazy(() => import('../pages/userDashboard')),
+    element: UserDashboardComponent ,
   },
 ];

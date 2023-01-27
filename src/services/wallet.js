@@ -1,5 +1,4 @@
 import Web3 from 'web3';
-import Web3Modal from 'web3modal';
 import { createClient, configureChains, disconnect, getNetwork, connect, fetchEnsName, switchNetwork, fetchBalance , prepareWriteContract, writeContract , getProvider, readContract, fetchToken, watchContractEvent, waitForTransaction, getAccount } from "@wagmi/core";
 // local imports
 import { providerOptions } from '../constants/wallet';
@@ -8,11 +7,6 @@ import { networks } from '../core/networks/networks';
 import { MetaMaskconnector, WalletConnector } from '../App';
 
 const API = import.meta.env.VITE_INFURA_ID;
-
-export const web3Modal = new Web3Modal({
-  cacheProvider: true, // optional
-  providerOptions, // required
-});
 
 // export const getProvider = async () => {
 //  try {
@@ -48,7 +42,6 @@ export const getweb3Instance = async () => {
 };
 
 export const handleDisconnect = async () => {
-  // await web3Modal.clearCachedProvider();
   await disconnect()
   removeFromLocalStorage('user');
   localStorage.removeItem('walletconnect')

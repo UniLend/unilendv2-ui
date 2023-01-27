@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useQuery, gql } from "@apollo/client";
 import "./styles/index.scss";
 import { FiPercent } from "react-icons/fi";
 import { ImStack } from 'react-icons/im'
@@ -10,16 +11,112 @@ import { Input, Progress, Popover, Button } from "antd";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DonutChart from "../Common/DonutChart";
+import { getChartData, getPositionData } from "../../helpers/dashboard";
+
+
+//const endpoint = "https://api.spacex.land/graphql/";
+
+
 
 export default function UserDashboardComponent(props) {
-  const { contracts, user, web3, isLoading, isError, poolList } = props;
+  const { contracts, user, web3, isError, poolList, tokenList } = props;
+  const FILMS_QUERY = gql`
+  {
+    
+    positions(where: {owner: "0x84c6d5Df8a5e3ab9859708dA7645cC58176a26C0"}) {
+      borrowBalance0
+      borrowBalance1
+      healthFactor0
+      healthFactor1
+      id
+      borrowApy0
+      interestEarned1
+      borrowApy1
+      lendBalance0
+      lendBalance1
+      interestEarned0
+      owner
+      poolData {
+        id
+        interest0
+        interest1
+        ltv
+        pool
+        token0Liquidity
+        token1Liquidity
+      }
+      token0
+      token1
+      token0Symbol
+      token1Symbol
+    }
+
+    lends(where: {sender: "0x84c6d5Df8a5e3ab9859708dA7645cC58176a26C0"}, orderBy: tokenSymbol) {
+      id
+      amount
+      tokenAmount
+      pool
+      positionId
+      sender
+      tokenSymbol
+      token
+      transactionHash
+      blockTimestamp
+      blockNumber
+    }
+    redeems(where: {sender: "0x84c6d5Df8a5e3ab9859708dA7645cC58176a26C0"}, orderBy: id) {
+      id
+      sender
+      amount
+      pool
+      tokenSymbol
+      positionId
+      token
+      transactionHash
+      blockTimestamp
+      blockNumber
+    }
+    borrows(where: {sender: "0x84c6d5Df8a5e3ab9859708dA7645cC58176a26C0"}, orderBy: id) {
+      id
+      sender
+      amount
+      pool
+      positionId
+      tokenSymbol
+      token
+      transactionHash
+      blockTimestamp
+      blockNumber
+    }
+    repayBorrows(where: {payer: "0x84c6d5Df8a5e3ab9859708dA7645cC58176a26C0"}, orderBy: id) {
+      id
+      payer
+      amount
+      pool
+      positionId
+      token
+      transactionHash
+      tokenSymbol
+      blockTimestamp
+      blockNumber
+    }
+  }
+`;
+
+
   const [lendingVisible, setLendingVisible] = useState(false);
   const [borrowingVisible, setBorrowingVisible] = useState(false);
   const [isLendTab, setIsLentab] = useState(true);
+  const [pieChartInputs, setPieChartInputs] = useState({})
+  const [positionData, setPositionData] = useState({})
+  const { data, loading, error } = useQuery(FILMS_QUERY);
+
   const navigate = useNavigate();
   const handleLendingVisibleChange = (visible) => {
     setLendingVisible(visible);
   };
+
+
 
   const handleLendBorrowTabs = (action) => {
     setIsLentab(action);
@@ -33,6 +130,17 @@ export default function UserDashboardComponent(props) {
       </div>
     );
   };
+
+
+  useEffect(() => {
+ console.log("userData", data);
+ if(data) {
+  const position = getPositionData(data, poolList, tokenList)
+  setPositionData(position)
+  const pieChart = getChartData(data);
+  setPieChartInputs(pieChart)
+ }
+  }, [data])
 
   return (
     <div className="user_dashboard_component">
@@ -103,16 +211,16 @@ export default function UserDashboardComponent(props) {
           <div className="content">
             <div className="lend_container">
               <div>
-                <DonutChart />
+              { pieChartInputs?.donutLends && <DonutChart data={pieChartInputs?.donutLends} /> }
               </div>
               <div>
                 <div>
-                  <p>Total Balance</p>
-                  <h5>$123,000,152</h5>
+                  <p>Total Lend</p>
+                  <h5>{(pieChartInputs?.lendValues?.total)}</h5>
                 </div>
                 <div>
                   {" "}
-                  <p>Total Balance</p>
+                  <p>Lend APY</p>
                   <h5>$123,000,152</h5>
                 </div>
                 <div>
@@ -124,16 +232,16 @@ export default function UserDashboardComponent(props) {
             </div>
             <div className="borrow_container">
               <div>
-              <DonutChart />
+               { pieChartInputs?.donutBorrows && <DonutChart data={pieChartInputs?.donutBorrows} /> }
               </div>
               <div>
                 <div>
-                  <p>Total Balance</p>
-                  <h5>$123,000,152</h5>
+                  <p>Total Borrow</p>
+                  <h5>{pieChartInputs?.borrowValues?.total}</h5>
                 </div>
                 <div>
                   {" "}
-                  <p>Total Balance</p>
+                  <p>Borrow APY</p>
                   <h5>$123,000,152</h5>
                 </div>
                 <div>
@@ -165,9 +273,9 @@ export default function UserDashboardComponent(props) {
               <span>Value</span>
             </div>
             <div className="tbody">
-              {new Array(3).fill(0).map(() => {
+              {new Array(3).fill(0).map((_, i) => {
                 return (
-                  <div className="tbody_row">
+                  <div key={i} className="tbody_row">
                     <span>
                       <img
                         src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
@@ -242,7 +350,7 @@ export default function UserDashboardComponent(props) {
                   <span>Max LTV</span>
                 </div>
                 <div className="tbody">
-                  {new Array(6).fill(0).map(() => {
+                  { positionData?.lendArray && positionData?.lendArray.map((pool) => {
                     return (
                       <div className="tbody_row">
                         <span>
@@ -254,13 +362,13 @@ export default function UserDashboardComponent(props) {
                             src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
                             alt="uft"
                           />
-                          <p className="hide_for_mobile">UFT / USDC </p>
+                          <p className="hide_for_mobile"> UFT / USDC </p>
                         </span>
-                        <span >UFT</span>
-                        <span >00</span>
-                        <span >74.99%</span>
-                        <span >74.99%</span>
-                        <span >20.23</span>
+                        <span >{pool?.tokenSymbol}</span>
+                        <span >{Number(pool?.LendBalance).toFixed(2)}</span>
+                        <span >{pool?.apy}</span>
+                        <span >{pool.pool.ltv}%</span>
+                        <span >{ Number(pool?.interestEarned).toFixed(8)}</span>
                         <span>
                           <img
                             src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
@@ -272,9 +380,9 @@ export default function UserDashboardComponent(props) {
                           />
                           
                         </span>
-                        <span>UFT</span>
-                        <span>00</span>
-                        <span>74.99%</span>
+                        <span>{pool?.tokenSymbol}</span>
+                        <span>{Number(pool?.LendBalance).toFixed(2)}</span>
+                        <span>{pool?.apy}</span>
                       </div>
                     );
                   })}

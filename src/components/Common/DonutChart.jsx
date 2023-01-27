@@ -2,25 +2,31 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Pie } from '@ant-design/plots';
 
-export default function DonutChart () {
-  const data = [
-    {
-      type: 'UFT',
-      value: 70,
-    },
-    {
-      type: 'ETH',
-      value: 20,
-    },
-    {
-      type: 'MATIC',
-      value: 5,
-    },
-    {
-      type: 'OTHERS',
-      value: 5,
-    }
-  ];
+export default function DonutChart ({data}) {
+  const [pieData, setPieData] = useState([])
+  // const data = [
+  //   {
+  //     type: 'UFT',
+  //     value: 70,
+  //   },
+  //   {
+  //     type: 'ETH',
+  //     value: 20,
+  //   },
+  //   {
+  //     type: 'MATIC',
+  //     value: 5,
+  //   },
+  //   {
+  //     type: 'OTHERS',
+  //     value: 5,
+  //   }
+  // ];
+
+  useEffect(() => {
+  //  console.log("PieData", data);
+  }, [data])
+
   const config = {
     appendPadding: 5,
     data,
