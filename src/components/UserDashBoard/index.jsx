@@ -11,7 +11,7 @@ import { Input, Progress, Popover, Button } from "antd";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DonutChart from "../Common/DonutChart";
-import { getChartData, getPositionData } from "../../helpers/dashboard";
+import { getAverage, getChartData, getNetHealthFactor, getPositionData } from "../../helpers/dashboard";
 
 
 //const endpoint = "https://api.spacex.land/graphql/";
@@ -29,6 +29,7 @@ export default function UserDashboardComponent(props) {
       healthFactor0
       healthFactor1
       id
+      currentLTV
       borrowApy0
       interestEarned1
       borrowApy1
@@ -110,6 +111,7 @@ export default function UserDashboardComponent(props) {
   const [pieChartInputs, setPieChartInputs] = useState({})
   const [positionData, setPositionData] = useState({})
   const { data, loading, error } = useQuery(FILMS_QUERY);
+  const [headerAnalytics, setHeaderAnalytics] = useState({})
 
   const navigate = useNavigate();
   const handleLendingVisibleChange = (visible) => {
@@ -139,8 +141,27 @@ export default function UserDashboardComponent(props) {
   setPositionData(position)
   const pieChart = getChartData(data);
   setPieChartInputs(pieChart)
+  const analytics = {
+   
+  }
+  if(position?.borrowArray){
+    const borrowAPY = getAverage(position.borrowArray, 'apy', 'borrowBalance')
+   analytics.borrowAPY = borrowAPY
+  }
+  if(position?.lendArray){
+    const earned =  position.lendArray.map((el)=> el.interestEarned).reduce((ac, el) => ac + el)
+   analytics.interestEarned = earned
+   console.log("heath", earned);
+  }
+  if(data?.positions){
+    const HF = getNetHealthFactor(data.positions)
+    analytics.healthFactor = HF
+  
+  }
+  setHeaderAnalytics(analytics)
  }
   }, [data])
+  
 
   return (
     <div className="user_dashboard_component">
@@ -169,7 +190,7 @@ export default function UserDashboardComponent(props) {
                 </div>
                 <div className="values">
                   <p>Net Worth</p>
-                  <h5>$1520635</h5>
+                  <h5>{ Number(pieChartInputs?.lendValues?.total - pieChartInputs?.borrowValues?.total).toFixed(2)}</h5>
                 </div>
               </div>
               <div className="analytic_box">
@@ -179,7 +200,7 @@ export default function UserDashboardComponent(props) {
                 </div>
                 <div className="values">
                   <p>Lend APY</p>
-                  <h5>63.02%</h5>
+                  <h5>-</h5>
                 </div>
               </div>
               <div className="analytic_box">
@@ -189,7 +210,7 @@ export default function UserDashboardComponent(props) {
                 </div>
                 <div className="values">
                   <p>Borrow APY</p>
-                  <h5>52.04%</h5>
+                  <h5>{ Number(headerAnalytics?.borrowAPY).toFixed(2)}%</h5>
                 </div>
               </div>
               <div className="analytic_box heath_factor">
@@ -199,7 +220,7 @@ export default function UserDashboardComponent(props) {
                 </div>
                 <div className="values">
                   <p>Health Factor</p>
-                  <h5>$1520635</h5>
+                  <h5>{Number(headerAnalytics?.healthFactor).toFixed(2)}</h5>
                 </div>
               </div>
             </div>
@@ -221,12 +242,12 @@ export default function UserDashboardComponent(props) {
                 <div>
                   {" "}
                   <p>Lend APY</p>
-                  <h5>$123,000,152</h5>
+                  <h5>-</h5>
                 </div>
                 <div>
                   {" "}
-                  <p>Total Balance</p>
-                  <h5>$123,000,152</h5>
+                  <p> Interest Earned </p>
+                  <h5>{ Number(headerAnalytics.interestEarned).toFixed(8) }</h5>
                 </div>
               </div>
             </div>
@@ -242,12 +263,12 @@ export default function UserDashboardComponent(props) {
                 <div>
                   {" "}
                   <p>Borrow APY</p>
-                  <h5>$123,000,152</h5>
+                  <h5>{Number(headerAnalytics?.healthFactor).toFixed(2)}</h5>
                 </div>
                 <div>
                   {" "}
-                  <p>Total Balance</p>
-                  <h5>$123,000,152</h5>
+                  <p> Borrowed Power Used </p>
+                  <h5>-</h5>
                 </div>
               </div>
             </div>
@@ -355,60 +376,39 @@ export default function UserDashboardComponent(props) {
                       <div className="tbody_row">
                         <span>
                           <img
-                            src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
+                            src={pool.poolInfo.token0Logo}
                             alt="uft"
                           />
                           <img
-                            src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
+                            src={pool.poolInfo.token1Logo}
                             alt="uft"
                           />
-                          <p className="hide_for_mobile"> UFT / USDC </p>
+                          <p className="hide_for_mobile"> {pool.poolInfo.token0Symbol} / {pool.poolInfo.token1Symbol} </p>
                         </span>
                         <span >{pool?.tokenSymbol}</span>
                         <span >{Number(pool?.LendBalance).toFixed(2)}</span>
-                        <span >{pool?.apy}</span>
+                        <span >{pool?.apy}%</span>
                         <span >{pool.pool.ltv}%</span>
                         <span >{ Number(pool?.interestEarned).toFixed(8)}</span>
                         <span>
-                          <img
-                            src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
+                        <img
+                            src={pool.poolInfo.token0Logo}
                             alt="uft"
                           />
                           <img
-                            src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
+                            src={pool.poolInfo.token1Logo}
                             alt="uft"
                           />
                           
                         </span>
                         <span>{pool?.tokenSymbol}</span>
                         <span>{Number(pool?.LendBalance).toFixed(2)}</span>
-                        <span>{pool?.apy}</span>
+                        <span>{pool?.apy}%</span>
                       </div>
                     );
                   })}
                 </div>
-                {/* <div className="tbody hide_for_monitor">
-                  {new Array(6).fill(0).map(() => {
-                    return (
-                      <div className="tbody_row">
-                        <span>
-                          <img
-                            src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
-                            alt="uft"
-                          />
-                          <img
-                            src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
-                            alt="uft"
-                          />
-                          
-                        </span>
-                        <span>UFT</span>
-                        <span>00</span>
-                        <span>74.99%</span>
-                      </div>
-                    );
-                  })}
-                </div> */}
+
               </div>
             ) : (
               <div>
@@ -443,65 +443,43 @@ export default function UserDashboardComponent(props) {
                   <span>Current LTV</span>
                 </div>
                 <div className="tbody">
-                  {new Array(6).fill(0).map(() => {
+                  {positionData?.borrowArray && positionData?.borrowArray.map((pool) => {
                     return (
                       <div className="tbody_row">
                         <span>
-                          <img
-                            src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
+                        <img
+                            src={pool.poolInfo.token0Logo}
                             alt="uft"
                           />
                           <img
-                            src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
+                            src={pool.poolInfo.token1Logo}
                             alt="uft"
                           />
-                          <p className="hide_for_mobile">UFT / USDC </p>
+                          <p className="hide_for_mobile"> {pool.poolInfo.token0Symbol} / {pool.poolInfo.token1Symbol}</p>
                         </span>
-                        <span >UFT</span>
-                        <span >00</span>
-                        <span >74.99%</span>
-                        <span >74.99%</span>
-                        <span >20.23</span>
+                        <span >{pool?.tokenSymbol}</span>
+                        <span >{Number(pool?.borrowBalance).toFixed(2)}</span>
+                        <span >{ Number(pool?.apy).toFixed(3) }%</span>
+                        <span >{Number(pool?.currentLTV).toFixed(4)*100}</span>
+                        <span >{ Number(pool?.healthFactor/(10**18)).toFixed(2) }</span>
                         <span>
-                          <img
-                            src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
+                        <img
+                            src={pool.poolInfo.token0Logo}
                             alt="uft"
                           />
                           <img
-                            src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
+                            src={pool.poolInfo.token1Logo}
                             alt="uft"
                           />
                           
                         </span>
-                        <span>UFT</span>
-                        <span>00</span>
-                        <span>74.99%</span>
+                        <span>{pool?.tokenSymbol}</span>
+                        <span>{Number(pool?.apy).toFixed(3)}%</span>
+                        <span>{Number(pool?.currentLTV).toFixed(4)*100}</span>
                       </div>
                     );
                   })}
                 </div>
-                {/* <div className="tbody hide_for_monitor">
-                  {new Array(6).fill(0).map(() => {
-                    return (
-                      <div className="tbody_row">
-                        <span>
-                          <img
-                            src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
-                            alt="uft"
-                          />
-                          <img
-                            src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
-                            alt="uft"
-                          />
-                          
-                        </span>
-                        <span>UFT</span>
-                        <span>00</span>
-                        <span>74.99%</span>
-                      </div>
-                    );
-                  })}
-                </div> */}
               </div>
             )}
           </div>
