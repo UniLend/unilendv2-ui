@@ -15,6 +15,7 @@
     "@metamask/detect-provider": "^2.0.0",
     "@wagmi/core": "^0.8.18",
     "@walletconnect/web3-provider": "^1.8.0",
+    "alchemy-sdk": "^2.4.0",
     "antd": "^4.23.4",
     "axios": "^1.2.4",
     "bignumber.js": "^9.1.0",

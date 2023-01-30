@@ -1,31 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import ReactDOM from 'react-dom';
 import { Pie } from '@ant-design/plots';
 
-export default function DonutChart ({data}) {
+const DonutChart = memo(function DonutChartMemo ({data}) {
   const [pieData, setPieData] = useState([])
-  // const data = [
-  //   {
-  //     type: 'UFT',
-  //     value: 70,
-  //   },
-  //   {
-  //     type: 'ETH',
-  //     value: 20,
-  //   },
-  //   {
-  //     type: 'MATIC',
-  //     value: 5,
-  //   },
-  //   {
-  //     type: 'OTHERS',
-  //     value: 5,
-  //   }
-  // ];
 
-  useEffect(() => {
-  //  console.log("PieData", data);
-  }, [data])
 
   const config = {
     appendPadding: 5,
@@ -51,10 +30,10 @@ export default function DonutChart ({data}) {
     theme : {
         colors10: [
           '#0045FF',
-          '#818BA1',
           '#F5AC37',
           '#8F00FF',
           '#76523B',
+          '#818BA1',
           '#DAD5B5',
           '#0E8E89',
           '#E19348',
@@ -84,4 +63,6 @@ export default function DonutChart ({data}) {
     },
   };
   return <Pie {...config} />;
-};
+});
+
+export default DonutChart
