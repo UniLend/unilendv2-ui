@@ -99,10 +99,6 @@ export const getPositionData = (data, poolList, tokenList) => {
   const borrowArray = [];
 
   for (const object of position) {
-    console.log(
-      "pool",
-      tokenList["0x5093af5df5eafd96b518a11cfb32c37da2f8f0c3"]
-    );
     if (object.borrowBalance0 > 0 && object.borrowBalance1 == 0) {
       const BorrowObj = {};
 
@@ -240,7 +236,7 @@ export const getPositionData = (data, poolList, tokenList) => {
     }
   }
 
-  console.log("Positions", borrowArray, lendArray, poolList);
+  //   console.log("Positions", borrowArray, lendArray, poolList);
 
   return { borrowArray, lendArray };
 };
@@ -309,6 +305,22 @@ export const getTokensFromUserWallet = async (data) => {
   }
 
   return tokensObject;
+};
+
+export const getBorrowedPowerUsed = (borrowPositions) => {
+  let num = 0;
+  let deno = 0;
+
+  for (const position of borrowPositions) {
+    const usedInPer =
+      (Number(position.currentLTV * 100) / position.pool.ltv) * 100;
+    num += usedInPer * position.LendBalance;
+    deno += position.LendBalance;
+  }
+
+  const usedPower = (num / deno).toFixed(2);
+
+  return usedPower > 100 ? 100 : usedPower;
 };
 
 export const userDashBoardQuery = (address) => {

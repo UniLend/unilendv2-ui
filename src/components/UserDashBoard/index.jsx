@@ -14,12 +14,14 @@ import { useNavigate } from "react-router-dom";
 import DonutChart from "../Common/DonutChart";
 import {
   getAverage,
+  getBorrowedPowerUsed,
   getChartData,
   getNetHealthFactor,
   getPositionData,
   getTokensFromUserWallet,
   userDashBoardQuery,
 } from "../../helpers/dashboard";
+import { getNetwork } from "@wagmi/core";
 
 //const endpoint = "https://api.spacex.land/graphql/";
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -31,6 +33,11 @@ const alchemy = new Alchemy(config);
 
 export default function UserDashboardComponent(props) {
   const { contracts, user, web3, isError, poolList, tokenList } = props;
+  const {chain} = getNetwork();
+  const navigate = useNavigate();
+  if(chain.id !== 80001 ){
+    navigate('/')
+  }
   const [userAddress, setUserAddress] = useState(user?.address);
   const query = userDashBoardQuery(userAddress || user?.address);
   const [lendingVisible, setLendingVisible] = useState(false);
@@ -42,7 +49,7 @@ export default function UserDashboardComponent(props) {
   const [headerAnalytics, setHeaderAnalytics] = useState({});
   const [walletTokens, setWalletTokens] = useState([]);
 
-  const navigate = useNavigate();
+
   const handleLendingVisibleChange = (visible) => {
     setLendingVisible(visible);
   };
@@ -87,6 +94,8 @@ export default function UserDashboardComponent(props) {
         analytics.interestEarned = earned;
         const lendAPY = getAverage(position.lendArray, "apy", "LendBalance");
         analytics.lendAPY = lendAPY;
+        const powerUsed = getBorrowedPowerUsed(position.lendArray);
+        analytics.powerUsed = powerUsed;
       }
       if (data?.positions) {
         const HF = getNetHealthFactor(data.positions);
@@ -184,9 +193,9 @@ export default function UserDashboardComponent(props) {
                 </div>
               </div>
             </div>
-            <div className="network_dropdown">
+            {/* <div className="network_dropdown">
               <p>Etherium</p>
-            </div>
+            </div> */}
           </div>
 
           <div className="content">
@@ -234,7 +243,7 @@ export default function UserDashboardComponent(props) {
                 <div>
                   {" "}
                   <p> Borrowed Power Used </p>
-                  <h5>-</h5>
+                  <h5>{headerAnalytics?.powerUsed || 0}</h5>
                 </div>
               </div>
             </div>
@@ -360,7 +369,7 @@ export default function UserDashboardComponent(props) {
                           </span>
                           <span>{pool?.tokenSymbol}</span>
                           <span>{Number(pool?.LendBalance).toFixed(2)}</span>
-                          <span>{pool?.apy}%</span>
+                          <span>{Number(pool?.apy).toFixed(2)}%</span>
                         </div>
                       );
                     })}

@@ -1,7 +1,8 @@
 import { poolAbi, positionAbi } from "../core/contractData/abi";
-import { getAllContracts } from "../helpers/contracts";
+import { fromBigNumber, getAllContracts } from "../helpers/contracts";
 import { poolDataByAddr } from "../utils/constants";
 import { readContract, getContract, getProvider } from "@wagmi/core";
+import Web3 from "web3";
 
 export const getAllEvents = async (contract, event) => {
   try {
@@ -26,7 +27,7 @@ export const getAllEvents = async (contract, event) => {
 };
 
 export const getEventsWithFilter = async (contract, event, filter) => {
-  // const events = contract
+  // const events = await contract
   //   .getPastEvents(
   //     event,
   //     {
@@ -36,17 +37,19 @@ export const getEventsWithFilter = async (contract, event, filter) => {
   //     },
   //     function (error, events) {
   //       if (error) {
-  //         console.log(error);
+  //         console.log("eventFilter",error);
   //       }
   //     }
   //   )
-  //   .then((events) => {
-      
-  //     return events;
-  //   });
+
+    // .then((events) => {
+    //   console.log("eventFilter", events);
+    //   return events;
+    // });
+
   const events = await contract.queryFilter(event)
-  console.log("events", events);
-    return events;
+  const filtered = events.filter((event) => fromBigNumber(event.args._positionID) == filter._positionID )
+    return filtered;
 };
 
 export const positionId = async (
@@ -75,7 +78,7 @@ export const allTransaction = async (
   const data = await getAllEvents(coreContract, 'PoolCreated');
   // array of all pools address
   const newData = data.map((event) => event.pool);
-
+  console.log("newData", newData);
   let array = [];
   for (let i = 0; i < newData.length; i++) {
     const position = await positionId(
@@ -83,20 +86,27 @@ export const allTransaction = async (
       newData[i],
       userAddress
       );
+     
       const poolInfo = poollist[newData[i]];
+     
       const poolContract =  getContract({
         address: newData[i],
         abi: poolAbi,
         signerOrProvider: getProvider()
       }) 
-      console.log("newData", position, poolContract, poolInfo);
+   
+      // const provider = getProvider()
+      // const web3 = new Web3(provider)
+      // //console.log("newData", position, poolInfo, web3);
+      // const web3PoolContract = new web3.eth.Contract(poolAbi, newData[i])
+      // console.log("newData", position, web3PoolContract);
     // getAllContracts(
     //   newData[i],
     //   poolAbi,
     //   web3
     // );
     
-    poolContract.poolInfo = poolInfo;
+   
     
     const eventNames = ['Borrow', 'Lend', 'Redeem', 'RepayBorrow'];
     for (let j = 0; j < eventNames.length; j++) {
