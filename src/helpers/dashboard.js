@@ -61,22 +61,31 @@ export const getChartData = (data) => {
     }
   }
 
-  for (const lend in lendValues) {
+  const sortedLend = Object.entries(lendValues)
+  .sort(([,a],[,b]) => b-a)
+  .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+
+  const sortedBorrow = Object.entries(borrowValues)
+  .sort(([,a],[,b]) => b-a)
+  .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+  console.log("sorted", sortedLend, lendValues);
+
+  for (const lend in sortedLend) {
     const payload = {
       type: lend,
-      value: getPercent(lendValues[lend], lendValues["total"]),
+      value: getPercent(sortedLend[lend], sortedLend["total"]),
     };
-    if (lend !== "total" && lendValues[lend] > 0) {
+    if (lend !== "total" && sortedLend[lend] > 0) {
       donutLends.push(payload);
     }
   }
 
-  for (const borrow in borrowValues) {
+  for (const borrow in sortedBorrow) {
     const payload = {
       type: borrow,
-      value: getPercent(borrowValues[borrow], borrowValues["total"]),
+      value: getPercent(sortedBorrow[borrow], sortedBorrow["total"]),
     };
-    if (borrow !== "total" && borrowValues[borrow] > 0) {
+    if (borrow !== "total" && sortedBorrow[borrow] > 0) {
       donutBorrows.push(payload);
     }
   }

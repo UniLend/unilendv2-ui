@@ -95,19 +95,7 @@ export const allTransaction = async (
         signerOrProvider: getProvider()
       }) 
    
-      // const provider = getProvider()
-      // const web3 = new Web3(provider)
-      // //console.log("newData", position, poolInfo, web3);
-      // const web3PoolContract = new web3.eth.Contract(poolAbi, newData[i])
-      // console.log("newData", position, web3PoolContract);
-    // getAllContracts(
-    //   newData[i],
-    //   poolAbi,
-    //   web3
-    // );
-    
-   
-    
+
     const eventNames = ['Borrow', 'Lend', 'Redeem', 'RepayBorrow'];
     for (let j = 0; j < eventNames.length; j++) {
      

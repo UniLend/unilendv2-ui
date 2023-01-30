@@ -168,7 +168,7 @@ if(selectedToken && collateralToken){
     setMax(false);
     setIsOperationLoading(false);
     console.log("Error", {error});
-    const errorText = "Error: " + String(error.reason)
+    const errorText =  String(error.reason)
     message.error( error?.message ? errorText : 'Error: Transaction Error')
   };
 

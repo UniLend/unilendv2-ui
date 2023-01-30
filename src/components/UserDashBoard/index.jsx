@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import "./styles/index.scss";
-import { FiPercent } from "react-icons/fi";
+import { FiPercent, FiHeart } from "react-icons/fi";
+import { VscGraph } from "react-icons/vsc"
+import { GiReceiveMoney } from "react-icons/gi"
 import { ImStack } from "react-icons/im";
 import { Alchemy, Network } from "alchemy-sdk";
 import { FaWallet } from "react-icons/fa";
@@ -21,7 +23,7 @@ import {
   getTokensFromUserWallet,
   userDashBoardQuery,
 } from "../../helpers/dashboard";
-import { getNetwork } from "@wagmi/core";
+import { getAccount, getNetwork } from "@wagmi/core";
 
 //const endpoint = "https://api.spacex.land/graphql/";
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -38,16 +40,24 @@ export default function UserDashboardComponent(props) {
   if(chain.id !== 80001 ){
     navigate('/')
   }
-  const [userAddress, setUserAddress] = useState(user?.address);
-  const query = userDashBoardQuery(userAddress || user?.address);
+  const { address } = getAccount()
+  const [userAddress, setUserAddress] = useState();
+  const query = userDashBoardQuery(userAddress || address);
   const [lendingVisible, setLendingVisible] = useState(false);
   const [borrowingVisible, setBorrowingVisible] = useState(false);
   const [isLendTab, setIsLentab] = useState(true);
   const [pieChartInputs, setPieChartInputs] = useState({});
   const [positionData, setPositionData] = useState({});
   const { data, loading, error } = useQuery(query);
-  const [headerAnalytics, setHeaderAnalytics] = useState({});
+  const [headerAnalytics, setHeaderAnalytics] = useState({
+    healthFactor: 0,
+    powerUsed: 0,
+    borrowAPY: 0,
+    lendAPY:0
+  });
   const [walletTokens, setWalletTokens] = useState([]);
+  const [walletTokenLoading, setWalletTokenLoading] = useState(false)
+  const [positionLoading, setPositionLoading] = useState(false)
 
 
   const handleLendingVisibleChange = (visible) => {
@@ -68,7 +78,7 @@ export default function UserDashboardComponent(props) {
   };
 
   useEffect(() => {
-    setUserAddress(user?.address);
+    setUserAddress(address);
   }, [user]);
 
   useEffect(() => {
@@ -99,26 +109,33 @@ export default function UserDashboardComponent(props) {
       }
       if (data?.positions) {
         const HF = getNetHealthFactor(data.positions);
-        analytics.healthFactor = HF;
+        console.log("health", HF, isNaN(HF));
+        analytics.healthFactor = isNaN(HF) ? 0: HF;
       }
       setHeaderAnalytics(analytics);
     }
   }, [data]);
 
-  const getUserTokens = async () => {
+  const getUserTokens = async (address) => {
+    setWalletTokenLoading(true)
+  
+    console.log("getUserTokens", address);
     alchemy.core
-      .getTokenBalances(`${userAddress || user?.address}`)
+      .getTokenBalances(`${address}`)
       .then(async (bal) => {
         const tokens = await getTokensFromUserWallet(bal);
         setWalletTokens(tokens);
+        setWalletTokenLoading(false)
       });
   };
 
   useEffect(() => {
     if (userAddress || user?.address) {
-      getUserTokens();
+      setWalletTokens([]);
+      const account = getAccount()
+      getUserTokens(userAddress || account.address);
     }
-  }, [userAddress, user?.address]);
+  }, [userAddress, user]);
 
   return (
     <div className="user_dashboard_component">
@@ -144,7 +161,7 @@ export default function UserDashboardComponent(props) {
               <div className="analytic_box">
                 <div className="icon_box">
                   {" "}
-                  <FiPercent />{" "}
+                  <GiReceiveMoney />{" "}
                 </div>
                 <div className="values">
                   <p>Net Worth</p>
@@ -159,7 +176,7 @@ export default function UserDashboardComponent(props) {
               <div className="analytic_box">
                 <div className="icon_box">
                   {" "}
-                  <FiPercent />{" "}
+                  <VscGraph />{" "}
                 </div>
                 <div className="values">
                   <p>Lend APY</p>
@@ -183,12 +200,12 @@ export default function UserDashboardComponent(props) {
               <div className="analytic_box heath_factor">
                 <div className="icon_box">
                   {" "}
-                  <FiPercent />{" "}
+                  <FiHeart />{" "}
                 </div>
                 <div className="values">
                   <p>Health Factor</p>
                   <h5>
-                    {Number(headerAnalytics?.healthFactor || 0).toFixed(2)}
+                    {Number(headerAnalytics?.healthFactor || 0).toFixed(2) || 0}
                   </h5>
                 </div>
               </div>
@@ -268,7 +285,7 @@ export default function UserDashboardComponent(props) {
               <span>Value</span>
             </div>
             <div className="tbody">
-              {walletTokens.map((token, i) => {
+              { !walletTokenLoading && walletTokens.map((token, i) => {
                 return (
                   <div key={i} className="tbody_row">
                     <span>
@@ -285,6 +302,13 @@ export default function UserDashboardComponent(props) {
                   </div>
                 );
               })}
+              {
+               walletTokenLoading && new Array(3).fill(0).map((_,i) => {
+                return(
+                  <div className="tbody_row row_skeleton skeleton" ></div>
+                )
+               })
+              }
             </div>
           </div>
         </div>
@@ -340,8 +364,8 @@ export default function UserDashboardComponent(props) {
                   <span>Max LTV</span>
                   <span> Interest Earned </span>
                   <span>Pool</span>
-                  <span>Token</span>
-                  <span>APY</span>
+                  <span>Token / <br/> Amount</span>
+                  <span>APY / <br/> Interest </span>
                   <span>Max LTV</span>
                 </div>
                 <div className="tbody">
@@ -367,9 +391,9 @@ export default function UserDashboardComponent(props) {
                             <img src={pool.poolInfo.token0Logo} alt="uft" />
                             <img src={pool.poolInfo.token1Logo} alt="uft" />
                           </span>
-                          <span>{pool?.tokenSymbol}</span>
-                          <span>{Number(pool?.LendBalance).toFixed(2)}</span>
-                          <span>{Number(pool?.apy).toFixed(2)}%</span>
+                          <span>{pool?.tokenSymbol}  <br/> {Number(pool?.LendBalance).toFixed(2)} </span>
+                          <span>{Number(pool?.apy).toFixed(2)}%  <br/> {Number(pool?.interestEarned).toFixed(6)} </span>
+                          <span>{pool.pool.ltv}%</span>
                         </div>
                       );
                     })}
@@ -403,8 +427,8 @@ export default function UserDashboardComponent(props) {
                   <span>Current LTV</span>
                   <span> Health Factor </span>
                   <span>Pool</span>
-                  <span>Token</span>
-                  <span>APY</span>
+                  <span>Token / <br/> Amount</span>
+                  <span>APY / <br/> HF</span>
                   <span>Current LTV</span>
                 </div>
                 <div className="tbody">
@@ -425,7 +449,7 @@ export default function UserDashboardComponent(props) {
                           <span>{Number(pool?.borrowBalance).toFixed(2)}</span>
                           <span>{Number(pool?.apy).toFixed(3)}%</span>
                           <span>
-                            {Number(pool?.currentLTV).toFixed(4) * 100}
+                            {(Number(pool?.currentLTV) * 100).toFixed(2)}
                           </span>
                           <span>
                             {Number(pool?.healthFactor / 10 ** 18).toFixed(2)}
@@ -434,10 +458,10 @@ export default function UserDashboardComponent(props) {
                             <img src={pool.poolInfo.token0Logo} alt="uft" />
                             <img src={pool.poolInfo.token1Logo} alt="uft" />
                           </span>
-                          <span>{pool?.tokenSymbol}</span>
-                          <span>{Number(pool?.apy).toFixed(3)}%</span>
+                          <span>{pool?.tokenSymbol} <br/> {Number(pool?.borrowBalance).toFixed(2)} </span>
+                          <span>{Number(pool?.apy).toFixed(3)}% <br/>  {Number(pool?.healthFactor / 10 ** 18).toFixed(2)} </span>
                           <span>
-                            {Number(pool?.currentLTV).toFixed(4) * 100}
+                          {(Number(pool?.currentLTV) * 100).toFixed(2)}
                           </span>
                         </div>
                       );
