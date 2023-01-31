@@ -16,6 +16,7 @@ import { getAccount, getNetwork } from "@wagmi/core";
 
 export default function HistoryComponent(props) {
   const { contracts, user, web3, poolList, tokenList } = props;
+  const navigate = useNavigate();
 
   const { address } = getAccount();
   const newArray = new Array(50).fill(0).map((el, i) => i + 1);
@@ -34,14 +35,17 @@ export default function HistoryComponent(props) {
   const query = getHistoryGraphQuery(address);
 
   const { data, loading, error } = useQuery(query);
-  const navigate = useNavigate();
+ 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
   };
 
   useEffect(() => {
+    if(!user.isConnected){
+      navigate('/')
+    }
     const { chain } = getNetwork();
-    if (chain.id == 80001) {
+    if (chain?.id == 80001) {
       const pools = {};
       for (const key in poolList) {
         const pool = poolList[key];
