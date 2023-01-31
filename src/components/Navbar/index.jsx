@@ -72,7 +72,7 @@ const handleOpenSwitchNetwork = (visible) => {
 
   useEffect(() => {
     const {chain} = getNetwork()
-    if(chain.id == 80001){
+    if(chain?.id == 80001){
       setIsPolygon(true)
     } else {
       setIsPolygon(false)

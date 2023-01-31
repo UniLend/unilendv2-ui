@@ -25,19 +25,17 @@ export const getChartData = (data) => {
         const sub = {};
         //const totalAmount = Object.values(actionObjects).map((el) => Number(el.amount)).reduce((ac, el) => ac + el)
         for (const action of actionObjects) {
-          //console.log("action", action);
           sub[action.tokenSymbol] =
             (sub[action.tokenSymbol] || 0) + Number(action.amount) / 10 ** 18;
           total = total + Number(action.amount) / 10 ** 18;
         }
-        //console.log("actions", sub);
         chart[item] = sub;
         chart[item]["total"] = total;
       }
     }
   }
 
-  // console.log("element", "chart", chart);
+
   const lendValues = {};
   const borrowValues = {};
   const donutLends = [];
@@ -68,7 +66,6 @@ export const getChartData = (data) => {
   const sortedBorrow = Object.entries(borrowValues)
   .sort(([,a],[,b]) => b-a)
   .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
-  console.log("sorted", sortedLend, lendValues);
 
   for (const lend in sortedLend) {
     const payload = {
@@ -90,7 +87,6 @@ export const getChartData = (data) => {
     }
   }
 
-  // console.log("element", "Lendschart", lendValues, borrowValues, donutLends);
 
   return { lendValues, borrowValues, donutLends, donutBorrows };
 };
@@ -245,7 +241,6 @@ export const getPositionData = (data, poolList, tokenList) => {
     }
   }
 
-  //   console.log("Positions", borrowArray, lendArray, poolList);
 
   return { borrowArray, lendArray };
 };
@@ -438,7 +433,6 @@ export const sortByKey = (data, key, order) => {
     return 0;
   });
  }
- console.log("Sorted", "sort", sort);
 return sort;
 }
 

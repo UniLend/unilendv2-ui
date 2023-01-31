@@ -59,7 +59,6 @@ export default function HistoryComponent(props) {
           ...data.repayBorrows,
         ];
         const sorted = sortByKey(newArray, "blockTimestamp", 1);
-        console.log("history", sorted);
         setGraphHistory(sorted);
         setGraphHistoryBackup(sorted);
         setIsPageLoading(false);
@@ -103,7 +102,6 @@ export default function HistoryComponent(props) {
           String(txt.__typename).toUpperCase().includes(value)
       );
       if(value == ''){
-        console.log(value);
         searched = graphHistoryBackup
       }
       setGraphHistory(searched)

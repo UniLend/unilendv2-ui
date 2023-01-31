@@ -249,7 +249,6 @@ export const getTokenPrice = async (
 
       pool.token0.tabs = getTabs(pool.token0);
       pool.token1.tabs = getTabs(pool.token1);
-      console.log("get", 'token', pool);
       return pool;
     } catch (error) {
       return error;
@@ -305,7 +304,7 @@ export const getOracleData = async (contracts, poolData) => {
       );
       poolData.token1.redeemBalance = redeem1 >= 0 ? redeem1 : 0;
       poolData.token1.redeemBalanceFixed = new BigNumber(poolData.token1.redeemBalance).dividedBy(10 ** poolData.token1._decimals).toFixed();
-      console.log("get", 'oracle', pool);
+
       return pool;
     } catch (error) {
       return error;
@@ -327,7 +326,6 @@ export const getPoolBasicData = async (
   let pool;
   if (contracts.helperContract && contracts.coreContract) {
 
-    console.log("get", contracts.helperContract.address, helperAbi, 'getPoolData', [poolAddress]  );
 
     try {
       // const data = await contracts.helperContract.methods
@@ -364,7 +362,6 @@ export const getPoolBasicData = async (
           ...poolTokens.token1,
         },
       };
-     console.log("getPoolData", pool);
       return pool;
     } catch (error) {
       
@@ -552,7 +549,6 @@ export const getPoolAllData = async (
           ),
         },
       };
-    //  console.log("getPoolData", "full",pool);
       return pool;
     } catch (error) {
       console.error(error);
@@ -582,7 +578,6 @@ export const handleLend = async (
     Amount = mul(Amount, -1);
   }
 
-  console.log("Amount", Amount);
   try {
     if (greaterThan(selectedToken.allowance, amount)) {
 
@@ -597,7 +592,6 @@ export const handleLend = async (
 
       const transaction = await instance.lend(poolData._address, Amount)
 
-      console.log("transaction", transaction);
 
                const txn = {
             method: 'lend',
@@ -676,7 +670,6 @@ export const handleBorrow = async (
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi, 'borrow', [poolData._address, Amount, Collateral, userAddr])
 
       const transaction = await instance.borrow(poolData._address, Amount, Collateral, userAddr);
-      console.log("transaction", transaction);
                 const txn = {
             method: 'borrow',
             amount: amount,

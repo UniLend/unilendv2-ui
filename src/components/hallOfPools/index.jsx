@@ -36,46 +36,9 @@ export default function HallOfPoolsComponent(props) {
 
   useEffect(() => {
     let filtredData;
-    //   if(Object.values(poolBackup).length > 0){
-    //   if (token1.symbol && token2.symbol) {
-    //     filtredData = pools.filter(
-    //       (item) =>
-    //         item.tokens
-    //           .map((sy) => sy.toLowerCase())
-    //           .includes(token1.symbol.toLowerCase()) &&
-    //         item.tokens
-    //           .map((sy) => sy.toLowerCase())
-    //           .includes(token2.symbol.toLowerCase())
-    //     );
-    //   } else if (token1.symbol && !token2.symbol) {
-    //     filtredData = pools.filter((item) =>
-    //       item.tokens
-    //         .map((sy) => sy.toLowerCase())
-    //         .includes(token1.symbol.toLowerCase())
-    //     );
-    //   } else if (!token1.symbol && token2.symbol) {
-    //     filtredData = pools.filter((item) =>
-    //       item.tokens
-    //         .map((sy) => sy.toLowerCase())
-    //         .includes(token2.symbol.toLowerCase())
-    //     );
-    //   } else if (!token1.symbol && !token2.symbol) {
-    //     filtredData = PoolsData;
-    //   }
-    //   setPools(filtredData);
-    // }
+
   }, [token1, token2]);
 
-  // const tokenData = async (address) => {
-  //   const tokenContract = new web3.eth.Contract(
-  //     erc20Abi,
-  //     '0x6f14C02Fc1F78322cFd7d707aB90f18baD3B54f5'
-  //   );
-  //   const symbol = await tokenContract.methods.symbol().call();
-  //   const decimals = await tokenContract.methods.decimals().call();
-  //   const name = await tokenContract.methods.name().call();
-  //   console.log({ symbol, decimals, name });
-  // };
   const handleTokens = (token, selectedToken) => {
     if (selectedToken === "token1") {
       setToken1(token);

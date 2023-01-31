@@ -15,7 +15,6 @@ import fs from 'fs'
     byAddr[token.address] = token;
     bySymbol[token.symbol] = token
    }
-   console.log('byAddr', byAddr);
     fs.writeFileSync('tokensbyaddress.json', JSON.stringify(byAddr))
     fs.writeFileSync('tokensbysymbol.json', JSON.stringify(bySymbol))
    })

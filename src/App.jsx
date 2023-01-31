@@ -153,7 +153,6 @@ function App() {
         const account = getAccount();
         let provider = etherProvider;
         const signer = await fetchSigner()
-        console.log("Signer", signer);
         if (
           state?.user?.isConnected ||
           (walletconnect?.connected && account.isConnected)

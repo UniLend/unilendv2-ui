@@ -5,7 +5,6 @@ export const getContract = async (web3, abi, address) => {
     address: address,
     abi: abi
   })
-  console.log("Getcontract", contract);
   return contract;
 };
 
@@ -16,6 +15,5 @@ export const getERC20Logo = async (web3, abi, address) => {
     abi: abi
   })
 //  const symbol = await contract.methods.symbol().call();
-//   console.log("ERC", symbol);
   return contract;
 };

@@ -119,14 +119,10 @@ if(selectedToken && collateralToken){
 }
   },[amount, selectLTV])
 
-  useEffect(() => {
-  console.log("poolData", poolData);
-  }, [])
 
 
   const checkTxnStatus =  (hash, txnData) => {
 
-   console.log("loading", "true");
       waitForTransaction({
       hash,
     })

@@ -70,7 +70,6 @@ export default function UserDashboardComponent(props) {
   };
 
   const positionSorting = (operation, key, order) => {
-    console.log(positionData);
 
     if (operation == "lend") {
       const sorted = sortByKey(positionData.lendArray, key, order);
@@ -88,7 +87,6 @@ export default function UserDashboardComponent(props) {
   
   const afterSearchedLend = lendPosition.filter((position) => String(position.poolInfo.tokenSymbol).toUpperCase().includes(searched) || String(position.poolInfo.token0Symbol).toUpperCase().includes(searched) || String(position.poolInfo.token1Symbol).toUpperCase().includes(searched) || String(position.pool.pool).toUpperCase().includes(searched) )
   const afterSearchedBorrow = BorrowPosition.filter((position) => String(position.poolInfo.tokenSymbol).toUpperCase().includes(searched) || String(position.poolInfo.token0Symbol).toUpperCase().includes(searched) || String(position.poolInfo.token1Symbol).toUpperCase().includes(searched) || String(position.pool.pool).toUpperCase().includes(searched) )
-  console.log(searched, lendPosition, BorrowPosition, afterSearchedLend, afterSearchedBorrow);
   
   setPositionData({positionData, lendArray: afterSearchedLend, borrowArray: afterSearchedBorrow})
 
@@ -142,7 +140,6 @@ export default function UserDashboardComponent(props) {
   }, [user]);
 
   useEffect(() => {
-    console.log("userData", data);
     if (data) {
       const position = getPositionData(data, poolList, tokenList);
       setPositionData(position);
@@ -170,7 +167,6 @@ export default function UserDashboardComponent(props) {
       }
       if (data?.positions) {
         const HF = getNetHealthFactor(data.positions);
-        console.log("health", HF, isNaN(HF));
         analytics.healthFactor = isNaN(HF) ? 0 : HF;
       }
       setHeaderAnalytics(analytics);
@@ -179,8 +175,6 @@ export default function UserDashboardComponent(props) {
 
   const getUserTokens = async (address) => {
     setWalletTokenLoading(true);
-
-    console.log("getUserTokens", address);
     alchemy.core.getTokenBalances(`${address}`).then(async (bal) => {
       const tokens = await getTokensFromUserWallet(bal);
       setWalletTokens(tokens);

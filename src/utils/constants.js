@@ -319,6 +319,5 @@ const PoolsData = [
     // },
   };
 
-  console.log("tokensBYSymbol", tokensBYSymbol);
 
 export {tokensBYSymbol, tokensByAddress, PoolsData, poolDataByAddr };
