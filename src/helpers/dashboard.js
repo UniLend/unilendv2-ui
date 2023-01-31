@@ -441,3 +441,61 @@ export const sortByKey = (data, key, order) => {
  console.log("Sorted", "sort", sort);
 return sort;
 }
+
+export const getHistoryGraphQuery = (address) => {
+  const query = gql`
+  {
+    borrows(where: {sender: "${address}"}) {
+      amount
+      blockNumber
+      blockTimestamp
+      id
+      pool
+      positionId
+      sender
+      token
+      tokenSymbol
+      totalBorrows
+      transactionHash
+    }
+    lends(where: {sender: "${address}"}) {
+      amount
+      blockNumber
+      blockTimestamp
+      id
+      pool
+      positionId
+      sender
+      token
+      tokenAmount
+      tokenSymbol
+      transactionHash
+    }
+    redeems(where: {sender: "${address}"}) {
+      amount
+      blockNumber
+      blockTimestamp
+      id
+      pool
+      positionId
+      sender
+      token
+      transactionHash
+      tokenSymbol
+    }
+    repayBorrows(where: {payer: "${address}"}) {
+      transactionHash
+      tokenSymbol
+      token
+      positionId
+      pool
+      payer
+      id
+      blockTimestamp
+      blockNumber
+      amount
+    }
+  }
+  `
+  return query;
+}

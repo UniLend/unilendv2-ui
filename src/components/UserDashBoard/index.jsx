@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import "./styles/index.scss";
 import { FiPercent, FiHeart } from "react-icons/fi";
-import { VscGraph } from "react-icons/vsc"
-import { GiReceiveMoney } from "react-icons/gi"
+import { VscGraph } from "react-icons/vsc";
+import { GiReceiveMoney } from "react-icons/gi";
 import { ImStack } from "react-icons/im";
 import { Alchemy, Network } from "alchemy-sdk";
 import { FaWallet } from "react-icons/fa";
@@ -36,12 +36,12 @@ const alchemy = new Alchemy(config);
 
 export default function UserDashboardComponent(props) {
   const { contracts, user, web3, isError, poolList, tokenList } = props;
-  const {chain} = getNetwork();
+  const { chain } = getNetwork();
   const navigate = useNavigate();
-  if(chain.id !== 80001 ){
-    navigate('/')
+  if (chain.id !== 80001) {
+    navigate("/");
   }
-  const { address } = getAccount()
+  const { address } = getAccount();
   const [userAddress, setUserAddress] = useState();
   const query = userDashBoardQuery(userAddress || address);
   const [lendingVisible, setLendingVisible] = useState(false);
@@ -49,18 +49,17 @@ export default function UserDashboardComponent(props) {
   const [isLendTab, setIsLentab] = useState(true);
   const [pieChartInputs, setPieChartInputs] = useState({});
   const [positionData, setPositionData] = useState({});
-  const [positionDataBackup, setPositionDataBackup] = useState()
+  const [positionDataBackup, setPositionDataBackup] = useState();
   const { data, loading, error } = useQuery(query);
   const [headerAnalytics, setHeaderAnalytics] = useState({
     healthFactor: 0,
     powerUsed: 0,
     borrowAPY: 0,
-    lendAPY:0
+    lendAPY: 0,
   });
   const [walletTokens, setWalletTokens] = useState([]);
-  const [walletTokenLoading, setWalletTokenLoading] = useState(false)
-  const [positionLoading, setPositionLoading] = useState(false)
-
+  const [walletTokenLoading, setWalletTokenLoading] = useState(false);
+  const [positionLoading, setPositionLoading] = useState(false);
 
   const handleLendingVisibleChange = (visible) => {
     setLendingVisible(visible);
@@ -70,41 +69,70 @@ export default function UserDashboardComponent(props) {
     setIsLentab(action);
   };
 
-  const positionSorting = (operation,key, order) => {
-console.log(positionData);
+  const positionSorting = (operation, key, order) => {
+    console.log(positionData);
 
-if(operation == 'lend'){
-  const sorted = sortByKey(positionData.lendArray, key, order)
-  setPositionData({...positionData, lendArray : sorted})
-} else if(operation == 'borrow'){
-  const sorted = sortByKey(positionData.borrowArray, key, order)
-  setPositionData({...positionData, borrowArray : sorted})
-}
+    if (operation == "lend") {
+      const sorted = sortByKey(positionData.lendArray, key, order);
+      setPositionData({ ...positionData, lendArray: sorted });
+    } else if (operation == "borrow") {
+      const sorted = sortByKey(positionData.borrowArray, key, order);
+      setPositionData({ ...positionData, borrowArray: sorted });
+    }
+  };
 
+  const handleOpenPosition = (e) => {
+  const searched = String(e.target.value).toUpperCase();
+  const lendPosition = positionDataBackup.lendArray;
+  const BorrowPosition = positionDataBackup.borrowArray;
   
+  const afterSearchedLend = lendPosition.filter((position) => String(position.poolInfo.tokenSymbol).toUpperCase().includes(searched) || String(position.poolInfo.token0Symbol).toUpperCase().includes(searched) || String(position.poolInfo.token1Symbol).toUpperCase().includes(searched) || String(position.pool.pool).toUpperCase().includes(searched) )
+  const afterSearchedBorrow = BorrowPosition.filter((position) => String(position.poolInfo.tokenSymbol).toUpperCase().includes(searched) || String(position.poolInfo.token0Symbol).toUpperCase().includes(searched) || String(position.poolInfo.token1Symbol).toUpperCase().includes(searched) || String(position.pool.pool).toUpperCase().includes(searched) )
+  console.log(searched, lendPosition, BorrowPosition, afterSearchedLend, afterSearchedBorrow);
+  
+  setPositionData({positionData, lendArray: afterSearchedLend, borrowArray: afterSearchedBorrow})
+
   }
 
   const SortContent = () => {
     return (
       <div className="sort_popover">
-        {
-          isLendTab ? (
-            <>
-            <p onClick={() => positionSorting("lend", 'LendBalance', 1)} > asc by amount </p>
-            <p onClick={() => positionSorting('lend', 'LendBalance', 2)}> dsc by amount</p>
-            <p onClick={() => positionSorting("lend", 'apy', 1)} > asc by APY </p>
-            <p onClick={() => positionSorting('lend', 'apy', 2)}> dsc by APY</p>
-            </>
-          ):
-          ( <>
-            <p onClick={() => positionSorting("borrow", 'borrowBalance', 1)} > asc by amount </p>
-            <p onClick={() => positionSorting('borrow', 'borrowBalance', 2)}> dsc by amount</p>
-            <p onClick={() => positionSorting("borrow", 'apy', 1)} > asc by APY </p>
-            <p onClick={() => positionSorting('borrow', 'apy', 2)}> dsc by APY</p>
-            </>
-          )
-        }
-   
+        {isLendTab ? (
+          <>
+            <p onClick={() => positionSorting("lend", "LendBalance", 1)}>
+              {" "}
+              asc by amount{" "}
+            </p>
+            <p onClick={() => positionSorting("lend", "LendBalance", 2)}>
+              {" "}
+              dsc by amount
+            </p>
+            <p onClick={() => positionSorting("lend", "apy", 1)}>
+              {" "}
+              asc by APY{" "}
+            </p>
+            <p onClick={() => positionSorting("lend", "apy", 2)}> dsc by APY</p>
+          </>
+        ) : (
+          <>
+            <p onClick={() => positionSorting("borrow", "borrowBalance", 1)}>
+              {" "}
+              asc by amount{" "}
+            </p>
+            <p onClick={() => positionSorting("borrow", "borrowBalance", 2)}>
+              {" "}
+              dsc by amount
+            </p>
+            <p onClick={() => positionSorting("borrow", "apy", 1)}>
+              {" "}
+              asc by APY{" "}
+            </p>
+            <p onClick={() => positionSorting("borrow", "apy", 2)}>
+              {" "}
+              dsc by APY
+            </p>
+          </>
+        )}
       </div>
     );
   };
@@ -118,7 +146,7 @@ if(operation == 'lend'){
     if (data) {
       const position = getPositionData(data, poolList, tokenList);
       setPositionData(position);
-      setPositionDataBackup(position)
+      setPositionDataBackup(position);
       const pieChart = getChartData(data);
       setPieChartInputs(pieChart);
       const analytics = {};
@@ -143,29 +171,27 @@ if(operation == 'lend'){
       if (data?.positions) {
         const HF = getNetHealthFactor(data.positions);
         console.log("health", HF, isNaN(HF));
-        analytics.healthFactor = isNaN(HF) ? 0: HF;
+        analytics.healthFactor = isNaN(HF) ? 0 : HF;
       }
       setHeaderAnalytics(analytics);
     }
   }, [data]);
 
   const getUserTokens = async (address) => {
-    setWalletTokenLoading(true)
-  
+    setWalletTokenLoading(true);
+
     console.log("getUserTokens", address);
-    alchemy.core
-      .getTokenBalances(`${address}`)
-      .then(async (bal) => {
-        const tokens = await getTokensFromUserWallet(bal);
-        setWalletTokens(tokens);
-        setWalletTokenLoading(false)
-      });
+    alchemy.core.getTokenBalances(`${address}`).then(async (bal) => {
+      const tokens = await getTokensFromUserWallet(bal);
+      setWalletTokens(tokens);
+      setWalletTokenLoading(false);
+    });
   };
 
   useEffect(() => {
     if (userAddress || user?.address) {
       setWalletTokens([]);
-      const account = getAccount()
+      const account = getAccount();
       getUserTokens(userAddress || account.address);
     }
   }, [userAddress, user]);
@@ -230,7 +256,7 @@ if(operation == 'lend'){
                   </h5>
                 </div>
               </div>
-              <div className="analytic_box heath_factor">
+              {/* <div className="analytic_box heath_factor">
                 <div className="icon_box">
                   {" "}
                   <FiHeart />{" "}
@@ -241,7 +267,7 @@ if(operation == 'lend'){
                     {Number(headerAnalytics?.healthFactor || 0).toFixed(2) || 0}
                   </h5>
                 </div>
-              </div>
+              </div> */}
             </div>
             {/* <div className="network_dropdown">
               <p>Etherium</p>
@@ -260,11 +286,11 @@ if(operation == 'lend'){
                   <p>Total Lend</p>
                   <h5>{pieChartInputs?.lendValues?.total || 0}</h5>
                 </div>
-                <div>
+                {/* <div>
                   {" "}
                   <p>Lend APY</p>
                   <h5>{Number(headerAnalytics?.lendAPY || 0).toFixed(2)}%</h5>
-                </div>
+                </div> */}
                 <div>
                   {" "}
                   <p> Interest Earned </p>
@@ -285,11 +311,11 @@ if(operation == 'lend'){
                   <p>Total Borrow</p>
                   <h5>{pieChartInputs?.borrowValues?.total || 0}</h5>
                 </div>
-                <div>
+                {/* <div>
                   {" "}
                   <p>Borrow APY</p>
                   <h5>{Number(headerAnalytics?.borrowAPY || 0).toFixed(2)}%</h5>
-                </div>
+                </div> */}
                 <div>
                   {" "}
                   <p> Borrowed Power Used </p>
@@ -318,30 +344,30 @@ if(operation == 'lend'){
               <span>Value</span>
             </div>
             <div className="tbody">
-              { !walletTokenLoading && walletTokens.map((token, i) => {
-                return (
-                  <div key={i} className="tbody_row">
-                    <span>
-                      <img src={token?.logo} alt="uft" />
-                      <p className="hide_for_mobile">
-                        {" "}
-                        {token?.name} / {token?.symbol}
-                      </p>
-                      <p className="hide_for_monitor">{token?.symbol}</p>
-                    </span>
-                    <span>-</span>
-                    <span>{token?.balance}</span>
-                    <span>-</span>
-                  </div>
-                );
-              })}
-              {
-               walletTokenLoading && new Array(3).fill(0).map((_,i) => {
-                return(
-                  <div className="tbody_row row_skeleton skeleton" ></div>
-                )
-               })
-              }
+              {!walletTokenLoading &&
+                walletTokens.map((token, i) => {
+                  return (
+                    <div key={i} className="tbody_row">
+                      <span>
+                        <img src={token?.logo} alt="uft" />
+                        <p className="hide_for_mobile">
+                          {" "}
+                          {token?.name} / {token?.symbol}
+                        </p>
+                        <p className="hide_for_monitor">{token?.symbol}</p>
+                      </span>
+                      <span>-</span>
+                      <span>{token?.balance}</span>
+                      <span>-</span>
+                    </div>
+                  );
+                })}
+              {walletTokenLoading &&
+                new Array(3).fill(0).map((_, i) => {
+                  return (
+                    <div className="tbody_row row_skeleton skeleton"></div>
+                  );
+                })}
             </div>
           </div>
         </div>
@@ -373,7 +399,7 @@ if(operation == 'lend'){
               <div>
                 <div className="action_container">
                   <div className="input_container">
-                    <input type="text" placeholder="Search Txt/Token/Type" />
+                    <input onChange={handleOpenPosition} type="text" placeholder="Search Txt/Token/Type" />
                   </div>
                   <Popover
                     content={<SortContent />}
@@ -397,8 +423,12 @@ if(operation == 'lend'){
                   <span>Max LTV</span>
                   <span> Interest Earned </span>
                   <span>Pool</span>
-                  <span>Token / <br/> Amount</span>
-                  <span>APY / <br/> Interest </span>
+                  <span>
+                    Token / <br /> Amount
+                  </span>
+                  <span>
+                    APY / <br /> Interest{" "}
+                  </span>
                   <span>Max LTV</span>
                 </div>
                 <div className="tbody">
@@ -424,8 +454,14 @@ if(operation == 'lend'){
                             <img src={pool.poolInfo.token0Logo} alt="uft" />
                             <img src={pool.poolInfo.token1Logo} alt="uft" />
                           </span>
-                          <span>{pool?.tokenSymbol}  <br/> {Number(pool?.LendBalance).toFixed(2)} </span>
-                          <span>{Number(pool?.apy).toFixed(2)}%  <br/> {Number(pool?.interestEarned).toFixed(6)} </span>
+                          <span>
+                            {pool?.tokenSymbol} <br />{" "}
+                            {Number(pool?.LendBalance).toFixed(2)}{" "}
+                          </span>
+                          <span>
+                            {Number(pool?.apy).toFixed(2)}% <br />{" "}
+                            {Number(pool?.interestEarned).toFixed(6)}{" "}
+                          </span>
                           <span>{pool.pool.ltv}%</span>
                         </div>
                       );
@@ -436,7 +472,7 @@ if(operation == 'lend'){
               <div>
                 <div className="action_container">
                   <div className="input_container">
-                    <input type="text" placeholder="Search Txt/Token/Type" />
+                    <input  onChange={handleOpenPosition}  type="text" placeholder="Search Txt/Token/Type" />
                   </div>
                   <Popover
                     content={<SortContent />}
@@ -460,8 +496,12 @@ if(operation == 'lend'){
                   <span>Current LTV</span>
                   <span> Health Factor </span>
                   <span>Pool</span>
-                  <span>Token / <br/> Amount</span>
-                  <span>APY / <br/> HF</span>
+                  <span>
+                    Token / <br /> Amount
+                  </span>
+                  <span>
+                    APY / <br /> HF
+                  </span>
                   <span>Current LTV</span>
                 </div>
                 <div className="tbody">
@@ -491,10 +531,16 @@ if(operation == 'lend'){
                             <img src={pool.poolInfo.token0Logo} alt="uft" />
                             <img src={pool.poolInfo.token1Logo} alt="uft" />
                           </span>
-                          <span>{pool?.tokenSymbol} <br/> {Number(pool?.borrowBalance).toFixed(2)} </span>
-                          <span>{Number(pool?.apy).toFixed(3)}% <br/>  {Number(pool?.healthFactor / 10 ** 18).toFixed(2)} </span>
                           <span>
-                          {(Number(pool?.currentLTV) * 100).toFixed(2)}
+                            {pool?.tokenSymbol} <br />{" "}
+                            {Number(pool?.borrowBalance).toFixed(2)}{" "}
+                          </span>
+                          <span>
+                            {Number(pool?.apy).toFixed(3)}% <br />{" "}
+                            {Number(pool?.healthFactor / 10 ** 18).toFixed(2)}{" "}
+                          </span>
+                          <span>
+                            {(Number(pool?.currentLTV) * 100).toFixed(2)}
                           </span>
                         </div>
                       );

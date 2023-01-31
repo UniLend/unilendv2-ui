@@ -7,6 +7,7 @@
     background-color: var(--pure-white);
     padding: 20px;
    margin: 50px auto;
+   position: relative;
     .action_container{
         height: 50px;
         width: 100%;
@@ -90,6 +91,7 @@
     }
 
     .table_list_container{
+        min-height: 450px;
         
         .table_item{
             display: flex;
@@ -166,8 +168,7 @@
 }
 @media ($mobile) {
     .history_table_container{
-        width: 115%;
-        margin: 50px -25px;
+        width: 90%;
         padding: 5px;
     }
 

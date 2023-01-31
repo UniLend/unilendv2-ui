@@ -1,135 +1,195 @@
-import React , {useEffect, useState}from 'react';
-import './styles/index.scss';
-import { Popover, Pagination} from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { FaChevronDown } from 'react-icons/fa'
-import { shortenAddress, imgError } from '../../utils';
-import { allTransaction } from '../../services/events';
-import { poolDataByAddr, tokensByAddress } from '../../utils/constants';
-import txIcon from '../../assets/tx.svg';
-import noTxt from '../../assets/notxt.svg'
-import { fixed2Decimals, fromBigNumber } from '../../helpers/contracts';
-import HistorySkeleton from '../Loader/HistorySkeleton';
+import React, { useEffect, useState } from "react";
+import "./styles/index.scss";
+import { Popover, Pagination } from "antd";
+import { useQuery } from "@apollo/client";
+import { useNavigate } from "react-router-dom";
+import { FaChevronDown } from "react-icons/fa";
+import { shortenAddress, imgError } from "../../utils";
+import { allTransaction } from "../../services/events";
+import { poolDataByAddr, tokensByAddress } from "../../utils/constants";
+import txIcon from "../../assets/tx.svg";
+import noTxt from "../../assets/notxt.svg";
+import { fixed2Decimals, fromBigNumber } from "../../helpers/contracts";
+import HistorySkeleton from "../Loader/HistorySkeleton";
+import { getHistoryGraphQuery, sortByKey } from "../../helpers/dashboard";
+import { getAccount, getNetwork } from "@wagmi/core";
 
 export default function HistoryComponent(props) {
-    const { contracts, user, web3, poolList, tokenList } = props;
-   const newArray = new Array(50).fill(0).map((el, i) => i +1) 
-   const [txtData, setTxtData] = useState([])
-   const [txtDataBackup, setTxtDataBackup] = useState([])
-   const [visible, setVisible] = useState(false);
-   const [currentPage, setCurrentPage] = useState(1)
-   const [itemPerPage, setItemPerPage] = useState(6)
-   const [sortIndex, setSortIndex] = useState(1)
-   const [isPageLoading, setIsPageLoading] = useState(true)
-   const [search, setSearch] = useState("")
-const navigate = useNavigate() 
-   const handleVisibleChange = (newVisible) => {
-     setVisible(newVisible);
-   };
+  const { contracts, user, web3, poolList, tokenList } = props;
 
+  const { address } = getAccount();
+  const newArray = new Array(50).fill(0).map((el, i) => i + 1);
+  const [txtData, setTxtData] = useState([]);
+  const [graphHistory, setGraphHistory] = useState([]);
+  const [graphHistoryBackup, setGraphHistoryBackup] = useState([]);
+  const [txtDataBackup, setTxtDataBackup] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemPerPage, setItemPerPage] = useState(6);
+  const [sortIndex, setSortIndex] = useState(1);
+  const [isPageLoading, setIsPageLoading] = useState(true);
+  const [isPolygon, setIsPolygon] = useState(false);
+  const [search, setSearch] = useState("");
+  const [poolsData, setPoolsData] = useState({});
+  const query = getHistoryGraphQuery(address);
 
-  const handleSort = (index) => {
-    let sort = txtData;
-    setSortIndex(index)
-   if(index === 1){
-   sort = txtData.sort(function (a, b) {
-      // Compare the 2 blocknumbers
-      if (a.blockNumber < b.blockNumber) return 1;
-      if (a.blockNumber > b.blockNumber) return -1;
-      return 0;
-    });
-   } else if (index == 2){
-    sort = txtData.sort(function (a, b) {
-      // Compare the 2 blocknumbers
-      if (a.blockNumber < b.blockNumber) return -1;
-      if (a.blockNumber > b.blockNumber) return 1;
-      return 0;
-    });
-   }
-   setTxtData(sort);
-   setTxtDataBackup(sort)
-  }
-
-  const handleSearch = (e) => {
-    const value = e.target.value
-    setSearch(value);
-    const newData = txtDataBackup.filter((data) => {
-      if (value === '') {
-        return data;
-      } else if (
-        tokenList[data.returnValues._asset]
-          ['symbol'].toLowerCase()
-          .includes(search.toLocaleLowerCase()) ||
-        data.transactionHash.toLowerCase().includes(search.toLocaleLowerCase()) ||
-        data.event.toLowerCase().includes(search.toLocaleLowerCase())
-      ) {
-        return data;
-      }
-    });
-    setTxtData(newData);
+  const { data, loading, error } = useQuery(query);
+  const navigate = useNavigate();
+  const handleVisibleChange = (newVisible) => {
+    setVisible(newVisible);
   };
 
-   const getTransactionData = async () => {
-    try {
-    setIsPageLoading(true)
-     const txtArray = await allTransaction(
-      contracts.coreContract,
-      contracts.positionContract,
-      user.address,
-      poolList
-     )
-     if (txtArray.length > 0) {
-      const sort = txtArray.sort(function (a, b) {
-        // Compare the 2 dates
+  useEffect(() => {
+    const { chain } = getNetwork();
+    if (chain.id == 80001) {
+      const pools = {};
+      for (const key in poolList) {
+        const pool = poolList[key];
+        pools[String(pool.poolAddress).toUpperCase()] = pool;
+      }
+
+      setPoolsData(pools);
+      setIsPolygon(true);
+
+      if (data && Object.values(pools).length > 0) {
+        const newArray = [
+          ...data.borrows,
+          ...data.lends,
+          ...data.redeems,
+          ...data.repayBorrows,
+        ];
+        const sorted = sortByKey(newArray, "blockTimestamp", 1);
+        console.log("history", sorted);
+        setGraphHistory(sorted);
+        setGraphHistoryBackup(sorted);
+        setIsPageLoading(false);
+      }
+    } else {
+      setIsPolygon(false);
+    }
+  }, [data, poolList]);
+
+  const handleSort = (index) => {
+    const sortTo = isPolygon ? graphHistory : txtData;
+    let sort = sortTo;
+    setSortIndex(index);
+    if (index === 1) {
+      sort = sortTo.sort(function (a, b) {
+        // Compare the 2 blocknumbers
         if (a.blockNumber < b.blockNumber) return 1;
         if (a.blockNumber > b.blockNumber) return -1;
         return 0;
       });
+    } else if (index == 2) {
+      sort = sortTo.sort(function (a, b) {
+        // Compare the 2 blocknumbers
+        if (a.blockNumber < b.blockNumber) return -1;
+        if (a.blockNumber > b.blockNumber) return 1;
+        return 0;
+      });
+    }
+    setTxtData(sort);
+    setTxtDataBackup(sort);
+  };
 
-      setTxtData(sort)
-      setTxtDataBackup(sort)
-   }
-   setIsPageLoading(false)
-  } catch (error) {
-    setIsPageLoading(false)
-  }
-  }
+  const handleSearch = (e) => {
+    const value = String(e.target.value).toUpperCase().trim();
+    setSearch(value);
+    if (isPolygon) {
+      let searched = graphHistoryBackup.filter(
+        (txt) => 
+          String(txt.pool).toUpperCase().includes(value) ||
+          String(txt.tokenSymbol).toUpperCase().includes(value) ||
+          String(txt.__typename).toUpperCase().includes(value)
+      );
+      if(value == ''){
+        console.log(value);
+        searched = graphHistoryBackup
+      }
+      setGraphHistory(searched)
+    } else {
+      const newData = txtDataBackup.filter((data) => String(data));
+      //setTxtData(newData);
+    }
+  };
 
-useEffect(() => {
-  // if(!user.isConnected){
-  //   navigate('/')
-  // }
-  if ((user.address && contracts?.coreContract?.address)) {
+  const getTransactionData = async () => {
+    if (!isPolygon) {
+      try {
+        setIsPageLoading(true);
+        const txtArray = await allTransaction(
+          contracts.coreContract,
+          contracts.positionContract,
+          user.address,
+          poolList
+        );
+        if (txtArray.length > 0) {
+          const sort = txtArray.sort(function (a, b) {
+            // Compare the 2 dates
+            if (a.blockNumber < b.blockNumber) return 1;
+            if (a.blockNumber > b.blockNumber) return -1;
+            return 0;
+          });
+          setTxtData(sort);
+          setTxtDataBackup(sort);
+        }
+        setIsPageLoading(false);
+      } catch (error) {
+        setIsPageLoading(false);
+      }
+    }
+  };
 
-    getTransactionData();
-  }
-}, [contracts, user, web3]);
+  useEffect(() => {
+    // if(!user.isConnected){
+    //   navigate('/')
+    // }
+    if (user.address && contracts?.coreContract?.address) {
+      getTransactionData();
+    }
+  }, [contracts, user, web3]);
 
-
-const SortContent = () => {
-  return (
-    <div className="sort_popover">
-      <p className={`${sortIndex === 1 ? 'activeSort': ''} `} onClick={()=> handleSort(1)}> NEW TO OLD </p>
-      <p className={`${sortIndex === 2 ? 'activeSort': ''} `} onClick={()=> handleSort(2)}> OLD TO NEW</p>
-    </div>
-  );
-};
+  const SortContent = () => {
+    return (
+      <div className="sort_popover">
+        <p
+          className={`${sortIndex === 1 ? "activeSort" : ""} `}
+          onClick={() => handleSort(1)}
+        >
+          {" "}
+          NEW TO OLD{" "}
+        </p>
+        <p
+          className={`${sortIndex === 2 ? "activeSort" : ""} `}
+          onClick={() => handleSort(2)}
+        >
+          {" "}
+          OLD TO NEW
+        </p>
+      </div>
+    );
+  };
 
   return (
     <div className="history_table_container">
       <div className="action_container">
         <div className="input_container">
-          <input type="text" disabled={txtData.length === 0 && !search} placeholder="Search Txt/Token/Type" value={search} onChange={handleSearch} />
+          <input
+            type="text"
+            placeholder="Search Txt/Token/Type"
+            value={search}
+            onChange={handleSearch}
+          />
         </div>
         <Popover
           content={<SortContent />}
           trigger="click"
           overlayClassName="sort_dropDown"
           placement="bottomLeft"
-          open={ txtData.length > 0 && visible}
+          open={visible}
           onOpenChange={handleVisibleChange}
         >
-          <div className={`sortBy ${txtData.length ===0 ? 'disableSort': ''}`}>
+          <div className={`sortBy`}>
             <p>Sort By</p>
             <FaChevronDown />
           </div>
@@ -155,69 +215,157 @@ const SortContent = () => {
           <p>Tx ID</p>
         </div>
       </div>
-      <div className="table_list_container">
-        {(txtData.length > 0 && !isPageLoading && user.isConnected)? (
-          txtData
-            .slice((currentPage - 1) * itemPerPage, currentPage * itemPerPage)
-            .map((txt, i) => (
-              <div key={i} className="table_item">
-                <div>
-                  <div> 
-                    <img src={poolList[txt.address]?.token0?.logo}  onError={imgError} alt={poolList[txt.address]?.token0?.symbol} />
-                    <img src={poolList[txt.address]?.token1?.logo}  onError={imgError} alt={poolList[txt.address]?.token1?.symbol} />
+      {isPolygon ? (
+        <div className="table_list_container">
+          {graphHistory.length > 0 &&
+          Object.values(poolsData).length > 0 &&
+          !isPageLoading &&
+          user.isConnected ? (
+            graphHistory
+              .slice((currentPage - 1) * itemPerPage, currentPage * itemPerPage)
+              .map((txt, i) => (
+                <div key={i} className="table_item">
+                  <div>
+                    <div>
+                      <img
+                        src={
+                          poolsData[String(txt.pool).toUpperCase()].token0.logo
+                        }
+                        onError={imgError}
+                        alt=""
+                      />
+                      <img
+                        src={
+                          poolsData[String(txt.pool).toUpperCase()].token1.logo
+                        }
+                        onError={imgError}
+                        alt=""
+                      />
+                    </div>
+                    <p className="hide_for_mobile hide_for_tab">
+                      {poolsData[String(txt.pool).toUpperCase()].token0.symbol +
+                        "/" +
+                        poolsData[String(txt.pool).toUpperCase()].token1.symbol}
+                    </p>
                   </div>
-                  <p className="hide_for_mobile hide_for_tab">
-                    {/* {poolList[txt.address]?.token0?.symbol + "/" + poolList[txt.address]?.token1?.symbol} */}
-                  </p>
+                  <div>
+                    <p>{txt?.tokenSymbol}</p>
+                  </div>
+                  <div>
+                    <p>
+                      {txt?.__typename == "RepayBorrow"
+                        ? "Repay"
+                        : txt?.__typename}
+                    </p>
+                  </div>
+                  <div>
+                    <p>
+                      {Number(fromBigNumber(txt?.amount) / 10 ** 18).toFixed(2)}
+                      {/* {(Number(txt.returnValues._amount) / 10 ** 18).toFixed(4)} */}
+                    </p>
+                  </div>
+                  <div className="hide_for_mobile">
+                    <p className="success">Complete</p>
+                  </div>
+                  <div className="hide_for_mobile">
+                    <p>
+                      <a
+                        href={`https://sepolia.etherscan.io/tx/${txt?.transactionHash}`}
+                        target="_blank"
+                      >
+                        {shortenAddress(txt?.transactionHash)}
+                      </a>
+                    </p>
+                  </div>
+                  <div className="tx_icon">
+                    {" "}
+                    <img src={txIcon} alt="" />{" "}
+                  </div>
                 </div>
-                <div>
-                  <p>{tokenList[txt?.args?._asset]?.symbol}</p>
-                </div>
-                <div>
-                  <p>{txt.event}</p>
-                </div>
-                <div>
-                  <p>
-                    { Number( fromBigNumber(txt?.args?._amount)/10**18 ).toFixed(4) }
-                    {/* {(Number(txt.returnValues._amount) / 10 ** 18).toFixed(4)} */}
-                  </p>
-                </div>
-                <div className="hide_for_mobile">
-                  <p className="success">Complete</p>
-                </div>
-                <div className="hide_for_mobile">
-                  <p>
-                    <a
-                      href={`https://sepolia.etherscan.io/tx/${txt.transactionHash}`}
-                      target="_blank"
-                    >
-                      {shortenAddress(txt.transactionHash)}
-                    </a>
-                  </p>
-                </div>
-                <div className="tx_icon">
-                  {" "}
-                  <img src={txIcon} alt="" />{" "}
-                </div>
-              </div>
-            ))
-        ) : isPageLoading && user.isConnected? (
-
-          <HistorySkeleton />
-        ):
-        <div className='no_transaction'>
-          <img src={noTxt} alt="" />
-          <h1>No Transactions Found</h1>
+              ))
+          ) : isPageLoading && user.isConnected ? (
+            <HistorySkeleton />
+          ) : (
+            <div className="no_transaction">
+              <img src={noTxt} alt="" />
+              <h1>No Transactions Found</h1>
+            </div>
+          )}
         </div>
-        }
-      </div>
+      ) : (
+        <div className="table_list_container">
+          {txtData.length > 0 && !isPageLoading && user.isConnected ? (
+            txtData
+              .slice((currentPage - 1) * itemPerPage, currentPage * itemPerPage)
+              .map((txt, i) => (
+                <div key={i} className="table_item">
+                  <div>
+                    <div>
+                      <img
+                        src={poolList[txt.address]?.token0?.logo}
+                        onError={imgError}
+                        alt={poolList[txt.address]?.token0?.symbol}
+                      />
+                      <img
+                        src={poolList[txt.address]?.token1?.logo}
+                        onError={imgError}
+                        alt={poolList[txt.address]?.token1?.symbol}
+                      />
+                    </div>
+                    <p className="hide_for_mobile hide_for_tab">
+                      {/* {poolList[txt.address]?.token0?.symbol + "/" + poolList[txt.address]?.token1?.symbol} */}
+                    </p>
+                  </div>
+                  <div>
+                    <p>{tokenList[txt?.args?._asset]?.symbol}</p>
+                  </div>
+                  <div>
+                    <p>{txt.event}</p>
+                  </div>
+                  <div>
+                    <p>
+                      {Number(
+                        fromBigNumber(txt?.args?._amount) / 10 ** 18
+                      ).toFixed(2)}
+                      {/* {(Number(txt.returnValues._amount) / 10 ** 18).toFixed(4)} */}
+                    </p>
+                  </div>
+                  <div className="hide_for_mobile">
+                    <p className="success">Complete</p>
+                  </div>
+                  <div className="hide_for_mobile">
+                    <p>
+                      <a
+                        href={`https://sepolia.etherscan.io/tx/${txt.transactionHash}`}
+                        target="_blank"
+                      >
+                        {shortenAddress(txt.transactionHash)}
+                      </a>
+                    </p>
+                  </div>
+                  <div className="tx_icon">
+                    {" "}
+                    <img src={txIcon} alt="" />{" "}
+                  </div>
+                </div>
+              ))
+          ) : isPageLoading && user.isConnected ? (
+            <HistorySkeleton />
+          ) : (
+            <div className="no_transaction">
+              <img src={noTxt} alt="" />
+              <h1>No Transactions Found</h1>
+            </div>
+          )}
+        </div>
+      )}
       <div className="pagination">
         <Pagination
           current={currentPage}
           onChange={(el) => setCurrentPage(el)}
           pageSize={itemPerPage}
           size="small"
-          total={txtData.length}
+          total={isPolygon ? graphHistory.length : txtData.length}
           showSizeChanger={false}
           hideOnSinglePage={true}
         />

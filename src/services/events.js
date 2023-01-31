@@ -49,6 +49,7 @@ export const getEventsWithFilter = async (contract, event, filter) => {
 
   const events = await contract.queryFilter(event)
   const filtered = events.filter((event) => fromBigNumber(event.args._positionID) == filter._positionID )
+
     return filtered;
 };
 
@@ -78,7 +79,7 @@ export const allTransaction = async (
   const data = await getAllEvents(coreContract, 'PoolCreated');
   // array of all pools address
   const newData = data.map((event) => event.pool);
-  console.log("newData", newData);
+
   let array = [];
   for (let i = 0; i < newData.length; i++) {
     const position = await positionId(
@@ -103,10 +104,11 @@ export const allTransaction = async (
         _positionID: `${position}`,
       });
       const eventsWithPoolInfo = events.map((el)=> el = {...el, poolInfo: poolInfo, event: el.event === 'RepayBorrow'? 'Repay': el.event})
+
       array.push(...eventsWithPoolInfo);
    
     }
   }
-   console.log("all array", array);
+
   return array;
 };
