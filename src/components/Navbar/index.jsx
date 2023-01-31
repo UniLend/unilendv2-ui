@@ -32,7 +32,7 @@ import { useDispatch } from 'react-redux';
 import { setTheme, setUser } from '../../store/Action';
 import { changeNetwork } from '../../services/wallet';
 import { fetchUserDomain } from '../../utils/axios';
-import { switchNetwork } from '@wagmi/core';
+import { getNetwork, switchNetwork } from '@wagmi/core';
 
 export default function Navbar(props) {
   const { user, theme } = props;
@@ -42,7 +42,9 @@ export default function Navbar(props) {
   const [currentUser, setCurrentUser] = useState({...user, domain: shortenAddress(user.address)});
   const [visible, setVisible] = useState(false);
   const [isNetworkVisible, setIsNetworkVisible] = useState(false)
+  const [isPolygon, setIsPolygon] = useState(false)
   const dispatch = useDispatch();
+
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -69,6 +71,12 @@ const handleOpenSwitchNetwork = (visible) => {
   };
 
   useEffect(() => {
+    const {chain} = getNetwork()
+    if(chain.id == 80001){
+      setIsPolygon(true)
+    } else {
+      setIsPolygon(false)
+    }
     if (user.network.id && user.network.id != '11155111') {
      // setWrongNetworkModal(true);
     } else {
@@ -199,10 +207,17 @@ const handleOpenSwitchNetwork = (visible) => {
           <a href='/' className={`${pathname === '/' ? 'active' : ''}`}>
             Pools
           </a>
-          <a href='/dashboard' className='disable_route'>
+        { isPolygon ?  <a href='/dashboard'
+         className={`${pathname === '/dashboard' ? 'active' : ''}`}
+         >
             Dashboard
-            <LockOutlined style={{ marginLeft: '5px' }} />
-          </a>
+          </a> :
+           <a href='#' className='disable_route'>
+           Dashboard
+           <LockOutlined style={{ marginLeft: '5px' }} />
+         </a> 
+
+        }
           <a href='#' className='disable_route'>
             Vote
             <LockOutlined style={{ marginLeft: '5px' }} />

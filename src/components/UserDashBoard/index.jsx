@@ -21,6 +21,7 @@ import {
   getNetHealthFactor,
   getPositionData,
   getTokensFromUserWallet,
+  sortByKey,
   userDashBoardQuery,
 } from "../../helpers/dashboard";
 import { getAccount, getNetwork } from "@wagmi/core";
@@ -48,6 +49,7 @@ export default function UserDashboardComponent(props) {
   const [isLendTab, setIsLentab] = useState(true);
   const [pieChartInputs, setPieChartInputs] = useState({});
   const [positionData, setPositionData] = useState({});
+  const [positionDataBackup, setPositionDataBackup] = useState()
   const { data, loading, error } = useQuery(query);
   const [headerAnalytics, setHeaderAnalytics] = useState({
     healthFactor: 0,
@@ -68,11 +70,41 @@ export default function UserDashboardComponent(props) {
     setIsLentab(action);
   };
 
+  const positionSorting = (operation,key, order) => {
+console.log(positionData);
+
+if(operation == 'lend'){
+  const sorted = sortByKey(positionData.lendArray, key, order)
+  setPositionData({...positionData, lendArray : sorted})
+} else if(operation == 'borrow'){
+  const sorted = sortByKey(positionData.borrowArray, key, order)
+  setPositionData({...positionData, borrowArray : sorted})
+}
+
+  
+  }
+
   const SortContent = () => {
     return (
       <div className="sort_popover">
-        <p> NEW TO OLD </p>
-        <p> OLD TO NEW</p>
+        {
+          isLendTab ? (
+            <>
+            <p onClick={() => positionSorting("lend", 'LendBalance', 1)} > asc by amount </p>
+            <p onClick={() => positionSorting('lend', 'LendBalance', 2)}> dsc by amount</p>
+            <p onClick={() => positionSorting("lend", 'apy', 1)} > asc by APY </p>
+            <p onClick={() => positionSorting('lend', 'apy', 2)}> dsc by APY</p>
+            </>
+          ):
+          ( <>
+            <p onClick={() => positionSorting("borrow", 'borrowBalance', 1)} > asc by amount </p>
+            <p onClick={() => positionSorting('borrow', 'borrowBalance', 2)}> dsc by amount</p>
+            <p onClick={() => positionSorting("borrow", 'apy', 1)} > asc by APY </p>
+            <p onClick={() => positionSorting('borrow', 'apy', 2)}> dsc by APY</p>
+            </>
+          )
+        }
+   
       </div>
     );
   };
@@ -86,6 +118,7 @@ export default function UserDashboardComponent(props) {
     if (data) {
       const position = getPositionData(data, poolList, tokenList);
       setPositionData(position);
+      setPositionDataBackup(position)
       const pieChart = getChartData(data);
       setPieChartInputs(pieChart);
       const analytics = {};
@@ -260,7 +293,7 @@ export default function UserDashboardComponent(props) {
                 <div>
                   {" "}
                   <p> Borrowed Power Used </p>
-                  <h5>{headerAnalytics?.powerUsed || 0}</h5>
+                  <h5>{headerAnalytics?.powerUsed || 0}%</h5>
                 </div>
               </div>
             </div>
