@@ -29,6 +29,7 @@ import {
 } from "../../helpers/dashboard";
 import { getAccount, getNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
+import { imgError } from "../../utils";
 
 //const endpoint = "https://api.spacex.land/graphql/";
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -201,7 +202,7 @@ export default function UserDashboardComponent(props) {
         const borrowAPY = getAverage(
           position.borrowArray,
           "apy",
-          "borrowBalance"
+          "borrowBalance" 
         );
         analytics.borrowAPY = borrowAPY;
       }
@@ -393,7 +394,7 @@ export default function UserDashboardComponent(props) {
                   return (
                     <div key={i} className="tbody_row">
                       <span>
-                        <img src={token?.logo} alt="uft" />
+                        <img onError={imgError} src={token?.logo} alt="uft" />
                         <p className="hide_for_mobile">
                           {" "}
                           {token?.name} / {token?.symbol}
@@ -469,8 +470,8 @@ export default function UserDashboardComponent(props) {
                       return (
                         <div className="tbody_row">
                           <span>
-                            <img src={pool.poolInfo.token0Logo} alt="uft" />
-                            <img src={pool.poolInfo.token1Logo} alt="uft" />
+                            <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
+                            <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
                             <p className="hide_for_mobile">
                               {" "}
                               {pool.poolInfo.token0Symbol} /{" "}
@@ -483,8 +484,8 @@ export default function UserDashboardComponent(props) {
                           <span>{pool.pool.ltv}%</span>
                           <span>{Number(pool?.interestEarned).toFixed(8)}</span>
                           <span>
-                            <img src={pool.poolInfo.token0Logo} alt="uft" />
-                            <img src={pool.poolInfo.token1Logo} alt="uft" />
+                            <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
+                            <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
                           </span>
                           <span>
                             {pool?.tokenSymbol} <br />{" "}
@@ -530,8 +531,8 @@ export default function UserDashboardComponent(props) {
                       return (
                         <div className="tbody_row">
                           <span>
-                            <img src={pool.poolInfo.token0Logo} alt="uft" />
-                            <img src={pool.poolInfo.token1Logo} alt="uft" />
+                            <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
+                            <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
                             <p className="hide_for_mobile">
                               {" "}
                               {pool.poolInfo.token0Symbol} /{" "}
@@ -548,8 +549,8 @@ export default function UserDashboardComponent(props) {
                             {Number(pool?.healthFactor / 10 ** 18).toFixed(2)}
                           </span>
                           <span>
-                            <img src={pool.poolInfo.token0Logo} alt="uft" />
-                            <img src={pool.poolInfo.token1Logo} alt="uft" />
+                            <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
+                            <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
                           </span>
                           <span>
                             {pool?.tokenSymbol} <br />{" "}
