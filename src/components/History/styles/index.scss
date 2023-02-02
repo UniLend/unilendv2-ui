@@ -48,21 +48,21 @@
             }
         }
 
-        .sortBy{
-            display: flex;
-            width: 120px;
-            cursor: pointer;
-            background-color: var(--light-blue);
-            border-radius: 5px;
-            color: var(--light-gray);
-            font-weight: 700;
-            place-items: center center;
-            justify-content: space-between;
-            padding: 12px;
-            p{
-                margin: 0px 0px;
-            }
-        }
+        // .sortBy{
+        //     display: flex;
+        //     width: 120px;
+        //     cursor: pointer;
+        //     background-color: var(--light-blue);
+        //     border-radius: 5px;
+        //     color: var(--light-gray);
+        //     font-weight: 700;
+        //     place-items: center center;
+        //     justify-content: space-between;
+        //     padding: 12px;
+        //     p{
+        //         margin: 0px 0px;
+        //     }
+        // }
         .disableSort{
             background-color: var(--border-gray);
             cursor: no-drop;

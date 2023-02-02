@@ -13,6 +13,8 @@ import { fixed2Decimals, fromBigNumber } from "../../helpers/contracts";
 import HistorySkeleton from "../Loader/HistorySkeleton";
 import { getHistoryGraphQuery, sortByKey } from "../../helpers/dashboard";
 import { getAccount, getNetwork } from "@wagmi/core";
+import DropDown from "../Common/DropDown";
+import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
 
 export default function HistoryComponent(props) {
   const { contracts, user, web3, poolList, tokenList } = props;
@@ -151,6 +153,19 @@ export default function HistoryComponent(props) {
     }
   }, [contracts, user, web3]);
 
+  const dropdownlist = [
+ {
+  text: 'Transaction',
+  fun: () => handleSort(1),
+  icon: <ImArrowUp2 />
+ },
+ {
+  text: 'Transaction',
+  fun: () => handleSort(2),
+  icon: <ImArrowDown2 />
+ }
+  ]
+
   const SortContent = () => {
     return (
       <div className="sort_popover">
@@ -183,7 +198,7 @@ export default function HistoryComponent(props) {
             onChange={handleSearch}
           />
         </div>
-        <Popover
+        {/* <Popover
           content={<SortContent />}
           trigger="click"
           overlayClassName="sort_dropDown"
@@ -195,7 +210,8 @@ export default function HistoryComponent(props) {
             <p>Sort By</p>
             <FaChevronDown />
           </div>
-        </Popover>
+        </Popover> */}
+        <DropDown list={dropdownlist}/>
       </div>
       <div className="table_header">
         <div>

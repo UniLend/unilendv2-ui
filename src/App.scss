@@ -78,74 +78,53 @@ margin-bottom: 100px;
   animation: shimmer 3s infinite;
 }
 
-// .sort_popover {
-//   width: 110px;
-//   background-color: var(--pure-white);
-//   p {
-//     width: 100%;
-//     padding: 10px;
-//     font-weight: 400;
-//     font-size: 13px;
-//     line-height: 10px;
-//     text-align: center;
-//     color: var(--light-gray);
-//     margin: 5px 0px;
+
+
+// .sort_dropDown {
+//   // position: absolute;
+//   // width: 137px;
+//   // height: 85px;
+//   // background: #ffffff;
+//   // box-shadow: -1px -1px 2px rgba(0, 0, 0, 0.08),
+//   //   2px 2px 2px rgba(0, 0, 0, 0.13);
+//   // border-radius: 7px;
+//   // padding: 10px 8px;
+//   // top: 107px;
+//   // right: 15px;
+//   .ant-popover-arrow {
+//     display: none;
+//   }
+//   .ant-popover-inner-content {
+//     padding: 5px;
 //     border-radius: 5px;
-//     cursor: pointer;
-//     &:hover {
+//     background-color: var(--pure-white);
+//   }
+//   .ant-popover-inner {
+//     border-radius: 5px;
+//     background-color: var(--pure-white);
+//   }
+//   .sort_popover {
+//     width: max-content;
+//     p {
+//       width: 100%;
+//       padding: 10px;
+//       font-weight: 400;
+//       font-size: 13px;
+//       line-height: 10px;
+//       text-align: center;
+//       color: var(--light-gray);
+//       margin: 5px 0px;
+//       border-radius: 5px;
+//       cursor: pointer;
+//       &:hover {
+//         background-color: var(--mid-blue);
+//       }
+//     }
+//     .activeSort {
 //       background-color: var(--mid-blue);
 //     }
 //   }
-//   .activeSort {
-//     background-color: var(--mid-blue);
-//   }
 // }
-
-.sort_dropDown {
-  // position: absolute;
-  // width: 137px;
-  // height: 85px;
-  // background: #ffffff;
-  // box-shadow: -1px -1px 2px rgba(0, 0, 0, 0.08),
-  //   2px 2px 2px rgba(0, 0, 0, 0.13);
-  // border-radius: 7px;
-  // padding: 10px 8px;
-  // top: 107px;
-  // right: 15px;
-  .ant-popover-arrow {
-    display: none;
-  }
-  .ant-popover-inner-content {
-    padding: 5px;
-    border-radius: 5px;
-    background-color: var(--pure-white);
-  }
-  .ant-popover-inner {
-    border-radius: 5px;
-    background-color: var(--pure-white);
-  }
-  .sort_popover {
-    width: max-content;
-    p {
-      width: 100%;
-      padding: 10px;
-      font-weight: 400;
-      font-size: 13px;
-      line-height: 10px;
-      text-align: center;
-      color: var(--light-gray);
-      margin: 5px 0px;
-      border-radius: 5px;
-      cursor: pointer;
-      &:hover {
-        background-color: var(--mid-blue);
-      }
-    }
-    .activeSort {
-      background-color: var(--mid-blue);
-    }
-  }
-}
 
 @keyframes shimmer {
   to{

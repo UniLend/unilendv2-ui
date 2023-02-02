@@ -5,6 +5,7 @@ import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import PoolCard from "../hallOfPools/poolCard";
 import "./styles/index.scss";
 import PoolCardSkeleton from "../Loader/PoolCardSkeleton";
+import DropDown from "../Common/DropDown";
 
 export default function PoolCarousel({ pools, isLoading }) {
   const [activeSlide1, setActiveSlide1] = useState(0);
@@ -15,10 +16,7 @@ export default function PoolCarousel({ pools, isLoading }) {
       <div className="carousel_row">
         <div className="title_sort_container" >
             <h2>New Pools</h2>
-            <div className='sortBy'>
-            <p>Sort By</p>
-            <FaChevronDown />
-          </div>
+           <DropDown list={[]}/>
         </div>
         <div className="carousel_container ">
           <Carousel
@@ -64,10 +62,7 @@ export default function PoolCarousel({ pools, isLoading }) {
         <br />
         <div className="title_sort_container" >
             <h2>New Pools</h2>
-            <div className='sortBy'>
-            <p>Sort By</p>
-            <FaChevronDown />
-          </div>
+            <DropDown list={[]}/>
         </div>
         <div className="carousel_container" >
           <Carousel

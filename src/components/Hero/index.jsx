@@ -60,14 +60,14 @@ export default function HeroComponent(props) {
         pools={pools}
       />
 
-      {(Object.values(pools).length > 0 && !isLoadingPoolData )? (
+      {/* {(Object.values(pools).length > 0 && !isLoadingPoolData )? (
         <div className="poolcard_container">
           { Object.values(pools).map((pool, i) => (
             <PoolCard pool={pool} key={i} />
           ))}
         </div>
-      ) : ( <PoolListSkeleton/>)}
-       {/* <PoolCarousel pools={pools} isLoading={!isLoadingPoolData}/> */}
+      ) : ( <PoolListSkeleton/>)} */}
+       <PoolCarousel pools={pools} isLoading={!isLoadingPoolData}/>
      
 {/* 
       {

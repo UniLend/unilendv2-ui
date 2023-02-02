@@ -7,6 +7,9 @@ import { GiReceiveMoney } from "react-icons/gi";
 import { ImStack } from "react-icons/im";
 import { Alchemy, Network } from "alchemy-sdk";
 import { FaWallet } from "react-icons/fa";
+import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
+import {HiArrowDown} from 'react-icons/hi'
+import {AiOutlineArrowUp} from 'react-icons/ai'
 import banner from "../../assets/dashboardbanner.svg";
 import walletIcon from "../../assets/wallet.svg";
 import { SearchOutlined, DownOutlined } from "@ant-design/icons";
@@ -25,6 +28,7 @@ import {
   userDashBoardQuery,
 } from "../../helpers/dashboard";
 import { getAccount, getNetwork } from "@wagmi/core";
+import DropDown from "../Common/DropDown";
 
 //const endpoint = "https://api.spacex.land/graphql/";
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -91,6 +95,52 @@ export default function UserDashboardComponent(props) {
   setPositionData({positionData, lendArray: afterSearchedLend, borrowArray: afterSearchedBorrow})
 
   }
+
+  const lendDropdownList = [
+    {
+      text: 'Amount',
+      fun: () => positionSorting("lend", "LendBalance", 1),
+      icon: <ImArrowUp2/>
+    },
+    {
+      text: 'Amount',
+      fun: () => positionSorting("lend", "LendBalance", 2),
+      icon: <ImArrowDown2/>
+    },
+    {
+      text: 'APY',
+      fun: () => positionSorting("lend", "apy", 1),
+      icon: <ImArrowUp2/>
+    },
+    {
+      text: 'APY',
+      fun: () => positionSorting("lend", "apy", 2),
+      icon: <ImArrowDown2/>
+    }
+  ]
+
+  const BorrowDropdownList = [
+    {
+      text: 'Amount',
+      fun: () => positionSorting("borrow", "borrowBalance", 1),
+      icon: <ImArrowUp2/>
+    },
+    {
+      text: 'Amount',
+      fun: () => positionSorting("borrow", "borrowBalance", 2),
+      icon: <ImArrowDown2/>
+    },
+    {
+      text: 'APY',
+      fun: () => positionSorting("borrow", "apy", 1),
+      icon: <ImArrowUp2/>
+    },
+    {
+      text: 'APY',
+      fun: () => positionSorting("borrow", "apy", 2),
+      icon: <ImArrowDown2/>
+    }
+  ]
 
   const SortContent = () => {
     return (
@@ -395,19 +445,7 @@ export default function UserDashboardComponent(props) {
                   <div className="input_container">
                     <input onChange={handleOpenPosition} type="text" placeholder="Search Txt/Token/Type" />
                   </div>
-                  <Popover
-                    content={<SortContent />}
-                    trigger="click"
-                    overlayClassName="sort_dropDown"
-                    placement="bottomLeft"
-                    open={lendingVisible}
-                    onOpenChange={handleLendingVisibleChange}
-                  >
-                    <div className={`sortBy`}>
-                      <p>Sort By</p>
-                      <DownOutlined />
-                    </div>
-                  </Popover>
+                  <DropDown list={lendDropdownList} />
                 </div>
                 <div className="thead">
                   <span>Pool</span>
@@ -468,19 +506,7 @@ export default function UserDashboardComponent(props) {
                   <div className="input_container">
                     <input  onChange={handleOpenPosition}  type="text" placeholder="Search Txt/Token/Type" />
                   </div>
-                  <Popover
-                    content={<SortContent />}
-                    trigger="click"
-                    overlayClassName="sort_dropDown"
-                    placement="bottomLeft"
-                    open={lendingVisible}
-                    onOpenChange={handleLendingVisibleChange}
-                  >
-                    <div className={`sortBy`}>
-                      <p>Sort By</p>
-                      <DownOutlined />
-                    </div>
-                  </Popover>
+                  <DropDown list={BorrowDropdownList} />
                 </div>
                 <div className="thead">
                   <span>Pool</span>
