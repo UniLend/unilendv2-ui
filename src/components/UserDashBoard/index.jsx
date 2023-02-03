@@ -152,6 +152,7 @@ export default function UserDashboardComponent(props) {
     if (data) {
       const position = getPositionData(data, poolList, tokenList);
       setPositionData(position);
+      // console.log("Positions", position, data);
       setPositionDataBackup(position);
       const pieChart = getChartData(data);
       setPieChartInputs(pieChart);

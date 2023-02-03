@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Web3 from "web3";
 import { useDispatch, useSelector } from "react-redux";
+import { useQuery } from "@apollo/client";
 import "antd/dist/antd.css";
 
 import {
@@ -57,9 +58,10 @@ import { getAllEvents } from "./services/events";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import "./App.scss";
-import { getFromLocalStorage } from "./utils";
+import { getFromLocalStorage, getTokenLogo } from "./utils";
 import { fetchCoinLogo } from "./utils/axios";
 import { useState } from "react";
+import { getPoolCreatedGraphQuery } from "./helpers/dashboard";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -103,14 +105,15 @@ const client = createClient({
 
 function App() {
   const dispatch = useDispatch();
-  const { chain, chains } = getNetwork();
-  const {account} = getAccount();
-  // const provider = getProvider();
 
+  const { chain, chains } = getNetwork();
+  const { address } = getAccount();
+  // const provider = getProvider();
+  const query = getPoolCreatedGraphQuery(address)
   const etherProvider = new ethers.providers.getDefaultProvider("sepolia");
   const state = useSelector((state) => state);
-  const [data, setData] = useState([]);
   const [chainId, setChainId] = useState(0);
+  const { data, loading, error } = useQuery(query);
   // const [smartContracts, setSmartContracts] = useState();
 
   document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`;
@@ -148,7 +151,6 @@ function App() {
     (async () => {
       try {
         dispatch(setLoading(true));
-
         const walletconnect = JSON.parse(localStorage.getItem("walletconnect"));
         const account = getAccount();
         let provider = etherProvider;
@@ -199,7 +201,8 @@ function App() {
   }, [isSame, getFromLocalStorage("ethEvent")]);
 
   useEffect(() => {
-    if (state.contracts.coreContract) {
+    const { chain } = getNetwork()
+    if (state.contracts.coreContract && chain?.id == 11155111) {
       try {
         (async () => {
           const web3 = defProv();
@@ -296,7 +299,7 @@ function App() {
               };
             }
           }
-
+         console.log("EventsData", poolData, tokenList);
           dispatch(setPools({ poolData, tokenList }));
         })();
       } catch (error) {
@@ -305,6 +308,51 @@ function App() {
       }
     }
   }, [state.contracts, chain?.id]);
+
+
+  useEffect(() => {
+    const { chain } = getNetwork()
+    if(data && chain?.id != 11155111){
+     
+      const poolData = {
+      }
+      const tokenList = {}
+
+      for (const pool of data?.poolCreateds) {
+        const allPositions = data.positions
+        const openPosiions = allPositions.filter((el) =>  el?.poolData?.pool == pool.pool)
+        const poolInfo = {
+          ...pool,
+          poolAddress: pool?.pool,
+          openPosition: openPosiions.length > 0 ,
+          token0: {
+            address: pool.token0,
+            logo:  getTokenLogo(pool.token0Symbol),
+            symbol: pool.token0Symbol
+          },
+          token1: {
+            address: pool.token1,
+            logo:  getTokenLogo(pool.token1Symbol),
+            symbol: pool.token1Symbol
+          }
+        }
+        tokenList[pool.token0] = {
+          address: pool.token0,
+          logo:  getTokenLogo(pool.token0Symbol),
+          symbol: pool.token0Symbol
+        }
+        tokenList[pool.token1] = {
+          address: pool.token1,
+          logo:  getTokenLogo(pool.token1Symbol),
+          symbol: pool.token1Symbol
+        }
+        poolData[pool?.pool] = poolInfo
+      }
+      dispatch(setPools({ poolData, tokenList }));
+      console.log("PoolCreateddata", data, poolData);
+
+    }
+  }, [data])
 
   return (
     <>
