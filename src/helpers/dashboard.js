@@ -311,13 +311,13 @@ export const getTokensFromUserWallet = async (data) => {
   return tokensObject;
 };
 
-export const getBorrowedPowerUsed = (borrowPositions) => {
+export const getBorrowedPowerUsed = (Positions) => {
   let num = 0;
   let deno = 0;
-
-  for (const position of borrowPositions) {
+  for (const position of Positions) {
+    const cureentLTV = position.currentLTV > 1 ? position.currentLTV /100 : position.currentLTV
     const usedInPer =
-      (Number(position.currentLTV * 100) / position.pool.ltv) * 100;
+      (Number(cureentLTV * 100) / position.pool.ltv) * 100;
     num += usedInPer * position.LendBalance;
     deno += position.LendBalance;
   }
