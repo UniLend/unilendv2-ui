@@ -1,47 +1,56 @@
-import { poolAbi } from "../core/contractData/abi";
-import { getAllContracts } from "../helpers/contracts";
+import { poolAbi, positionAbi } from "../core/contractData/abi";
+import { fromBigNumber, getAllContracts } from "../helpers/contracts";
 import { poolDataByAddr } from "../utils/constants";
+import { readContract, getContract, getProvider } from "@wagmi/core";
+import Web3 from "web3";
 
 export const getAllEvents = async (contract, event) => {
   try {
-    const result = await contract.getPastEvents(
-      event,
-      {
-        fromBlock: 0,
-        toBlock: 'latest',
-      },
-      function (error, events) {
-        if (error) {
-          console.log(error);
-        }
-      }
-    );
-    return result.map((item) => item.returnValues);
+    // const result = await contract.getPastEvents(
+    //   event,
+    //   {
+    //     fromBlock: 0,
+    //     toBlock: 'latest',
+    //   },
+    //   function (error, events) {
+    //     if (error) {
+    //       console.log(error);
+    //     }
+    //   }
+    // );
+
+    const result = await contract.queryFilter(event)
+    return result.map((item) => item.args);
   } catch (error) {
     return error;
   }
 };
 
-export const getEventsWithFilter = (contract, event, filter) => {
-  const events = contract
-    .getPastEvents(
-      event,
-      {
-        filter: filter,
-        fromBlock: 0,
-        toBlock: 'latest',
-      },
-      function (error, events) {
-        if (error) {
-          console.log(error);
-        }
-      }
-    )
-    .then((events) => {
-      
-      return events;
-    });
-    return events;
+export const getEventsWithFilter = async (contract, event, filter) => {
+  // const events = await contract
+  //   .getPastEvents(
+  //     event,
+  //     {
+  //       filter: filter,
+  //       fromBlock: 0,
+  //       toBlock: 'latest',
+  //     },
+  //     function (error, events) {
+  //       if (error) {
+  //         console.log("eventFilter",error);
+  //       }
+  //     }
+  //   )
+
+    // .then((events) => {
+    //   console.log("eventFilter", events);
+    //   return events;
+    // });
+
+  const events = await contract.queryFilter(event)
+  const filtered = events.filter((event) => fromBigNumber(event.args._positionID) == filter._positionID )
+
+    return filtered;
 };
 
 export const positionId = async (
@@ -49,9 +58,15 @@ export const positionId = async (
   poolAddress,
   userAddress
 ) => {
-  const id = await positionContract.methods
-    .getNftId(poolAddress, userAddress)
-    .call();
+  // const id = await positionContract.methods
+  //   .getNftId(poolAddress, userAddress)
+  //   .call();
+  const id = await readContract({
+    address: positionContract.address,
+    abi: positionAbi,
+    functionName: 'getNftId',
+    args: [poolAddress, userAddress]
+  })
   return id;
 };
 
@@ -59,27 +74,29 @@ export const allTransaction = async (
   coreContract,
   positionContract,
   userAddress,
-  web3
+  poollist
 ) => {
   const data = await getAllEvents(coreContract, 'PoolCreated');
   // array of all pools address
   const newData = data.map((event) => event.pool);
+
   let array = [];
   for (let i = 0; i < newData.length; i++) {
     const position = await positionId(
       positionContract,
       newData[i],
       userAddress
-    );
-    const poolInfo = poolDataByAddr[newData[i]];
-    const poolContract = await getAllContracts(
-      newData[i],
-      poolAbi,
-      web3
-    );
-    
-    poolContract.poolInfo = poolInfo;
-    
+      );
+     
+      const poolInfo = poollist[newData[i]];
+     
+      const poolContract =  getContract({
+        address: newData[i],
+        abi: poolAbi,
+        signerOrProvider: getProvider()
+      }) 
+   
+
     const eventNames = ['Borrow', 'Lend', 'Redeem', 'RepayBorrow'];
     for (let j = 0; j < eventNames.length; j++) {
      
@@ -87,10 +104,11 @@ export const allTransaction = async (
         _positionID: `${position}`,
       });
       const eventsWithPoolInfo = events.map((el)=> el = {...el, poolInfo: poolInfo, event: el.event === 'RepayBorrow'? 'Repay': el.event})
+
       array.push(...eventsWithPoolInfo);
    
     }
   }
-  // console.log("all array", array);
+
   return array;
 };

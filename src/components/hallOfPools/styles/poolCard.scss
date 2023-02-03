@@ -1,6 +1,4 @@
-.poolcard {
-  // min-width: 320px;
-  
+.poolcard {  
   height: 200px;
   background-color: var(--pure-white);
   border-radius: 15px;
@@ -30,11 +28,13 @@
         width: 35px;
         height: 35px;
         margin: 20px;
+        border-radius: 50%;
       }
       h5 {
         font-weight: 700;
         font-size: 14.7387px;
         margin: 0;
+        color: var(--pure-black);
       }
     }
   }

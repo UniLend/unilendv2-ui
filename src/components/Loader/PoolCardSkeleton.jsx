@@ -1,11 +1,9 @@
 import React from 'react';
-import './styles/poolList.scss';
+import './styles/poolcard.scss'
 
-export default function PoolListSkeleton() {
+export default function PoolCardSkeleton() {
   return (
-    <div className='pool_list_skeleton_container'>
-      {
-        new Array(9).fill(9).map((el, i) => <div key={i} className='skeleton_card'>
+    <div className='skeleton_card'>
                <div className='pool_icons'>
           <div className='div'>
             <div className='skeleton'></div>
@@ -26,8 +24,6 @@ export default function PoolListSkeleton() {
       <div className='pool_footer'>
       <div className='skeleton' ></div>
       </div>
-        </div>)
-      }
-    </div>
+        </div>
   )
 }

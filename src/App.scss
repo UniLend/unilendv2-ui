@@ -1,7 +1,7 @@
 @use './core/theme/theme.scss' as *;
 @import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@100;200;300;400;500;600;700&display=swap');
 
-.light{
+.light, .body{
  @each $name, $color in $light {
    --#{$name}: #{$color};
  }
@@ -24,7 +24,7 @@ body{
   font-variant: normal;
   font-feature-settings: "aalt";
   line-height: normal;
-  background: radial-gradient( 51.86% 143.56% at 50.03% 30.06%, #e2edfc 0.09%, #d8e7fc 0.1%, #eaf2fd 51.04%, #ffffff 73.96% );
+  background: var(--bg-color)
 }
 
 html, body {
@@ -42,9 +42,9 @@ html, body {
   position: relative;
 }
 .app{
- width: 80%;
- margin:  auto;
-
+//  width: 80%;
+ margin: auto;
+margin-bottom: 100px;
 }
 
 /* width */
@@ -55,12 +55,12 @@ html, body {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--pure-white);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: rgba(58, 124, 255, 0.81);
+  background: var(--sharp-blue);
   border-radius: 5px;
 }
 
@@ -75,9 +75,56 @@ html, body {
   background-size: 250%;
   background-position: 100% 0;
   width: 100%;
-  animation: shimmer 5s infinite;
+  animation: shimmer 3s infinite;
 }
 
+
+
+// .sort_dropDown {
+//   // position: absolute;
+//   // width: 137px;
+//   // height: 85px;
+//   // background: #ffffff;
+//   // box-shadow: -1px -1px 2px rgba(0, 0, 0, 0.08),
+//   //   2px 2px 2px rgba(0, 0, 0, 0.13);
+//   // border-radius: 7px;
+//   // padding: 10px 8px;
+//   // top: 107px;
+//   // right: 15px;
+//   .ant-popover-arrow {
+//     display: none;
+//   }
+//   .ant-popover-inner-content {
+//     padding: 5px;
+//     border-radius: 5px;
+//     background-color: var(--pure-white);
+//   }
+//   .ant-popover-inner {
+//     border-radius: 5px;
+//     background-color: var(--pure-white);
+//   }
+//   .sort_popover {
+//     width: max-content;
+//     p {
+//       width: 100%;
+//       padding: 10px;
+//       font-weight: 400;
+//       font-size: 13px;
+//       line-height: 10px;
+//       text-align: center;
+//       color: var(--light-gray);
+//       margin: 5px 0px;
+//       border-radius: 5px;
+//       cursor: pointer;
+//       &:hover {
+//         background-color: var(--mid-blue);
+//       }
+//     }
+//     .activeSort {
+//       background-color: var(--mid-blue);
+//     }
+//   }
+// }
 
 @keyframes shimmer {
   to{

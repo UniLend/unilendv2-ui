@@ -95,6 +95,17 @@ export const networks = {
     'https://rpc-sepolia.rockx.com'],
     blockExplorerUrls: ['https://sepolia.etherscan.io'],
   },
+  80001: {
+    chainId: `0x${Number(80001).toString(16)}`,
+    chainName: 'Polygon Mumbai',
+    nativeCurrency: {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      decimals: 18,
+    },
+    rpcUrls: ['https://polygon-rpc.com/'],
+    blockExplorerUrls: ['https://polygonscan.com/'],
+  },
 };
 
 export const allNetworkIds = {
@@ -104,4 +115,5 @@ export const allNetworkIds = {
   moonMainNet: '1284',
   goerli: '5',
   sepolia: '11155111',
+  polygonMumbai: '80001'
 };

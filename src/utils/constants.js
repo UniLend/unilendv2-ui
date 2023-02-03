@@ -1,3 +1,5 @@
+import tokensbysymbol from "../services/tokensbysymbol.json";
+import tokensbyaddress from "../services/tokensbyaddress.json"
 const tokensBYSymbol = {
   "ETH" : {
       "address": "",
@@ -110,9 +112,16 @@ const tokensBYSymbol = {
     "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
     "symbol": "BUSD",
     "logo": "https://i.imgur.com/owRvfOY.png"
-  }
-
+  },
+  "SANTA":{
+    "logo": "https://i.imgur.com/70sMFN7.png"
+  }, 
+  "GIFT":{
+    "logo":"https://i.imgur.com/tWu6HLM.png"
+  },
+...tokensbysymbol 
 }
+
 
 const tokensByAddress = {
   "ETH" : {
@@ -184,130 +193,131 @@ const tokensByAddress = {
       "address": "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
       "symbol": "BUSD",
       "logo": "https://assets.coingecko.com/coins/images/9576/thumb/BUSD.png?1568947766"
-  }
-
+  },
+  ...tokensbyaddress
 }
 
 const PoolsData = [
-    {
-      // poolAddress: '0x40d3b357d8E70bD4a3d1595FBf1AF209F28B7E3c',
-      // 0x918fe9e1afa89620e89f9907f4c95c93801a9aa3d7f4aa07d6140cd61713e23e
-      poolAddress: '0x9Be89Ab05f8730e873f195daF329a0C5Db2ECca4',
-      tokens: ['USDC', 'WETH'],
-      supply: '$12,045,000',
-      borrowed: '$7,310,455',
-    },
-    {
-      // poolAddress: '0xc2cb7a0D3721c8D788B01d5140CF919C2cc9B64a',
-      poolAddress: '0xad9E05A861B70Ae2E18C4EC5a3B47B59E65B535E',
-      tokens: ['DAI', 'WETH'],
-      supply: '$1,683,215',
-      borrowed: '$897,642',
-    },
-    {
-      // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
-      poolAddress: '0xAc961A1F91b25ffd24b0FBB43d76d4369bAa2519',
-      tokens: ['UFT', 'WETH'],
-      supply: '$5,302,153',
-      borrowed: '$3,817,985',
-    },
-    {
-      // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
-      poolAddress: '0x445949DDbbf05D5173e9Fc09B48e3B36A2e80e7a',
-      tokens: ['UFT', 'USDC'],
-      supply: '$3,123,179',
-      borrowed: '$2,577,986',
-    },
-    {
-      // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
-      poolAddress: '0xcC6cd2528aA214784C8AA260442606a20c9891f1',
-      tokens: ['WBTC', 'WETH'],
-      supply: '$6,387,157',
-      borrowed: '$3,246,700',
-    },
-    {
-      // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
-      poolAddress: '0xF30A7F4ABF997050241d6a6d9A5D035770AfcfFf',
-      tokens: ['USDC', 'DAI'],
-      supply: '$5,173,892',
-      borrowed: '$2,981,366',
-    },
-    {
-      // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
-      poolAddress: '0xB7D0A5D21DE1b1581799cE1EFD78C1D20F731512',
-      tokens: ['WBNB', 'BUSD'],
-      supply: '$5,173,892',
-      borrowed: '$2,981,366',
-    },
+    // {
+    //   // poolAddress: '0x40d3b357d8E70bD4a3d1595FBf1AF209F28B7E3c',
+    //   // 0x918fe9e1afa89620e89f9907f4c95c93801a9aa3d7f4aa07d6140cd61713e23e
+    //   poolAddress: '0x9Be89Ab05f8730e873f195daF329a0C5Db2ECca4',
+    //   tokens: ['USDC', 'WETH'],
+    //   supply: '$12,045,000',
+    //   borrowed: '$7,310,455',
+    // },
+    // {
+    //   // poolAddress: '0xc2cb7a0D3721c8D788B01d5140CF919C2cc9B64a',
+    //   poolAddress: '0xad9E05A861B70Ae2E18C4EC5a3B47B59E65B535E',
+    //   tokens: ['DAI', 'WETH'],
+    //   supply: '$1,683,215',
+    //   borrowed: '$897,642',
+    // },
+    // {
+    //   // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
+    //   poolAddress: '0xAc961A1F91b25ffd24b0FBB43d76d4369bAa2519',
+    //   tokens: ['UFT', 'WETH'],
+    //   supply: '$5,302,153',
+    //   borrowed: '$3,817,985',
+    // },
+    // {
+    //   // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
+    //   poolAddress: '0x445949DDbbf05D5173e9Fc09B48e3B36A2e80e7a',
+    //   tokens: ['UFT', 'USDC'],
+    //   supply: '$3,123,179',
+    //   borrowed: '$2,577,986',
+    // },
+    // {
+    //   // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
+    //   poolAddress: '0xcC6cd2528aA214784C8AA260442606a20c9891f1',
+    //   tokens: ['WBTC', 'WETH'],
+    //   supply: '$6,387,157',
+    //   borrowed: '$3,246,700',
+    // },
+    // {
+    //   // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
+    //   poolAddress: '0xF30A7F4ABF997050241d6a6d9A5D035770AfcfFf',
+    //   tokens: ['USDC', 'DAI'],
+    //   supply: '$5,173,892',
+    //   borrowed: '$2,981,366',
+    // },
+    // {
+    //   // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
+    //   poolAddress: '0xB7D0A5D21DE1b1581799cE1EFD78C1D20F731512',
+    //   tokens: ['WBNB', 'BUSD'],
+    //   supply: '$5,173,892',
+    //   borrowed: '$2,981,366',
+    // },
   ];
 
   const poolDataByAddr = {
-    '0x9Be89Ab05f8730e873f195daF329a0C5Db2ECca4': {
-      // poolAddress: '0x40d3b357d8E70bD4a3d1595FBf1AF209F28B7E3c',
-      // 0x918fe9e1afa89620e89f9907f4c95c93801a9aa3d7f4aa07d6140cd61713e23e
-      poolAddress: '0x9Be89Ab05f8730e873f195daF329a0C5Db2ECca4',
-      tokens: ['USDC', 'WETH'],
-      supply: '$12,045,000',
-      borrowed: '$7,310,455',
-    },
-    '0xad9E05A861B70Ae2E18C4EC5a3B47B59E65B535E': {
-      // poolAddress: '0xc2cb7a0D3721c8D788B01d5140CF919C2cc9B64a',
-      poolAddress: '0xad9E05A861B70Ae2E18C4EC5a3B47B59E65B535E',
-      tokens: ['DAI', 'WETH'],
-      supply: '$1,683,215',
-      borrowed: '$897,642',
-    },
-    '0xAc961A1F91b25ffd24b0FBB43d76d4369bAa2519': {
-      // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
-      poolAddress: '0xAc961A1F91b25ffd24b0FBB43d76d4369bAa2519',
-      tokens: ['UFT', 'WETH'],
-      supply: '$5,302,153',
-      borrowed: '$3,817,985',
-    },
-    '0x445949DDbbf05D5173e9Fc09B48e3B36A2e80e7a': {
-      // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
-      poolAddress: '0x445949DDbbf05D5173e9Fc09B48e3B36A2e80e7a',
-      tokens: ['UFT', 'USDC'],
-      supply: '$3,123,179',
-      borrowed: '$2,577,986',
-    },
-    '0xcC6cd2528aA214784C8AA260442606a20c9891f1': {
-      // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
-      poolAddress: '0xcC6cd2528aA214784C8AA260442606a20c9891f1',
-      tokens: ['WBTC', 'WETH'],
-      supply: '$6,387,157',
-      borrowed: '$3,246,700',
-    },
-    '0xF30A7F4ABF997050241d6a6d9A5D035770AfcfFf': {
-      poolAddress: '0xF30A7F4ABF997050241d6a6d9A5D035770AfcfFf',
-      tokens: ['USDC', 'DAI'],
-      supply: '$5,173,892',
-      borrowed: '$2,981,366',
-    },
-    '0xe5b923a28ad1c2fdA6c6c62D72EA29804C0762eE': {
-      poolAddress: '0xe5b923a28ad1c2fdA6c6c62D72EA29804C0762eE',
-      tokens: ['UFT', 'OMATIC'],
-      supply: '$120,45,000',
-      borrowed: '$45,000',
-    },
-    '0x6176Da7FB5CE111B349b53acC6f89a63d7cF9E54': {
-      poolAddress: '0x6176Da7FB5CE111B349b53acC6f89a63d7cF9E54',
-      tokens: ['UFT', 'OUSDC'],
-      supply: '$120,45,000',
-      borrowed: '$45,000',
-    },
-    '0x0ec289e06B30d0BA30239A45F03be3D5DE875235': {
-      poolAddress: '0x0ec289e06B30d0BA30239A45F03be3D5DE875235',
-      tokens: ['OUSDC', 'OMATIC'],
-      supply: '$120,45,000',
-      borrowed: '$45,000',
-    },
-    '0xB7D0A5D21DE1b1581799cE1EFD78C1D20F731512': {
-      poolAddress: '0xB7D0A5D21DE1b1581799cE1EFD78C1D20F731512',
-      tokens: ['WBNB', 'BUSD'],
-      supply: '$5,173,892',
-      borrowed: '$2,981,366',
-    },
+    // '0x9Be89Ab05f8730e873f195daF329a0C5Db2ECca4': {
+    //   // poolAddress: '0x40d3b357d8E70bD4a3d1595FBf1AF209F28B7E3c',
+    //   // 0x918fe9e1afa89620e89f9907f4c95c93801a9aa3d7f4aa07d6140cd61713e23e
+    //   poolAddress: '0x9Be89Ab05f8730e873f195daF329a0C5Db2ECca4',
+    //   tokens: ['USDC', 'WETH'],
+    //   supply: '$12,045,000',
+    //   borrowed: '$7,310,455',
+    // },
+    // '0xad9E05A861B70Ae2E18C4EC5a3B47B59E65B535E': {
+    //   // poolAddress: '0xc2cb7a0D3721c8D788B01d5140CF919C2cc9B64a',
+    //   poolAddress: '0xad9E05A861B70Ae2E18C4EC5a3B47B59E65B535E',
+    //   tokens: ['DAI', 'WETH'],
+    //   supply: '$1,683,215',
+    //   borrowed: '$897,642',
+    // },
+    // '0xAc961A1F91b25ffd24b0FBB43d76d4369bAa2519': {
+    //   // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
+    //   poolAddress: '0xAc961A1F91b25ffd24b0FBB43d76d4369bAa2519',
+    //   tokens: ['UFT', 'WETH'],
+    //   supply: '$5,302,153',
+    //   borrowed: '$3,817,985',
+    // },
+    // '0x445949DDbbf05D5173e9Fc09B48e3B36A2e80e7a': {
+    //   // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
+    //   poolAddress: '0x445949DDbbf05D5173e9Fc09B48e3B36A2e80e7a',
+    //   tokens: ['UFT', 'USDC'],
+    //   supply: '$3,123,179',
+    //   borrowed: '$2,577,986',
+    // },
+    // '0xcC6cd2528aA214784C8AA260442606a20c9891f1': {
+    //   // poolAddress: '0x2bC1b550428Bf951E01AdA3b909e191f84c36B6d',
+    //   poolAddress: '0xcC6cd2528aA214784C8AA260442606a20c9891f1',
+    //   tokens: ['WBTC', 'WETH'],
+    //   supply: '$6,387,157',
+    //   borrowed: '$3,246,700',
+    // },
+    // '0xF30A7F4ABF997050241d6a6d9A5D035770AfcfFf': {
+    //   poolAddress: '0xF30A7F4ABF997050241d6a6d9A5D035770AfcfFf',
+    //   tokens: ['USDC', 'DAI'],
+    //   supply: '$5,173,892',
+    //   borrowed: '$2,981,366',
+    // },
+    // '0xe5b923a28ad1c2fdA6c6c62D72EA29804C0762eE': {
+    //   poolAddress: '0xe5b923a28ad1c2fdA6c6c62D72EA29804C0762eE',
+    //   tokens: ['UFT', 'OMATIC'],
+    //   supply: '$120,45,000',
+    //   borrowed: '$45,000',
+    // },
+    // '0x6176Da7FB5CE111B349b53acC6f89a63d7cF9E54': {
+    //   poolAddress: '0x6176Da7FB5CE111B349b53acC6f89a63d7cF9E54',
+    //   tokens: ['UFT', 'OUSDC'],
+    //   supply: '$120,45,000',
+    //   borrowed: '$45,000',
+    // },
+    // '0x0ec289e06B30d0BA30239A45F03be3D5DE875235': {
+    //   poolAddress: '0x0ec289e06B30d0BA30239A45F03be3D5DE875235',
+    //   tokens: ['OUSDC', 'OMATIC'],
+    //   supply: '$120,45,000',
+    //   borrowed: '$45,000',
+    // },
+    // '0xB7D0A5D21DE1b1581799cE1EFD78C1D20F731512': {
+    //   poolAddress: '0xB7D0A5D21DE1b1581799cE1EFD78C1D20F731512',
+    //   tokens: ['WBNB', 'BUSD'],
+    //   supply: '$5,173,892',
+    //   borrowed: '$2,981,366',
+    // },
   };
+
 
 export {tokensBYSymbol, tokensByAddress, PoolsData, poolDataByAddr };

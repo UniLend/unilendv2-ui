@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js";
 import { store } from "../store/Store";
+import { ethers } from "ethers";
 
 const { contracts, user } = store.getState();
 
@@ -110,7 +111,11 @@ export function decimal2Fixed(amount, decimals) {
 }
 
 export function fixed2Decimals(amount, decimals) {
-  return new BigNumber(amount).dividedBy(10 ** decimals).toFixed();
+  return new BigNumber(amount?._hex).dividedBy(10 ** decimals).toFixed();
+}
+
+export function fromBigNumber(bignumber){
+   return ethers.BigNumber.from(bignumber).toString()
 }
 
 export function toFixed(num, fixed) {

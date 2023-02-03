@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Slider, Button , message, Modal} from "antd";
+import {waitForTransaction } from '@wagmi/core'
 import "./styles/index.scss";
 import {  useNavigate, useParams } from "react-router-dom";
-import { contractAddress } from "../../core/contractData/contracts_sepolia";
 import {
   getPoolBasicData,
   getPoolAllData,
@@ -20,11 +20,9 @@ import {
   getCurrentLTV,
   getSelectLTV,
   getActionBtn,
-  mul,
 } from "../../helpers/contracts";
 import PoolSkeleton from "../Loader/PoolSkeleton";
 import TwitterModal from "../Common/TwitterModal";
-import faucet from '../../assets/faucet.svg';
 
 const lend = "lend";
 const borrow = "borrow";
@@ -122,24 +120,41 @@ if(selectedToken && collateralToken){
   },[amount, selectLTV])
 
 
-  const checkTxnStatus = (hash, txnData) => {
+
+  const checkTxnStatus =  (hash, txnData) => {
+
+      waitForTransaction({
+      hash,
+    })
+    .then((receipt)=> {
+      if (receipt.status == 1) {
+        message.success(`Transaction for ${txnData.method} of ${Number(txnData.amount).toFixed(4)} for token ${txnData.tokenSymbol}`, 5)
+        setMethodLoaded({ ...methodLoaded, getPoolFullData: false, getOraclePrice: false, getPoolTokensData: false });
+
+        if(txnData.method !== 'approval') {
+          setAmount(0);
+          setShowTwitterModal(true)
+        }
+        setMax(false);
+        setIsOperationLoading(false);
+      } else {
+        setTimeout(function () {
+          checkTxnStatus(hash, txnData);
+        }, 1000);
+      }
+    })
+    .catch((error) => {
+      console.error("status:", error);
+      console.log({error});
+        setTimeout(function () {
+          checkTxnStatus(hash, txnData);
+        }, 1000);
+      
+    })
+    
     if (web3) {
       web3.eth.getTransactionReceipt(hash, function (err, receipt) {
-        if (receipt) {
-          message.success(`Transaction for ${txnData.method} of ${txnData.amount} for token ${txnData.tokenSymbol}`, 5)
-          setMethodLoaded({ ...methodLoaded, getPoolFullData: false, getOraclePrice: false, getPoolTokensData: false });
 
-          if(txnData.method !== 'approval') {
-            setAmount(0);
-            setShowTwitterModal(true)
-          }
-          setMax(false);
-          setIsOperationLoading(false);
-        } else {
-          setTimeout(function () {
-            checkTxnStatus(hash, txnData);
-          }, 1000);
-        }
       });
     }
   };
@@ -148,7 +163,8 @@ if(selectedToken && collateralToken){
     setAmount(0);
     setMax(false);
     setIsOperationLoading(false);
-    const errorText = "Error: " + String(error.message).split(":")[1]
+    console.log("Error", {error});
+    const errorText =  String(error.reason)
     message.error( error?.message ? errorText : 'Error: Transaction Error')
   };
 
@@ -258,7 +274,6 @@ if(selectedToken && collateralToken){
           const pool = await getPoolAllData(
             contracts,
             poolData,
-            contractAddress.positionAddress,
             poolAddress,
             user.address
           );
@@ -290,7 +305,7 @@ if(selectedToken && collateralToken){
       })();
       
       const isAllTrue = Object.values(methodLoaded).find((el) => el === false);
-      if (isAllTrue === undefined && selectedToken !==null && selectedToken?._symbol === poolData.token0._symbol) {
+      if (isAllTrue === undefined && selectedToken !==null && selectedToken?._symbol === poolData?.token0?._symbol) {
         setSelectedToken(poolData.token0);
         setCollaterralToken(poolData.token1);
         setActiveOperation(poolData.token0.tabs[0]);
@@ -299,12 +314,12 @@ if(selectedToken && collateralToken){
       } else if(isAllTrue === undefined && selectedToken !== null){
         setSelectedToken(poolData.token1);
         setCollaterralToken(poolData.token0);
-        setActiveOperation(poolData.token1.tabs[0]);
+        setActiveOperation(poolData?.token1?.tabs[0]);
         setIsPageLoading(false)
       } else if(isAllTrue === undefined) {
         setSelectedToken(poolData.token0);
         setCollaterralToken(poolData.token1);
-        setActiveOperation(poolData.token0.tabs[0]);
+        setActiveOperation(poolData?.token0?.tabs[0]);
         setActiveToken(0)
         setIsPageLoading(false)
       }
@@ -432,7 +447,7 @@ if(selectedToken && collateralToken){
                 target='_blank'
               >
                 {' '}
-                <img src={faucet} alt='faucet icon' />{' '}
+                {/* <img src={faucet} alt='faucet icon' />{' '} */}
               </a>
             </div>
           </div>

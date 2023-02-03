@@ -1,33 +1,245 @@
 import React, { useState } from "react";
+import { useQuery, gql } from "@apollo/client";
 import "./styles/index.scss";
+import { FiPercent, FiHeart } from "react-icons/fi";
+import { VscGraph } from "react-icons/vsc";
+import { GiReceiveMoney } from "react-icons/gi";
+import { ImStack } from "react-icons/im";
+import { Alchemy, Network } from "alchemy-sdk";
+import { FaWallet } from "react-icons/fa";
+import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
+import {HiArrowDown} from 'react-icons/hi'
+import {AiOutlineArrowUp} from 'react-icons/ai'
 import banner from "../../assets/dashboardbanner.svg";
 import walletIcon from "../../assets/wallet.svg";
 import { SearchOutlined, DownOutlined } from "@ant-design/icons";
-import { Input, Progress, Popover } from "antd";
+import { Input, Progress, Popover, Button } from "antd";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import DonutChart from "../Common/DonutChart";
+import {
+  getAverage,
+  getBorrowedPowerUsed,
+  getChartData,
+  getNetHealthFactor,
+  getPositionData,
+  getTokensFromUserWallet,
+  sortByKey,
+  userDashBoardQuery,
+} from "../../helpers/dashboard";
+import { getAccount, getNetwork } from "@wagmi/core";
+import DropDown from "../Common/DropDown";
+import { imgError } from "../../utils";
+
+//const endpoint = "https://api.spacex.land/graphql/";
+const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
+const config = {
+  apiKey: alchemyId,
+  network: Network.MATIC_MUMBAI,
+};
+const alchemy = new Alchemy(config);
 
 export default function UserDashboardComponent(props) {
-  const { contracts, user, web3, isLoading, isError, poolList } = props;
+  const { contracts, user, web3, isError, poolList, tokenList } = props;
+  const { chain } = getNetwork();
+  const navigate = useNavigate();
+  if (chain.id !== 80001) {
+    navigate("/");
+  }
+  const { address } = getAccount();
+  const [userAddress, setUserAddress] = useState();
+  const query = userDashBoardQuery(userAddress || address);
   const [lendingVisible, setLendingVisible] = useState(false);
   const [borrowingVisible, setBorrowingVisible] = useState(false);
- const navigate = useNavigate()
+  const [isLendTab, setIsLentab] = useState(true);
+  const [pieChartInputs, setPieChartInputs] = useState({});
+  const [positionData, setPositionData] = useState({});
+  const [positionDataBackup, setPositionDataBackup] = useState();
+  const { data, loading, error } = useQuery(query);
+  const [headerAnalytics, setHeaderAnalytics] = useState({
+    healthFactor: 0,
+    powerUsed: 0,
+    borrowAPY: 0,
+    lendAPY: 0,
+  });
+  const [walletTokens, setWalletTokens] = useState([]);
+  const [walletTokenLoading, setWalletTokenLoading] = useState(false);
+  const [positionLoading, setPositionLoading] = useState(false);
+
   const handleLendingVisibleChange = (visible) => {
     setLendingVisible(visible);
   };
 
-  useEffect(() => {
-    navigate('/')
-  }, [])
+  const handleLendBorrowTabs = (action) => {
+    setIsLentab(action);
+  };
+
+  const positionSorting = (operation, key, order) => {
+
+    if (operation == "lend") {
+      const sorted = sortByKey(positionData.lendArray, key, order);
+      setPositionData({ ...positionData, lendArray: sorted });
+    } else if (operation == "borrow") {
+      const sorted = sortByKey(positionData.borrowArray, key, order);
+      setPositionData({ ...positionData, borrowArray: sorted });
+    }
+  };
+
+  const handleOpenPosition = (e) => {
+  const searched = String(e.target.value).toUpperCase();
+  const lendPosition = positionDataBackup.lendArray;
+  const BorrowPosition = positionDataBackup.borrowArray;
+  
+  const afterSearchedLend = lendPosition.filter((position) => String(position.poolInfo.tokenSymbol).toUpperCase().includes(searched) || String(position.poolInfo.token0Symbol).toUpperCase().includes(searched) || String(position.poolInfo.token1Symbol).toUpperCase().includes(searched) || String(position.pool.pool).toUpperCase().includes(searched) )
+  const afterSearchedBorrow = BorrowPosition.filter((position) => String(position.poolInfo.tokenSymbol).toUpperCase().includes(searched) || String(position.poolInfo.token0Symbol).toUpperCase().includes(searched) || String(position.poolInfo.token1Symbol).toUpperCase().includes(searched) || String(position.pool.pool).toUpperCase().includes(searched) )
+  
+  setPositionData({positionData, lendArray: afterSearchedLend, borrowArray: afterSearchedBorrow})
+
+  }
+
+  const lendDropdownList = [
+    {
+      text: 'Amount',
+      fun: () => positionSorting("lend", "LendBalance", 1),
+      icon: <ImArrowUp2/>
+    },
+    {
+      text: 'Amount',
+      fun: () => positionSorting("lend", "LendBalance", 2),
+      icon: <ImArrowDown2/>
+    },
+    {
+      text: 'APY',
+      fun: () => positionSorting("lend", "apy", 1),
+      icon: <ImArrowUp2/>
+    },
+    {
+      text: 'APY',
+      fun: () => positionSorting("lend", "apy", 2),
+      icon: <ImArrowDown2/>
+    }
+  ]
+
+  const BorrowDropdownList = [
+    {
+      text: 'Amount',
+      fun: () => positionSorting("borrow", "borrowBalance", 1),
+      icon: <ImArrowUp2/>
+    },
+    {
+      text: 'Amount',
+      fun: () => positionSorting("borrow", "borrowBalance", 2),
+      icon: <ImArrowDown2/>
+    },
+    {
+      text: 'APY',
+      fun: () => positionSorting("borrow", "apy", 1),
+      icon: <ImArrowUp2/>
+    },
+    {
+      text: 'APY',
+      fun: () => positionSorting("borrow", "apy", 2),
+      icon: <ImArrowDown2/>
+    }
+  ]
 
   const SortContent = () => {
     return (
       <div className="sort_popover">
-        <p> NEW TO OLD </p>
-        <p> OLD TO NEW</p>
+        {isLendTab ? (
+          <>
+            <p onClick={() => positionSorting("lend", "LendBalance", 1)}>
+              {" "}
+              asc by amount{" "}
+            </p>
+            <p onClick={() => positionSorting("lend", "LendBalance", 2)}>
+              {" "}
+              dsc by amount
+            </p>
+            <p onClick={() => positionSorting("lend", "apy", 1)}>
+              {" "}
+              asc by APY{" "}
+            </p>
+            <p onClick={() => positionSorting("lend", "apy", 2)}> dsc by APY</p>
+          </>
+        ) : (
+          <>
+            <p onClick={() => positionSorting("borrow", "borrowBalance", 1)}>
+              {" "}
+              asc by amount{" "}
+            </p>
+            <p onClick={() => positionSorting("borrow", "borrowBalance", 2)}>
+              {" "}
+              dsc by amount
+            </p>
+            <p onClick={() => positionSorting("borrow", "apy", 1)}>
+              {" "}
+              asc by APY{" "}
+            </p>
+            <p onClick={() => positionSorting("borrow", "apy", 2)}>
+              {" "}
+              dsc by APY
+            </p>
+          </>
+        )}
       </div>
     );
   };
+
+  useEffect(() => {
+    setUserAddress(address);
+  }, [user]);
+
+  useEffect(() => {
+    if (data) {
+      const position = getPositionData(data, poolList, tokenList);
+      setPositionData(position);
+      setPositionDataBackup(position);
+      const pieChart = getChartData(data);
+      setPieChartInputs(pieChart);
+      const analytics = {};
+      if (position?.borrowArray.length > 0) {
+        const borrowAPY = getAverage(
+          position.borrowArray,
+          "apy",
+          "borrowBalance" 
+        );
+        analytics.borrowAPY = borrowAPY;
+      }
+      if (position?.lendArray.length > 0) {
+        const earned = position.lendArray
+          .map((el) => el.interestEarned)
+          .reduce((ac, el) => ac + el);
+        analytics.interestEarned = earned;
+        const lendAPY = getAverage(position.lendArray, "apy", "LendBalance");
+        analytics.lendAPY = lendAPY;
+        const powerUsed = getBorrowedPowerUsed(position.lendArray);
+        analytics.powerUsed = powerUsed;
+      }
+      if (data?.positions) {
+        const HF = getNetHealthFactor(data.positions);
+        analytics.healthFactor = isNaN(HF) ? 0 : HF;
+      }
+      setHeaderAnalytics(analytics);
+    }
+  }, [data]);
+
+  const getUserTokens = async (address) => {
+    setWalletTokenLoading(true);
+    alchemy.core.getTokenBalances(`${address}`).then(async (bal) => {
+      const tokens = await getTokensFromUserWallet(bal);
+      setWalletTokens(tokens);
+      setWalletTokenLoading(false);
+    });
+  };
+
+  useEffect(() => {
+    if (userAddress || user?.address) {
+      setWalletTokens([]);
+      const account = getAccount();
+      getUserTokens(userAddress || account.address);
+    }
+  }, [userAddress, user]);
 
   return (
     <div className="user_dashboard_component">
@@ -38,88 +250,121 @@ export default function UserDashboardComponent(props) {
         <div className="user_tittle">
           <h1>User Overview</h1>
           <Input
-            addonBefore={<SearchOutlined />}
+            addonBefore={<SearchOutlined className="search_icon" />}
             className="search_address"
             placeholder="Search address"
+            value={userAddress}
+            onChange={(e) => setUserAddress(e.target.value)}
           />
         </div>
 
         {/* Lending / Borrowing Portfolio Section */}
         <div className="lend_borrow_portfolio_container">
           <div className="header">
-            <h2>$13,00,500</h2>
-            <div className="network_dropdown">
-              <p>Etherium</p>
-            </div>
-          </div>
-          <div className="content">
-            <div className="lend_container">
-              <h2>Lending Portfolio</h2>
-              <h3>$130,000,500</h3>
-              <h4>Top 3 Tokens</h4>
-              <div className="top3_tokens">
-                <div>
-                  <span>ETH</span>
-                  <Progress percent={80} showInfo={false} />
+            <div className="analytics_tabs">
+              <div className="analytic_box">
+                <div className="icon_box">
+                  {" "}
+                  <GiReceiveMoney />{" "}
                 </div>
-                <div>
-                  <span>ETH</span>
-                  <Progress percent={60} showInfo={false} />
-                </div>
-                <div>
-                  <span>ETH</span>
-                  <Progress percent={70} showInfo={false} />
+                <div className="values">
+                  <p>Net Worth</p>
+                  <h5>
+                    {Number(
+                      pieChartInputs?.lendValues?.total -
+                        pieChartInputs?.borrowValues?.total
+                    ).toFixed(2) || 0}
+                  </h5>
                 </div>
               </div>
-              <div className="interest_earned">
-                <div>
-                  <p>30 Days Interest Earned</p>
-                  <h3>$130,000,500</h3>
+              <div className="analytic_box">
+                <div className="icon_box">
+                  {" "}
+                  <VscGraph />{" "}
                 </div>
+                <div className="values">
+                  <p>Lend APY</p>
+                  <h5>
+                    {Number(headerAnalytics?.lendAPY || 0).toFixed(2) || 0}%
+                  </h5>
+                </div>
+              </div>
+              <div className="analytic_box">
+                <div className="icon_box">
+                  {" "}
+                  <FiPercent />{" "}
+                </div>
+                <div className="values">
+                  <p>Borrow APY</p>
+                  <h5>
+                    {Number(headerAnalytics?.borrowAPY || 0).toFixed(2) || 0}%
+                  </h5>
+                </div>
+              </div>
+              {/* <div className="analytic_box heath_factor">
+                <div className="icon_box">
+                  {" "}
+                  <FiHeart />{" "}
+                </div>
+                <div className="values">
+                  <p>Health Factor</p>
+                  <h5>
+                    {Number(headerAnalytics?.healthFactor || 0).toFixed(2) || 0}
+                  </h5>
+                </div>
+              </div> */}
+            </div>
+            {/* <div className="network_dropdown">
+              <p>Etherium</p>
+            </div> */}
+          </div>
+
+          <div className="content">
+            <div className="lend_container">
+              <div>
+                {pieChartInputs?.donutLends && (
+                  <DonutChart data={pieChartInputs?.donutLends} />
+                )}
+              </div>
+              <div>
                 <div>
-                  <p>Last 24 Hr Interest Earned</p>
-                  <h3>$130,000,500</h3>
+                  <p>Total Lend</p>
+                  <h5>{pieChartInputs?.lendValues?.total || 0}</h5>
+                </div>
+                {/* <div>
+                  {" "}
+                  <p>Lend APY</p>
+                  <h5>{Number(headerAnalytics?.lendAPY || 0).toFixed(2)}%</h5>
+                </div> */}
+                <div>
+                  {" "}
+                  <p> Interest Earned </p>
+                  <h5>
+                    {Number(headerAnalytics.interestEarned || 0).toFixed(8)}
+                  </h5>
                 </div>
               </div>
             </div>
             <div className="borrow_container">
-              <h2>Borrowing Portfolio</h2>
-              <h3>$130,000,500</h3>
-              <h4>Top 3 Tokens</h4>
-              <div className="top3_tokens">
-                <div>
-                  <span>ETH</span>
-                  <Progress
-                    percent={90}
-                    showInfo={false}
-                    strokeColor={"var(--light-teal)"}
-                  />
-                </div>
-                <div>
-                  <span>ETH</span>
-                  <Progress
-                    percent={80}
-                    showInfo={false}
-                    strokeColor={"var(--light-teal)"}
-                  />
-                </div>
-                <div>
-                  <span>ETH</span>
-                  <Progress
-                    percent={70}
-                    showInfo={false}
-                    strokeColor={"var(--light-teal)"}
-                  />
-                </div>
+              <div>
+                {pieChartInputs?.donutBorrows && (
+                  <DonutChart data={pieChartInputs?.donutBorrows} />
+                )}
               </div>
-              <div className="interest_earned">
+              <div>
                 <div>
-                  <p>30 Days Interest Earned</p>
-                  <h3>$130,000,500</h3>
+                  <p>Total Borrow</p>
+                  <h5>{pieChartInputs?.borrowValues?.total || 0}</h5>
                 </div>
+                {/* <div>
+                  {" "}
+                  <p>Borrow APY</p>
+                  <h5>{Number(headerAnalytics?.borrowAPY || 0).toFixed(2)}%</h5>
+                </div> */}
                 <div>
-                  <p>Last 24 Hr Interest Earned</p>
-                  <h3>$130,000,500</h3>
+                  {" "}
+                  <p> Borrowed Power Used </p>
+                  <h5>{headerAnalytics?.powerUsed || 0}%</h5>
                 </div>
               </div>
             </div>
@@ -131,10 +376,11 @@ export default function UserDashboardComponent(props) {
           <div className="title_div">
             <span>
               {" "}
-              <img src={walletIcon} alt="wallet_icon" /> <h2>Wallet</h2>{" "}
+              <FaWallet className="react_icons" /> <h2>Wallet</h2>{" "}
             </span>
-            <h2>$130,000,500</h2>
+            {/* <h2>$130,000,500</h2> */}
           </div>
+
           <div className="wallet_table">
             <div className="thead">
               <span>Token</span>
@@ -143,22 +389,30 @@ export default function UserDashboardComponent(props) {
               <span>Value</span>
             </div>
             <div className="tbody">
-              {new Array(3).fill(0).map(() => {
-                return (
-                  <div className="tbody_row">
-                    <span>
-                      <img
-                        src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
-                        alt="uft"
-                      />
-                      <p>Unilend Finance / UFT</p>
-                    </span>
-                    <span>$0.23</span>
-                    <span>140,003,500</span>
-                    <span>350,000,654</span>
-                  </div>
-                );
-              })}
+              {!walletTokenLoading &&
+                walletTokens.map((token, i) => {
+                  return (
+                    <div key={i} className="tbody_row">
+                      <span>
+                        <img onError={imgError} src={token?.logo} alt="uft" />
+                        <p className="hide_for_mobile">
+                          {" "}
+                          {token?.name} / {token?.symbol}
+                        </p>
+                        <p className="hide_for_monitor">{token?.symbol}</p>
+                      </span>
+                      <span>-</span>
+                      <span>{token?.balance}</span>
+                      <span>-</span>
+                    </div>
+                  );
+                })}
+              {walletTokenLoading &&
+                new Array(3).fill(0).map((_, i) => {
+                  return (
+                    <div className="tbody_row row_skeleton skeleton"></div>
+                  );
+                })}
             </div>
           </div>
         </div>
@@ -168,124 +422,157 @@ export default function UserDashboardComponent(props) {
         <div className="lending_container">
           <div className="title_div">
             <span>
-              <h2>Lending</h2>
+              <ImStack className="react_icons" /> <h2>Open Positions</h2>{" "}
             </span>
           </div>
           <div className="lending_table">
-            <div className="action_container">
-              <div className="input_container">
-                <input type="text" placeholder="Search Txt/Token/Type" />
-              </div>
-              <Popover
-                content={<SortContent />}
-                trigger="click"
-                overlayClassName="sort_dropDown"
-                placement="bottomLeft"
-                open={lendingVisible}
-                onOpenChange={handleLendingVisibleChange}
+            <div className="toggle_tabs">
+              <Button
+                onClick={() => handleLendBorrowTabs(true)}
+                className={`tab_btn ${isLendTab ? "active_tab" : ""} `}
               >
-                <div className={`sortBy`}>
-                  <p>Sort By</p>
-                  <DownOutlined />
-                </div>
-              </Popover>
+                Lending
+              </Button>
+              <Button
+                onClick={() => handleLendBorrowTabs(false)}
+                className={`tab_btn ${!isLendTab ? "active_tab" : ""} `}
+              >
+                Borrowing
+              </Button>
             </div>
-            <div className="thead">
-              <span>Pool</span>
-              <span>Token</span>
-              <span>Amount</span>
-              <span>Lend APY</span>
-              <span>max LTV</span>
-              <span>Liq.Price</span>
-            </div>
-            <div className="tbody">
-              {new Array(6).fill(0).map(() => {
-                return (
-                  <div className="tbody_row">
-                    <span>
-                      <img
-                        src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
-                        alt="uft"
-                      />
-                      <img
-                        src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
-                        alt="uft"
-                      />
-                      <p>UFT / USDC </p>
-                    </span>
-                    <span>UFT</span>
-                    <span>200</span>
-                    <span>00</span>
-                    <span>74.99%</span>
-                    <span>20.23</span>
+            {isLendTab ? (
+              <div>
+                <div className="action_container">
+                  <div className="input_container">
+                    <input onChange={handleOpenPosition} type="text" placeholder="Search Txt/Token/Type" />
                   </div>
-                );
-              })}
-            </div>
+                  <DropDown list={lendDropdownList} />
+                </div>
+                <div className="thead">
+                  <span>Pool</span>
+                  <span>Token</span>
+                  <span>Amount</span>
+                  <span>APY</span>
+                  <span>Max LTV</span>
+                  <span> Interest Earned </span>
+                  <span>Pool</span>
+                  <span>
+                    Token / <br /> Amount
+                  </span>
+                  <span>
+                    APY / <br /> Interest{" "}
+                  </span>
+                  <span>Max LTV</span>
+                </div>
+                <div className="tbody">
+                  {positionData?.lendArray &&
+                    positionData?.lendArray.map((pool) => {
+                      return (
+                        <div className="tbody_row">
+                          <span>
+                            <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
+                            <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
+                            <p className="hide_for_mobile">
+                              {" "}
+                              {pool.poolInfo.token0Symbol} /{" "}
+                              {pool.poolInfo.token1Symbol}{" "}
+                            </p>
+                          </span>
+                          <span>{pool?.tokenSymbol}</span>
+                          <span>{Number(pool?.LendBalance).toFixed(2)}</span>
+                          <span>{Number(pool?.apy).toFixed(2)}%</span>
+                          <span>{pool.pool.ltv}%</span>
+                          <span>{Number(pool?.interestEarned).toFixed(8)}</span>
+                          <span>
+                            <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
+                            <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
+                          </span>
+                          <span>
+                            {pool?.tokenSymbol} <br />{" "}
+                            {Number(pool?.LendBalance).toFixed(2)}{" "}
+                          </span>
+                          <span>
+                            {Number(pool?.apy).toFixed(2)}% <br />{" "}
+                            {Number(pool?.interestEarned).toFixed(6)}{" "}
+                          </span>
+                          <span>{pool.pool.ltv}%</span>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className="action_container">
+                  <div className="input_container">
+                    <input  onChange={handleOpenPosition}  type="text" placeholder="Search Txt/Token/Type" />
+                  </div>
+                  <DropDown list={BorrowDropdownList} />
+                </div>
+                <div className="thead">
+                  <span>Pool</span>
+                  <span>Token</span>
+                  <span>Amount</span>
+                  <span>APY</span>
+                  <span>Current LTV</span>
+                  <span> Health Factor </span>
+                  <span>Pool</span>
+                  <span>
+                    Token / <br /> Amount
+                  </span>
+                  <span>
+                    APY / <br /> HF
+                  </span>
+                  <span>Current LTV</span>
+                </div>
+                <div className="tbody">
+                  {positionData?.borrowArray &&
+                    positionData?.borrowArray.map((pool) => {
+                      return (
+                        <div className="tbody_row">
+                          <span>
+                            <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
+                            <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
+                            <p className="hide_for_mobile">
+                              {" "}
+                              {pool.poolInfo.token0Symbol} /{" "}
+                              {pool.poolInfo.token1Symbol}
+                            </p>
+                          </span>
+                          <span>{pool?.tokenSymbol}</span>
+                          <span>{Number(pool?.borrowBalance).toFixed(2)}</span>
+                          <span>{Number(pool?.apy).toFixed(3)}%</span>
+                          <span>
+                            {(Number(pool?.currentLTV) * 100).toFixed(2)}
+                          </span>
+                          <span>
+                            {Number(pool?.healthFactor / 10 ** 18).toFixed(2)}
+                          </span>
+                          <span>
+                            <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
+                            <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
+                          </span>
+                          <span>
+                            {pool?.tokenSymbol} <br />{" "}
+                            {Number(pool?.borrowBalance).toFixed(2)}{" "}
+                          </span>
+                          <span>
+                            {Number(pool?.apy).toFixed(3)}% <br />{" "}
+                            {Number(pool?.healthFactor / 10 ** 18).toFixed(2)}{" "}
+                          </span>
+                          <span>
+                            {(Number(pool?.currentLTV) * 100).toFixed(2)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Borrowing Table */}
-
-        <div className="lending_container">
-          <div className="title_div">
-            <span>
-              <h2> Borrowing </h2>
-            </span>
-          </div>
-          <div className="lending_table">
-            <div className="action_container">
-              <div className="input_container">
-                <input type="text" placeholder="Search Txt/Token/Type" />
-              </div>
-              <Popover
-                content={<SortContent />}
-                trigger="click"
-                overlayClassName="sort_dropDown"
-                placement="bottomLeft"
-                open={lendingVisible}
-                onOpenChange={handleLendingVisibleChange}
-              >
-                <div className={`sortBy`}>
-                  <p>Sort By</p>
-                  <DownOutlined />
-                </div>
-              </Popover>
-            </div>
-            <div className="thead">
-              <span>Pool</span>
-              <span>Token</span>
-              <span>Amount</span>
-              <span>APY</span>
-              <span>Current LTV</span>
-              <span>Liq.Price</span>
-            </div>
-            <div className="tbody">
-              {new Array(6).fill(0).map(() => {
-                return (
-                  <div className="tbody_row">
-                    <span>
-                      <img
-                        src="https://assets.coingecko.com/coins/images/12819/small/UniLend_Finance_logo_PNG.png?1602748658"
-                        alt="uft"
-                      />
-                      <img
-                        src="https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389"
-                        alt="uft"
-                      />
-                      <p>UFT / USDC </p>
-                    </span>
-                    <span>UFT</span>
-                    <span>200</span>
-                    <span>00</span>
-                    <span>74.99%</span>
-                    <span>20.23</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

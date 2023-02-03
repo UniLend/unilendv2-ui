@@ -1,6 +1,9 @@
 // @dev provider options for multiple wallets
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
+import detectEthereumProvider from '@metamask/detect-provider';
+
+// const provider = await detectEthereumProvider()
 
 const infuraAPI =  import.meta.env.VITE_INFURA_ID;
 
@@ -21,6 +24,6 @@ export const providerOptions = {
       },
       infuraId: infuraAPI,
     },
-  },
+  }, 
 };
 

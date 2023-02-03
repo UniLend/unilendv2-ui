@@ -1,8 +1,14 @@
 import { lazy } from 'react';
+import UserDashboardComponent from '../components/UserDashBoard';
 
 export const openRoutes = [
   {
     path: '/',
+    exact: true,
+    element: lazy(() => import('../pages/heropage')),
+  },
+  {
+    path: '/pools',
     exact: true,
     element: lazy(() => import('../pages/hallOfPools')),
   },
@@ -16,9 +22,9 @@ export const openRoutes = [
     exact: true,
     element: lazy(() => import('../pages/pool')),
   },
-  // {
-  //   path: '/dashboard',
-  //   exact: true,
-  //   element: lazy(() => import('../pages/userDashboard')),
-  // },
+  {
+    path: '/dashboard',
+    exact: true,
+    element: UserDashboardComponent ,
+  },
 ];

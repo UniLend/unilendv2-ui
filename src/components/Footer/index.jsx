@@ -37,24 +37,24 @@ export default function Footer() {
               href='https://www.linkedin.com/company/unilend-finance/'
               target='_blank'
             >
-              <FaLinkedinIn size={20} className='icon' color='#0045FF' />
+              <FaLinkedinIn size={20} className='icon'  />
             </a>
          
             <a href=' https://twitter.com/UniLend_Finance' target='_blank'>
               {' '}
-              <FaTwitter size={20} color='#0045FF' />
+              <FaTwitter size={20}  />
             </a>
         
       
             <a href='https://www.instagram.com/unilendfinance/' target='_blank'>
               {' '}
-              <FaInstagram size={20} color='#0045FF' />
+              <FaInstagram size={20}  />
             </a>
        
         
             <a href='https://t.me/UniLendFinance' target='_blank'>
               {' '}
-              <FaTelegramPlane size={20} color='#0045FF' />
+              <FaTelegramPlane size={20} />
             </a>
             </div>
       </div>

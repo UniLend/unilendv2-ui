@@ -1,0 +1,62 @@
+.sort_dropDown {
+    .ant-popover-arrow {
+      display: none;
+    }
+    .ant-popover-inner-content {
+      padding: 5px;
+      border-radius: 5px;
+      background-color: var(--pure-white);
+    }
+    .ant-popover-inner {
+      border-radius: 5px;
+      background-color: var(--pure-white);
+    }
+    .sort_popover {
+      width: max-content;
+      min-width: 120px;
+      p {
+        width: 100%;
+        font-weight: 400;
+        font-size: 13px;
+        line-height: 10px;
+        color: var(--light-gray);
+        padding-left: 0px !important;
+        margin: 5px 0px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        span{
+            &:first-child{
+                width: 50px;
+            }
+            &:last-child{
+                width: max-content;
+                text-align: left;
+            }
+        }
+        &:hover {
+          background-color: var(--mid-blue);
+        }
+      }
+      .activeSort {
+        background-color: var(--mid-blue);
+      }
+    }
+  }
+
+  .sortBy{
+    display: flex;
+    width: 120px;
+    cursor: pointer;
+    background-color: var(--sharp-blue);
+    border-radius: 5px;
+    color: var(--pure-white);
+    font-weight: 700;
+    place-items: center center;
+    justify-content: space-between;
+    padding: 12px;
+    height: 35px;
+    p{
+        margin: 0px 0px;
+    }
+}

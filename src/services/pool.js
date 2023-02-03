@@ -1,5 +1,5 @@
-import { erc20Abi } from "../core/contractData/abi";
-import { contractAddress } from "../core/contractData/contracts_sepolia";
+import { coreAbi, erc20Abi, helperAbi } from "../core/contractData/abi";
+import { getContract, readContract, fetchSigner } from "@wagmi/core";
 import {
   add,
   decimal2Fixed,
@@ -10,14 +10,60 @@ import {
   mul,
   sub,
   toAPY,
+  fromBigNumber
 } from '../helpers/contracts';
+import BigNumber from "bignumber.js";
 
-import { checkTxnError } from '../helpers/status';
+export const getContractInstance = async ( contractAddr, abi, fnName, args ) => {
+
+  try {
+    const signer = await fetchSigner()
+    const instance = getContract({
+      address: contractAddr,
+      abi: abi,
+      signerOrProvider: signer
+    })
+
+  //  const hash = await instance.[fnName](...args)
+  // const config = await prepareWriteContract({
+  //   address: contractAddr,
+  //   abi: abi,
+  //   functionName: fnName,
+  //   args: args,
+  //   overrides:{
+  //     gasLimit: 210000
+  //   }
+  // })
+  // const { hash } = await writeContract(config)
+  return instance;
+} catch (error) {
+    throw error
+}
+}
+
+/*
+@dev 
+read data from contract function here;
+*/
+
+const handleRead = async (address, abi, fnName, args) => {
+  const contract = await readContract({
+     address: address,
+     abi: abi,
+     functionName: fnName,
+     args: args
+   })
+   return contract;
+ }
+
 
 /*
 @dev 
 redeem function here;
 */
+
+
+
 export const handleRedeem = async (
   amount,
   selectedToken,
@@ -36,7 +82,11 @@ export const handleRedeem = async (
     maxAmount = mul(maxAmount, -1);
   }
   let actnCont;
+  let hash;
   try {
+
+    const instance = await getContractInstance(contracts.coreContract.address, coreAbi, 'redeem', [poolAddress, maxAmount, userAddr])
+
     if (max) {
       if (selectedToken.collateralBalance > '0') {
         maxAmount = selectedToken.redeemBalance;
@@ -44,37 +94,47 @@ export const handleRedeem = async (
           maxAmount = mul(maxAmount, -1);
         }
       }
-      actnCont = await contracts.coreContract.methods.redeem(
-        poolAddress,
-        maxAmount,
-        userAddr
-      );
+ 
+      const txn = await instance.redeem(poolAddress, maxAmount, userAddr)
+
+      hash = txn?.hash
+      // actnCont = await contracts.coreContract.methods.redeem(
+      //   poolAddress,
+      //   maxAmount,
+      //   userAddr
+      // );
     } else {
-      actnCont = await contracts.coreContract.methods.redeemUnderlying(
-        poolAddress,
-        Amount,
-        userAddr
-      );
+      const txn = await instance.redeemUnderlying(poolAddress, Amount, userAddr)
+
+      hash = txn?.hash
+      // hash = await getContractInstance(contracts.coreContract.address, coreAbi, 'redeemUnderlying', [poolAddress, Amount, userAddr])
+      // actnCont = await contracts.coreContract.methods.redeemUnderlying(
+      //   poolAddress,
+      //   Amount,
+      //   userAddr
+      // );
     }
 
-    actnCont
-      .send({ from: userAddr })
-      .on('transactionHash', (hash) => {
-        const txnData = {
-          method: 'redeem',
-          amount: amount,
-          tokenAddress: selectedToken._address,
-          tokenSymbol: selectedToken._symbol,
-          poolAddress: poolAddress,
-          chainId: '',
-        };
-        checkTxnStatus(hash, txnData);
-      })
-      .on('error', function (error) {
-        checkTxnError(error);
-        throw error;
-        //   checkTxnError(error);
-      });
+    const txnData = {
+      method: 'redeem',
+      amount: amount,
+      tokenAddress: selectedToken._address,
+      tokenSymbol: selectedToken._symbol,
+      poolAddress: poolAddress,
+      chainId: '',
+    };
+    checkTxnStatus(hash, txnData);
+
+    // actnCont
+    //   .send({ from: userAddr })
+    //   .on('transactionHash', (hash) => {
+
+    //   })
+    //   .on('error', function (error) {
+    //     checkTxnError(error);
+    //     throw error;
+    //     //   checkTxnError(error);
+    //   });
   } catch (error) {
     console.error('Redeem:', error);
     checkTxnError(error);
@@ -85,23 +145,26 @@ export const handleRedeem = async (
 @dev 
  setting Allowance for selected and collateralToken;
 */
-export const setAllowance = (
+export const setAllowance = async (
   token,
   userAddr,
   amount,
   poolAddress,
   web3,
   checkTxnStatus,
-  checkTxnError
+  checkTxnError,
+  contracts
 ) => {
-  var ERC20 = new web3.eth.Contract(erc20Abi, token._address);
+  
   var maxAllow =
     '115792089237316195423570985008687907853269984665640564039457584007913129639935';
-  ERC20.methods
-    .approve(contractAddress.coreAddress, maxAllow)
-    .send({ from: userAddr })
-    .on('transactionHash', (hash) => {
-      const txn = {
+ try {
+   
+  const instance = await getContractInstance(token._address, erc20Abi, 'approve', [contracts.coreContract.address, maxAllow])
+
+  const { hash } = await instance.approve(contracts.coreContract.address, maxAllow);
+ 
+        const txn = {
         method: 'approval',
         amount: amount,
         tokenAddress: token._address,
@@ -110,12 +173,31 @@ export const setAllowance = (
         chainId: '',
       };
       checkTxnStatus(hash, txn);
-    })
-    .on('error', function (error) {
-      console.error('Aproove:', error);
+
+ } catch (error) {
+  console.error('Aproove:', error);
       checkTxnError(error);
       throw error;
-    });
+ }
+  // ERC20.methods
+  //   .approve(contractAddress.coreAddress, maxAllow)
+  //   .send({ from: userAddr })
+  //   .on('transactionHash', (hash) => {
+  //     const txn = {
+  //       method: 'approval',
+  //       amount: amount,
+  //       tokenAddress: token._address,
+  //       tokenSymbol: token._symbol,
+  //       poolAddress: poolAddress,
+  //       chainId: '',
+  //     };
+  //     checkTxnStatus(hash, txn);
+  //   })
+  //   .on('error', function (error) {
+  //     console.error('Aproove:', error);
+  //     checkTxnError(error);
+  //     throw error;
+  //   });
 };
 
 export const getTabs = (token) => {
@@ -136,28 +218,30 @@ export const getTokenPrice = async (
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      const data = await contracts.helperContract.methods
-        .getPoolTokensData(poolAddress, userAddr)
-        .call();
+      // const data = await contracts.helperContract.methods
+      //   .getPoolTokensData(poolAddress, userAddr)
+      //   .call();
+      const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolTokensData', [poolAddress, userAddr])  
+      
       const pool = { ...poolData };
-      pool.token0.balance = data._balance0;
+      pool.token0.balance = fromBigNumber(data._balance0);
       pool.token0.balanceFixed = fixed2Decimals(
         data._balance0,
         poolData.token0._decimals
       );
 
-      pool.token1.balance = data._balance1;
+      pool.token1.balance = fromBigNumber(data._balance1);
       pool.token1.balanceFixed = fixed2Decimals(
         data._balance1,
         poolData.token1._decimals
       );
-      pool.token0.allowance = data._allowance0;
+      pool.token0.allowance = fromBigNumber(data._allowance0);
       pool.token0.allowanceFixed = fixed2Decimals(
         data._allowance0,
         poolData.token0._decimals
       );
 
-      pool.token1.allowance = data._allowance1;
+      pool.token1.allowance = fromBigNumber(data._allowance1);
       pool.token1.allowanceFixed = fixed2Decimals(
         data._allowance1,
         poolData.token1._decimals
@@ -165,7 +249,6 @@ export const getTokenPrice = async (
 
       pool.token0.tabs = getTabs(pool.token0);
       pool.token1.tabs = getTabs(pool.token1);
-
       return pool;
     } catch (error) {
       return error;
@@ -181,13 +264,17 @@ oracle data;
 export const getOracleData = async (contracts, poolData) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      const data = await contracts.coreContract.methods
-        .getOraclePrice(
-          poolData.token0._address,
-          poolData.token1._address,
-          decimal2Fixed(1, poolData.token0._decimals)
-        )
-        .call();
+      // const data = await contracts.coreContract.methods
+      //   .getOraclePrice(
+      //     poolData.token0._address,
+      //     poolData.token1._address,
+      //     decimal2Fixed(1, poolData.token0._decimals)
+      //   )
+      //   .call();
+       const data = await handleRead(contracts.coreContract.address, coreAbi, 'getOraclePrice', [  poolData.token0._address,
+        poolData.token1._address,
+        decimal2Fixed(1, poolData.token0._decimals)])
+      
       const tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
       const pool = { ...poolData };
       pool.token0.price = tmpPrice;
@@ -196,39 +283,27 @@ export const getOracleData = async (contracts, poolData) => {
         mul(pool.token1.borrowBalance, pool.token1.price) / pool.ltv,
         100
       );
-      pool.token0.collateralBalanceFixed = fixed2Decimals(
-        pool.token0.collateralBalance,
-        pool.token0._decimals
-      );
+      pool.token0.collateralBalanceFixed = new BigNumber(pool.token0.collateralBalance).dividedBy(10 ** pool.token0._decimals).toFixed();
+
       pool.token1.collateralBalance = mul(
         mul(pool.token0.borrowBalance, pool.token0.price) / pool.ltv,
         100
       );
-      pool.token1.collateralBalanceFixed = fixed2Decimals(
-        pool.token1.collateralBalance,
-        pool.token1._decimals
-      );
-
+      pool.token1.collateralBalanceFixed = new BigNumber(pool.token1.collateralBalance).dividedBy(10 ** pool.token1._decimals).toFixed();
       let redeem0 = sub(
         poolData.token0.lendBalance,
         poolData.token0.collateralBalance
       );
       poolData.token0.redeemBalance = redeem0 >= 0 ? redeem0 : 0;
 
-      poolData.token0.redeemBalanceFixed = fixed2Decimals(
-        poolData.token0.redeemBalance,
-        poolData.token0._decimals
-      );
+      poolData.token0.redeemBalanceFixed = new BigNumber(poolData.token0.redeemBalance).dividedBy(10 ** poolData.token0._decimals).toFixed();
 
       let redeem1 = sub(
         poolData.token1.lendBalance,
         poolData.token1.collateralBalance
       );
       poolData.token1.redeemBalance = redeem1 >= 0 ? redeem1 : 0;
-      poolData.token1.redeemBalanceFixed = fixed2Decimals(
-        poolData.token1.redeemBalance,
-        poolData.token1._decimals
-      );
+      poolData.token1.redeemBalanceFixed = new BigNumber(poolData.token1.redeemBalance).dividedBy(10 ** poolData.token1._decimals).toFixed();
 
       return pool;
     } catch (error) {
@@ -250,21 +325,25 @@ export const getPoolBasicData = async (
 ) => {
   let pool;
   if (contracts.helperContract && contracts.coreContract) {
+
+
     try {
-      const data = await contracts.helperContract.methods
-        .getPoolData(poolAddress)
-        .call();
+      // const data = await contracts.helperContract.methods
+      //   .getPoolData(poolAddress)
+      //   .call();
+      const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolData', [poolAddress]  )
+     
       pool = {
         ...poolData,
         _address: poolAddress,
-        ltv: Number(data.ltv - 0.01),
-        lb: data.lb,
-        rf: data.rf,
+        ltv:  Number(data.ltv - 0.01),
+        lb: fromBigNumber(data.lb),
+        rf: fromBigNumber(data.rf),
         token0: {
           _symbol: data._symbol0,
           _address: data._token0,
-          _decimals: data._decimals0,
-          liquidity: data._token0Liquidity,
+          _decimals: fromBigNumber(data._decimals0),
+          liquidity: fromBigNumber(data._token0Liquidity),
           liquidityFixed: fixed2Decimals(
             data._token0Liquidity,
             data._decimals0
@@ -274,8 +353,8 @@ export const getPoolBasicData = async (
         token1: {
           _symbol: data._symbol1,
           _address: data._token1,
-          _decimals: data._decimals1,
-          liquidity: data._token1Liquidity,
+          _decimals: fromBigNumber( data._decimals1),
+          liquidity: fromBigNumber(data._token1Liquidity),
           liquidityFixed: fixed2Decimals(
             data._token1Liquidity,
             data._decimals1
@@ -285,6 +364,8 @@ export const getPoolBasicData = async (
       };
       return pool;
     } catch (error) {
+      
+      // console.error(error);
       return error;
     }
   }
@@ -293,42 +374,44 @@ export const getPoolBasicData = async (
 export const getPoolAllData = async (
   contracts,
   poolData,
-  positionAddr,
   poolAddress,
   userAddr
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      const data = await contracts.helperContract.methods
-        .getPoolFullData(positionAddr, poolAddress, userAddr)
-        .call();
-
-      const totLiqFull0 = add(
+      // const data = await contracts.helperContract.methods
+      //   .getPoolFullData(positionAddr, poolAddress, userAddr)
+      //   .call();
+        const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolFullData', [contracts.positionContract.address, poolAddress, userAddr]  )
+        
+        const totLiqFull0 = add(
         div(mul(poolData.token0.liquidity, 100), poolData.rf),
-        data._totalBorrow0
+       fromBigNumber(data._totalBorrow0)
       );
+     
       const totLiqFull1 = add(
         div(mul(poolData.token1.liquidity, 100), poolData.rf),
-        data._totalBorrow1
+        fromBigNumber(data._totalBorrow1)
       );
-
+      
+     
       const pool = {
         ...poolData,
         token0: {
           ...poolData?.token0,
-          borrowBalance: data._borrowBalance0,
+          borrowBalance: fromBigNumber(data._borrowBalance0),
           borrowBalanceFixed: fixed2Decimals(
             data._borrowBalance0,
             poolData.token0._decimals
           ),
 
-          borrowShare: data._borrowShare0,
+          borrowShare: fromBigNumber(data._borrowShare0),
           borrowShare: fixed2Decimals(
             data._borrowShare0,
             poolData.token0._decimals
           ),
 
-          healthFactor18: data._healthFactor0,
+          healthFactor18: fromBigNumber(data._healthFactor0),
           healthFactorFixed: fixed2Decimals(
             data._healthFactor0,
             poolData.token0._decimals
@@ -342,68 +425,69 @@ export const getPoolAllData = async (
                 fixed2Decimals(data._healthFactor0, poolData.token0._decimals)
               ).toFixed(2),
 
-          interest: data._interest0,
+          interest: fromBigNumber(data._interest0),
           interestFixed: fixed2Decimals(
             data._interest0,
             poolData.token0._decimals
           ),
 
-          lendBalance: data._lendBalance0,
+          lendBalance: fromBigNumber(data._lendBalance0),
           lendBalanceFixed: fixed2Decimals(
             data._lendBalance0,
             poolData.token0._decimals
           ),
 
-          lendShare: data._lendShare0,
+          lendShare: fromBigNumber(data._lendShare0),
           lendShareFixed: fixed2Decimals(
             data._lendShare0,
             poolData.token0._decimals
           ),
 
-          totalBorrow: data._totalBorrow0,
+          totalBorrow: fromBigNumber(data._totalBorrow0),
           totalBorrowFixed: fixed2Decimals(
             data._totalBorrow0,
             poolData.token0._decimals
           ),
 
-          totalBorrowShare: data._totalBorrowShare0,
+          totalBorrowShare: fromBigNumber(data._totalBorrowShare0),
           totalBorrowShareFixed: fixed2Decimals(
             data._totalBorrowShare0,
             poolData.token0._decimals
           ),
 
-          totalLendShare: data._totalLendShare0,
+          totalLendShare: fromBigNumber(data._totalLendShare0),
           totalLendShareFixed: fixed2Decimals(
             data._totalLendShare0,
             poolData.token0._decimals
           ),
           totalLiqFull: totLiqFull0,
           utilRate: Number(
-            mul(div(data._totalBorrow0, totLiqFull0), 100)
+            mul(div(fromBigNumber(data._totalBorrow0), totLiqFull0), 100)
           ).toFixed(2),
           borrowAPY: toAPY(
-            fixed2Decimals(data._interest0, poolData.token0._decimals)
+            fixed2Decimals( data._interest0, poolData.token0._decimals)
           ),
+         
           lendAPY: div(
             toAPY(fixed2Decimals(data._interest0, poolData.token0._decimals)),
-            div(totLiqFull0, data._totalBorrow0)
+            div(totLiqFull0, fromBigNumber(data._totalBorrow0))
           ),
         },
         token1: {
           ...poolData?.token1,
-          borrowBalance: data._borrowBalance1,
+          borrowBalance: fromBigNumber(data._borrowBalance1),
           borrowBalanceFixed: fixed2Decimals(
             data._borrowBalance1,
             poolData.token1._decimals
           ),
 
-          borrowShare: data._borrowShare1,
+          borrowShare: fromBigNumber(data._borrowShare1),
           borrowShare: fixed2Decimals(
             data._borrowShare1,
             poolData.token1._decimals
           ),
 
-          healthFactor18: data._healthFactor1,
+          healthFactor18: fromBigNumber(data._healthFactor1),
           healthFactorFixed: fixed2Decimals(
             data._healthFactor1,
             poolData.token1._decimals
@@ -417,56 +501,57 @@ export const getPoolAllData = async (
                 fixed2Decimals(data._healthFactor1, poolData.token1._decimals)
               ).toFixed(2),
 
-          interest: data._interest1,
+          interest: fromBigNumber(data._interest1),
           interestFixed: fixed2Decimals(
             data._interest0,
             poolData.token0._decimals
           ),
 
-          lendBalance: data._lendBalance1,
+          lendBalance: fromBigNumber(data._lendBalance1),
           lendBalanceFixed: fixed2Decimals(
             data._lendBalance1,
             poolData.token1._decimals
           ),
 
-          lendShare: data._lendShare1,
+          lendShare: fromBigNumber(data._lendShare1),
           lendShareFixed: fixed2Decimals(
             data._lendShare1,
             poolData.token1._decimals
           ),
 
-          totalBorrow: data._totalBorrow1,
+          totalBorrow: fromBigNumber(data._totalBorrow1),
           totalBorrowFixed: fixed2Decimals(
             data._totalBorrow1,
             poolData.token1._decimals
           ),
 
-          totalBorrowShare: data._totalBorrowShare1,
+          totalBorrowShare: fromBigNumber(data._totalBorrowShare1),
           totalBorrowShareFixed: fixed2Decimals(
             data._totalBorrowShare1,
             poolData.token1._decimals
           ),
 
-          totalLendShare: data._totalLendShare1,
+          totalLendShare: fromBigNumber(data._totalLendShare1),
           totalLendShareFixed: fixed2Decimals(
             data._totalLendShare1,
             poolData.token1._decimals
           ),
           totalLiqFull: totLiqFull1,
           utilRate: Number(
-            mul(div(data._totalBorrow1, totLiqFull1), 100)
+            mul(div(fromBigNumber(data._totalBorrow1), totLiqFull1), 100)
           ).toFixed(4),
           borrowAPY: toAPY(
             fixed2Decimals(data._interest1, poolData.token1._decimals)
           ),
           lendAPY: div(
             toAPY(fixed2Decimals(data._interest1, poolData.token1._decimals)),
-            div(totLiqFull1, data._totalBorrow1)
+            div(totLiqFull1, fromBigNumber(data._totalBorrow1))
           ),
         },
       };
       return pool;
     } catch (error) {
+      console.error(error);
       return error;
     }
   }
@@ -477,7 +562,7 @@ export const getPoolAllData = async (
 lend function
 */
 
-export const handleLend = (
+export const handleLend = async (
   amount,
   selectedToken,
   poolData,
@@ -495,11 +580,20 @@ export const handleLend = (
 
   try {
     if (greaterThan(selectedToken.allowance, amount)) {
-      contracts.coreContract.methods
-        .lend(poolData._address, Amount)
-        .send({ from: userAddr })
-        .on('transactionHash', (hash) => {
-          const txn = {
+
+       const instance  = await getContractInstance(contracts.coreContract.address, coreAbi)
+      // const signer = await fetchSigner()
+      // const instance = getContract({
+      //   address: contracts.coreContract.address,
+      //   abi: coreAbi,
+      //   signerOrProvider: signer
+      // })
+
+
+      const transaction = await instance.lend(poolData._address, Amount)
+
+
+               const txn = {
             method: 'lend',
             amount: amount,
             tokenAddress: selectedToken._address,
@@ -507,12 +601,26 @@ export const handleLend = (
             poolAddress: poolAddress,
             chainId: '',
           }; //will hold the value of the transaction
-          checkTxnStatus(hash, txn);
-        })
-        .on('error', function (error) {
-          checkTxnError(error);
-          throw error;
-        });
+          checkTxnStatus(transaction?.hash, txn);
+
+      // contracts.coreContract.methods
+      //   .lend(poolData._address, Amount)
+      //   .send({ from: userAddr })
+      //   .on('transactionHash', (hash) => {
+      //     const txn = {
+      //       method: 'lend',
+      //       amount: amount,
+      //       tokenAddress: selectedToken._address,
+      //       tokenSymbol: selectedToken._symbol,
+      //       poolAddress: poolAddress,
+      //       chainId: '',
+      //     }; //will hold the value of the transaction
+      //     checkTxnStatus(hash, txn);
+      //   })
+      //   .on('error', function (error) {
+      //     checkTxnError(error);
+      //     throw error;
+      //   });
     } else {
       setAllowance(
         selectedToken,
@@ -521,11 +629,13 @@ export const handleLend = (
         poolAddress,
         web3,
         checkTxnStatus,
-        checkTxnError
+        checkTxnError,
+        contracts
       );
     }
   } catch (error) {
     console.error('Lend:', error);
+    console.log({error});
     checkTxnError(error);
     return error;
   }
@@ -536,7 +646,7 @@ export const handleLend = (
 borrow
 */
 
-export const handleBorrow = (
+export const handleBorrow = async (
   selectedToken,
   userAddr,
   collateralToken,
@@ -555,11 +665,12 @@ export const handleBorrow = (
   }
   try {
     if (greaterThan(collateralToken.allowance, collateral)) {
-      contracts.coreContract.methods
-        .borrow(poolData._address, Amount, Collateral, userAddr)
-        .send({ from: userAddr })
-        .on('transactionHash', (hash) => {
-          const txn = {
+
+
+      const instance = await getContractInstance(contracts.coreContract.address, coreAbi, 'borrow', [poolData._address, Amount, Collateral, userAddr])
+
+      const transaction = await instance.borrow(poolData._address, Amount, Collateral, userAddr);
+                const txn = {
             method: 'borrow',
             amount: amount,
             tokenAddress: selectedToken._address,
@@ -567,12 +678,27 @@ export const handleBorrow = (
             poolAddress: poolData._address,
             chainId: '',
           };
-          checkTxnStatus(hash, txn);
-        })
-        .on('error', function (error) {
-          checkTxnError(error);
-          throw error;
-        });
+
+          checkTxnStatus(transaction?.hash, txn);
+
+      // contracts.coreContract.methods
+      //   .borrow(poolData._address, Amount, Collateral, userAddr)
+      //   .send({ from: userAddr })
+      //   .on('transactionHash', (hash) => {
+      //     const txn = {
+      //       method: 'borrow',
+      //       amount: amount,
+      //       tokenAddress: selectedToken._address,
+      //       tokenSymbol: selectedToken._symbol,
+      //       poolAddress: poolData._address,
+      //       chainId: '',
+      //     };
+      //     checkTxnStatus(hash, txn);
+      //   })
+      //   .on('error', function (error) {
+      //     checkTxnError(error);
+      //     throw error;
+      //   });
     } else {
       setAllowance(
         collateralToken,
@@ -581,7 +707,8 @@ export const handleBorrow = (
         poolData._address,
         web3,
         checkTxnStatus,
-        checkTxnError
+        checkTxnError,
+        contracts
       );
     }
   } catch (error) {
@@ -595,7 +722,7 @@ export const handleBorrow = (
 @dev
 repay
 */
-export const handleRepay = (
+export const handleRepay = async (
   amount,
   selectedToken,
   poolData,
@@ -612,17 +739,16 @@ export const handleRepay = (
   let Amount = decimal2Fixed(amount, selectedToken._decimals);
   if (selectedToken._address == poolData.token0._address) {
     Amount = mul(Amount, -1);
-    Max = new BigNumber('-57896044618658097711785492504343953926634992332820282019728792003956564819967');
+    Max = '-57896044618658097711785492504343953926634992332820282019728792003956564819967';
   }
   if (max) {
     Amount = Max;
   }
   try {
     if (greaterThan(selectedToken.allowance, amount)) {
-      contracts.coreContract.methods
-        .repay(poolAddress, Amount, userAddr)
-        .send({ from: userAddr })
-        .on('transactionHash', (hash) => {
+
+      const instance = await getContractInstance(contracts.coreContract.address, coreAbi, 'repay', [poolAddress, Amount, userAddr])
+     const {hash} = await instance.repay(poolAddress, Amount, userAddr)
           const txn = {
             method: 'repay',
             amount: amount,
@@ -632,11 +758,24 @@ export const handleRepay = (
             chainId: '',
           };
           checkTxnStatus(hash, txn);
-        })
-        .on('error', function (error) {
-          checkTxnError(error);
-          throw error;
-        });
+      // contracts.coreContract.methods
+      //   .repay(poolAddress, Amount, userAddr)
+      //   .send({ from: userAddr })
+      //   .on('transactionHash', (hash) => {
+      //     const txn = {
+      //       method: 'repay',
+      //       amount: amount,
+      //       tokenAddress: selectedToken._address,
+      //       tokenSymbol: selectedToken._symbol,
+      //       poolAddress: poolAddress,
+      //       chainId: '',
+      //     };
+      //     checkTxnStatus(hash, txn);
+      //   })
+      //   .on('error', function (error) {
+      //     checkTxnError(error);
+      //     throw error;
+      //   });
     } else {
       setAllowance(
         selectedToken,
@@ -645,7 +784,8 @@ export const handleRepay = (
         poolAddress,
         web3,
         checkTxnStatus,
-        checkTxnError
+        checkTxnError,
+        contracts
       );
     }
   } catch (error) {

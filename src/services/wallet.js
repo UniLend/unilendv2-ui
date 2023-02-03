@@ -1,34 +1,30 @@
 import Web3 from 'web3';
-import Web3Modal from 'web3modal';
+import { createClient, configureChains, disconnect, getNetwork, connect, fetchEnsName, switchNetwork, fetchBalance , prepareWriteContract, writeContract , getProvider, readContract, fetchToken, watchContractEvent, waitForTransaction, getAccount } from "@wagmi/core";
 // local imports
 import { providerOptions } from '../constants/wallet';
 import { fromWei, removeFromLocalStorage, saveToLocalStorage } from '../utils';
 import { networks } from '../core/networks/networks';
+import { MetaMaskconnector, WalletConnector } from '../App';
 
 const API = import.meta.env.VITE_INFURA_ID;
 
-export const web3Modal = new Web3Modal({
-  cacheProvider: true, // optional
-  providerOptions, // required
-});
+// export const getProvider = async () => {
+//  try {
+//   const provider = await web3Modal.connect();
+//   // Subscribe to events
+//   MetaMaskEventHandler(provider)
+//   return provider;
+//  } catch (error) {
+//   throw error;
+//  }
 
-export const getProvider = async () => {
- try {
-  const provider = await web3Modal.connect();
-  // Subscribe to events
-  MetaMaskEventHandler(provider)
-  return provider;
- } catch (error) {
-  throw error;
- }
-
-};
+// };
 
  export const defProv = () => {
   const provider = new Web3.providers.HttpProvider(
     `https://sepolia.infura.io/v3/${API}`)
 
-    const web3 = new Web3(provider);
+    const web3 = new Web3(provider)
     web3.default = true;
    return web3;
 }
@@ -36,7 +32,7 @@ export const getProvider = async () => {
 
 export const getweb3Instance = async () => {
   try {
-    const provider = await getProvider();
+    const provider = getProvider();
     const web3 = new Web3(provider);
     return web3;
   } catch (error) {
@@ -46,35 +42,67 @@ export const getweb3Instance = async () => {
 };
 
 export const handleDisconnect = async () => {
-  await web3Modal.clearCachedProvider();
+  await disconnect()
   removeFromLocalStorage('user');
   localStorage.removeItem('walletconnect')
   window.location.reload();
 };
 
-export const connectWallet = async () => {
+export const connectWallet = async (wallet) => {
   //   await provider.sendAsync('eth_requestAccounts');
-  // const net = (await web3.eth.net.getNetworkType()).toUpperCase(); 
+  // const net = (await web3.eth.net.getNetworkType()).toUpperCase();  
+  const trigerWallet = wallet || localStorage.getItem('wallet');
   try {
-    const web3 = await getweb3Instance();
-    const chainId = await web3.eth.getChainId();
-    const accounts = await web3.eth.getAccounts();
-    const bal = await web3.eth.getBalance(accounts[0]);
-    const balance = fromWei(web3, bal).slice(0, 6);
-    const networkByWeb3 = (await web3.eth.net.getNetworkType()).toUpperCase();
+    if(trigerWallet == 'metamask'){
+      try {
+        const data = await connect({
+          connector: MetaMaskconnector,
+        }).then((res) => {
+          return res;
+        })
+        localStorage.setItem('wallet', 'metamask')
+      } catch (error) {
+        const data = await connect({
+          connector: WalletConnector,
+        }).then((res) => {
+          return res;
+        })
+        localStorage.setItem('wallet', 'walletConnect')
+      }
+  
+    } else if (trigerWallet == 'walletConnect'){
+      const data = await connect({
+        connector: WalletConnector,
+      }).then((res) => {
+        return res;
+      })
+      localStorage.setItem('wallet', 'walletConnect')
+    }
+ 
+    const user = getAccount()
+    const { chain, chains } = getNetwork()
+    const chainId = chain.id
+    const account = user.address;;
+    const bal =  await fetchBalance({
+      address: account,
+    })
+   
+ 
+    // const balance = fromWei(web3, bal).slice(0, 6);
+    const networkByWeb3 = chain.name.toUpperCase()
     const Currentnetwork = networks[chainId] ? networks[chainId].chainName: networkByWeb3
-    const obj = { address: accounts[0], balance, network: {id: chainId, name: Currentnetwork} , isConnected: true}
+    const obj = { address: account, balance: Number(bal?.formatted ).toFixed(4), network: {id: chainId, name: Currentnetwork} , isConnected: true}
     saveToLocalStorage('user', obj)
     return obj;
   } catch (error) {
-    // console.error("Meaterror",error.message);
+    console.error("Walleterror",error.message);
     throw error;
   }
 
 };
 
 export const changeNetwork = async (networkId) => {
-  const provider = await getProvider();
+  const provider = getProvider();
   try {
     if (!provider) throw new Error('No Crypto Wallet Found');
     const account = await provider.request({
