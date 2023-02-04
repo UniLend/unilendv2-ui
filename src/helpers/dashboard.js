@@ -311,13 +311,13 @@ export const getTokensFromUserWallet = async (data) => {
   return tokensObject;
 };
 
-export const getBorrowedPowerUsed = (borrowPositions) => {
+export const getBorrowedPowerUsed = (Positions) => {
   let num = 0;
   let deno = 0;
-
-  for (const position of borrowPositions) {
+  for (const position of Positions) {
+    const cureentLTV = position.currentLTV > 1 ? position.currentLTV /100 : position.currentLTV
     const usedInPer =
-      (Number(position.currentLTV * 100) / position.pool.ltv) * 100;
+      (Number(cureentLTV * 100) / position.pool.ltv) * 100;
     num += usedInPer * position.LendBalance;
     deno += position.LendBalance;
   }
@@ -490,6 +490,72 @@ export const getHistoryGraphQuery = (address) => {
       amount
     }
   }
+  `
+  return query;
+}
+
+export const getPoolCreatedGraphQuery = (address) => {
+  const query = gql`
+  {
+    positions(where: {owner: "${address}"}) {
+      borrowBalance0
+      borrowBalance1
+      healthFactor0
+      healthFactor1
+      id
+      currentLTV
+      borrowApy0
+      lendApy0
+      lendApy1
+      interestEarned1
+      borrowApy1
+      lendBalance0
+      lendBalance1
+      interestEarned0
+      owner
+      poolData {
+        id
+        interest0
+        interest1
+        ltv
+        pool
+        token0Liquidity
+        token1Liquidity
+      }
+      token0
+      token1
+      token0Symbol
+      token1Symbol
+    }
+  poolCreateds {
+    id
+    token0
+    token1
+    token0Symbol
+    BorrowApy0
+    BorrowApy1
+    blockNumber
+    blockTimestamp
+    interest0
+    interest1
+    lb
+    ltv
+    pool
+    rf
+    token0Liquidity
+    token1Liquidity
+    token1Symbol
+    totalBorrow0
+    totalBorrow1
+    totalLendShare0
+    totalLendShare1
+    transactionHash
+    allBorrow
+    allLend
+    allRedeem
+    allRepay
+  }
+}
   `
   return query;
 }

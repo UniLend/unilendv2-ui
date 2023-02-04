@@ -143,48 +143,6 @@ export default function UserDashboardComponent(props) {
     }
   ]
 
-  const SortContent = () => {
-    return (
-      <div className="sort_popover">
-        {isLendTab ? (
-          <>
-            <p onClick={() => positionSorting("lend", "LendBalance", 1)}>
-              {" "}
-              asc by amount{" "}
-            </p>
-            <p onClick={() => positionSorting("lend", "LendBalance", 2)}>
-              {" "}
-              dsc by amount
-            </p>
-            <p onClick={() => positionSorting("lend", "apy", 1)}>
-              {" "}
-              asc by APY{" "}
-            </p>
-            <p onClick={() => positionSorting("lend", "apy", 2)}> dsc by APY</p>
-          </>
-        ) : (
-          <>
-            <p onClick={() => positionSorting("borrow", "borrowBalance", 1)}>
-              {" "}
-              asc by amount{" "}
-            </p>
-            <p onClick={() => positionSorting("borrow", "borrowBalance", 2)}>
-              {" "}
-              dsc by amount
-            </p>
-            <p onClick={() => positionSorting("borrow", "apy", 1)}>
-              {" "}
-              asc by APY{" "}
-            </p>
-            <p onClick={() => positionSorting("borrow", "apy", 2)}>
-              {" "}
-              dsc by APY
-            </p>
-          </>
-        )}
-      </div>
-    );
-  };
 
   useEffect(() => {
     setUserAddress(address);
@@ -194,6 +152,7 @@ export default function UserDashboardComponent(props) {
     if (data) {
       const position = getPositionData(data, poolList, tokenList);
       setPositionData(position);
+      // console.log("Positions", position, data);
       setPositionDataBackup(position);
       const pieChart = getChartData(data);
       setPieChartInputs(pieChart);
