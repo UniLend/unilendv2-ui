@@ -204,7 +204,7 @@ const handleOpenSwitchNetwork = (visible) => {
       </div>
       <div className='nav_routes'>
         <nav>
-          <a href='/' className={`${pathname === '/' ? 'active' : ''}`}>
+          <a href='/pools' className={`${pathname === '/pools' ? 'active' : ''}`}>
             Pools
           </a>
         { isPolygon ?  <a href='/dashboard'

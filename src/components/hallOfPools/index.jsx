@@ -20,7 +20,7 @@ export default function HallOfPoolsComponent(props) {
   const [token1, setToken1] = useState({});
   const [token2, setToken2] = useState({});
   const [pools, setPools] = useState({});
-  // const [user, setUser] = useState({});
+  const [myPoolTab, setMyPoolTab] = useState(false);
   const [poolBackup, setPoolBackup] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const { contracts, web3, poolList, isLoadingPoolData, user } = state;
@@ -67,8 +67,8 @@ export default function HallOfPoolsComponent(props) {
 
       <div className="pool_filter_container">
         <div className="pool_tans">
-          <Button className="pool_btn active_btn" >All Pools</Button>
-          <Button className="pool_btn" >My Pools</Button>
+          <Button onClick={() => setMyPoolTab(false)} className={`pool_btn  ${!myPoolTab ? 'active_btn': ''}` } >All Pools</Button>
+          <Button onClick={() => setMyPoolTab(true)} className={`pool_btn ${myPoolTab ? 'active_btn': ''}` } >My Pools</Button>
         </div>
         <div className="sortBy">
           <p>Sort By</p>
@@ -78,7 +78,11 @@ export default function HallOfPoolsComponent(props) {
 
       {Object.values(pools).length > 0 && !isLoadingPoolData ? (
         <div className="poolcard_container">
-          {Object.values(pools).map((pool, i) => (
+          { myPoolTab ? 
+          Object.values(pools).filter((pool) => pool.openPosition == true).map((pool, i) => (
+            <PoolCard pool={pool} key={i} />
+          )):
+          Object.values(pools).map((pool, i) => (
             <PoolCard pool={pool} key={i} />
           ))}
         </div>
