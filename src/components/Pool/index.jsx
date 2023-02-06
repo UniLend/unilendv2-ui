@@ -299,6 +299,7 @@ if(selectedToken && collateralToken){
             poolAddress,
             user.address
           );
+          console.log(poolTokensPrice);
           setPoolData(poolTokensPrice);
           setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
         }
@@ -347,7 +348,7 @@ if(selectedToken && collateralToken){
       ) {
         setAmount(selectedToken.redeemBalanceFixed);
       } else {
-        setAmount(selectedToken.tokenLiquidityFixed);
+        setAmount(selectedToken.liquidityFixed);
       }
     } else if (activeOperation == repay) {
       setAmount(selectedToken.borrowBalanceFixed);

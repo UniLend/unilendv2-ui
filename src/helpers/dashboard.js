@@ -245,7 +245,7 @@ export const getPositionData = (data, poolList, tokenList) => {
   return { borrowArray, lendArray };
 };
 
-const fixedToShort = (value) => {
+export const fixedToShort = (value) => {
   return Number(value) / 10 ** 18;
 };
 
@@ -257,7 +257,7 @@ export const getAverage = (data, percent, balance) => {
     numerator += pool[percent] * pool[balance];
     denominator += pool[balance];
   }
-
+  console.log( 'average', data, percent, balance);
   return numerator / denominator;
 };
 

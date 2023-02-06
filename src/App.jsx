@@ -61,7 +61,7 @@ import "./App.scss";
 import { getFromLocalStorage, getTokenLogo } from "./utils";
 import { fetchCoinLogo } from "./utils/axios";
 import { useState } from "react";
-import { getPoolCreatedGraphQuery } from "./helpers/dashboard";
+import { fixedToShort, getPoolCreatedGraphQuery } from "./helpers/dashboard";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -324,6 +324,8 @@ function App() {
         const poolInfo = {
           ...pool,
           poolAddress: pool?.pool,
+          totalLiquidity: fixedToShort(pool.token0Liquidity) + fixedToShort(pool.token1Liquidity),
+          totalBorrowed : fixedToShort(pool.totalBorrow0) + fixedToShort(pool.totalBorrow1),
           openPosition: openPosiions.length > 0 ,
           token0: {
             address: pool.token0,

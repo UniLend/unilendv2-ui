@@ -25,7 +25,7 @@ const handleList = (callback, index) => {
       {
          list.map((el, i) => {
           return(
-          <p className={`${actionIndex === i ? "activeSort" : ""} `} onClick={ () => handleList(el.fun, i)} > <span> {el.icon}  </span> <span>{el?.text}</span>   </p>
+          <p key={i} className={`${actionIndex === i ? "activeSort" : ""} `} onClick={ () => handleList(el.fun, i)} > <span> {el.icon}  </span> <span>{el?.text}</span>   </p>
           )
         })
       }
