@@ -5,6 +5,7 @@ import PoolCard from "./poolCard";
 import banner from "../../assets/banner.svg";
 import { FaChevronDown } from "react-icons/fa";
 import "./styles/index.scss";
+import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
 import { useSelector } from "react-redux";
 import { getAllEvents } from "../../services/events";
 import { erc20Abi } from "../../core/contractData/abi";
@@ -14,12 +15,14 @@ import { fetchCoinLogo } from "../../utils/axios";
 import PoolListSkeleton from "../Loader/PoolListSkeleton";
 import PoolCarousel from "../PoolsCarousel";
 import { Button } from "antd";
+import DropDown from "../Common/DropDown";
+import { sortByKey } from "../../helpers/dashboard";
 
 export default function HallOfPoolsComponent(props) {
   const state = useSelector((state) => state);
   const [token1, setToken1] = useState({});
   const [token2, setToken2] = useState({});
-  const [pools, setPools] = useState({});
+  const [pools, setPools] = useState([]);
   const [myPoolTab, setMyPoolTab] = useState(false);
   const [poolBackup, setPoolBackup] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -27,17 +30,35 @@ export default function HallOfPoolsComponent(props) {
 
   useEffect(() => {
     if (Object.values(poolList).length > 0) {
-      setPools(poolList);
-      setPoolBackup(poolList);
+      const toArray = Object.values(poolList)
+      setPools(toArray);
+      setPoolBackup(toArray);
     }
   }, [poolList]);
 
-  useEffect(() => {}, []);
+const handleSort = ( key, order) => {  
+  const sorted = sortByKey(pools, key, order);
+  setPools([...sorted])
+  console.log(pools, key, order, sorted)
+}
 
-  useEffect(() => {
-    let filtredData;
+// useEffect(() => {
+// console.log("Pools", pools);
+// },[pools, poolBackup])
 
-  }, [token1, token2]);
+const sortList = [
+  {
+    text : 'TimeStamp',
+    fun : () => handleSort('blockTimestamp', 1),
+    icon: <ImArrowUp2/>
+  },
+  {
+    text : 'TimeStamp',
+    fun : () => handleSort('blockTimestamp', 2),
+    icon: <ImArrowDown2/>
+  }
+]
+
 
   const handleTokens = (token, selectedToken) => {
     if (selectedToken === "token1") {
@@ -70,19 +91,16 @@ export default function HallOfPoolsComponent(props) {
           <Button onClick={() => setMyPoolTab(false)} className={`pool_btn  ${!myPoolTab ? 'active_btn': ''}` } >All Pools</Button>
           <Button onClick={() => setMyPoolTab(true)} className={`pool_btn ${myPoolTab ? 'active_btn': ''}` } >My Pools</Button>
         </div>
-        <div className="sortBy">
-          <p>Sort By</p>
-          <FaChevronDown />
-        </div>
+        <DropDown list={sortList} />
       </div>
 
-      {Object.values(pools).length > 0 && !isLoadingPoolData ? (
+      {pools.length > 0 && !isLoadingPoolData ? (
         <div className="poolcard_container">
           { myPoolTab ? 
-          Object.values(pools).filter((pool) => pool.openPosition == true).map((pool, i) => (
+          pools.filter((pool) => pool.openPosition == true).map((pool, i) => (
             <PoolCard pool={pool} key={i} />
           )):
-          Object.values(pools).map((pool, i) => (
+          pools.map((pool, i) => (
             <PoolCard pool={pool} key={i} />
           ))}
         </div>

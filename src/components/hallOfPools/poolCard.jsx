@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Avatar, message } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,10 @@ export default function PoolCard({pool}) {
       message.info("Please Connect to the Wallet")
     }
   }
+
+  useEffect(() => {
+ console.log("pool", pool);
+  }, [])
 
   // if(ignoredPools.includes(poolAddress)){
   //   return null
