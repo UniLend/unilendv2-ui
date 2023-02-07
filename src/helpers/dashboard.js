@@ -257,7 +257,6 @@ export const getAverage = (data, percent, balance) => {
     numerator += pool[percent] * pool[balance];
     denominator += pool[balance];
   }
-  console.log( 'average', data, percent, balance);
   return numerator / denominator;
 };
 
@@ -558,4 +557,11 @@ export const getPoolCreatedGraphQuery = (address) => {
 }
   `
   return query;
+}
+
+export const checkOpenPosition = (position) => {
+  if(( Number(position.lendBalance0) > 0 || Number(position.lendBalance1)) > 0 ){
+    return true
+  }
+  return false
 }
