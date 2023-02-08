@@ -9,6 +9,11 @@ export const  fetchCoinGeckoTokens = async () => {
     
 }
 
+export const fetchTokenPriceInUSD = async () => {
+    return axios.get('https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/usd.json')
+    .then((res) => res.data)
+}
+
 export const fetchCoinLogo = async (token) => {
 
     const tokenObj = getToken(token)

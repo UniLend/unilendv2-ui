@@ -30,6 +30,7 @@ import {
 import { getAccount, getNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
 import { imgError } from "../../utils";
+import { fetchTokenPriceInUSD } from "../../utils/axios";
 
 //const endpoint = "https://api.spacex.land/graphql/";
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -150,11 +151,12 @@ export default function UserDashboardComponent(props) {
 
   useEffect(() => {
     if (data) {
-      const position = getPositionData(data, poolList, tokenList);
+      console.log('Positions', data);
+      const position = getPositionData(data);
       setPositionData(position);
-      // console.log("Positions", position, data);
       setPositionDataBackup(position);
-      const pieChart = getChartData(data);
+      const pieChart = getChartData(data, tokenList);
+      console.log("PIADATA", pieChart);
       setPieChartInputs(pieChart);
       const analytics = {};
       if (position?.borrowArray.length > 0) {
@@ -181,12 +183,13 @@ export default function UserDashboardComponent(props) {
       }
       setHeaderAnalytics(analytics);
     }
-  }, [data]);
+  }, [data, tokenList]);
 
   const getUserTokens = async (address) => {
     setWalletTokenLoading(true);
     alchemy.core.getTokenBalances(`${address}`).then(async (bal) => {
-      const tokens = await getTokensFromUserWallet(bal);
+      const tokenPrices = await fetchTokenPriceInUSD()
+      const tokens = await getTokensFromUserWallet(bal, tokenPrices, tokenList);
       setWalletTokens(tokens);
       setWalletTokenLoading(false);
     });
