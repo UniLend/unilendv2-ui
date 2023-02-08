@@ -335,7 +335,7 @@ export default function HistoryComponent(props) {
                     </p>
                   </div>
                   <div>
-                    <p>{tokenList[txt?.args?._asset]?.symbol}</p>
+                    <p>{tokenList[ String(txt?.args?._asset).toUpperCase()]?.symbol}</p>
                   </div>
                   <div>
                     <p>{txt.event}</p>

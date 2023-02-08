@@ -4,7 +4,14 @@ import { fetchBalance, getContract, getProvider } from "@wagmi/core";
 import { erc20Abi } from "../core/contractData/abi";
 import { fromBigNumber } from "./contracts";
 
-export const getChartData = (data) => {
+
+export const findTokenPrice = (list, address) => {
+ const price = list[String(address).toUpperCase()] ? list[String(address).toUpperCase()].pricePerToken : 1
+console.log("price", price, list);
+ return Number(price)
+}
+
+export const getChartData = (data, tokenList) => {
   const final = {
     lends: {},
     borrows: {},
@@ -26,16 +33,15 @@ export const getChartData = (data) => {
         //const totalAmount = Object.values(actionObjects).map((el) => Number(el.amount)).reduce((ac, el) => ac + el)
         for (const action of actionObjects) {
           sub[action.tokenSymbol] =
-            (sub[action.tokenSymbol] || 0) + Number(action.amount) / 10 ** 18;
-          total = total + Number(action.amount) / 10 ** 18;
+            (sub[action.tokenSymbol] || 0) + (fixedToShort(action.amount) * findTokenPrice(tokenList,action.token) );
+          total = total + (fixedToShort(action.amount) * findTokenPrice(tokenList,action.token));
         }
         chart[item] = sub;
         chart[item]["total"] = total;
       }
     }
   }
-
-
+console.log("Chart", chart);
   const lendValues = {};
   const borrowValues = {};
   const donutLends = [];
@@ -46,7 +52,8 @@ export const getChartData = (data) => {
       const redeemObj = chart.redeems;
       for (const token in lendsObj) {
         const value = lendsObj[token] - (redeemObj[token] || 0);
-        lendValues[token] = value > 0 ? value.toFixed(3) : 0;
+        lendValues[token] = value > 0 ? value : 0;
+        // lendValues['total'] = value > 0 ? Number(value) : 0;
       }
     }
     if (action == "repayBorrows") {
@@ -54,11 +61,13 @@ export const getChartData = (data) => {
       const repayObj = chart.repayBorrows;
       for (const token in borrowObj) {
         const value = borrowObj[token] - (repayObj[token] || 0);
-        borrowValues[token] = value > 0 ? value.toFixed(3) : 0;
+        borrowValues[token] = value > 0 ? value : 0;
+        // borrowValues['total'] = value > 0 ? value : 0;
       }
     }
   }
 
+  
   const sortedLend = Object.entries(lendValues)
   .sort(([,a],[,b]) => b-a)
   .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
@@ -66,6 +75,8 @@ export const getChartData = (data) => {
   const sortedBorrow = Object.entries(borrowValues)
   .sort(([,a],[,b]) => b-a)
   .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+
+  console.log("Chart After", lendValues, borrowValues);
 
   for (const lend in sortedLend) {
     const payload = {
@@ -92,10 +103,12 @@ export const getChartData = (data) => {
 };
 
 const getPercent = (x, y) => {
-  return Number(((x / y) * 100).toFixed(2));
+  // console.log("PERCENTAGE", x, y);
+  const percent = Number(((x / y) * 100).toFixed(2));
+  return percent > 100 ? 0: percent
 };
 
-export const getPositionData = (data, poolList, tokenList) => {
+export const getPositionData = (data) => {
   const position = data["positions"];
 
   const positionArray = [];
@@ -281,7 +294,7 @@ export const getNetHealthFactor = (positions) => {
   return (value / counter).toFixed(2);
 };
 
-export const getTokensFromUserWallet = async (data) => {
+export const getTokensFromUserWallet = async (data, usdlist, tokenList) => {
   const tokensArray = data?.tokenBalances.map((token) => token.contractAddress);
 
   const tokensObject = [];
@@ -303,12 +316,17 @@ export const getTokensFromUserWallet = async (data) => {
       name: res[1],
       balance: (fromBigNumber(res[2]) / 10 ** 18).toFixed(2),
       logo: getTokenLogo(res[0]),
+
     };
     tokensObject.push(resInstance);
   }
 
   return tokensObject;
 };
+
+const findTokenPriceUSD = (address, symbol, usdlist, tokenlist) => {
+
+}
 
 export const getBorrowedPowerUsed = (Positions) => {
   let num = 0;
@@ -329,6 +347,11 @@ export const getBorrowedPowerUsed = (Positions) => {
 export const userDashBoardQuery = (address) => {
   const FILMS_QUERY = gql`
     {
+      assetOracles {
+        asset
+        id
+        tokenPrice
+      }
       
       positions(where: {owner: "${address}"}) {
         borrowBalance0
@@ -495,7 +518,13 @@ export const getHistoryGraphQuery = (address) => {
 
 export const getPoolCreatedGraphQuery = (address) => {
   const query = gql`
+
   {
+    assetOracles {
+      asset
+      id
+      tokenPrice
+    }
     positions(where: {owner: "${address}"}) {
       borrowBalance0
       borrowBalance1
@@ -564,4 +593,8 @@ export const checkOpenPosition = (position) => {
     return true
   }
   return false
+}
+
+export const getTokenPrice = (data, address) =>{
+  return data[String(address).toUpperCase()] ? data[String(address).toUpperCase()]: 1
 }

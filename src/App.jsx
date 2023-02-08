@@ -61,7 +61,7 @@ import "./App.scss";
 import { getFromLocalStorage, getTokenLogo } from "./utils";
 import { fetchCoinLogo } from "./utils/axios";
 import { useState } from "react";
-import { checkOpenPosition, fixedToShort, getPoolCreatedGraphQuery } from "./helpers/dashboard";
+import { checkOpenPosition, fixedToShort, getPoolCreatedGraphQuery, getTokenPrice } from "./helpers/dashboard";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -309,10 +309,19 @@ function App() {
     }
   }, [state.contracts, chain?.id]);
 
+  
 
   useEffect(() => {
     const { chain } = getNetwork()
     if(data && chain?.id != 11155111){
+
+      const oraclePrices={
+
+      }
+
+      for (const token of data?.assetOracles) {
+        oraclePrices[String(token.asset).toUpperCase()] = Number(token.tokenPrice) / 10 ** 8
+      }
      
       const poolData = {
       }
@@ -340,20 +349,22 @@ function App() {
             symbol: pool.token1Symbol
           }
         }
-        tokenList[pool.token0] = {
+        tokenList[String(pool.token0).toUpperCase()] = {
           address: pool.token0,
           logo:  getTokenLogo(pool.token0Symbol),
-          symbol: pool.token0Symbol
+          symbol: pool.token0Symbol,
+          pricePerToken: getTokenPrice(oraclePrices,pool.token0 ) 
         }
-        tokenList[pool.token1] = {
+        tokenList[ String(pool.token1).toUpperCase()] = {
           address: pool.token1,
           logo:  getTokenLogo(pool.token1Symbol),
-          symbol: pool.token1Symbol
+          symbol: pool.token1Symbol,
+          pricePerToken: getTokenPrice(oraclePrices,pool.token1 ) 
         }
         poolData[pool?.pool] = poolInfo
       }
       dispatch(setPools({ poolData, tokenList }));
-      console.log("PoolCreateddata", data, poolData);
+      // console.log("PoolCreateddata", data, poolData);
 
     }
   }, [data])
