@@ -75,7 +75,7 @@ export const getChartData = (data, tokenList) => {
   .sort(([,a],[,b]) => b-a)
   .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
 
-  console.log("Chart After", lendValues, borrowValues);
+
 
   for (const lend in sortedLend) {
     const payload = {
@@ -102,7 +102,7 @@ export const getChartData = (data, tokenList) => {
 };
 
 const getPercent = (x, y) => {
-  // console.log("PERCENTAGE", x, y);
+
   const percent = Number(((x / y) * 100).toFixed(2));
   return percent > 100 ? 0: percent
 };
@@ -149,6 +149,7 @@ export const getPositionData = (data) => {
       };
       LendObj.interestEarned = fixedToShort(object.poolData.interest1);
       lendArray.push(LendObj);
+     
     } else if (object.borrowBalance1 > 0 && object.borrowBalance0 == 0) {
       const BorrowObj = {};
 
@@ -332,6 +333,7 @@ export const getBorrowedPowerUsed = (Positions) => {
   let deno = 0;
   for (const position of Positions) {
     const cureentLTV = position.currentLTV > 1 ? position.currentLTV /100 : position.currentLTV
+    console.log("Current LTV", cureentLTV);
     const usedInPer =
       (Number(cureentLTV * 100) / position.pool.ltv) * 100;
     num += usedInPer * position.LendBalance;

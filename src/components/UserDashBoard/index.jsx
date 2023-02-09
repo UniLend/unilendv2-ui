@@ -156,7 +156,6 @@ export default function UserDashboardComponent(props) {
       setPositionData(position);
       setPositionDataBackup(position);
       const pieChart = getChartData(data, tokenList);
-      console.log("PIADATA", pieChart);
       setPieChartInputs(pieChart);
       const analytics = {};
       if (position?.borrowArray.length > 0) {
@@ -168,6 +167,7 @@ export default function UserDashboardComponent(props) {
         analytics.borrowAPY = borrowAPY;
       }
       if (position?.lendArray.length > 0) {
+        // console.log('Positions', "Lend",position);
         const earned = position.lendArray
           .map((el) => el.interestEarned)
           .reduce((ac, el) => ac + el);
