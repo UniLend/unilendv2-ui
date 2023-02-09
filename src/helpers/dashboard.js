@@ -7,7 +7,6 @@ import { fromBigNumber } from "./contracts";
 
 export const findTokenPrice = (list, address) => {
  const price = list[String(address).toUpperCase()] ? list[String(address).toUpperCase()].pricePerToken : 1
-console.log("price", price, list);
  return Number(price)
 }
 
@@ -41,7 +40,7 @@ export const getChartData = (data, tokenList) => {
       }
     }
   }
-console.log("Chart", chart);
+
   const lendValues = {};
   const borrowValues = {};
   const donutLends = [];
