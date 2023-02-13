@@ -61,6 +61,8 @@
             font-size: 18px;
             font-weight: 700;
             color: var(--sharp-blue);
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
   }

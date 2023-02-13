@@ -33,6 +33,7 @@ import { setTheme, setUser } from '../../store/Action';
 import { changeNetwork } from '../../services/wallet';
 import { fetchUserDomain } from '../../utils/axios';
 import { getNetwork, switchNetwork } from '@wagmi/core';
+import DropDown from '../Common/DropDown';
 
 export default function Navbar(props) {
   const { user, theme } = props;
@@ -78,13 +79,15 @@ const handleOpenSwitchNetwork = (visible) => {
     } else {
       setIsPolygon(false)
     }
-    if (user.network.id && user.network.id != '11155111') {
-     // setWrongNetworkModal(true);
+   // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
+    if ( chain?.id != 11155111 && chain?.id != 80001) {
+      console.log("user", user, (user.network.id != '11155111'));
+      setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);
     }
     handleDomain(user)
-  }, [user, networkchain]);
+  }, [user]);
 
   const handleConnect = async (action) => {
     setIsWalletModalVisible(false)
@@ -109,11 +112,11 @@ const handleOpenSwitchNetwork = (visible) => {
       <div className='walletModel'>
         <h1>Wrong Network</h1>
         <p>
-          UniLend V2 is in testnet phase. <br /> Please connect to the SEPOLIA
+          UniLend V2 is in testnet phase. <br /> Please connect to the Polygon Mumbai
           network.
         </p>
         <div>
-          <button onClick={() => changeNetwork(11155111)}>
+          <button onClick={() => handleSwitchNetwork(80001)}>
             Switch Network
           </button>
         </div>
@@ -133,6 +136,7 @@ const handleOpenSwitchNetwork = (visible) => {
       }, 1000);
     }
   }
+
 
   const SortContent = React.memo(() => {
     return (
