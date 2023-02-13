@@ -45,6 +45,7 @@ export default function Navbar(props) {
   const [isNetworkVisible, setIsNetworkVisible] = useState(false)
   const [isPolygon, setIsPolygon] = useState(false)
   const dispatch = useDispatch();
+  const [currentTheme , setCurrentTheme] = useState(theme)
   const {chain: networkchain} = getNetwork()
 
 
@@ -52,11 +53,15 @@ export default function Navbar(props) {
     setVisible(newVisible);
   };
 
-  const handleTheme = () => {
-    const changeTo = theme == "dark" ? "light" : "dark"
-    dispatch(setTheme(theme == "dark" ? "light" : "dark"));
-    document.body.className = changeTo;
-    saveToLocalStorage("unilendV2Theme", changeTo)
+  const handleTheme = (theme) => {
+    // const changeTo = theme == "dark" ? "light" : "dark"
+    // dispatch(setTheme(theme == "dark" ? "light" : "dark"));
+    // document.body.className = changeTo;
+    // saveToLocalStorage("unilendV2Theme", changeTo)
+    saveToLocalStorage("unilendV2Theme", theme)
+    setCurrentTheme(theme)
+    dispatch(setTheme(theme));
+    document.body.className = theme; 
   };
 
 const handleOpenWalletModal =() => {
@@ -302,7 +307,7 @@ const handleOpenSwitchNetwork = (visible) => {
       </div>
       <div className='theme_toggle'>
        {
-        theme == 'dark' ? <img src={sun} onClick={handleTheme} alt="sun" /> : <img src={moon} onClick={handleTheme}  alt="moon"/>
+        currentTheme == 'dark' ? <img src={sun} onClick={() => handleTheme('light')} alt="sun" /> : <img src={moon} onClick={() => handleTheme('dark')}  alt="moon"/>
        }
       </div>
    
