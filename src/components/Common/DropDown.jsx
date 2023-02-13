@@ -3,10 +3,9 @@ import { Popover } from "antd";
 import { useState } from "react";
 import { DownOutlined } from "@ant-design/icons";
 import './styles/dropdown.scss'
-export default function DropDown({list}) {
-
+export default function DropDown({list, active=0}) {
 const [visible, setVisible] = useState(false);
-const [actionIndex, setActiveIndex] = useState()
+const [actionIndex, setActiveIndex] = useState(active)
 
 
 const handleVisible = (bool) => {
