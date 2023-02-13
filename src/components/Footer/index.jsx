@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link } from 'react-router-dom';
 import {
   FaLinkedinIn,
@@ -9,8 +9,23 @@ import {
 } from 'react-icons/fa';
 import { LockOutlined } from '@ant-design/icons'
 import './styles/index.scss';
+import { useSelector } from 'react-redux';
+import { getNetwork } from '@wagmi/core';
 
 export default function Footer() {
+  const [isPolygon, setIsPolygon] = useState(false)
+  const {user}= useSelector((state) => state);
+  const pathname = window.location.pathname;
+
+  useEffect(() => {
+    const {chain} = getNetwork()
+    if(chain?.id == 80001){
+      setIsPolygon(true)
+    } else {
+      setIsPolygon(false)
+    }
+  }, [user]);
+
   return (
     <>
     <footer>
@@ -60,13 +75,22 @@ export default function Footer() {
       </div>
     </footer>
     <nav className='footer_nav'>
-        <a href="/">
+        <a href="/pools"
+        className={`${pathname === '/pools' ? 'active' : ''}`}
+        >
           Pools
         </a>
-        <a href="#" className='disable_route'>
-          Dashboard
-          <LockOutlined style={{marginLeft: '5px'}}/>
-        </a>
+        { isPolygon ?  <a href='/dashboard'
+         className={`${pathname === '/dashboard' ? 'active' : ''}`}
+         >
+            Dashboard
+          </a> :
+           <a href='#' className='disable_route'>
+           Dashboard
+           <LockOutlined style={{ marginLeft: '5px' }} />
+         </a> 
+
+        }
         <a href="#" className='disable_route'>
           Vote
           <LockOutlined style={{marginLeft: '5px'}}/>
@@ -75,7 +99,9 @@ export default function Footer() {
           Rewards
           <LockOutlined style={{marginLeft: '5px'}}/>
         </a>
-        <a href="history">
+        <a href="/history"
+        className={`${pathname === '/history' ? 'active' : ''}`}
+        >
           History
         </a>
       </nav>

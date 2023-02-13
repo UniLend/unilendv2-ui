@@ -75,6 +75,9 @@ footer, .footer_nav{
     
         }
         }
+        .active{
+            background-color: var(--light-blue);
+        }
     }
 }
 
@@ -103,6 +106,9 @@ footer, .footer_nav{
             cursor: not-allowed;
     
         }
+        }
+        .active{
+            background-color: var(--light-blue);
         }
     }
 }
