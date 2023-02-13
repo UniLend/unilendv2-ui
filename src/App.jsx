@@ -335,8 +335,8 @@ function App() {
         const poolInfo = {
           ...pool,
           poolAddress: pool?.pool,
-          totalLiquidity: fixedToShort(pool.token0Liquidity) + fixedToShort(pool.token1Liquidity),
-          totalBorrowed : fixedToShort(pool.totalBorrow0) + fixedToShort(pool.totalBorrow1),
+          totalLiquidity: (fixedToShort(pool.token0Liquidity) * getTokenPrice(oraclePrices,pool.token0 ) )+ (fixedToShort(pool.token1Liquidity) * getTokenPrice(oraclePrices,pool.token1 ) ),
+          totalBorrowed : ( fixedToShort(pool.totalBorrow0) * getTokenPrice(oraclePrices,pool.token0 ) ) +( fixedToShort(pool.totalBorrow1) * getTokenPrice(oraclePrices,pool.token1 )),
           openPosition: openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
           token0: {
             address: pool.token0,

@@ -2,21 +2,70 @@ import React, { useState } from "react";
 import Carousel from "react-simply-carousel";
 import { FaChevronDown } from 'react-icons/fa'
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
 import PoolCard from "../hallOfPools/poolCard";
 import "./styles/index.scss";
 import PoolCardSkeleton from "../Loader/PoolCardSkeleton";
 import DropDown from "../Common/DropDown";
+import { useEffect } from "react";
+import { sortByKey } from "../../helpers/dashboard";
 
 export default function PoolCarousel({ pools, isLoading }) {
   const [activeSlide1, setActiveSlide1] = useState(0);
   const [activeSlide2, setActiveSlide2] = useState(0);
+  const [poolDataByTime, setPoolDataByTime] = useState([])
+  const [poolDataByLiquidity, setPoolDataByLiquidity] = useState([])
+
+
+  const handleSort = (key, order) => {
+    const poolsObject = Object.values(pools)
+    const sortBy = sortByKey(poolsObject, key, order)
+  
+    if(key == 'blockTimestamp'){
+      setPoolDataByTime(sortBy)
+    } else if (key == 'totalLiquidity'){
+      setPoolDataByLiquidity(sortBy)
+    }
+  }
+
+  const blocktimeSortList = [
+    {
+      text: 'Created',
+      fun: () => handleSort('blockTimestamp', 1),
+      icon: <ImArrowUp2/>
+    },
+    {
+      text: 'Created',
+      fun: () => handleSort('blockTimestamp', 2),
+      icon: <ImArrowDown2/>
+    }
+  ]
+
+  const liquiditySortList = [
+    {
+      text: 'Liquidity',
+      fun: () => handleSort('totalLiquidity', 1),
+      icon: <ImArrowUp2/>
+    },
+    {
+      text: 'Liquidity',
+      fun: () => handleSort('totalLiquidity', 2),
+      icon: <ImArrowDown2/>
+    }
+  ]
+
+  useEffect(() => {
+    console.log("pools", pools);
+    handleSort('blockTimestamp', 1)
+    handleSort('totalLiquidity', 1)
+  },[pools])
 
   return (
     <div className="pool_carousel_container">
       <div className="carousel_row">
         <div className="title_sort_container" >
             <h2>New Pools</h2>
-           <DropDown list={[]}/>
+           <DropDown list={blocktimeSortList}/>
         </div>
         <div className="carousel_container ">
           <Carousel
@@ -41,11 +90,11 @@ export default function PoolCarousel({ pools, isLoading }) {
               ),
               className: "backwardBtnProps",
             }}
-            itemsToShow={2}
+            itemsToShow={1}
             speed={400}
           >
-            {Object.values(pools).length > 0 && isLoading
-              ? Object.values(pools).map((pool, i) => (
+            {poolDataByTime.length > 0 && isLoading
+              ? poolDataByTime.map((pool, i) => (
                   <div className="poolcard_div">
                     {" "}
                     <PoolCard pool={pool} key={i} />{" "}
@@ -61,8 +110,8 @@ export default function PoolCarousel({ pools, isLoading }) {
         </div>
         <br />
         <div className="title_sort_container" >
-            <h2>New Pools</h2>
-            <DropDown list={[]}/>
+            <h2>High Liquidity Pools</h2>
+            <DropDown list={liquiditySortList}/>
         </div>
         <div className="carousel_container" >
           <Carousel
@@ -87,11 +136,11 @@ export default function PoolCarousel({ pools, isLoading }) {
               ),
               className: "backwardBtnProps",
             }}
-            itemsToShow={2}
+            itemsToShow={3}
             speed={400}
           >
-            {Object.values(pools).length > 0 && isLoading
-              ? Object.values(pools).map((pool, i) => (
+            {poolDataByLiquidity.length > 0 && isLoading
+              ? poolDataByLiquidity.map((pool, i) => (
                   <div className="poolcard_div">
                     {" "}
                     <PoolCard pool={pool} key={i} />{" "}
