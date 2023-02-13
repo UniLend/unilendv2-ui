@@ -44,6 +44,7 @@ export default function Navbar(props) {
   const [isNetworkVisible, setIsNetworkVisible] = useState(false)
   const [isPolygon, setIsPolygon] = useState(false)
   const dispatch = useDispatch();
+  const {chain: networkchain} = getNetwork()
 
 
   const handleVisibleChange = (newVisible) => {
@@ -83,7 +84,7 @@ const handleOpenSwitchNetwork = (visible) => {
       setWrongNetworkModal(false);
     }
     handleDomain(user)
-  }, [user]);
+  }, [user, networkchain]);
 
   const handleConnect = async (action) => {
     setIsWalletModalVisible(false)
@@ -128,20 +129,19 @@ const handleOpenSwitchNetwork = (visible) => {
     if(connector == 'walletConnect'){
       setTimeout(() => {
         window.location.reload()
-        // removeFromLocalStorage('user')
+        //removeFromLocalStorage('user')
       }, 1000);
-      
     }
   }
 
-  const SortContent = () => {
+  const SortContent = React.memo(() => {
     return (
       <div className="sort_popover">
         <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
         <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
       </div>
     );
-  };
+  });
 
   const WalletConnectModal = () => {
     return (

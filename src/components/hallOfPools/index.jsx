@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import ManageToken from "../ManageTokens/ManageToken";
-import { PoolsData } from "../../utils/constants";
 import PoolCard from "./poolCard";
 import banner from "../../assets/banner.svg";
 import { FaChevronDown } from "react-icons/fa";
@@ -30,7 +29,7 @@ export default function HallOfPoolsComponent(props) {
 
   useEffect(() => {
     if (Object.values(poolList).length > 0) {
-      const toArray = Object.values(poolList)
+      const toArray = Object.values(poolList).filter((pool) => pool.hide == false)
       setPools(toArray);
       setPoolBackup(toArray);
     }
