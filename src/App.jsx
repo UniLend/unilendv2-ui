@@ -62,10 +62,13 @@ import { getFromLocalStorage, getTokenLogo } from "./utils";
 import { fetchCoinLogo } from "./utils/axios";
 import { useState } from "react";
 import { checkOpenPosition, fixedToShort, getPoolCreatedGraphQuery, getTokenPrice } from "./helpers/dashboard";
+import { hidePools } from "./utils/constants";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
+
+
 
 const { chains, provider, webSocketProvider } = configureChains(
   [mainnet, bsc, polygonMumbai, sepolia],
@@ -288,6 +291,7 @@ function App() {
             for (const poolElement of reverseResult) {
               poolData[poolElement.pool] = {
                 poolAddress: poolElement.pool,
+                hide: hidePools.includes(poolElement.pool),
                 token0: {
                   ...tokenList[poolElement.token0],
                   address: poolElement.token0,
@@ -335,6 +339,7 @@ function App() {
         const poolInfo = {
           ...pool,
           poolAddress: pool?.pool,
+          hide: hidePools.includes(pool?.pool),
           totalLiquidity: (fixedToShort(pool.token0Liquidity) * getTokenPrice(oraclePrices,pool.token0 ) )+ (fixedToShort(pool.token1Liquidity) * getTokenPrice(oraclePrices,pool.token1 ) ),
           totalBorrowed : ( fixedToShort(pool.totalBorrow0) * getTokenPrice(oraclePrices,pool.token0 ) ) +( fixedToShort(pool.totalBorrow1) * getTokenPrice(oraclePrices,pool.token1 )),
           openPosition: openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),

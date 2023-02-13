@@ -64,4 +64,4 @@ export const saveToLocalStorage = (key, value) => {
     source.target.src = 'https://e7.pngegg.com/pngimages/407/710/png-clipart-ethereum-cryptocurrency-bitcoin-cash-smart-contract-bitcoin-blue-angle-thumbnail.png'
     source.onerror = null;
     return true;
-    }
+}

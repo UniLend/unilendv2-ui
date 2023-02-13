@@ -18,8 +18,8 @@ export default function PoolCarousel({ pools, isLoading }) {
 
 
   const handleSort = (key, order) => {
-    const poolsObject = Object.values(pools)
-    const sortBy = sortByKey(poolsObject, key, order)
+    const poolsObjectArray = Object.values(pools).filter((pool)=> pool.hide == false)
+    const sortBy = sortByKey(poolsObjectArray, key, order)
   
     if(key == 'blockTimestamp'){
       setPoolDataByTime(sortBy)
@@ -55,7 +55,6 @@ export default function PoolCarousel({ pools, isLoading }) {
   ]
 
   useEffect(() => {
-    console.log("pools", pools);
     handleSort('blockTimestamp', 1)
     handleSort('totalLiquidity', 1)
   },[pools])

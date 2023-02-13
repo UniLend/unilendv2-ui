@@ -1,6 +1,5 @@
 import { poolAbi, positionAbi } from "../core/contractData/abi";
 import { fromBigNumber, getAllContracts } from "../helpers/contracts";
-import { poolDataByAddr } from "../utils/constants";
 import { readContract, getContract, getProvider } from "@wagmi/core";
 import Web3 from "web3";
 

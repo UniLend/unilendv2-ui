@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { FaChevronDown } from "react-icons/fa";
 import { shortenAddress, imgError } from "../../utils";
 import { allTransaction } from "../../services/events";
-import { poolDataByAddr, tokensByAddress } from "../../utils/constants";
 import txIcon from "../../assets/tx.svg";
 import noTxt from "../../assets/notxt.svg";
 import { fixed2Decimals, fromBigNumber } from "../../helpers/contracts";
@@ -166,26 +165,7 @@ export default function HistoryComponent(props) {
  }
   ]
 
-  const SortContent = () => {
-    return (
-      <div className="sort_popover">
-        <p
-          className={`${sortIndex === 1 ? "activeSort" : ""} `}
-          onClick={() => handleSort(1)}
-        >
-          {" "}
-          NEW TO OLD{" "}
-        </p>
-        <p
-          className={`${sortIndex === 2 ? "activeSort" : ""} `}
-          onClick={() => handleSort(2)}
-        >
-          {" "}
-          OLD TO NEW
-        </p>
-      </div>
-    );
-  };
+
 
   return (
     <div className="history_table_container">
@@ -198,19 +178,6 @@ export default function HistoryComponent(props) {
             onChange={handleSearch}
           />
         </div>
-        {/* <Popover
-          content={<SortContent />}
-          trigger="click"
-          overlayClassName="sort_dropDown"
-          placement="bottomLeft"
-          open={visible}
-          onOpenChange={handleVisibleChange}
-        >
-          <div className={`sortBy`}>
-            <p>Sort By</p>
-            <FaChevronDown />
-          </div>
-        </Popover> */}
         <DropDown list={dropdownlist}/>
       </div>
       <div className="table_header">
