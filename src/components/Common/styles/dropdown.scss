@@ -19,7 +19,7 @@
         font-weight: 400;
         font-size: 13px;
         line-height: 10px;
-        padding: 10px ;
+        padding: 10px;
         color: var(--light-gray);
         margin: 5px 0px;
         border-radius: 5px;
@@ -27,9 +27,9 @@
         display: flex;
         span{
             &:first-child{
-                width: 50px;
+                width: 25px;
                 display: flex;
-                justify-content: center;
+                justify-content:left;
             }
             &:last-child{
                 width: max-content;
