@@ -48,7 +48,7 @@
 
   .sortBy{
     display: flex;
-    width: 120px;
+    width: 100px;
     cursor: pointer;
     background-color: var(--sharp-blue);
     border-radius: 5px;
@@ -58,6 +58,7 @@
     justify-content: space-between;
     padding: 12px;
     height: 35px;
+    margin-top: 10px;
     p{
         margin: 0px 0px;
     }
