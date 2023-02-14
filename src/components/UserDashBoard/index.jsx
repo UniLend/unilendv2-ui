@@ -1,24 +1,22 @@
 import React, { useState } from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import Lottie from 'react-lottie';
 import "./styles/index.scss";
-import { FiPercent, FiHeart } from "react-icons/fi";
+import { FiPercent } from "react-icons/fi";
 import { VscGraph } from "react-icons/vsc";
 import { GiReceiveMoney } from "react-icons/gi";
 import { ImStack } from "react-icons/im";
 import { Alchemy, Network } from "alchemy-sdk";
 import { FaWallet } from "react-icons/fa";
 import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
-import {HiArrowDown} from 'react-icons/hi'
-import {AiOutlineArrowUp} from 'react-icons/ai'
 import banner from "../../assets/dashboardbanner.svg";
-import walletIcon from "../../assets/wallet.svg";
-import { SearchOutlined, DownOutlined } from "@ant-design/icons";
-import { Input, Progress, Popover, Button } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { Input, Button } from "antd";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DonutChart from "../Common/DonutChart";
 import {
-  getAverage,
+  getAverage, 
   getBorrowedPowerUsed,
   getChartData,
   getNetHealthFactor,
@@ -31,6 +29,7 @@ import { getAccount, getNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
 import { imgError } from "../../utils";
 import { fetchTokenPriceInUSD } from "../../utils/axios";
+import empty from '../../assets/searchEmpty.json'
 
 //const endpoint = "https://api.spacex.land/graphql/";
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -96,6 +95,15 @@ export default function UserDashboardComponent(props) {
   
   setPositionData({positionData, lendArray: afterSearchedLend, borrowArray: afterSearchedBorrow})
 
+  }
+
+  const defaultOptionsLotti = {
+    loop: true,
+    autoplay: true, 
+    animationData: empty,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice'
+    }
   }
 
   const lendDropdownList = [
@@ -284,8 +292,13 @@ export default function UserDashboardComponent(props) {
           <div className="content">
             <div className="lend_container">
               <div>
-                {pieChartInputs?.donutLends && (
+                {pieChartInputs?.donutLends?.length > 0 ? (
                   <DonutChart data={pieChartInputs?.donutLends} />
+                ): (
+                  <Lottie options={defaultOptionsLotti}
+                  height={300}
+                  width={300}
+                  />
                 )}
               </div>
               <div>
@@ -309,10 +322,16 @@ export default function UserDashboardComponent(props) {
             </div>
             <div className="borrow_container">
               <div>
-                {pieChartInputs?.donutBorrows && (
+                {pieChartInputs?.donutBorrows?.length > 0 ? (
                   <DonutChart data={pieChartInputs?.donutBorrows} />
+                ): (
+                  <Lottie options={defaultOptionsLotti}
+                  height={300}
+                  width={300}
+                  />
                 )}
               </div>
+             
               <div>
                 <div>
                   <p>Total Borrow</p>
@@ -352,7 +371,7 @@ export default function UserDashboardComponent(props) {
             </div>
             <div className="tbody">
               {!walletTokenLoading &&
-                walletTokens.map((token, i) => {
+               ( walletTokens.length > 0 ? walletTokens.map((token, i) => {
                   return (
                     <div key={i} className="tbody_row">
                       <span>
@@ -368,7 +387,12 @@ export default function UserDashboardComponent(props) {
                       <span>-</span>
                     </div>
                   );
-                })}
+                }): 
+                ( <Lottie options={defaultOptionsLotti}
+                  height={350}
+                  width={350}
+                  />)
+                )}
               {walletTokenLoading &&
                 new Array(3).fill(0).map((_, i) => {
                   return (
@@ -427,7 +451,7 @@ export default function UserDashboardComponent(props) {
                   <span>Max LTV</span>
                 </div>
                 <div className="tbody">
-                  {positionData?.lendArray &&
+                  {positionData?.lendArray?.length > 0 ?
                     positionData?.lendArray.map((pool) => {
                       return (
                         <div className="tbody_row">
@@ -460,7 +484,12 @@ export default function UserDashboardComponent(props) {
                           <span>{pool.pool.ltv}%</span>
                         </div>
                       );
-                    })}
+                    }): (
+                      <Lottie options={defaultOptionsLotti}
+                      height={350}
+                      width={350}
+                      />
+                    )}
                 </div>
               </div>
             ) : (
@@ -488,7 +517,7 @@ export default function UserDashboardComponent(props) {
                   <span>Current LTV</span>
                 </div>
                 <div className="tbody">
-                  {positionData?.borrowArray &&
+                  {positionData?.borrowArray?.length > 0 ?
                     positionData?.borrowArray.map((pool) => {
                       return (
                         <div className="tbody_row">
@@ -527,7 +556,13 @@ export default function UserDashboardComponent(props) {
                           </span>
                         </div>
                       );
-                    })}
+                    }): (
+                      
+                      <Lottie options={defaultOptionsLotti}
+                      height={350}
+                      width={350}
+                      />
+                    )}
                 </div>
               </div>
             )}
