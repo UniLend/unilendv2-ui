@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import Lottie from 'react-lottie';
 import "./styles/index.scss";
 import { FiPercent } from "react-icons/fi";
+import {BsCheckLg, BsXLg} from "react-icons/bs"
 import { VscGraph } from "react-icons/vsc";
 import { GiReceiveMoney } from "react-icons/gi";
 import { ImStack } from "react-icons/im";
@@ -30,6 +31,7 @@ import DropDown from "../Common/DropDown";
 import { imgError } from "../../utils";
 import { fetchTokenPriceInUSD } from "../../utils/axios";
 import empty from '../../assets/searchEmpty.json'
+import { ethers } from "ethers";
 
 //const endpoint = "https://api.spacex.land/graphql/";
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -48,7 +50,8 @@ export default function UserDashboardComponent(props) {
   }
   const { address } = getAccount();
   const [userAddress, setUserAddress] = useState();
-  const query = userDashBoardQuery(userAddress || address);
+  const [verifiedAddress, setVerifiedAddress] = useState(address)
+  const query = userDashBoardQuery(verifiedAddress || address);
   const [lendingVisible, setLendingVisible] = useState(false);
   const [borrowingVisible, setBorrowingVisible] = useState(false);
   const [isLendTab, setIsLentab] = useState(true);
@@ -69,6 +72,13 @@ export default function UserDashboardComponent(props) {
   const handleLendingVisibleChange = (visible) => {
     setLendingVisible(visible);
   };
+
+  const handleSearchAddress = (addr) => {
+    setUserAddress(addr)
+    setVerifiedAddress('')
+    const isVerified = ethers.utils.isAddress(addr)
+    isVerified && setVerifiedAddress(addr)
+  }
 
   const handleLendBorrowTabs = (action) => {
     setIsLentab(action);
@@ -195,6 +205,7 @@ export default function UserDashboardComponent(props) {
 
   const getUserTokens = async (address) => {
     setWalletTokenLoading(true);
+    setWalletTokens([]);
     alchemy.core.getTokenBalances(`${address}`).then(async (bal) => {
       const tokenPrices = await fetchTokenPriceInUSD()
       const tokens = await getTokensFromUserWallet(bal, tokenPrices, tokenList);
@@ -204,12 +215,14 @@ export default function UserDashboardComponent(props) {
   };
 
   useEffect(() => {
-    if (userAddress || user?.address) {
-      setWalletTokens([]);
-      const account = getAccount();
-      getUserTokens(userAddress || account.address);
+    const account = getAccount();
+    if (verifiedAddress) {
+      getUserTokens(verifiedAddress || account.address);
+    } else if(userAddress == '' || verifiedAddress == ''){
+      getUserTokens(account.address);
     }
-  }, [userAddress, user]);
+
+  }, [verifiedAddress, userAddress, user]);
 
   return (
     <div className="user_dashboard_component">
@@ -220,11 +233,11 @@ export default function UserDashboardComponent(props) {
         <div className="user_tittle">
           <h1>User Overview</h1>
           <Input
-            addonBefore={<SearchOutlined className="search_icon" />}
-            className="search_address"
+            addonBefore={ userAddress ?( verifiedAddress ? <BsCheckLg className="search_icon"/>: <BsXLg className="search_icon"/>) : <SearchOutlined className="search_icon" />}
+            className={`search_address ${userAddress ? (verifiedAddress ? 'verified_address':'not_verified') : ''}`}
             placeholder="Search address"
             value={userAddress}
-            onChange={(e) => setUserAddress(e.target.value)}
+            onChange={(e) => handleSearchAddress(e.target.value)}
           />
         </div>
 

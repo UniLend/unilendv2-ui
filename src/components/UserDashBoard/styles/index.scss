@@ -53,6 +53,25 @@
           }
         }
       }
+      .verified_address{
+
+        .ant-input-group-addon {
+          color: var(--light-green);
+          background: var(--pure-white);
+          .anticon {
+            color: var(--light-green);
+          }
+        }
+      }
+      .not_verified{
+        .ant-input-group-addon {
+          color: var(--light-red);
+          background: var(--pure-white);
+          .anticon {
+            color: var(--light-red);
+          }
+        }
+      }
     }
 
     @media screen and ($tablet) {
