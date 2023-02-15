@@ -208,6 +208,7 @@ const handleOpenSwitchNetwork = (visible) => {
 
   return (
     <div className='nav_container'>
+      <div className='route_container'>
       <div className='unilend_logo'>
        <a href="/"> <img src={logo} alt='unilend_logo' /></a>
       </div>
@@ -243,6 +244,7 @@ const handleOpenSwitchNetwork = (visible) => {
           </a>}
           <a href='https://chaindrop.org/?chainid=11155111&token=0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' target='_blank'>Faucet</a>
         </nav>
+      </div>
       </div>
       <div className='last_container'>
         {user?.isConnected ? (
