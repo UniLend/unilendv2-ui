@@ -53,6 +53,25 @@
           }
         }
       }
+      .verified_address{
+
+        .ant-input-group-addon {
+          color: var(--light-green);
+          background: var(--pure-white);
+          .anticon {
+            color: var(--light-green);
+          }
+        }
+      }
+      .not_verified{
+        .ant-input-group-addon {
+          color: var(--light-red);
+          background: var(--pure-white);
+          .anticon {
+            color: var(--light-red);
+          }
+        }
+      }
     }
 
     @media screen and ($tablet) {
@@ -195,8 +214,12 @@
             padding: 15px;
             &:first-child {
               height: 80%;
+              display: grid;
+              place-items: center;
               & > div {
+                
                 height: 100% !important;
+                width: 80% !important;
                 @media ($mobile) {
                   height: 200px !important;
                 }
@@ -372,7 +395,7 @@
         box-shadow: var(--box-shadow);
         border-radius: 10px;
         padding: 30px;
-        min-height: 500px;
+        min-height: 650px;
         @media ($mobile) {
           padding: 15px;
         }
