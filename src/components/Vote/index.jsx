@@ -1,14 +1,15 @@
-import React, { useState }  from "react";
+import React, { useState } from "react";
 import { getAccount } from "@wagmi/core";
 import { Input, Button } from "antd";
 import banner from "../../assets/dashboardbanner.svg";
+import Vote from "../../assets/vote.svg";
 import "./styles/index.scss";
 import { shortenAddress } from "../../utils";
-const wrap = 'wrap';
-const unWrap = 'unWrap'
-const update = 'update'
+const wrap = "wrap";
+const unWrap = "unWrap";
+const update = "update";
 export default function VoteComponent() {
-  const [activeTab, setActiveTab] = useState(wrap)
+  const [activeTab, setActiveTab] = useState(wrap);
   const { address } = getAccount();
   return (
     <div className="vote_container">
@@ -37,20 +38,42 @@ export default function VoteComponent() {
         {/* Operation Section */}
         <div className="operation">
           <div className="tabs">
-            <div onClick={() => setActiveTab(wrap)} className={` ${activeTab === wrap? 'active_tab': '' }`}>
+            <div
+              onClick={() => setActiveTab(wrap)}
+              className={` ${activeTab === wrap ? "active_tab" : ""}`}
+            >
               <span>Wrap & Delegate</span>
             </div>
-            <div onClick={() => setActiveTab(unWrap)} className={` ${activeTab === unWrap? 'active_tab': '' }`}>
+            <div
+              onClick={() => setActiveTab(unWrap)}
+              className={` ${activeTab === unWrap ? "active_tab" : ""}`}
+            >
               <span>Unwrap</span>
             </div>
-            <div onClick={() => setActiveTab(update)} className={` ${activeTab === update? 'active_tab': '' }`}>
+            <div
+              onClick={() => setActiveTab(update)}
+              className={` ${activeTab === update ? "active_tab" : ""}`}
+            >
               <span>Update delegation</span>
             </div>
           </div>
 
-        { activeTab === wrap  && <WrapAndDelegate />}
-        { activeTab === unWrap  && <UnWrap />}
-        { activeTab === update  && <UpdateDelegation />}
+          {activeTab === wrap && <WrapAndDelegate />}
+          {activeTab === unWrap && <UnWrap />}
+          {activeTab === update && <UpdateDelegation />}
+        </div>
+        <div className="vote_info">
+          <div>
+            <img src={Vote} alt="vote info" />
+          </div>
+          <div>
+            <h2>Participate In Governance</h2>
+            <p>
+              You can either vote on each proposal yourself or delegate your
+              votes to a third party. You can either vote on each proposal
+              yourself or delegate your votes to a third party.
+            </p>
+          </div>
         </div>
       </div>
     </div>
