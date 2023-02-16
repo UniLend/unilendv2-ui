@@ -1,0 +1,189 @@
+@use "../../../core/theme/constants.scss" as *;
+.vote_container{
+    width: 100%;
+    .vote_banner{
+        background-color: var(--sharp-blue);        
+        img{
+            width: 100%;
+        }
+       
+    }
+    .vote_content{
+        width: 80%;
+        margin: 0px auto;
+        min-height: 500px;
+        position: relative;
+        top: -15vw;
+        .user_info{
+            width: 100%;
+            background: var(--pure-white);
+            height: 150px;
+            border-radius: 10px;
+            display: flex;
+            div{
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+                padding: 40px;
+                h2,p{
+                    margin: 0px;
+                    padding: 0px;
+                }
+                h2{
+                    color: var(--sharp-blue);
+                    font-weight: 700;
+                    font-size: 22px;
+                }
+                p{
+                    color: var(--light-gray);
+                    font-size: 15px;
+                    font-weight: 600;
+                }
+                span{
+                    color: var(--low-gray);
+                    font-size: 12px;
+                }
+            }
+        }
+        .operation{
+            background: var(--pure-white);
+            width: 80%;
+            min-width: 400px;
+            margin: 30px auto;
+            height: max-content;
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+            padding: 50px;
+            min-height: 400px;
+            .tabs{
+                width: 60%;
+                min-width: 400px;
+                margin: 0px auto;
+                height: 50px;
+                border: 1px solid var(--border-gray);
+                display: flex;
+                justify-content: space-between;
+                padding: 7px;
+                border-radius: 5px;
+                gap: 5px;
+                div{
+                    border: 1px solid var(--border-gray);
+                    width: 25%;
+                    min-width: max-content;
+                    display: grid;
+                    place-items: center;
+                    text-align: center;
+                    border-radius: inherit;
+                    color: var(--dark-gray);
+                    font-weight: 600;
+                    padding: 5px 10px;
+                    font-size: 15px;
+                    cursor: pointer;
+                    &:hover{
+                        color: var(--sharp-blue);
+                    }
+                }
+                .active_tab{
+                    background: var(--light-blue);
+                    color: var(--sharp-blue);
+                }
+                   
+            }
+            .operation_content_container{
+                display: flex;
+                justify-content: space-between;
+                 
+                div{
+                    width: 35%;
+                    margin: 20px;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    
+                }
+                .info{
+                   margin-top: 5vw;
+                    p{
+                        color: var(--low-gray);
+                        font-size: 12px;
+                        font-weight: 600;
+                        text-align: justify;
+                        min-width: 90%;
+                    }
+                    h2{
+                        color: var(--sharp-blue);
+                        font-size: 25px;
+                        font-weight: 700;
+                    }
+                }
+                .action{
+                    input, button{
+                        width: 100%;
+                        margin: 10px;
+                        height: 40px;
+                        border-radius: 5px;
+                    }
+                    input{
+                        background: var(--light-blue);
+                        color: var(--light-gray);
+                        font-weight: 700;
+                        border: none;
+                        &:focus, &:hover {
+                            box-shadow: none;
+                            border: none;
+                        }
+                    }
+                    button{
+                        background:var(--sharp-blue);
+                        color: var(--pure-white);
+                        font-weight: 600;
+                    }
+                }
+            }
+            @media($tablet){
+                width: 100%;
+                padding: 30px;
+            }
+            @media($mobile){
+                width: 100%;
+                padding: 15px;
+                min-width: 0px;
+                min-height: 300px;
+                .tabs{
+                    width: 100%;
+                    margin: 0px auto;
+                    height: 50px;
+                    min-width: 0px;
+                    div{
+                        font-size: 10px;
+                        min-width: 0px;
+                        width: auto;
+                    }
+                }
+                .operation_content_container{
+                    flex-direction: column;
+                    div{
+                        width: 100%;
+                        display: flex;
+                        margin: 10px 0px;
+                        flex-direction: column;
+                        justify-content: center;
+                        text-align: center;
+
+                    }
+                    .action{
+                        input, button{
+                            width: 100%;
+                            margin: 10px 0px;
+                            height: 40px;
+                            border-radius: 5px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
