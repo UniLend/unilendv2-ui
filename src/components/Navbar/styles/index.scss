@@ -1,7 +1,7 @@
 @use '../../../core/theme/constants.scss' as *;
 
 .nav_container{
-    height: 70px;
+    height: 60px;
     z-index: 1;
     display: none;
     // background-color: var(--pure-white);
@@ -107,7 +107,7 @@
         div{
           height: max-content;
           width: max-content;
-          height: 40px;
+          height: 35px;
           white-space: nowrap;
           padding: 0px 5px;
           overflow: hidden;
@@ -129,7 +129,7 @@
           div{
             margin: 5px;
             padding: 10px;
-            height: 30px;
+            height: 25px;
             background-color: var(--pure-white);
             border-radius: 5px;
             font-size: 12px;
