@@ -1,11 +1,11 @@
 @use '../../../core/theme/constants.scss' as *;
 
 .nav_container{
-    height: 70px;
+    height: 60px;
     z-index: 1;
     display: none;
-    background-color: var(--pure-white);
-    box-shadow: 0px 2.00139px 4.00278px rgba(0, 0, 0, 0.05);
+    // background-color: var(--pure-white);
+    // box-shadow: 0px 2.00139px 4.00278px rgba(0, 0, 0, 0.05);
     display: flex;
     justify-content: space-between;
     padding: 0px 30px;
@@ -15,19 +15,23 @@
         height: 100%;
     }
 
+    .route_container{
+        display: flex;
+        gap: 20px;
+    }
+
     .unilend_logo{
-        width: 5%;
+        width: max-content;
         display: grid;
         place-items: center center;
         img{
             width: 70%;
-            min-width: 40px;
+            min-width: 35px;
             cursor: pointer;
         }
     }
 
     .nav_routes{
-        width: 50%;
         display: grid;
         place-items: center center;
         nav{
@@ -38,7 +42,7 @@
                 color: var(--sharp-blue);
                 padding: 5px;
                 border-radius: 5px;
-                font-size: 15px;
+                font-size: 14px;
                 font-weight: 600;
                 display: flex;
                 &:hover{
@@ -103,7 +107,7 @@
         div{
           height: max-content;
           width: max-content;
-          height: 40px;
+          height: 35px;
           white-space: nowrap;
           padding: 0px 5px;
           overflow: hidden;
@@ -118,17 +122,17 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: noWrap;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: var(--light-gray);
           }
           div{
             margin: 5px;
             padding: 10px;
-            height: 30px;
+            height: 25px;
             background-color: var(--pure-white);
             border-radius: 5px;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--light-gray);
             max-width: 120px;
             overflow: hidden;

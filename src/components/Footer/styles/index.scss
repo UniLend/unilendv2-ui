@@ -1,15 +1,15 @@
 @use '../../../core/theme/constants.scss' as *;
 footer, .footer_nav{
-    position: fixed;
+    // position: fixed;
     bottom: 0vh;
     display: flex;
-    justify-content: space-around;
-   background-color: var(--pure-white);
+    justify-content: space-between;
+    // background-color: var(--pure-white);
     align-items: center;
     width: 100%;
     z-index: 2;
     padding: 10px;
-    border-top: 1px solid var(--border-gray);
+    // border-top: 1px solid var(--border-gray);
     color: var(--sharp-blue);
     div{
         width: calc(100%/3);
@@ -27,8 +27,11 @@ footer, .footer_nav{
     justify-content: center;
     a{
         margin: 0px 10px;
-        color: var(--sharp-blue);
+        color: var(--light-gray);
         font-weight: 600;
+        &:hover{
+            color: var(--sharp-blue);
+        }
     }
 }
 
@@ -39,7 +42,11 @@ footer, .footer_nav{
         width: 200px;
         margin: auto;
         a{
-            color: var(--sharp-blue);
+            color: var(--light-gray);
+            cursor: pointer;
+            &:hover{
+                color: var(--sharp-blue);
+            }
         }
     }
    
