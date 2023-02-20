@@ -85,7 +85,7 @@ const handleOpenSwitchNetwork = (visible) => {
       setIsPolygon(false)
     }
    // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
-    if ( user?.network?.id && chain?.id != 11155111 && chain?.id != 80001) {
+    if ( user?.network?.id && user?.network?.id != 11155111 && user?.network?.id != 80001) {
       setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);

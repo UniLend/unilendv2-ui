@@ -152,15 +152,16 @@ function App() {
     (async () => {
       try {
         dispatch(setLoading(true));
-        const walletconnect = JSON.parse(localStorage.getItem("walletconnect"));
+        const walletconnect = JSON.parse(localStorage.getItem("wagmi.connected"));
         const account = getAccount();
         let provider = etherProvider;
         const signer = await fetchSigner()
+        console.log("App.js", walletconnect, account);
         if (
-          state?.user?.isConnected ||
-          (walletconnect?.connected && account.isConnected)
+          (walletconnect && account.isConnected)
         ) {
           const user = await connectWallet();
+          
           dispatch(setUser(user));
           provider = getProvider();
         }
@@ -203,7 +204,7 @@ function App() {
 
   useEffect(() => {
     const { chain } = getNetwork()
-    if (state.contracts.coreContract && chain?.id == 11155111) {
+    if (state.contracts.coreContract && chain?.id != 80001) {
       try {
         (async () => {
           const web3 = defProv();
@@ -255,6 +256,7 @@ function App() {
             for (const poolElement of reverseResult) {
               poolData[poolElement.pool] = {
                 poolAddress: poolElement.pool,
+                hide: false,
                 token0: {
                   ...tokenList[poolElement.token0],
                   address: poolElement.token0,
@@ -315,6 +317,7 @@ function App() {
 
   useEffect(() => {
     const { chain } = getNetwork()
+    
     if(data && chain?.id != 11155111){
 
       const oraclePrices={
