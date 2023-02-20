@@ -1,6 +1,7 @@
 import tokensbysymbol from "../services/tokensbysymbol.json";
 import tokensbyaddress from "../services/tokensbyaddress.json";
 const tokensBYSymbol = {
+  ...tokensbysymbol,
   ETH: {
     address: "",
     symbol: "ETH",
@@ -119,7 +120,24 @@ const tokensBYSymbol = {
   GIFT: {
     logo: "https://i.imgur.com/tWu6HLM.png",
   },
-  ...tokensbysymbol,
+  "SANTA":{
+    "logo": "https://i.imgur.com/70sMFN7.png"
+  }, 
+  "GIFT":{
+    "logo":"https://i.imgur.com/tWu6HLM.png"
+  },
+  "pBTC":{
+    "logo":"https://s2.coinmarketcap.com/static/img/coins/64x64/5434.png"
+  },
+  "MAI":{
+    "logo":"https://i.imgur.com/0uPSnqM_d.webp?maxwidth=760&fidelity=grand"
+  },
+  'LOVE':{
+    "logo":"https://i.imgur.com/fXBrprS.png"
+  },
+  "ROSE":{
+    "logo":"https://i.imgur.com/tHj6Sfm.png"
+  },
 };
 
 const tokensByAddress = {

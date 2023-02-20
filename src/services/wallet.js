@@ -62,12 +62,16 @@ export const connectWallet = async (wallet) => {
         })
         localStorage.setItem('wallet', 'metamask')
       } catch (error) {
-        const data = await connect({
-          connector: WalletConnector,
-        }).then((res) => {
-          return res;
-        })
-        localStorage.setItem('wallet', 'walletConnect')
+        const isError = (error?.message == 'Connector already connected')
+        if(!isError){
+          const data = await connect({
+            connector: WalletConnector,
+          }).then((res) => {
+            return res;
+          })
+          localStorage.setItem('wallet', 'walletConnect')
+        }
+      
       }
   
     } else if (trigerWallet == 'walletConnect'){
