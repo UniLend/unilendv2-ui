@@ -87,8 +87,6 @@ export const WalletConnector =  new WalletConnectConnector({
     projectId: projectId,
   }});
 
-// window.Buffer = window.Buffer || require("buffer").Buffer;
-
 const client = createClient({
   connectors: [
     new InjectedConnector({ chains }),

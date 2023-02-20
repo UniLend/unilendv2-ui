@@ -18,6 +18,8 @@ export default defineConfig({
       }),
   ],
   build: {
+    minify: false,
+   sourcemap: false,
     rollupOptions: {
       plugins: [
         // ↓ Needed for build
@@ -28,5 +30,6 @@ export default defineConfig({
     commonjsOptions: {
       transformMixedEsModules: true,
     },
-  },
+    
+  }
 });

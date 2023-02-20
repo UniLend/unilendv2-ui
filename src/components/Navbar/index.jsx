@@ -85,8 +85,7 @@ const handleOpenSwitchNetwork = (visible) => {
       setIsPolygon(false)
     }
    // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
-    if ( chain?.id != 11155111 && chain?.id != 80001) {
-      console.log("user", user, (user.network.id != '11155111'));
+    if ( user?.network?.id && chain?.id != 11155111 && chain?.id != 80001) {
       setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);
@@ -217,7 +216,7 @@ const handleOpenSwitchNetwork = (visible) => {
           <a href='/pools' className={`${pathname === '/pools' ? 'active' : ''}`}>
             Pools
           </a>
-        { isPolygon ?  <a href='/dashboard'
+        {/* { isPolygon ?  <a href='/dashboard'
          className={`${pathname === '/dashboard' ? 'active' : ''}`}
          >
             Dashboard
@@ -227,7 +226,11 @@ const handleOpenSwitchNetwork = (visible) => {
            <LockOutlined style={{ marginLeft: '5px' }} />
          </a> 
 
-        }
+        } */}
+          <a href='#' className='disable_route'>
+           Dashboard
+           <LockOutlined style={{ marginLeft: '5px' }} />
+         </a> 
           <a href='#' className='disable_route'>
             Vote
             <LockOutlined style={{ marginLeft: '5px' }} />
