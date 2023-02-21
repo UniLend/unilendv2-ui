@@ -45,7 +45,7 @@ export default function UserDashboardComponent(props) {
   const { contracts, user, web3, isError, poolList, tokenList } = props;
   const { chain } = getNetwork();
   const navigate = useNavigate();
-  if (chain.id !== 80001) {
+  if (chain?.id !== 80001) {
     navigate("/");
   }
   const { address } = getAccount();
