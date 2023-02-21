@@ -20,7 +20,7 @@ export default function PoolCarousel({ pools, isLoading }) {
   const handleSort = (key, order) => {
     const poolsObjectArray = Object.values(pools).filter((pool)=> pool.hide == false)
     const sortBy = sortByKey(poolsObjectArray, key, order)
-  
+    console.log("sortBy", sortBy);
     if(key == 'blockTimestamp'){
       setPoolDataByTime(sortBy)
     } else if (key == 'totalLiquidity'){
@@ -102,7 +102,7 @@ export default function PoolCarousel({ pools, isLoading }) {
               : new Array(5).fill(0).map((pool, i) => (
                   <div className="poolcard_div">
                     {" "}
-                    <PoolCardSkeleton />{" "}
+                    <PoolCardSkeleton key={i}/>{" "}
                   </div>
                 ))}
           </Carousel>
@@ -148,7 +148,7 @@ export default function PoolCarousel({ pools, isLoading }) {
               : new Array(5).fill(0).map((pool, i) => (
                   <div className="poolcard_div">
                     {" "}
-                    <PoolCardSkeleton />{" "}
+                    <PoolCardSkeleton  key={i}/>{" "}
                   </div>
                 ))}
           </Carousel>
