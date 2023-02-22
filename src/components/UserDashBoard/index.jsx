@@ -45,7 +45,7 @@ export default function UserDashboardComponent(props) {
   const { contracts, user, web3, isError, poolList, tokenList } = props;
   const { chain } = getNetwork();
   const navigate = useNavigate();
-  if (chain.id !== 80001) {
+  if (chain?.id !== 80001) {
     navigate("/");
   }
   const { address } = getAccount();
@@ -80,6 +80,10 @@ export default function UserDashboardComponent(props) {
     isVerified && setVerifiedAddress(addr)
   }
 
+  const navigateToPool = (addr) => {
+    navigate(`/pool/${addr}`)
+  }
+
   const handleLendBorrowTabs = (action) => {
     setIsLentab(action);
   };
@@ -88,6 +92,7 @@ export default function UserDashboardComponent(props) {
 
     if (operation == "lend") {
       const sorted = sortByKey(positionData.lendArray, key, order);
+      console.log("sortingData", sorted);
       setPositionData({ ...positionData, lendArray: sorted });
     } else if (operation == "borrow") {
       const sorted = sortByKey(positionData.borrowArray, key, order);
@@ -468,7 +473,7 @@ export default function UserDashboardComponent(props) {
                     positionData?.lendArray.map((pool) => {
                       return (
                         <div className="tbody_row">
-                          <span>
+                          <span onClick={() => navigateToPool(pool?.pool?.pool)}>
                             <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
                             <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
                             <p className="hide_for_mobile">

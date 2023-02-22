@@ -496,6 +496,7 @@
             width: 30%;
             &:first-child {
               width: 60%;
+              
             }
             // &:last-child{
             //   width: 0% !important;
@@ -559,11 +560,25 @@
             span {
               display: flex;
               color: var(--light-gray);
+             
+              &:first-child{
+                cursor: pointer;
+                &:hover{
+                  p{
+                    transform: scale(1.1);
+                    text-decoration: underline;
+                    cursor: pointer;
+                  }
+                  
+                }
+                
+              }
               p {
                 margin: 5px;
                 font-size: 12px;
                 font-weight: 600;
                 color: var(--light-gray);
+                transition: all 0.2s ease-in-out;
               }
               img {
                 width: 25px;

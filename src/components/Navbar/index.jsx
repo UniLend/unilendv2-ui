@@ -216,7 +216,7 @@ const handleOpenSwitchNetwork = (visible) => {
           <a href='/pools' className={`${pathname === '/pools' ? 'active' : ''}`}>
             Pools
           </a>
-        {/* { isPolygon ?  <a href='/dashboard'
+        { isPolygon ?  <a href='/dashboard'
          className={`${pathname === '/dashboard' ? 'active' : ''}`}
          >
             Dashboard
@@ -226,11 +226,8 @@ const handleOpenSwitchNetwork = (visible) => {
            <LockOutlined style={{ marginLeft: '5px' }} />
          </a> 
 
-        } */}
-          <a href='#' className='disable_route'>
-           Dashboard
-           <LockOutlined style={{ marginLeft: '5px' }} />
-         </a> 
+        }
+      
           <a href='#' className='disable_route'>
             Vote
             <LockOutlined style={{ marginLeft: '5px' }} />
