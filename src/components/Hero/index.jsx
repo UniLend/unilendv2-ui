@@ -1,52 +1,101 @@
-import React, { useState, useEffect } from 'react';
-import ManageToken from '../ManageTokens/ManageToken';
-import banner from '../../assets/banner.svg';
-import './styles/index.scss';
-import { useSelector } from 'react-redux';
-import PoolCarousel from '../PoolsCarousel';
-import PoolCard from '../hallOfPools/poolCard';
-import PoolListSkeleton from '../Loader/PoolListSkeleton';
+import React, { useState, useEffect } from "react";
+import ManageToken from "../ManageTokens/ManageToken";
+import banner from "../../assets/banner.svg";
+import "./styles/index.scss";
+import { useSelector } from "react-redux";
+import PoolCarousel from "../PoolsCarousel";
+import PoolCard from "../hallOfPools/poolCard";
+import PoolListSkeleton from "../Loader/PoolListSkeleton";
+import NoPoolFound from "../NoPoolFound";
 
 export default function HeroComponent(props) {
   const state = useSelector((state) => state);
   const [token1, setToken1] = useState({});
   const [token2, setToken2] = useState({});
   const [pools, setPools] = useState({});
-  // const [user, setUser] = useState({});
-  const [poolBackup, setPoolBackup] = useState({})
-  const [isLoading, setIsLoading] = useState(true)
+  const [filteredPools, setFilteredPools] = useState([]);
+  const [poolBackup, setPoolBackup] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
   const { contracts, web3, poolList, isLoadingPoolData, user } = state;
 
   useEffect(() => {
     if (Object.values(poolList).length > 0) {
-     setPools(poolList)
-      setPoolBackup(poolList)
-        }
+      setPools(Object.values(poolList));
+      setPoolBackup(Object.values(poolList));
+    }
   }, [poolList]);
 
-  useEffect(() => {
-
-  }, [])
+  useEffect(() => {}, []);
 
   useEffect(() => {
-    let filtredData;
- 
+    if (token1?.symbol && !token2?.symbol) {
+      const filtered =
+        Array.isArray(poolBackup) &&
+        poolBackup.filter(
+          (pool) =>
+            String(pool?.token0Symbol)
+              .toUpperCase()
+              .includes(String(token1.symbol)) ||
+            String(pool?.token1Symbol)
+              .toUpperCase()
+              .includes(String(token1.symbol))
+        );
+      setFilteredPools(filtered);
+    } else if (token2?.symbol && !token1?.symbol) {
+      const filtered =
+        Array.isArray(poolBackup) &&
+        poolBackup.filter(
+          (pool) =>
+            String(pool?.token0Symbol)
+              .toUpperCase()
+              .includes(String(token2.symbol)) ||
+            String(pool?.token1Symbol)
+              .toUpperCase()
+              .includes(String(token2.symbol))
+        );
+      setFilteredPools(filtered);
+    } else if (token1?.symbol && token2?.symbol) {
+      const filtered =
+        Array.isArray(poolBackup) &&
+        poolBackup
+          .filter(
+            (pool) =>
+              String(pool?.token0Symbol)
+                .toUpperCase()
+                .includes(String(token1.symbol)) ||
+              String(pool?.token1Symbol)
+                .toUpperCase()
+                .includes(String(token1.symbol))
+          )
+          .filter(
+            (pool) =>
+              String(pool?.token0Symbol)
+                .toUpperCase()
+                .includes(String(token2.symbol)) ||
+              String(pool?.token1Symbol)
+                .toUpperCase()
+                .includes(String(token2.symbol))
+          );
+      setFilteredPools(filtered);
+    } else {
+      setFilteredPools([]);
+    }
+
+    console.log("filtered", token1, poolBackup);
   }, [token1, token2]);
 
   const handleTokens = (token, selectedToken) => {
-    if (selectedToken === 'token1') {
+    if (selectedToken === "token1") {
       setToken1(token);
-    } else if (selectedToken === 'token2') {
+    } else if (selectedToken === "token2") {
       setToken2(token);
     } else {
-      setToken1({})
-      setToken2({})
+      setToken1({});
+      setToken2({});
     }
   };
 
-  const createPool = () => {
-
-  }
+  const createPool = () => {};
 
   return (
     <div className="hallofpools_container">
@@ -67,9 +116,21 @@ export default function HeroComponent(props) {
           ))}
         </div>
       ) : ( <PoolListSkeleton/>)} */}
-       <PoolCarousel pools={pools} isLoading={!isLoadingPoolData}/>
-     
-{/* 
+      {filteredPools.length > 0 ? (
+        <div className="poolcard_container">
+          {filteredPools.map((pool, i) => (
+            <PoolCard pool={pool} key={i} />
+          ))}
+        </div>
+      ) : token1.symbol || token2.symbol ? (
+        <div className="no_pool_container">
+          <NoPoolFound token1={token1} token2={token2}/>
+        </div>
+      ) : (
+        <PoolCarousel pools={pools} isLoading={!isLoadingPoolData} />
+      )}
+
+      {/* 
       {
         !user.isConnected &&  Object.values(pools).length == 0 && <div className="no_pool_container">
                <NoPoolFound
@@ -83,8 +144,7 @@ export default function HeroComponent(props) {
   );
 }
 
-
-// : (!isLoadingPoolData && user.address == '0x')? 
+// : (!isLoadingPoolData && user.address == '0x')?
 //       (<div className="no_pool_container">
 //       <NoPoolFound
 //         token1={token1}

@@ -442,14 +442,14 @@ export const userDashBoardQuery = (address) => {
 export const sortByKey = (data, key, order) => {
   let sort = data;
  if(order === 1){
- sort = data.sort(function (a, b) {
+ sort = Array.isArray(data) && data.sort(function (a, b) {
     // Compare the 2 blocknumbers
     if (a[key] < b[key]) return 1;
     if (a[key] > b[key]) return -1;
     return 0;
   });
  } else if (order == 2){
-  sort = data.sort(function (a, b) {
+  sort = Array.isArray(data) && data.sort(function (a, b) {
     // Compare the 2 blocknumbers
     if (a[key] < b[key]) return -1;
     if (a[key] > b[key]) return 1;
