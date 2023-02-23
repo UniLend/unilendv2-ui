@@ -18,7 +18,7 @@ export default function PoolCarousel({ pools, isLoading }) {
 
 
   const handleSort = (key, order) => {
-    const poolsObjectArray = Object.values(pools).filter((pool)=> pool.hide == false)
+    const poolsObjectArray = Array.isArray(pools) && pools.filter((pool)=> pool.hide == false)
     const sortBy = sortByKey(poolsObjectArray, key, order)
     console.log("sortBy", sortBy);
     if(key == 'blockTimestamp'){

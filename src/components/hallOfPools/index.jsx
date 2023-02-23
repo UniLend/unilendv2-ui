@@ -4,7 +4,7 @@ import PoolCard from "./poolCard";
 import banner from "../../assets/banner.svg";
 import { FaChevronDown } from "react-icons/fa";
 import "./styles/index.scss";
-import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
+import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
 import { useSelector } from "react-redux";
 import { getAllEvents } from "../../services/events";
 import { erc20Abi } from "../../core/contractData/abi";
@@ -29,46 +29,98 @@ export default function HallOfPoolsComponent(props) {
 
   useEffect(() => {
     if (Object.values(poolList).length > 0) {
-      const toArray = Object.values(poolList).filter((pool) => pool.hide == false)
+      const toArray = Object.values(poolList).filter(
+        (pool) => pool.hide == false
+      );
       setPools(toArray);
       setPoolBackup(toArray);
     }
   }, [poolList]);
 
-const handleSort = ( key, order) => {  
-  const sorted = sortByKey(pools, key, order);
-  setPools([...sorted])
-  console.log(pools, key, order, sorted)
-}
+  const handleSort = (key, order) => {
+    const sorted = sortByKey(pools, key, order);
+    setPools([...sorted]);
+  };
 
-// useEffect(() => {
-// console.log("Pools", pools);
-// },[pools, poolBackup])
-
-const sortList = [
-  {
-    text : 'TimeStamp',
-    fun : () => handleSort('blockTimestamp', 1),
-    icon: <ImArrowUp2/>
-  },
-  {
-    text : 'TimeStamp',
-    fun : () => handleSort('blockTimestamp', 2),
-    icon: <ImArrowDown2/>
-  }
-]
-
+  const sortList = [
+    {
+      text: "TimeStamp",
+      fun: () => handleSort("blockTimestamp", 1),
+      icon: <ImArrowUp2 />,
+    },
+    {
+      text: "TimeStamp",
+      fun: () => handleSort("blockTimestamp", 2),
+      icon: <ImArrowDown2 />,
+    },
+  ];
 
   const handleTokens = (token, selectedToken) => {
     if (selectedToken === "token1") {
       setToken1(token);
+      console.log("handleToken", token, pools);
     } else if (selectedToken === "token2") {
       setToken2(token);
-    } else {
+    } else if (selectedToken == "clear") {
       setToken1({});
       setToken2({});
     }
   };
+
+  useEffect(() => {
+    if (token1?.symbol && !token2?.symbol) {
+      const filtered =
+        Array.isArray(poolBackup) &&
+        poolBackup.filter(
+          (pool) =>
+            String(pool?.token0Symbol)
+              .toUpperCase()
+              .includes(String(token1.symbol)) ||
+            String(pool?.token1Symbol)
+              .toUpperCase()
+              .includes(String(token1.symbol))
+        );
+      setPools(filtered);
+    } else if (token2?.symbol && !token1?.symbol) {
+      const filtered =
+        Array.isArray(poolBackup) &&
+        poolBackup.filter(
+          (pool) =>
+            String(pool?.token0Symbol)
+              .toUpperCase()
+              .includes(String(token2.symbol)) ||
+            String(pool?.token1Symbol)
+              .toUpperCase()
+              .includes(String(token2.symbol))
+        );
+      setPools(filtered);
+    } else if (token1?.symbol && token2?.symbol) {
+      const filtered =
+        Array.isArray(poolBackup) &&
+        poolBackup.filter(
+          (pool) =>
+            String(pool?.token0Symbol)
+              .toUpperCase()
+              .includes(String(token1.symbol)) ||
+            String(pool?.token1Symbol)
+              .toUpperCase()
+              .includes(String(token1.symbol))
+        ).filter(
+          (pool) =>
+            String(pool?.token0Symbol)
+              .toUpperCase()
+              .includes(String(token2.symbol)) ||
+            String(pool?.token1Symbol)
+              .toUpperCase()
+              .includes(String(token2.symbol))
+        );
+        setPools(filtered)
+    } else {
+      setPools(poolBackup)
+    }
+
+    console.log("filtered", token1, poolBackup);
+  }, [token1, token2]);
 
   const createPool = () => {};
 
@@ -87,24 +139,34 @@ const sortList = [
 
       <div className="pool_filter_container">
         <div className="pool_tans">
-          <Button onClick={() => setMyPoolTab(false)} className={`pool_btn  ${!myPoolTab ? 'active_btn': ''}` } >All Pools</Button>
-          <Button onClick={() => setMyPoolTab(true)} className={`pool_btn ${myPoolTab ? 'active_btn': ''}` } >My Pools</Button>
+          <Button
+            onClick={() => setMyPoolTab(false)}
+            className={`pool_btn  ${!myPoolTab ? "active_btn" : ""}`}
+          >
+            All Pools
+          </Button>
+          <Button
+            onClick={() => setMyPoolTab(true)}
+            className={`pool_btn ${myPoolTab ? "active_btn" : ""}`}
+          >
+            My Pools
+          </Button>
         </div>
         <DropDown list={sortList} />
       </div>
 
       {pools.length > 0 && !isLoadingPoolData ? (
         <div className="poolcard_container">
-          { myPoolTab ? 
-          pools.filter((pool) => pool.openPosition == true).map((pool, i) => (
-            <PoolCard pool={pool} key={i} />
-          )):
-          pools.map((pool, i) => (
-            <PoolCard pool={pool} key={i} />
-          ))}
+          {myPoolTab
+            ? pools
+                .filter((pool) => pool.openPosition == true)
+                .map((pool, i) => <PoolCard pool={pool} key={i} />)
+            : pools.map((pool, i) => <PoolCard pool={pool} key={i} />)}
         </div>
-      ) : (
+      ) : isLoadingPoolData ? (
         <PoolListSkeleton />
+      ) : (
+        <NoPoolFound token1={token1} token2={token2} />
       )}
       {/* <PoolCarousel pools={pools} isLoading={!isLoadingPoolData}/> */}
 
