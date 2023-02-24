@@ -41,6 +41,13 @@ export default function HistoryComponent(props) {
     setVisible(newVisible);
   };
 
+  const getDateByTimeStamp = (timeStamp) => {
+    const dateInstance = new Date(timeStamp * 1000)
+  const time = dateInstance.toLocaleTimeString()
+  const date = dateInstance.toLocaleDateString()
+    return `${date} : ${time}`;
+  }
+
   useEffect(() => {
     if(!user.isConnected){
       navigate('/')
@@ -64,6 +71,7 @@ export default function HistoryComponent(props) {
           ...data.repayBorrows,
         ];
         const sorted = sortByKey(newArray, "blockTimestamp", 1);
+        console.log(sorted);
         setGraphHistory(sorted);
         setGraphHistoryBackup(sorted);
         setIsPageLoading(false);
@@ -194,7 +202,7 @@ export default function HistoryComponent(props) {
           <p>Amount</p>
         </div>
         <div className="hide_for_mobile">
-          <p>Tx Status</p>
+          <p>Time Stamp</p>
         </div>
         <div>
           <p>Tx ID</p>
@@ -217,21 +225,24 @@ export default function HistoryComponent(props) {
                           poolsData[String(txt.pool).toUpperCase()].token0.logo
                         }
                         onError={imgError}
-                        alt=""
+                        alt="token_icon"
                       />
                       <img
                         src={
                           poolsData[String(txt.pool).toUpperCase()].token1.logo
                         }
                         onError={imgError}
-                        alt=""
+                        alt="token_icon"
                       />
                     </div>
+                    <a href={`pool/${txt.pool}`}>
                     <p className="hide_for_mobile hide_for_tab">
+
                       {poolsData[String(txt.pool).toUpperCase()].token0.symbol +
                         "/" +
                         poolsData[String(txt.pool).toUpperCase()].token1.symbol}
                     </p>
+                    </a>
                   </div>
                   <div>
                     <p>{txt?.tokenSymbol}</p>
@@ -250,7 +261,7 @@ export default function HistoryComponent(props) {
                     </p>
                   </div>
                   <div className="hide_for_mobile">
-                    <p className="success">Complete</p>
+                    <p className="success">{getDateByTimeStamp(txt?.blockTimestamp)}</p>
                   </div>
                   <div className="hide_for_mobile">
                     <p>
@@ -316,7 +327,7 @@ export default function HistoryComponent(props) {
                     </p>
                   </div>
                   <div className="hide_for_mobile">
-                    <p className="success">Complete</p>
+                    <p className="success">-</p>
                   </div>
                   <div className="hide_for_mobile">
                     <p>
