@@ -18,7 +18,7 @@ export const getAllEvents = async (contract, event) => {
     //   }
     // );
 
-    const result = await contract.queryFilter(event)
+    const result = await contract.queryFilter(event);
     return result.map((item) => item.args);
   } catch (error) {
     return error;
@@ -41,15 +41,17 @@ export const getEventsWithFilter = async (contract, event, filter) => {
   //     }
   //   )
 
-    // .then((events) => {
-    //   console.log("eventFilter", events);
-    //   return events;
-    // });
+  // .then((events) => {
+  //   console.log("eventFilter", events);
+  //   return events;
+  // });
 
-  const events = await contract.queryFilter(event)
-  const filtered = events.filter((event) => fromBigNumber(event.args._positionID) == filter._positionID )
+  const events = await contract.queryFilter(event);
+  const filtered = events.filter(
+    (event) => fromBigNumber(event.args._positionID) == filter._positionID
+  );
 
-    return filtered;
+  return filtered;
 };
 
 export const positionId = async (
@@ -63,9 +65,9 @@ export const positionId = async (
   const id = await readContract({
     address: positionContract.address,
     abi: positionAbi,
-    functionName: 'getNftId',
-    args: [poolAddress, userAddress]
-  })
+    functionName: "getNftId",
+    args: [poolAddress, userAddress],
+  });
   return id;
 };
 
@@ -73,9 +75,11 @@ export const allTransaction = async (
   coreContract,
   positionContract,
   userAddress,
-  poollist
+  poollist,
+  setTxtData,
+  setIsPageLoading
 ) => {
-  const data = await getAllEvents(coreContract, 'PoolCreated');
+  const data = await getAllEvents(coreContract, "PoolCreated");
   // array of all pools address
   const newData = data.map((event) => event.pool);
 
@@ -85,27 +89,42 @@ export const allTransaction = async (
       positionContract,
       newData[i],
       userAddress
-      );
-     
-      const poolInfo = poollist[newData[i]];
-     
-      const poolContract =  getContract({
-        address: newData[i],
-        abi: poolAbi,
-        signerOrProvider: getProvider()
-      }) 
-   
+    );
 
-    const eventNames = ['Borrow', 'Lend', 'Redeem', 'RepayBorrow'];
-    for (let j = 0; j < eventNames.length; j++) {
-     
-      const events = await getEventsWithFilter(poolContract, eventNames[j], {
-        _positionID: `${position}`,
+    const poolInfo = poollist[newData[i]];
+
+    const poolContract = getContract({
+      address: newData[i],
+      abi: poolAbi,
+      signerOrProvider: getProvider(),
+    });
+
+    const eventNames = ["Borrow", "Lend", "Redeem", "RepayBorrow"];
+    const IspositionId = fromBigNumber(position);
+    if (IspositionId != 0) {
+      for (let j = 0; j < eventNames.length; j++) {
+        const events = await getEventsWithFilter(poolContract, eventNames[j], {
+          _positionID: `${position}`,
+        });
+        const eventsWithPoolInfo = events.map(
+          (el) =>
+            (el = {
+              ...el,
+              poolInfo: poolInfo,
+              event: el.event === "RepayBorrow" ? "Repay" : el.event,
+            })
+        );
+
+        array.push(...eventsWithPoolInfo);
+      }
+      const sort = array.sort(function (a, b) {
+        // Compare the 2 dates
+        if (a.blockNumber < b.blockNumber) return 1;
+        if (a.blockNumber > b.blockNumber) return -1;
+        return 0;
       });
-      const eventsWithPoolInfo = events.map((el)=> el = {...el, poolInfo: poolInfo, event: el.event === 'RepayBorrow'? 'Repay': el.event})
-
-      array.push(...eventsWithPoolInfo);
-   
+      setTxtData(sort);
+      setIsPageLoading(false);
     }
   }
 

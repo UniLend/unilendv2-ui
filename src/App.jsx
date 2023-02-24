@@ -42,10 +42,7 @@ import {
   setError,
 } from "./store/Action";
 import MainRoutes from "./routes";
-import {
-  connectWallet,
-  defProv
-} from "./services/wallet";
+import { connectWallet, defProv } from "./services/wallet";
 import {
   coreAbi,
   helperAbi,
@@ -61,14 +58,17 @@ import "./App.scss";
 import { getFromLocalStorage, getTokenLogo } from "./utils";
 import { fetchCoinLogo } from "./utils/axios";
 import { useState } from "react";
-import { checkOpenPosition, fixedToShort, getPoolCreatedGraphQuery, getTokenPrice } from "./helpers/dashboard";
+import {
+  checkOpenPosition,
+  fixedToShort,
+  getPoolCreatedGraphQuery,
+  getTokenPrice,
+} from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
-
-
 
 const { chains, provider, webSocketProvider } = configureChains(
   [mainnet, bsc, polygonMumbai, sepolia],
@@ -79,13 +79,14 @@ export const MetaMaskconnector = new MetaMaskConnector({
   chains: [mainnet, polygonMumbai, sepolia],
 });
 
-export const WalletConnector =  new WalletConnectConnector({
+export const WalletConnector = new WalletConnectConnector({
   chains,
   options: {
     qrcode: true,
     version: 2,
     projectId: projectId,
-  }});
+  },
+});
 
 const client = createClient({
   connectors: [
@@ -110,7 +111,7 @@ function App() {
   const { chain, chains } = getNetwork();
   const { address } = getAccount();
   // const provider = getProvider();
-  const query = getPoolCreatedGraphQuery(address)
+  const query = getPoolCreatedGraphQuery(address);
   const etherProvider = new ethers.providers.getDefaultProvider("sepolia");
   const state = useSelector((state) => state);
   const [chainId, setChainId] = useState(0);
@@ -122,13 +123,9 @@ function App() {
   // setting contract state to store from here
 
   const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
-  
-
-
 
   useEffect(() => {
-    
-    const provider = getProvider()
+    const provider = getProvider();
     provider.on("chainChanged", (chainId) => {
       window.location.reload();
       window.location.href = window.location.origin;
@@ -152,29 +149,27 @@ function App() {
     (async () => {
       try {
         dispatch(setLoading(true));
-        const walletconnect = JSON.parse(localStorage.getItem("wagmi.connected"));
+        const walletconnect = JSON.parse(
+          localStorage.getItem("wagmi.connected")
+        );
         const account = getAccount();
         let provider = etherProvider;
-        const signer = await fetchSigner()
-        console.log("App.js", walletconnect, account);
-        if (
-          (walletconnect && account.isConnected)
-        ) {
+        if (walletconnect && account.isConnected) {
           const user = await connectWallet();
-          
+
           dispatch(setUser(user));
           provider = getProvider();
         }
         // dispatch(setWeb3(web3));
-        const { chain : nextChain, chains } = getNetwork();
+        const { chain: nextChain, chains } = getNetwork();
         const { coreAddress, helperAddress, positionAddress } =
-        contractAddress[chain?.id || nextChain?.id || "11155111"];
+          contractAddress[chain?.id || nextChain?.id || "11155111"];
 
-      const preparedData = [
-        { abi: coreAbi, address: coreAddress },
-        { abi: helperAbi, address: helperAddress },
-        { abi: positionAbi, address: positionAddress },
-      ];
+        const preparedData = [
+          { abi: coreAbi, address: coreAddress },
+          { abi: helperAbi, address: helperAddress },
+          { abi: positionAbi, address: positionAddress },
+        ];
         Promise.all(
           preparedData.map((item) =>
             getContract({
@@ -203,7 +198,7 @@ function App() {
   }, [isSame, getFromLocalStorage("ethEvent")]);
 
   useEffect(() => {
-    const { chain } = getNetwork()
+    const { chain } = getNetwork();
     if (state.contracts.coreContract && chain?.id != 80001) {
       try {
         (async () => {
@@ -303,7 +298,7 @@ function App() {
               };
             }
           }
-         console.log("EventsData", poolData, tokenList);
+
           dispatch(setPools({ poolData, tokenList }));
         })();
       } catch (error) {
@@ -313,67 +308,71 @@ function App() {
     }
   }, [state.contracts, chain?.id]);
 
-  
-
   useEffect(() => {
-    const { chain } = getNetwork()
-    
-    if(data && chain?.id != 11155111){
+    const { chain } = getNetwork();
 
-      const oraclePrices={
-
-      }
+    if (data && chain?.id != 11155111) {
+      const oraclePrices = {};
 
       for (const token of data?.assetOracles) {
-        oraclePrices[String(token.asset).toUpperCase()] = Number(token.tokenPrice) / 10 ** 8
+        oraclePrices[String(token.asset).toUpperCase()] =
+          Number(token.tokenPrice) / 10 ** 8;
       }
-     
-      const poolData = {
-      }
-      const tokenList = {}
+
+      const poolData = {};
+      const tokenList = {};
 
       for (const pool of data?.poolCreateds) {
-        const allPositions = data.positions
-        
-        const openPosiions = allPositions.filter((el) =>  el?.poolData?.pool == pool.pool)
+        const allPositions = data.positions;
+
+        const openPosiions = allPositions.filter(
+          (el) => el?.poolData?.pool == pool.pool
+        );
 
         const poolInfo = {
           ...pool,
           poolAddress: pool?.pool,
           hide: hidePools.includes(pool?.pool),
-          totalLiquidity: (fixedToShort(pool.token0Liquidity) * getTokenPrice(oraclePrices,pool.token0 ) )+ (fixedToShort(pool.token1Liquidity) * getTokenPrice(oraclePrices,pool.token1 ) ),
-          totalBorrowed : ( fixedToShort(pool.totalBorrow0) * getTokenPrice(oraclePrices,pool.token0 ) ) +( fixedToShort(pool.totalBorrow1) * getTokenPrice(oraclePrices,pool.token1 )),
-          openPosition: openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
+          totalLiquidity:
+            fixedToShort(pool.token0Liquidity) *
+              getTokenPrice(oraclePrices, pool.token0) +
+            fixedToShort(pool.token1Liquidity) *
+              getTokenPrice(oraclePrices, pool.token1),
+          totalBorrowed:
+            fixedToShort(pool.totalBorrow0) *
+              getTokenPrice(oraclePrices, pool.token0) +
+            fixedToShort(pool.totalBorrow1) *
+              getTokenPrice(oraclePrices, pool.token1),
+          openPosition:
+            openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
           token0: {
             address: pool.token0,
-            logo:  getTokenLogo(pool.token0Symbol),
-            symbol: pool.token0Symbol
+            logo: getTokenLogo(pool.token0Symbol),
+            symbol: pool.token0Symbol,
           },
           token1: {
             address: pool.token1,
-            logo:  getTokenLogo(pool.token1Symbol),
-            symbol: pool.token1Symbol
-          }
-        }
+            logo: getTokenLogo(pool.token1Symbol),
+            symbol: pool.token1Symbol,
+          },
+        };
         tokenList[String(pool.token0).toUpperCase()] = {
           address: pool.token0,
-          logo:  getTokenLogo(pool.token0Symbol),
+          logo: getTokenLogo(pool.token0Symbol),
           symbol: pool.token0Symbol,
-          pricePerToken: getTokenPrice(oraclePrices,pool.token0 ) 
-        }
-        tokenList[ String(pool.token1).toUpperCase()] = {
+          pricePerToken: getTokenPrice(oraclePrices, pool.token0),
+        };
+        tokenList[String(pool.token1).toUpperCase()] = {
           address: pool.token1,
-          logo:  getTokenLogo(pool.token1Symbol),
+          logo: getTokenLogo(pool.token1Symbol),
           symbol: pool.token1Symbol,
-          pricePerToken: getTokenPrice(oraclePrices,pool.token1 ) 
-        }
-        poolData[pool?.pool] = poolInfo
+          pricePerToken: getTokenPrice(oraclePrices, pool.token1),
+        };
+        poolData[pool?.pool] = poolInfo;
       }
       dispatch(setPools({ poolData, tokenList }));
-      // console.log("PoolCreateddata", data, poolData);
-
     }
-  }, [data])
+  }, [data]);
 
   return (
     <>
