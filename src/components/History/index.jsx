@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./styles/index.scss";
 import { Popover, Pagination } from "antd";
 import { useQuery } from "@apollo/client";
@@ -14,8 +14,9 @@ import { getHistoryGraphQuery, sortByKey } from "../../helpers/dashboard";
 import { getAccount, getNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
 import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
+import loader from '../../assets/Eclipse-loader.gif'
 
-export default function HistoryComponent(props) {
+ function HistoryComponent(props) {
   const { contracts, user, web3, poolList, tokenList } = props;
   const navigate = useNavigate();
 
@@ -34,7 +35,9 @@ export default function HistoryComponent(props) {
   const [search, setSearch] = useState("");
   const [poolsData, setPoolsData] = useState({});
   const query = getHistoryGraphQuery(address);
-
+  const [called, setIsCalled] = useState(false)
+  const [historyLoading, setHistoryLoading] = useState(false)
+ 
   const { data, loading, error } = useQuery(query);
  
   const handleVisibleChange = (newVisible) => {
@@ -75,6 +78,7 @@ export default function HistoryComponent(props) {
         setGraphHistory(sorted);
         setGraphHistoryBackup(sorted);
         setIsPageLoading(false);
+        setHistoryLoading(false)
       }
     } else {
       setIsPolygon(false);
@@ -125,14 +129,17 @@ export default function HistoryComponent(props) {
   };
 
   const getTransactionData = async () => {
-    if (!isPolygon) {
+    if (!isPolygon && !called) {
       try {
-        setIsPageLoading(true);
+        // setIsPageLoading(true);
+        setHistoryLoading(true)
         const txtArray = await allTransaction(
           contracts.coreContract,
           contracts.positionContract,
           user.address,
-          poolList
+          poolList,
+          setTxtData,
+          setIsPageLoading
         );
         if (txtArray.length > 0) {
           const sort = txtArray.sort(function (a, b) {
@@ -143,20 +150,26 @@ export default function HistoryComponent(props) {
           });
           setTxtData(sort);
           setTxtDataBackup(sort);
+          setHistoryLoading(false)
         }
         setIsPageLoading(false);
       } catch (error) {
+        console.log("Error", {error});
         setIsPageLoading(false);
+        setHistoryLoading(false)
       }
     }
   };
 
+  
   useEffect(() => {
     // if(!user.isConnected){
     //   navigate('/')
     // }
-    if (user.address && contracts?.coreContract?.address) {
+    if (user.address && contracts?.coreContract?.address && !called) {
+ 
       getTransactionData();
+      setIsCalled(true)
     }
   }, [contracts, user, web3]);
 
@@ -186,7 +199,13 @@ export default function HistoryComponent(props) {
             onChange={handleSearch}
           />
         </div>
-        <DropDown list={dropdownlist}/>
+       { !historyLoading?  <DropDown list={dropdownlist}/>:
+        <div className="gif_loader">
+          
+        <span>Loading</span>
+        <img src={loader} alt="" />
+        </div>
+   }
       </div>
       <div className="table_header">
         <div>
@@ -298,7 +317,7 @@ export default function HistoryComponent(props) {
                   <div>
                     <div>
                       <img
-                        src={poolList[txt.address]?.token0?.logo}
+                        src={poolList[ txt.address]?.token0?.logo}
                         onError={imgError}
                         alt={poolList[txt.address]?.token0?.symbol}
                       />
@@ -309,11 +328,11 @@ export default function HistoryComponent(props) {
                       />
                     </div>
                     <p className="hide_for_mobile hide_for_tab">
-                      {/* {poolList[txt.address]?.token0?.symbol + "/" + poolList[txt.address]?.token1?.symbol} */}
+                      {poolList[txt.address]?.token0?.symbol + "/" + poolList[txt.address]?.token1?.symbol}
                     </p>
                   </div>
                   <div>
-                    <p>{tokenList[ String(txt?.args?._asset).toUpperCase()]?.symbol}</p>
+                    <p>{tokenList[txt?.args?._asset]?.symbol}</p>
                   </div>
                   <div>
                     <p>{txt.event}</p>
@@ -369,3 +388,5 @@ export default function HistoryComponent(props) {
     </div>
   );
 }
+
+export default HistoryComponent
