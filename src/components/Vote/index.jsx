@@ -1,16 +1,51 @@
 import React, { useState } from "react";
-import { getAccount } from "@wagmi/core";
+import { getAccount, getNetwork, getProvider } from "@wagmi/core";
 import { Input, Button } from "antd";
 import banner from "../../assets/dashboardbanner.svg";
 import Vote from "../../assets/vote.svg";
 import "./styles/index.scss";
 import { shortenAddress } from "../../utils";
+import { contractAddress } from "../../core/contractData/contracts";
+import { useEffect } from "react";
+import { ethers } from "ethers";
+import { erc20Abi } from "../../core/contractData/abi";
+import { fromBigNumber } from "../../helpers/contracts";
 const wrap = "wrap";
 const unWrap = "unWrap";
 const update = "update";
 export default function VoteComponent() {
-  const [activeTab, setActiveTab] = useState(wrap);
   const { address } = getAccount();
+  const { chain } = getNetwork();
+  const [userAddress, setUserAddress] = useState(address);
+  const [tokenBalance, setTokenBalance] = useState({ uft: "", uftg: "" });
+  const [activeTab, setActiveTab] = useState(wrap);
+
+  const handleAmount = () => {};
+
+  const getTokenBal = async () => {
+    const contractsAdd = contractAddress[chain?.id || "1"];
+    const provider = getProvider();
+    const UFT = new ethers.Contract(contractsAdd?.uftToken, erc20Abi, provider);
+    const UFTG = new ethers.Contract(
+      contractsAdd?.uftgToken,
+      erc20Abi,
+      provider
+    );
+
+    const uftBalance_BigNumber = await UFT.balanceOf(address);
+    const uftgBalance_BigNumber = await UFTG.balanceOf(address);
+    const uftBalance = fromBigNumber(uftBalance_BigNumber) / 10 ** 18;
+    const uftgBalance = fromBigNumber(uftgBalance_BigNumber) / 10 ** 18;
+
+    setTokenBalance({ uft: uftBalance, uftg: uftgBalance });
+
+    console.log("UFT", UFT, uftBalance, uftgBalance);
+  };
+
+  useEffect(() => {
+    getTokenBal();
+  }, [address]);
+
   return (
     <div className="vote_container">
       <div className="vote_banner">
@@ -21,12 +56,12 @@ export default function VoteComponent() {
         {/* User Info */}
         <div className="user_info">
           <div>
-            <h2>15865132</h2>
+            <h2> {Number(tokenBalance.uft + tokenBalance.uftg).toFixed(2)}</h2>
             <p>Total Balance</p>
             <span>(UFT + UFTG Balance)</span>
           </div>
           <div>
-            <h2>15865132</h2>
+            <h2>{Number(tokenBalance.uftg).toFixed(2)}</h2>
             <p>Voting Power</p>
             <span>(UFTG Balance)</span>
           </div>
@@ -58,9 +93,9 @@ export default function VoteComponent() {
             </div>
           </div>
 
-          {activeTab === wrap && <WrapAndDelegate />}
-          {activeTab === unWrap && <UnWrap />}
-          {activeTab === update && <UpdateDelegation />}
+          {activeTab === wrap && <WrapAndDelegate userAddress={userAddress} tokenBalance={tokenBalance} />}
+          {activeTab === unWrap && <UnWrap tokenBalance={tokenBalance} />}
+          {activeTab === update && <UpdateDelegation tokenBalance={tokenBalance} />}
         </div>
         <div className="vote_info">
           <div>
@@ -80,7 +115,61 @@ export default function VoteComponent() {
   );
 }
 
-const WrapAndDelegate = () => {
+const WrapAndDelegate = ({ userAddress, tokenBalance }) => {
+  const [amount, setAmount] = useState("");
+  const [address, setAddress] = useState(userAddress);
+  const [valid, setValid] = useState(true)
+  const [buttonText, setButtonText] = useState({
+    text:'Wrap & Delegate',
+    disable: false
+  })
+
+
+  const handleAmount = (e) => {
+    const value = e.target.value
+    setAmount(value);
+    const isValid = ethers.utils.isAddress(address)
+    if(value > tokenBalance?.uft){
+      setButtonText({
+        text: 'Low Balance',
+        disable: true
+      })
+    }else if(!valid){
+      setButtonText({
+        text:'Enter Valid Address',
+        disable: true
+      })
+    } else {
+      setButtonText({
+        text:'Wrap & Delegate',
+        disable: false
+      })
+    }
+
+  };
+
+  const handleAddress = (e) => {
+    setAddress(e.target.value);
+   const isValid = ethers.utils.isAddress(e.target.value)
+   setValid(isValid)
+   if(!isValid){
+    setButtonText({
+      text:'Enter Valid Address',
+      disable: true
+    })
+   } else if (amount > tokenBalance?.uft){
+    setButtonText({
+      text: 'Low Balance',
+      disable: true
+    })
+   } else {
+    setButtonText({
+      text:'Wrap & Delegate',
+      disable: false
+    })
+   }
+  };
+
   return (
     <div className="operation_content_container">
       <div className="info">
@@ -92,15 +181,47 @@ const WrapAndDelegate = () => {
         </p>
       </div>
       <div className="action">
-        <Input type="number" placeholder="Amount" />
-        <Input type="text" placeholder="Address" />
-        <Button> Wrap & Delegate</Button>
+        <Input
+          type="number"
+          placeholder="Amount"
+          onChange={handleAmount}
+          value={amount}
+        />
+        <Input
+          type="text"
+          placeholder="Address"
+          value={address}
+          onChange={handleAddress}
+        />
+        <Button disabled={buttonText.disable} >{buttonText.text} </Button>
       </div>
     </div>
   );
 };
 
-const UnWrap = () => {
+const UnWrap = ({tokenBalance}) => {
+  const [amount, setAmount] = useState("");
+  const [buttonText, setButtonText] = useState({
+    text:'Unwrap',
+    disable: false
+  })
+
+  const handleAmount = (e) => {
+    const value = e.target.value
+    setAmount(value);
+    if (value > tokenBalance?.uftg){
+      setButtonText({
+        text: 'Low Balance',
+        disable: true
+      })
+     } else {
+      setButtonText({
+        text:'Unwrap',
+        disable: false
+      })
+     }
+  };
+
   return (
     <div className="operation_content_container">
       <div className="info">
@@ -112,14 +233,41 @@ const UnWrap = () => {
         </p>
       </div>
       <div className="action">
-        <Input type="number" placeholder="Amount" />
-        <Button> Unwrap</Button>
+        <Input
+          type="number"
+          placeholder="Amount"
+          onChange={handleAmount}
+          value={amount}
+        />
+        <Button disabled={buttonText?.disable} > {buttonText?.text}</Button>
       </div>
     </div>
   );
 };
 
-const UpdateDelegation = () => {
+const UpdateDelegation = ({tokenBalance}) => {
+  const [amount, setAmount] = useState("");
+  const [buttonText, setButtonText] = useState({
+    text:'Update Delegation',
+    disable: false
+  })
+
+  const handleAmount = (e) => {
+    const value = e.target.value
+    setAmount(value);
+    if (value > tokenBalance?.uft){
+      setButtonText({
+        text: 'Low Balance',
+        disable: true
+      })
+     } else {
+      setButtonText({
+        text:'Update Delegation',
+        disable: false
+      })
+     }
+  };
+
   return (
     <div className="operation_content_container">
       <div className="info">
@@ -131,8 +279,13 @@ const UpdateDelegation = () => {
         </p>
       </div>
       <div className="action">
-        <Input type="number" placeholder="Amount" />
-        <Button> Update Delegation</Button>
+        <Input
+          type="number"
+          placeholder="Amount"
+          value={amount}
+          onChange={handleAmount}
+        />
+           <Button disabled={buttonText?.disable} > {buttonText?.text}</Button>
       </div>
     </div>
   );
