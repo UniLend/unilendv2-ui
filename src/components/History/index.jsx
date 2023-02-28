@@ -34,7 +34,7 @@ import loader from '../../assets/Eclipse-loader.gif'
   const [isPolygon, setIsPolygon] = useState(false);
   const [search, setSearch] = useState("");
   const [poolsData, setPoolsData] = useState({});
-  const query = getHistoryGraphQuery(address);
+  const query = getHistoryGraphQuery(user?.address);
   const [called, setIsCalled] = useState(false)
   const [historyLoading, setHistoryLoading] = useState(false)
  
@@ -56,7 +56,7 @@ import loader from '../../assets/Eclipse-loader.gif'
       navigate('/')
     }
     const { chain } = getNetwork();
-    if (chain?.id == 80001) {
+    if (user?.network.id== 80001) {
       const pools = {};
       for (const key in poolList) {
         const pool = poolList[key];
@@ -129,7 +129,7 @@ import loader from '../../assets/Eclipse-loader.gif'
   };
 
   const getTransactionData = async () => {
-    if (!isPolygon && !called) {
+    if (user?.network?.id != 80001 && !called) {
       try {
         // setIsPageLoading(true);
         setHistoryLoading(true)
