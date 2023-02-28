@@ -85,8 +85,9 @@ const handleOpenSwitchNetwork = (visible) => {
     const {chain} = getNetwork()
     if(chain == undefined && user?.network?.id){
       const wallet = localStorage.getItem('wallet')
-      handleConnect(wallet)
+      //handleConnect(wallet)
     }
+    console.log("Network", chain);
     if(chain?.id == 80001){
       setIsPolygon(true)
     } else {
@@ -94,7 +95,7 @@ const handleOpenSwitchNetwork = (visible) => {
     }
    // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
     if ( user?.network?.id && user?.network?.id != 11155111 && user?.network?.id != 80001) {
-      setWrongNetworkModal(true);
+      //setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);
     }

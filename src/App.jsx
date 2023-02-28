@@ -27,6 +27,7 @@ import {
   mainnet,
   polygonMumbai,
   sepolia,
+  polygonZkEvmTestnet
 } from "@wagmi/core/chains";
 import { ethers } from "ethers";
 import { WalletConnectConnector } from "@wagmi/core/connectors/walletConnect";
@@ -71,12 +72,12 @@ const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepolia],
+  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet],
   [publicProvider(), alchemyProvider({ apiKey: alchemyId })]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
-  chains: [mainnet, polygonMumbai, sepolia],
+  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet],
 });
 
 export const WalletConnector = new WalletConnectConnector({
@@ -162,6 +163,7 @@ function App() {
         }
         // dispatch(setWeb3(web3));
         const { chain: nextChain, chains } = getNetwork();
+        console.log("Network",nextChain, chains );
         const { coreAddress, helperAddress, positionAddress } =
           contractAddress[chain?.id || nextChain?.id || "11155111"];
 
@@ -311,7 +313,7 @@ function App() {
   useEffect(() => {
     const { chain } = getNetwork();
 
-    if (data && chain?.id != 11155111) {
+    if (data && chain?.id == 80001) {
       const oraclePrices = {};
 
       for (const token of data?.assetOracles) {
