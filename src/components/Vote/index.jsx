@@ -283,7 +283,8 @@ const WrapAndDelegate = ({
       );
     } else {
       setIsLoading(true);
-      setApproval(contracts?.uftToken, erc20Abi, contracts?.uftgToken);
+      setApproval(contracts?.uftToken, erc20Abi, contracts?.uftgToken, checkTxnStatus,
+        checkTxnError);
     }
   };
 
