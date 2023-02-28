@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { getAccount, getNetwork, getProvider } from "@wagmi/core";
-import { Input, Button } from "antd";
+import { getAccount, getNetwork, getProvider, waitForTransaction } from "@wagmi/core";
+import { Input, Button, message } from "antd";
 import banner from "../../assets/dashboardbanner.svg";
 import Vote from "../../assets/vote.svg";
 import "./styles/index.scss";
@@ -8,19 +8,32 @@ import { shortenAddress } from "../../utils";
 import { contractAddress } from "../../core/contractData/contracts";
 import { useEffect } from "react";
 import { ethers } from "ethers";
-import { erc20Abi } from "../../core/contractData/abi";
-import { fromBigNumber } from "../../helpers/contracts";
+import { erc20Abi, uftgABI } from "../../core/contractData/abi";
+import { decimal2Fixed, fromBigNumber } from "../../helpers/contracts";
+import { checkAllowance, handleWrapAndDelegate, setApproval } from "../../services/governance";
+
 const wrap = "wrap";
 const unWrap = "unWrap";
 const update = "update";
+
 export default function VoteComponent() {
   const { address } = getAccount();
   const { chain } = getNetwork();
   const [userAddress, setUserAddress] = useState(address);
   const [tokenBalance, setTokenBalance] = useState({ uft: "", uftg: "" });
   const [activeTab, setActiveTab] = useState(wrap);
+  const [allowanceValue, setAllowanceValue] = useState('')
 
-  const handleAmount = () => {};
+  const checkTxnStatus = (hash, data) => {
+  waitForTransaction({
+    hash
+  }).then((receipt) => {
+    if(receipt.status == 1){
+      message.success("Done")
+      getTokenBal()
+    }
+  })
+  }
 
   const getTokenBal = async () => {
     const contractsAdd = contractAddress[chain?.id || "1"];
@@ -39,11 +52,24 @@ export default function VoteComponent() {
 
     setTokenBalance({ uft: uftBalance, uftg: uftgBalance });
 
-    console.log("UFT", UFT, uftBalance, uftgBalance);
   };
+
+  const handleAllowance = async () => {
+    const contractsAdd = contractAddress[chain?.id || "1"];
+    getTokenBal();
+    const allowance = await checkAllowance(
+      contractsAdd?.uftToken,
+      erc20Abi,
+      address,
+      contractsAdd?.uftgToken
+    )
+    const valueFromBigNumber = fromBigNumber(allowance)
+    setAllowanceValue(valueFromBigNumber)
+  }
 
   useEffect(() => {
     getTokenBal();
+    handleAllowance()
   }, [address]);
 
   return (
@@ -66,7 +92,7 @@ export default function VoteComponent() {
             <span>(UFTG Balance)</span>
           </div>
           <div>
-            <h2>{shortenAddress(address)}</h2>
+            <h2>{shortenAddress( String(address))}</h2>
             <p>Delegation address</p>
           </div>
         </div>
@@ -93,9 +119,9 @@ export default function VoteComponent() {
             </div>
           </div>
 
-          {activeTab === wrap && <WrapAndDelegate userAddress={userAddress} tokenBalance={tokenBalance} />}
-          {activeTab === unWrap && <UnWrap tokenBalance={tokenBalance} />}
-          {activeTab === update && <UpdateDelegation tokenBalance={tokenBalance} />}
+          {activeTab === wrap && <WrapAndDelegate checkTxnStatus={checkTxnStatus} userAddress={userAddress} tokenBalance={tokenBalance} allowanceValue={allowanceValue} />}
+          {activeTab === unWrap && <UnWrap checkTxnStatus={checkTxnStatus} tokenBalance={tokenBalance} />}
+          {activeTab === update && <UpdateDelegation checkTxnStatus={checkTxnStatus} tokenBalance={tokenBalance} />}
         </div>
         <div className="vote_info">
           <div>
@@ -115,10 +141,11 @@ export default function VoteComponent() {
   );
 }
 
-const WrapAndDelegate = ({ userAddress, tokenBalance }) => {
+const WrapAndDelegate = ({checkTxnStatus, userAddress, tokenBalance, allowanceValue }) => {
   const [amount, setAmount] = useState("");
   const [address, setAddress] = useState(userAddress);
   const [valid, setValid] = useState(true)
+
   const [buttonText, setButtonText] = useState({
     text:'Wrap & Delegate',
     disable: false
@@ -138,6 +165,11 @@ const WrapAndDelegate = ({ userAddress, tokenBalance }) => {
       setButtonText({
         text:'Enter Valid Address',
         disable: true
+      })
+    } else if ( decimal2Fixed(value, 18) > allowanceValue) {
+      setButtonText({
+        text:'Approve',
+        disable: false
       })
     } else {
       setButtonText({
@@ -170,6 +202,29 @@ const WrapAndDelegate = ({ userAddress, tokenBalance }) => {
    }
   };
 
+  const handleWrap = async () => {
+ const {chain} = getNetwork()
+ const fixedValue = decimal2Fixed(amount, 18)
+ const contracts = contractAddress[chain?.id || '1']
+if(allowanceValue > fixedValue){
+    handleWrapAndDelegate(
+      contracts?.uftgToken ,
+      uftgABI,
+      address,
+      amount,
+      checkTxnStatus
+    )
+} else {
+    setApproval(
+      contracts?.uftToken,
+      erc20Abi,
+      contracts?.uftgToken 
+    )
+}
+  }
+
+
+
   return (
     <div className="operation_content_container">
       <div className="info">
@@ -193,13 +248,13 @@ const WrapAndDelegate = ({ userAddress, tokenBalance }) => {
           value={address}
           onChange={handleAddress}
         />
-        <Button disabled={buttonText.disable} >{buttonText.text} </Button>
+        <Button onClick={handleWrap} disabled={buttonText.disable} >{buttonText.text} </Button>
       </div>
     </div>
   );
 };
 
-const UnWrap = ({tokenBalance}) => {
+const UnWrap = ({checkTxnStatus, tokenBalance}) => {
   const [amount, setAmount] = useState("");
   const [buttonText, setButtonText] = useState({
     text:'Unwrap',
