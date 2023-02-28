@@ -109,9 +109,10 @@ function App() {
   const dispatch = useDispatch();
 
   const { chain, chains } = getNetwork();
-  const { address } = getAccount();
+  const {user} = useSelector((state) => state)
+  // const { address } = getAccount();
   // const provider = getProvider();
-  const query = getPoolCreatedGraphQuery(address);
+  const query = getPoolCreatedGraphQuery(user?.address);
   const etherProvider = new ethers.providers.getDefaultProvider("sepolia");
   const state = useSelector((state) => state);
   const [chainId, setChainId] = useState(0);
@@ -138,6 +139,7 @@ function App() {
       window.ethereum.on("chainChanged", (chainId) => {
         window.location.reload();
         window.location.href = window.location.origin;
+
       });
       window.ethereum.on("accountsChanged", function (account) {
         window.location.reload();
@@ -152,18 +154,21 @@ function App() {
         const walletconnect = JSON.parse(
           localStorage.getItem("wagmi.connected")
         );
-        const account = getAccount();
+        // const account = getAccount();
         let provider = etherProvider;
-        if (walletconnect && account.isConnected) {
+        if (walletconnect && user?.isConnected ) {
           const user = await connectWallet();
-
+        // console.log("Account", user);
           dispatch(setUser(user));
           provider = getProvider();
         }
         // dispatch(setWeb3(web3));
         const { chain: nextChain, chains } = getNetwork();
+
+        // console.log('Chain', 'App', nextChain, chain, user);
+        const networkID = user?.network?.id
         const { coreAddress, helperAddress, positionAddress } =
-          contractAddress[chain?.id || nextChain?.id || "11155111"];
+          contractAddress[chain?.id || nextChain?.id || networkID || "11155111"];
 
         const preparedData = [
           { abi: coreAbi, address: coreAddress },
@@ -185,6 +190,7 @@ function App() {
               helperContract: res[1],
               positionContract: res[2],
             };
+            console.log("Contarct", payload);
             dispatch(setContracts(payload));
           })
           .catch((err) => {
@@ -199,7 +205,9 @@ function App() {
 
   useEffect(() => {
     const { chain } = getNetwork();
-    if (state.contracts.coreContract && chain?.id != 80001) {
+    const networkID = user?.network?.id
+    if (state.contracts.coreContract && networkID != 80001) {
+      console.log("Network", networkID);
       try {
         (async () => {
           const web3 = defProv();
@@ -306,14 +314,15 @@ function App() {
         dispatch(setError(error));
       }
     }
-  }, [state.contracts, chain?.id]);
+  }, [state.contracts, chain?.id, user]);
 
   useEffect(() => {
     const { chain } = getNetwork();
-
-    if (data && chain?.id != 11155111) {
+    const networkID = user?.network?.id
+ 
+    if (data && networkID == 80001) {
       const oraclePrices = {};
-
+      // console.log("Data", data, networkID);
       for (const token of data?.assetOracles) {
         oraclePrices[String(token.asset).toUpperCase()] =
           Number(token.tokenPrice) / 10 ** 8;
@@ -372,7 +381,7 @@ function App() {
       }
       dispatch(setPools({ poolData, tokenList }));
     }
-  }, [data]);
+  }, [data, user]);
 
   return (
     <>

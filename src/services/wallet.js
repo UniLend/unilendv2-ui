@@ -91,7 +91,7 @@ export const connectWallet = async (wallet) => {
       address: account,
     })
    
- 
+    // console.log("User", "chain", user, chain);
     // const balance = fromWei(web3, bal).slice(0, 6);
     const networkByWeb3 = chain.name.toUpperCase()
     const Currentnetwork = networks[chainId] ? networks[chainId].chainName: networkByWeb3

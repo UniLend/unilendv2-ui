@@ -53,9 +53,9 @@ export default function Navbar(props) {
     setVisible(newVisible);
   };
 
-  useEffect(() => {
-console.log("chain", "networkchain", networkchain);
-  }, [networkchain])
+//   useEffect(() => {
+// console.log("chain", "networkchain", networkchain);
+//   }, [networkchain])
 
   const handleTheme = (theme) => {
     // const changeTo = theme == "dark" ? "light" : "dark"
@@ -83,10 +83,10 @@ const handleOpenSwitchNetwork = (visible) => {
 
   useEffect(() => {
     const {chain} = getNetwork()
-    console.log("Chain", chain);
+    // console.log("Chain", chain);
     if(chain == undefined && user?.network?.id){
       const wallet = localStorage.getItem('wallet')
-      handleConnect(wallet)
+     // handleConnect(wallet)
     }
     if(chain?.id == 80001){
       setIsPolygon(true)
@@ -95,7 +95,7 @@ const handleOpenSwitchNetwork = (visible) => {
     }
    // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
     if ( user?.network?.id && user?.network?.id != 11155111 && user?.network?.id != 80001) {
-      setWrongNetworkModal(true);
+     // setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);
     }

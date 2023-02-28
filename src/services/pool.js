@@ -1,5 +1,5 @@
 import { coreAbi, erc20Abi, helperAbi } from "../core/contractData/abi";
-import { getContract, readContract, fetchSigner } from "@wagmi/core";
+import { getContract, readContract, fetchSigner, getProvider } from "@wagmi/core";
 import {
   add,
   decimal2Fixed,
@@ -13,6 +13,7 @@ import {
   fromBigNumber
 } from '../helpers/contracts';
 import BigNumber from "bignumber.js";
+import { ethers } from "ethers";
 
 export const getContractInstance = async ( contractAddr, abi, fnName, args ) => {
 
@@ -222,7 +223,14 @@ export const getTokenPrice = async (
       //   .getPoolTokensData(poolAddress, userAddr)
       //   .call();
       const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolTokensData', [poolAddress, userAddr])  
+
+    const provider = getProvider()
+      const instance = new ethers.Contract(contracts.helperContract.address, helperAbi, provider)
+      const contractInstance = await instance.getPoolTokensData(poolAddress, userAddr)
+
+      // console.log("Contract", contractInstance);
       
+      console.log("Data", "Read", fromBigNumber(data._balance0), fromBigNumber(contractInstance._balance0));
       const pool = { ...poolData };
       pool.token0.balance = fromBigNumber(data._balance0);
       pool.token0.balanceFixed = fixed2Decimals(

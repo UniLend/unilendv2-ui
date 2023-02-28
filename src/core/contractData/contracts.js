@@ -16,6 +16,15 @@ export const contractAddress = { '11155111': {
   
     poolAddress: '0x84D3B40256879601824A5E4F249d73dAE24D1fA3',
     unilendOracle: '0x7F1455c727e58A51dFA168fd711b8B664E1E48BA',
+  },
+
+  '1422': {
+    helperAddress: '0xAe7a2D9C86fc387432Cd619379ee1c96Aa5E6a0a',
+  
+    coreAddress: '0xbcC80cCbDe188d34D35018602dC3f56766bA377D',
+    positionAddress: '0x9958D2e9dcC2e3757F8a503A898D1d09c29A0a1F',
+    poolAddress: '0x9fb4303C68D58e16410c35C12D4299eFa6f300c4',
+    unilendOracle: '0x281Fd22367D046946d188288eB57A3Fb2e30681c',
   }
   
 };
