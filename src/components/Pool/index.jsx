@@ -152,11 +152,6 @@ if(selectedToken && collateralToken){
       
     })
     
-    if (web3) {
-      web3.eth.getTransactionReceipt(hash, function (err, receipt) {
-
-      });
-    }
   };
 
   const checkTxnError = (error) => {
