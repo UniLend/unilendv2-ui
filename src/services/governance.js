@@ -20,10 +20,13 @@ export const handleWrapAndDelegate = async (
   govABI,
   delegateAddress,
   amount,
-  checkTxnStatus
+  checkTxnStatus,
+  checkTxnError
 ) => {
   const fixedAmount = decimal2Fixed(amount, 18);
+
   try {
+
     const instance = await getContractInstance(governanceAddress, govABI);
     const txs = await instance.wrap(delegateAddress, fixedAmount, {
       gasLimit: 210000,
@@ -32,9 +35,11 @@ export const handleWrapAndDelegate = async (
         message: `Wrap and Delegate ${amount} UFT `
     }
     checkTxnStatus(txs?.hash, txtData);
+
   } catch (error) {
     console.error("Wrap:", error);
     console.log({ error });
+    checkTxnError(error)
   }
 };
 
@@ -49,7 +54,7 @@ export const checkAllowance = async (tokenAddress, abi, owner, spender) => {
   }
 };
 
-export const setApproval = async (contractAddress, abi, userAddress) => {
+export const setApproval = async (contractAddress, abi, userAddress, checkTxnStatus, checkTxnError) => {
   try {
     var maxAllow =
       "115792089237316195423570985008687907853269984665640564039457584007913129639935";
@@ -58,33 +63,44 @@ export const setApproval = async (contractAddress, abi, userAddress) => {
     const txs = await instance.approve(userAddress, maxAllow, {
       gasLimit: 210000,
     });
-  } catch (error) {}
+    const txtData = {
+        message: `Approval Successfull! `
+    }
+    checkTxnStatus(txs?.hash, txtData);
+
+  } catch (error) {
+    alert("Error")
+    checkTxnError(error)
+  }
 };
 
-export const handleUnWrap = async (governanceAddress, govABI, amount, checkTxnStatus) => {
+export const handleUnWrap = async (governanceAddress, govABI, amount, checkTxnStatus, checkTxnError) => {
     try {
         const fixedAmount = decimal2Fixed(amount, 18)
         const instance = await getContractInstance(governanceAddress, govABI);
-        const total = await instance.totalSupply()
-        const frombig = fromBigNumber(total)
-        console.log("Contract", {
-            amount : amount,
-            fixedAmount: fixedAmount,
-            fixedAmountTodec: fixedAmount / (10**18),
-            TotalSupply: frombig,
-            TotalSupplyDec: frombig/(10**18),
-            Differance: (frombig - fixedAmount),
-            DifferanceDec: (frombig- fixedAmount)/(10**18)
-        });
+        // const total = await instance.totalSupply()
+        // const frombig = fromBigNumber(total)
+        // console.log("Contract", {
+        //     amount : amount,
+        //     fixedAmount: fixedAmount,
+        //     fixedAmountTodec: fixedAmount / (10**18),
+        //     TotalSupply: frombig,
+        //     TotalSupplyDec: frombig/(10**18),
+        //     Differance: (frombig - fixedAmount),
+        //     DifferanceDec: (frombig- fixedAmount)/(10**18)
+        // });
         const txs = await instance.unwrap(fixedAmount, {
           gasLimit: 210000,
         });
+        
         const txtData = {
             message: `Unwrap ${amount} UFTG `
         }
         checkTxnStatus(txs?.hash, txtData);
     } catch (error) {
-        
+        alert("Error")
+        console.log("ERror:",{error});
+        checkTxnError(error)
     }
 };
 
@@ -92,7 +108,8 @@ export const handleUpdateDelegate = async (
   governanceAddress,
   govABI,
   delegateAddress,
-  checkTxnStatus
+  checkTxnStatus,
+  checkTxnError
 ) => {
 
     try {
@@ -106,7 +123,7 @@ export const handleUpdateDelegate = async (
         }
         checkTxnStatus(txs?.hash, txtData);
     } catch (error) {
-        
+        checkTxnError(error)
     }
 
 
