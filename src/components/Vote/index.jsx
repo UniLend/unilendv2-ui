@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { getAccount, getNetwork, getProvider, waitForTransaction } from "@wagmi/core";
+import {
+  getAccount,
+  getNetwork,
+  getProvider,
+  waitForTransaction,
+} from "@wagmi/core";
 import { Input, Button, message } from "antd";
 import banner from "../../assets/dashboardbanner.svg";
 import Vote from "../../assets/vote.svg";
@@ -10,7 +15,13 @@ import { useEffect } from "react";
 import { ethers } from "ethers";
 import { erc20Abi, uftgABI } from "../../core/contractData/abi";
 import { decimal2Fixed, fromBigNumber } from "../../helpers/contracts";
-import { checkAllowance, handleWrapAndDelegate, setApproval } from "../../services/governance";
+import {
+  checkAllowance,
+  handleUnWrap,
+  handleUpdateDelegate,
+  handleWrapAndDelegate,
+  setApproval,
+} from "../../services/governance";
 
 const wrap = "wrap";
 const unWrap = "unWrap";
@@ -22,18 +33,18 @@ export default function VoteComponent() {
   const [userAddress, setUserAddress] = useState(address);
   const [tokenBalance, setTokenBalance] = useState({ uft: "", uftg: "" });
   const [activeTab, setActiveTab] = useState(wrap);
-  const [allowanceValue, setAllowanceValue] = useState('')
+  const [allowanceValue, setAllowanceValue] = useState("");
 
   const checkTxnStatus = (hash, data) => {
-  waitForTransaction({
-    hash
-  }).then((receipt) => {
-    if(receipt.status == 1){
-      message.success("Done")
-      getTokenBal()
-    }
-  })
-  }
+    waitForTransaction({
+      hash,
+    }).then((receipt) => {
+      if (receipt.status == 1) {
+        message.success(`${data.message}`);
+        getTokenBal();
+      }
+    });
+  };
 
   const getTokenBal = async () => {
     const contractsAdd = contractAddress[chain?.id || "1"];
@@ -41,35 +52,35 @@ export default function VoteComponent() {
     const UFT = new ethers.Contract(contractsAdd?.uftToken, erc20Abi, provider);
     const UFTG = new ethers.Contract(
       contractsAdd?.uftgToken,
-      erc20Abi,
+      uftgABI,
       provider
     );
-
+    const delegatesAddress = await UFTG.delegates(address)
+   console.log("delegatesAddress", delegatesAddress);
     const uftBalance_BigNumber = await UFT.balanceOf(address);
     const uftgBalance_BigNumber = await UFTG.balanceOf(address);
     const uftBalance = fromBigNumber(uftBalance_BigNumber) / 10 ** 18;
     const uftgBalance = fromBigNumber(uftgBalance_BigNumber) / 10 ** 18;
 
     setTokenBalance({ uft: uftBalance, uftg: uftgBalance });
-
   };
 
   const handleAllowance = async () => {
     const contractsAdd = contractAddress[chain?.id || "1"];
     getTokenBal();
-    const allowance = await checkAllowance(
+    const {allowance} = await checkAllowance(
       contractsAdd?.uftToken,
       erc20Abi,
       address,
       contractsAdd?.uftgToken
-    )
-    const valueFromBigNumber = fromBigNumber(allowance)
-    setAllowanceValue(valueFromBigNumber)
-  }
+    );
+    const valueFromBigNumber = fromBigNumber(allowance);
+    setAllowanceValue(valueFromBigNumber);
+  };
 
   useEffect(() => {
     getTokenBal();
-    handleAllowance()
+    handleAllowance();
   }, [address]);
 
   return (
@@ -92,7 +103,7 @@ export default function VoteComponent() {
             <span>(UFTG Balance)</span>
           </div>
           <div>
-            <h2>{shortenAddress( String(address))}</h2>
+            <h2>{shortenAddress(String(address))}</h2>
             <p>Delegation address</p>
           </div>
         </div>
@@ -119,9 +130,26 @@ export default function VoteComponent() {
             </div>
           </div>
 
-          {activeTab === wrap && <WrapAndDelegate checkTxnStatus={checkTxnStatus} userAddress={userAddress} tokenBalance={tokenBalance} allowanceValue={allowanceValue} />}
-          {activeTab === unWrap && <UnWrap checkTxnStatus={checkTxnStatus} tokenBalance={tokenBalance} />}
-          {activeTab === update && <UpdateDelegation checkTxnStatus={checkTxnStatus} tokenBalance={tokenBalance} />}
+          {activeTab === wrap && (
+            <WrapAndDelegate
+              checkTxnStatus={checkTxnStatus}
+              userAddress={userAddress}
+              tokenBalance={tokenBalance}
+              allowanceValue={allowanceValue}
+            />
+          )}
+          {activeTab === unWrap && (
+            <UnWrap
+              checkTxnStatus={checkTxnStatus}
+              tokenBalance={tokenBalance}
+            />
+          )}
+          {activeTab === update && (
+            <UpdateDelegation
+              checkTxnStatus={checkTxnStatus}
+              tokenBalance={tokenBalance}
+            />
+          )}
         </div>
         <div className="vote_info">
           <div>
@@ -141,89 +169,86 @@ export default function VoteComponent() {
   );
 }
 
-const WrapAndDelegate = ({checkTxnStatus, userAddress, tokenBalance, allowanceValue }) => {
+const WrapAndDelegate = ({
+  checkTxnStatus,
+  userAddress,
+  tokenBalance,
+  allowanceValue,
+}) => {
   const [amount, setAmount] = useState("");
   const [address, setAddress] = useState(userAddress);
-  const [valid, setValid] = useState(true)
+  const [valid, setValid] = useState(true);
 
   const [buttonText, setButtonText] = useState({
-    text:'Wrap & Delegate',
-    disable: false
-  })
-
+    text: "Wrap & Delegate",
+    disable: false,
+  });
 
   const handleAmount = (e) => {
-    const value = e.target.value
+    const value = e.target.value;
     setAmount(value);
-    const isValid = ethers.utils.isAddress(address)
-    if(value > tokenBalance?.uft){
+    const isValid = ethers.utils.isAddress(address);
+    if (value > tokenBalance?.uft) {
       setButtonText({
-        text: 'Low Balance',
-        disable: true
-      })
-    }else if(!valid){
+        text: "Low Balance",
+        disable: true,
+      });
+    } else if (!valid) {
       setButtonText({
-        text:'Enter Valid Address',
-        disable: true
-      })
-    } else if ( decimal2Fixed(value, 18) > allowanceValue) {
+        text: "Enter Valid Address",
+        disable: true,
+      });
+    } else if (decimal2Fixed(value, 18) > allowanceValue) {
       setButtonText({
-        text:'Approve',
-        disable: false
-      })
+        text: "Approve",
+        disable: false,
+      });
     } else {
       setButtonText({
-        text:'Wrap & Delegate',
-        disable: false
-      })
+        text: "Wrap & Delegate",
+        disable: false,
+      });
     }
-
   };
 
   const handleAddress = (e) => {
     setAddress(e.target.value);
-   const isValid = ethers.utils.isAddress(e.target.value)
-   setValid(isValid)
-   if(!isValid){
-    setButtonText({
-      text:'Enter Valid Address',
-      disable: true
-    })
-   } else if (amount > tokenBalance?.uft){
-    setButtonText({
-      text: 'Low Balance',
-      disable: true
-    })
-   } else {
-    setButtonText({
-      text:'Wrap & Delegate',
-      disable: false
-    })
-   }
+    const isValid = ethers.utils.isAddress(e.target.value);
+    setValid(isValid);
+    if (!isValid) {
+      setButtonText({
+        text: "Enter Valid Address",
+        disable: true,
+      });
+    } else if (amount > tokenBalance?.uft) {
+      setButtonText({
+        text: "Low Balance",
+        disable: true,
+      });
+    } else {
+      setButtonText({
+        text: "Wrap & Delegate",
+        disable: false,
+      });
+    }
   };
 
   const handleWrap = async () => {
- const {chain} = getNetwork()
- const fixedValue = decimal2Fixed(amount, 18)
- const contracts = contractAddress[chain?.id || '1']
-if(allowanceValue > fixedValue){
-    handleWrapAndDelegate(
-      contracts?.uftgToken ,
-      uftgABI,
-      address,
-      amount,
-      checkTxnStatus
-    )
-} else {
-    setApproval(
-      contracts?.uftToken,
-      erc20Abi,
-      contracts?.uftgToken 
-    )
-}
-  }
-
-
+    const { chain } = getNetwork();
+    const fixedValue = decimal2Fixed(amount, 18);
+    const contracts = contractAddress[chain?.id || "1"];
+    if (allowanceValue > fixedValue) {
+      handleWrapAndDelegate(
+        contracts?.uftgToken,
+        uftgABI,
+        address,
+        amount,
+        checkTxnStatus
+      );
+    } else {
+      setApproval(contracts?.uftToken, erc20Abi, contracts?.uftgToken);
+    }
+  };
 
   return (
     <div className="operation_content_container">
@@ -248,33 +273,42 @@ if(allowanceValue > fixedValue){
           value={address}
           onChange={handleAddress}
         />
-        <Button onClick={handleWrap} disabled={buttonText.disable} >{buttonText.text} </Button>
+        <Button onClick={handleWrap} disabled={buttonText.disable}>
+          {buttonText.text}{" "}
+        </Button>
       </div>
     </div>
   );
 };
 
-const UnWrap = ({checkTxnStatus, tokenBalance}) => {
+const UnWrap = ({ checkTxnStatus, tokenBalance }) => {
   const [amount, setAmount] = useState("");
   const [buttonText, setButtonText] = useState({
-    text:'Unwrap',
-    disable: false
-  })
+    text: "Unwrap",
+    disable: false,
+  });
 
   const handleAmount = (e) => {
-    const value = e.target.value
+    const value = e.target.value;
     setAmount(value);
-    if (value > tokenBalance?.uftg){
+    if (value > tokenBalance?.uftg) {
       setButtonText({
-        text: 'Low Balance',
-        disable: true
-      })
-     } else {
+        text: "Low Balance",
+        disable: true,
+      });
+    } else {
       setButtonText({
-        text:'Unwrap',
-        disable: false
-      })
-     }
+        text: "Unwrap",
+        disable: false,
+      });
+    }
+  };
+
+  const handleUnWrapOperation = async () => {
+    const { chain } = getNetwork();
+    const contracts = contractAddress[chain?.id || "1"];
+
+    handleUnWrap(contracts?.uftgToken, uftgABI, amount, checkTxnStatus);
   };
 
   return (
@@ -294,34 +328,50 @@ const UnWrap = ({checkTxnStatus, tokenBalance}) => {
           onChange={handleAmount}
           value={amount}
         />
-        <Button disabled={buttonText?.disable} > {buttonText?.text}</Button>
+        <Button onClick={handleUnWrapOperation} disabled={buttonText?.disable}>
+          {" "}
+          {buttonText?.text}
+        </Button>
       </div>
     </div>
   );
 };
 
-const UpdateDelegation = ({tokenBalance}) => {
-  const [amount, setAmount] = useState("");
+const UpdateDelegation = ({ checkTxnStatus, tokenBalance }) => {
+  const [address, setAddress] = useState("");
   const [buttonText, setButtonText] = useState({
-    text:'Update Delegation',
-    disable: false
-  })
+    text: "Enter Address",
+    disable: true,
+  });
 
-  const handleAmount = (e) => {
-    const value = e.target.value
-    setAmount(value);
-    if (value > tokenBalance?.uft){
+  const handleAddress = (e) => {
+    const userAddr = e.target.value;
+    const isValid = ethers.utils.isAddress(userAddr);
+    console.log("Valid", isValid);
+    setAddress(userAddr);
+    if (!isValid || userAddr == '') {
       setButtonText({
-        text: 'Low Balance',
-        disable: true
-      })
-     } else {
+        text: "Enter Valid Address",
+        disable: true,
+      });
+    } else {
       setButtonText({
-        text:'Update Delegation',
-        disable: false
-      })
-     }
+        text: "Update Delegation",
+        disable: false,
+      });
+    }
   };
+
+  const handleUpdate = () => {
+    const { chain } = getNetwork();
+    const contracts = contractAddress[chain?.id || "1"];
+    handleUpdateDelegate(
+      contracts?.uftgToken, 
+      uftgABI,
+      address,
+      checkTxnStatus
+    )
+  }
 
   return (
     <div className="operation_content_container">
@@ -335,12 +385,12 @@ const UpdateDelegation = ({tokenBalance}) => {
       </div>
       <div className="action">
         <Input
-          type="number"
-          placeholder="Amount"
-          value={amount}
-          onChange={handleAmount}
+          type="text"
+          placeholder="Address"
+          value={address}
+          onChange={handleAddress}
         />
-           <Button disabled={buttonText?.disable} > {buttonText?.text}</Button>
+        <Button onClick={handleUpdate} disabled={buttonText?.disable}> {buttonText?.text}</Button>
       </div>
     </div>
   );
