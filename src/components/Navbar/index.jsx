@@ -83,12 +83,12 @@ const handleOpenSwitchNetwork = (visible) => {
 
   useEffect(() => {
     const {chain} = getNetwork()
-    // console.log("Chain", chain);
-    if(chain == undefined && user?.network?.id){
+     console.log("Chain", chain);
+    if(user?.network?.id == undefined && user?.network?.id){
       const wallet = localStorage.getItem('wallet')
-     // handleConnect(wallet)
+      handleConnect(wallet)
     }
-    if(chain?.id == 80001){
+    if(user?.network?.id == 80001){
       setIsPolygon(true)
     } else {
       setIsPolygon(false)
@@ -156,6 +156,7 @@ const handleOpenSwitchNetwork = (visible) => {
       <div className="sort_popover">
         <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
         <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
+        <p onClick={() => handleSwitchNetwork(1422)} > Polygon zkEvm Testnet</p>
       </div>
     );
   });

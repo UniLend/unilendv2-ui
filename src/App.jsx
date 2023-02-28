@@ -19,6 +19,8 @@ import { publicProvider } from "@wagmi/core/providers/public";
 import { InjectedConnector } from "@wagmi/core/connectors/injected";
 import { MetaMaskConnector } from "@wagmi/core/connectors/metaMask";
 import { alchemyProvider } from "@wagmi/core/providers/alchemy";
+import { infuraProvider } from '@wagmi/core/providers/infura'
+
 import { CoinbaseWalletConnector } from "@wagmi/core/connectors/coinbaseWallet";
 
 import {
@@ -27,6 +29,7 @@ import {
   mainnet,
   polygonMumbai,
   sepolia,
+  polygonZkEvmTestnet
 } from "@wagmi/core/chains";
 import { ethers } from "ethers";
 import { WalletConnectConnector } from "@wagmi/core/connectors/walletConnect";
@@ -65,18 +68,20 @@ import {
   getTokenPrice,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
+import { infuraRpcUrls } from "wagmi";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
+const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepolia],
-  [publicProvider(), alchemyProvider({ apiKey: alchemyId })]
+  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet],
+  [ alchemyProvider({ apiKey: alchemyId }), infuraProvider({ apiKey: infuraID }),publicProvider()]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
-  chains: [mainnet, polygonMumbai, sepolia],
+  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet],
 });
 
 export const WalletConnector = new WalletConnectConnector({

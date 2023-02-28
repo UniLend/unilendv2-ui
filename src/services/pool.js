@@ -224,13 +224,13 @@ export const getTokenPrice = async (
       //   .call();
       const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolTokensData', [poolAddress, userAddr])  
 
-    const provider = getProvider()
-      const instance = new ethers.Contract(contracts.helperContract.address, helperAbi, provider)
-      const contractInstance = await instance.getPoolTokensData(poolAddress, userAddr)
+      // const etherProvider = new ethers.providers.getDefaultProvider("sepolia");
+      // const instance = new ethers.Contract(contracts.helperContract.address, helperAbi, etherProvider)
+      // const contractInstance = await instance.getPoolTokensData(poolAddress, userAddr)
 
-      // console.log("Contract", contractInstance);
+      // // console.log("Contract", contractInstance);
       
-      console.log("Data", "Read", fromBigNumber(data._balance0), fromBigNumber(contractInstance._balance0));
+      // console.log("Data", "Read", fromBigNumber(data._balance0), fromBigNumber(contractInstance._balance0));
       const pool = { ...poolData };
       pool.token0.balance = fromBigNumber(data._balance0);
       pool.token0.balanceFixed = fixed2Decimals(
