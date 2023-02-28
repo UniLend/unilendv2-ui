@@ -83,7 +83,7 @@ const handleOpenSwitchNetwork = (visible) => {
 
   useEffect(() => {
     const {chain} = getNetwork()
-     console.log("Chain", chain);
+
     if(user?.network?.id == undefined && user?.network?.id){
       const wallet = localStorage.getItem('wallet')
       handleConnect(wallet)
