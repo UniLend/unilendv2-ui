@@ -86,7 +86,8 @@ export const connectWallet = async (wallet) => {
     const user = getAccount()
     const { chain, chains } = getNetwork()
     const chainId = chain.id
-    const account = user.address;;
+    const account = user.address;
+    
     const bal =  await fetchBalance({
       address: account,
     })

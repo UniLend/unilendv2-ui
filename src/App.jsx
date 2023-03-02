@@ -68,7 +68,6 @@ import {
   getTokenPrice,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
-import { infuraRpcUrls } from "wagmi";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -172,9 +171,11 @@ function App() {
 
         // console.log('Chain', 'App', nextChain, chain, user);
         const networkID = user?.network?.id
+        console.log("Contracts", networkID) ;
         const { coreAddress, helperAddress, positionAddress } =
           contractAddress[chain?.id || nextChain?.id || networkID || "11155111"];
 
+         
         const preparedData = [
           { abi: coreAbi, address: coreAddress },
           { abi: helperAbi, address: helperAddress },
@@ -226,7 +227,7 @@ function App() {
             state.contracts.coreContract,
             "PoolCreated"
           );
-
+        console.log("PoolsCreated", result);
           const array = [];
           const tokenList = {};
           for (const pool of result) {
