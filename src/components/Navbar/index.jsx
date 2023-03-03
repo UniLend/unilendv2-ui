@@ -156,7 +156,7 @@ const handleOpenSwitchNetwork = (visible) => {
       <div className="sort_popover">
         <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
         <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
-        <p onClick={() => handleSwitchNetwork(1422)} > Polygon zkEvm Testnet</p>
+        <p onClick={() => handleSwitchNetwork(1442)} >  zkEVM Testnet</p>
       </div>
     );
   });

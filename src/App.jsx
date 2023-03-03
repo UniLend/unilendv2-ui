@@ -68,6 +68,7 @@ import {
   getTokenPrice,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
+import { zkEVMTestNet } from "./core/networks/Chains";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -75,12 +76,12 @@ const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet],
+  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet],
   [ alchemyProvider({ apiKey: alchemyId }), infuraProvider({ apiKey: infuraID }),publicProvider()]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
-  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet],
+  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet],
 });
 
 export const WalletConnector = new WalletConnectConnector({
@@ -118,6 +119,7 @@ function App() {
   // const provider = getProvider();
   const query = getPoolCreatedGraphQuery(user?.address);
   const etherProvider = new ethers.providers.getDefaultProvider("sepolia");
+  const zkProvider = new ethers.providers.JsonRpcProvider('https://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a')
   const state = useSelector((state) => state);
   const [chainId, setChainId] = useState(0);
   const { data, loading, error } = useQuery(query);
@@ -237,6 +239,7 @@ function App() {
 
           //if wallet not connected
           if (!account.isConnected) {
+         
             const ERC20contracts = await Promise.all(
               poolTokens.map((addr) => new web3.eth.Contract(erc20Abi, addr))
             );
@@ -277,6 +280,7 @@ function App() {
               };
             }
           } else {
+         
             const ercTokens = await Promise.all(
               poolTokens.map((contract, i) => fetchToken({ address: contract }))
             );
