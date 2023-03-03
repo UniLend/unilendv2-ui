@@ -15,7 +15,7 @@ import {
 import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
 
-export const getContractInstance = async ( contractAddr, abi, fnName, args ) => {
+export const getContractInstance = async ( contractAddr, abi ) => {
 
   try {
     const signer = await fetchSigner()
@@ -86,7 +86,7 @@ export const handleRedeem = async (
   let hash;
   try {
 
-    const instance = await getContractInstance(contracts.coreContract.address, coreAbi, 'redeem', [poolAddress, maxAmount, userAddr])
+    const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
 
     if (max) {
       if (selectedToken.collateralBalance > '0') {
@@ -161,7 +161,7 @@ export const setAllowance = async (
     '115792089237316195423570985008687907853269984665640564039457584007913129639935';
  try {
    
-  const instance = await getContractInstance(token._address, erc20Abi, 'approve', [contracts.coreContract.address, maxAllow])
+  const instance = await getContractInstance(token._address, erc20Abi)
 
   const { hash } = await instance.approve(contracts.coreContract.address, maxAllow);
  
@@ -683,7 +683,7 @@ export const handleBorrow = async (
     if (greaterThan(collateralToken.allowance, collateral)) {
 
 
-      const instance = await getContractInstance(contracts.coreContract.address, coreAbi, 'borrow', [poolData._address, Amount, Collateral, userAddr])
+      const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
 
       const transaction = await instance.borrow(poolData._address, Amount, Collateral, userAddr);
                 const txn = {
@@ -763,7 +763,7 @@ export const handleRepay = async (
   try {
     if (greaterThan(selectedToken.allowance, amount)) {
 
-      const instance = await getContractInstance(contracts.coreContract.address, coreAbi, 'repay', [poolAddress, Amount, userAddr])
+      const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
      const {hash} = await instance.repay(poolAddress, Amount, userAddr)
           const txn = {
             method: 'repay',

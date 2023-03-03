@@ -157,6 +157,7 @@
             margin: 10px;
             height: 40px;
             border-radius: 5px;
+   
           }
           input {
             background: var(--light-blue);
@@ -174,6 +175,10 @@
             color: var(--pure-white);
             font-weight: 600;
             border: none;
+            &:disabled{
+                background: var(--light-blue);
+                color: var(--low-gray);
+            }
           }
         }
       }
