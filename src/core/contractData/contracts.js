@@ -16,7 +16,11 @@ export const contractAddress = { '11155111': {
   
     poolAddress: '0x84D3B40256879601824A5E4F249d73dAE24D1fA3',
     unilendOracle: '0x7F1455c727e58A51dFA168fd711b8B664E1E48BA',
-<<<<<<< HEAD
+    uftToken : '0x5093af5dF5EAfd96B518a11cfb32c37DA2f8f0C3',
+    uftgToken: '0x5dabCD04f47Dd4b8A974C9fcBF75cdcdebac6DBb',
+    timeLock:'0xEC8283E65557Fc4E17AA75C56144eFb8eFA3B9e2',
+    delegate: '0xE0555dBE41dA929d6cEbe0b92c4f85679a37ED87',
+    delegator: '0xDdF869E44BD3d5877777f59058F738F4A916fC26'
   },
 
   '1442': {
@@ -25,23 +29,6 @@ export const contractAddress = { '11155111': {
     positionAddress: '0x9422A2D29d932FeDB8a7e7D2259D24a4B50eF232',
     poolAddress: '0xA9259387E643c1188B71Dc18A0cd5b42F991CF8F',
     unilendOracle: '0x534a6CF97fC2FA2Da632be805eC4B1fAa3481635',
-  }
-  
-};
-
-// '1422': {
-//   helperAddress: '0xAe7a2D9C86fc387432Cd619379ee1c96Aa5E6a0a',
-//   coreAddress: '0xbcC80cCbDe188d34D35018602dC3f56766bA377D',
-//   positionAddress: '0x9958D2e9dcC2e3757F8a503A898D1d09c29A0a1F',
-//   poolAddress: '0x9fb4303C68D58e16410c35C12D4299eFa6f300c4',
-//   unilendOracle: '0x281Fd22367D046946d188288eB57A3Fb2e30681c',
-// }
-=======
-    uftToken : '0x5093af5dF5EAfd96B518a11cfb32c37DA2f8f0C3',
-    uftgToken: '0x5dabCD04f47Dd4b8A974C9fcBF75cdcdebac6DBb',
-    timeLock:'0xEC8283E65557Fc4E17AA75C56144eFb8eFA3B9e2',
-    delegate: '0xE0555dBE41dA929d6cEbe0b92c4f85679a37ED87',
-    delegator: '0xDdF869E44BD3d5877777f59058F738F4A916fC26'
   },
   '1':{
     uftToken : '0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1',
@@ -51,4 +38,11 @@ export const contractAddress = { '11155111': {
     delegator: '0x2e93bc7dEA58B0F577a3c9DDbd29ca5939d74145'
   }
 };
->>>>>>> 9b6851127efff07b795634ac9c522dd994df841a
+
+// '1422': {
+//   helperAddress: '0xAe7a2D9C86fc387432Cd619379ee1c96Aa5E6a0a',
+//   coreAddress: '0xbcC80cCbDe188d34D35018602dC3f56766bA377D',
+//   positionAddress: '0x9958D2e9dcC2e3757F8a503A898D1d09c29A0a1F',
+//   poolAddress: '0x9fb4303C68D58e16410c35C12D4299eFa6f300c4',
+//   unilendOracle: '0x281Fd22367D046946d188288eB57A3Fb2e30681c',
+// }
