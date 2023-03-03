@@ -83,18 +83,19 @@ const handleOpenSwitchNetwork = (visible) => {
 
   useEffect(() => {
     const {chain} = getNetwork()
-    if(chain == undefined && user?.network?.id){
+
+    if(user?.network?.id == undefined && user?.network?.id){
       const wallet = localStorage.getItem('wallet')
       handleConnect(wallet)
     }
-    if(chain?.id == 80001){
+    if(user?.network?.id == 80001){
       setIsPolygon(true)
     } else {
       setIsPolygon(false)
     }
    // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
     if ( user?.network?.id && user?.network?.id != 11155111 && user?.network?.id != 80001) {
-      setWrongNetworkModal(true);
+     // setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);
     }
@@ -155,6 +156,7 @@ const handleOpenSwitchNetwork = (visible) => {
       <div className="sort_popover">
         <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
         <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
+        <p onClick={() => handleSwitchNetwork(1442)} >  zkEVM Testnet</p>
       </div>
     );
   });

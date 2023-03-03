@@ -19,6 +19,8 @@ import { publicProvider } from "@wagmi/core/providers/public";
 import { InjectedConnector } from "@wagmi/core/connectors/injected";
 import { MetaMaskConnector } from "@wagmi/core/connectors/metaMask";
 import { alchemyProvider } from "@wagmi/core/providers/alchemy";
+import { infuraProvider } from '@wagmi/core/providers/infura'
+
 import { CoinbaseWalletConnector } from "@wagmi/core/connectors/coinbaseWallet";
 
 import {
@@ -27,6 +29,7 @@ import {
   mainnet,
   polygonMumbai,
   sepolia,
+  polygonZkEvmTestnet
 } from "@wagmi/core/chains";
 import { ethers } from "ethers";
 import { WalletConnectConnector } from "@wagmi/core/connectors/walletConnect";
@@ -65,18 +68,20 @@ import {
   getTokenPrice,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
+import { zkEVMTestNet } from "./core/networks/Chains";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
+const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepolia],
-  [publicProvider(), alchemyProvider({ apiKey: alchemyId })]
+  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet],
+  [ alchemyProvider({ apiKey: alchemyId }), infuraProvider({ apiKey: infuraID }),publicProvider()]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
-  chains: [mainnet, polygonMumbai, sepolia],
+  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet],
 });
 
 export const WalletConnector = new WalletConnectConnector({
@@ -109,10 +114,12 @@ function App() {
   const dispatch = useDispatch();
 
   const { chain, chains } = getNetwork();
-  const { address } = getAccount();
+  const {user} = useSelector((state) => state)
+  // const { address } = getAccount();
   // const provider = getProvider();
-  const query = getPoolCreatedGraphQuery(address);
+  const query = getPoolCreatedGraphQuery(user?.address);
   const etherProvider = new ethers.providers.getDefaultProvider("sepolia");
+  const zkProvider = new ethers.providers.JsonRpcProvider('https://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a')
   const state = useSelector((state) => state);
   const [chainId, setChainId] = useState(0);
   const { data, loading, error } = useQuery(query);
@@ -138,6 +145,7 @@ function App() {
       window.ethereum.on("chainChanged", (chainId) => {
         window.location.reload();
         window.location.href = window.location.origin;
+
       });
       window.ethereum.on("accountsChanged", function (account) {
         window.location.reload();
@@ -152,19 +160,24 @@ function App() {
         const walletconnect = JSON.parse(
           localStorage.getItem("wagmi.connected")
         );
-        const account = getAccount();
+        // const account = getAccount();
         let provider = etherProvider;
-        if (walletconnect && account.isConnected) {
+        if (walletconnect && user?.isConnected ) {
           const user = await connectWallet();
-
+        // console.log("Account", user);
           dispatch(setUser(user));
           provider = getProvider();
         }
         // dispatch(setWeb3(web3));
         const { chain: nextChain, chains } = getNetwork();
-        const { coreAddress, helperAddress, positionAddress } =
-          contractAddress[chain?.id || nextChain?.id || "11155111"];
 
+        // console.log('Chain', 'App', nextChain, chain, user);
+        const networkID = user?.network?.id
+        console.log("Contracts", networkID) ;
+        const { coreAddress, helperAddress, positionAddress } =
+          contractAddress[chain?.id || nextChain?.id || networkID || "11155111"];
+
+         
         const preparedData = [
           { abi: coreAbi, address: coreAddress },
           { abi: helperAbi, address: helperAddress },
@@ -185,6 +198,7 @@ function App() {
               helperContract: res[1],
               positionContract: res[2],
             };
+            console.log("Contarct", payload);
             dispatch(setContracts(payload));
           })
           .catch((err) => {
@@ -199,7 +213,9 @@ function App() {
 
   useEffect(() => {
     const { chain } = getNetwork();
-    if (state.contracts.coreContract && chain?.id != 80001) {
+    const networkID = user?.network?.id
+    if (state.contracts.coreContract && networkID != 80001) {
+      console.log("Network", networkID);
       try {
         (async () => {
           const web3 = defProv();
@@ -213,7 +229,7 @@ function App() {
             state.contracts.coreContract,
             "PoolCreated"
           );
-
+        console.log("PoolsCreated", result);
           const array = [];
           const tokenList = {};
           for (const pool of result) {
@@ -223,6 +239,7 @@ function App() {
 
           //if wallet not connected
           if (!account.isConnected) {
+         
             const ERC20contracts = await Promise.all(
               poolTokens.map((addr) => new web3.eth.Contract(erc20Abi, addr))
             );
@@ -263,6 +280,7 @@ function App() {
               };
             }
           } else {
+         
             const ercTokens = await Promise.all(
               poolTokens.map((contract, i) => fetchToken({ address: contract }))
             );
@@ -306,14 +324,15 @@ function App() {
         dispatch(setError(error));
       }
     }
-  }, [state.contracts, chain?.id]);
+  }, [state.contracts, chain?.id, user]);
 
   useEffect(() => {
     const { chain } = getNetwork();
-
-    if (data && chain?.id != 11155111) {
+    const networkID = user?.network?.id
+ 
+    if (data && networkID == 80001) {
       const oraclePrices = {};
-
+      // console.log("Data", data, networkID);
       for (const token of data?.assetOracles) {
         oraclePrices[String(token.asset).toUpperCase()] =
           Number(token.tokenPrice) / 10 ** 8;
@@ -372,7 +391,7 @@ function App() {
       }
       dispatch(setPools({ poolData, tokenList }));
     }
-  }, [data]);
+  }, [data, user]);
 
   return (
     <>

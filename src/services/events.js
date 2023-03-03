@@ -82,7 +82,7 @@ export const allTransaction = async (
   const data = await getAllEvents(coreContract, "PoolCreated");
   // array of all pools address
   const newData = data.map((event) => event.pool);
-
+ console.log("history", newData);
   let array = [];
   for (let i = 0; i < newData.length; i++) {
     const position = await positionId(
@@ -98,7 +98,7 @@ export const allTransaction = async (
       abi: poolAbi,
       signerOrProvider: getProvider(),
     });
-
+   
     const eventNames = ["Borrow", "Lend", "Redeem", "RepayBorrow"];
     const IspositionId = fromBigNumber(position);
     if (IspositionId != 0) {
@@ -114,7 +114,7 @@ export const allTransaction = async (
               event: el.event === "RepayBorrow" ? "Repay" : el.event,
             })
         );
-
+        console.log("history", newData, position, eventsWithPoolInfo);
         array.push(...eventsWithPoolInfo);
       }
       const sort = array.sort(function (a, b) {
@@ -123,8 +123,8 @@ export const allTransaction = async (
         if (a.blockNumber > b.blockNumber) return -1;
         return 0;
       });
-      setTxtData(sort);
-      setIsPageLoading(false);
+      // setTxtData(sort);
+      // setIsPageLoading(false);
     }
   }
 
