@@ -118,8 +118,8 @@ function App() {
   // const { address } = getAccount();
   // const provider = getProvider();
   const query = getPoolCreatedGraphQuery(user?.address);
-  const etherProvider = new ethers.providers.getDefaultProvider("sepolia");
-  const zkProvider = new ethers.providers.JsonRpcProvider('https://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a')
+  const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
+  //const zkProvider = new ethers.providers.JsonRpcProvider('https://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a')
   const state = useSelector((state) => state);
   const [chainId, setChainId] = useState(0);
   const { data, loading, error } = useQuery(query);
@@ -164,16 +164,12 @@ function App() {
         let provider = etherProvider;
         if (walletconnect && user?.isConnected ) {
           const user = await connectWallet();
-        // console.log("Account", user);
           dispatch(setUser(user));
           provider = getProvider();
         }
         // dispatch(setWeb3(web3));
         const { chain: nextChain, chains } = getNetwork();
-
-        // console.log('Chain', 'App', nextChain, chain, user);
         const networkID = user?.network?.id
-        console.log("Contracts", networkID) ;
         const { coreAddress, helperAddress, positionAddress } =
           contractAddress[chain?.id || nextChain?.id || networkID || "11155111"];
 
@@ -198,7 +194,7 @@ function App() {
               helperContract: res[1],
               positionContract: res[2],
             };
-            console.log("Contarct", payload);
+
             dispatch(setContracts(payload));
           })
           .catch((err) => {
@@ -215,7 +211,7 @@ function App() {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
     if (state.contracts.coreContract && networkID != 80001) {
-      console.log("Network", networkID);
+
       try {
         (async () => {
           const web3 = defProv();
@@ -229,7 +225,7 @@ function App() {
             state.contracts.coreContract,
             "PoolCreated"
           );
-        console.log("PoolsCreated", result);
+
           const array = [];
           const tokenList = {};
           for (const pool of result) {
@@ -332,7 +328,7 @@ function App() {
  
     if (data && networkID == 80001) {
       const oraclePrices = {};
-      // console.log("Data", data, networkID);
+
       for (const token of data?.assetOracles) {
         oraclePrices[String(token.asset).toUpperCase()] =
           Number(token.tokenPrice) / 10 ** 8;
