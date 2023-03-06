@@ -333,7 +333,7 @@ export const getBorrowedPowerUsed = (Positions) => {
   let deno = 0;
   for (const position of Positions) {
     const cureentLTV = position.currentLTV > 1 ? position.currentLTV /100 : position.currentLTV
-    console.log("Current LTV", cureentLTV);
+   
     const usedInPer =
       (Number(cureentLTV * 100) / position.pool.ltv) * 100;
     num += usedInPer * position.LendBalance;

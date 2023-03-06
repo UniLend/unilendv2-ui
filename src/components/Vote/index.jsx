@@ -67,7 +67,7 @@ export default function VoteComponent() {
     );
     const delegatesAddress = await UFTG.delegates(address);
     setDelegate(delegatesAddress);
-    console.log("delegatesAddress", delegatesAddress);
+  
     const uftBalance_BigNumber = await UFT.balanceOf(address);
     const uftgBalance_BigNumber = await UFTG.balanceOf(address);
     const uftBalance = fromBigNumber(uftBalance_BigNumber) / 10 ** 18;
@@ -265,12 +265,7 @@ const WrapAndDelegate = ({
     const { chain } = getNetwork();
     const fixedValue = decimal2Fixed(amount, 18);
     const contracts = contractAddress[chain?.id || "1"];
-    console.log(
-      "Allowance",
-      allowanceValue,
-      fixedValue,
-      Number(allowanceValue) > Number(fixedValue)
-    );
+
     if (Number(allowanceValue) > Number(fixedValue)) {
       setIsLoading(true);
       handleWrapAndDelegate(
@@ -411,7 +406,7 @@ const UpdateDelegation = ({
   const handleAddress = (e) => {
     const userAddr = e.target.value;
     const isValid = ethers.utils.isAddress(userAddr);
-    console.log("Valid", isValid);
+  
     setAddress(userAddr);
     if (!isValid || userAddr == "") {
       setButtonText({

@@ -114,7 +114,7 @@ export const handleUpdateDelegate = async (
 
     try {
         const instance = await getContractInstance(governanceAddress, govABI);
-        console.log("Contract", instance);
+     
         const txs = await instance.delegate(delegateAddress, {
           gasLimit: 210000,
         });

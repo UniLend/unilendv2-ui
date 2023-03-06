@@ -294,7 +294,7 @@ if(selectedToken && collateralToken){
             poolAddress,
             user.address
           );
-          console.log(poolTokensPrice);
+
           setPoolData(poolTokensPrice);
           setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
         }

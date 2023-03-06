@@ -58,7 +58,6 @@ export default function HallOfPoolsComponent(props) {
   const handleTokens = (token, selectedToken) => {
     if (selectedToken === "token1") {
       setToken1(token);
-      console.log("handleToken", token, pools);
     } else if (selectedToken === "token2") {
       setToken2(token);
     } else if (selectedToken == "clear") {
@@ -118,8 +117,6 @@ export default function HallOfPoolsComponent(props) {
     } else {
       setPools(poolBackup)
     }
-
-    console.log("filtered", token1, poolBackup);
   }, [token1, token2]);
 
   const createPool = () => {};
