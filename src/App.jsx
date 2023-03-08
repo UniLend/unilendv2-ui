@@ -325,69 +325,114 @@ function App() {
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
- 
-    if (data && networkID == 80001) {
+
+    if ( data && networkID == 80001) {
       const oraclePrices = {};
 
-      for (const token of data?.assetOracles) {
-        oraclePrices[String(token.asset).toUpperCase()] =
-          Number(token.tokenPrice) / 10 ** 8;
-      }
-
+      // for (const token of data?.assetOracles) {
+      //   oraclePrices[String(token.asset).toUpperCase()] =
+      //     Number(token.tokenPrice) / 10 ** 8;
+      // }
+      console.log("Data", data);
       const poolData = {};
       const tokenList = {};
+    const poolsData = Array.isArray(data.pools) && data.pools
 
-      for (const pool of data?.poolCreateds) {
-        const allPositions = data.positions;
+      for(const pool of poolsData){
+       const li = 
+       fixedToShort(pool.liquidity0) *
+        Number(pool.token0.priceUSD) +
+        fixedToShort(pool.liquidity1) *
+        Number(pool.token1.priceUSD) 
 
-        const openPosiions = allPositions.filter(
-          (el) => el?.poolData?.pool == pool.pool
-        );
-
+        console.log("PoolCreated Data", li);
         const poolInfo = {
           ...pool,
           poolAddress: pool?.pool,
           hide: hidePools.includes(pool?.pool),
           totalLiquidity:
-            fixedToShort(pool.token0Liquidity) *
-              getTokenPrice(oraclePrices, pool.token0) +
-            fixedToShort(pool.token1Liquidity) *
-              getTokenPrice(oraclePrices, pool.token1),
-          totalBorrowed:
-            fixedToShort(pool.totalBorrow0) *
-              getTokenPrice(oraclePrices, pool.token0) +
-            fixedToShort(pool.totalBorrow1) *
-              getTokenPrice(oraclePrices, pool.token1),
-          openPosition:
-            openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
-          token0: {
-            address: pool.token0,
-            logo: getTokenLogo(pool.token0Symbol),
-            symbol: pool.token0Symbol,
+            fixedToShort(pool.liquidity0) *
+             Number(pool.token0.priceUSD) +
+             fixedToShort(pool.liquidity1) *
+             Number(pool.token1.priceUSD) ,
+          token0:{
+            ...pool.token0,
+            address: pool?.token0?.id,
+            logo: getTokenLogo(pool.token0.symbol),
           },
-          token1: {
-            address: pool.token1,
-            logo: getTokenLogo(pool.token1Symbol),
-            symbol: pool.token1Symbol,
-          },
+          token1:{
+            ...pool.token1,
+            address: pool?.token1?.id,
+            logo: getTokenLogo(pool.token1.symbol),
+          }
+        }
+        tokenList[String(pool.token0.id).toUpperCase()] = {
+          ...pool.token0,
+          address: pool?.token0?.id,
+          logo: getTokenLogo(pool.token0.symbol),
+          pricePerToken: pool.token0.priceUSD
         };
-        tokenList[String(pool.token0).toUpperCase()] = {
-          address: pool.token0,
-          logo: getTokenLogo(pool.token0Symbol),
-          symbol: pool.token0Symbol,
-          pricePerToken: getTokenPrice(oraclePrices, pool.token0),
-        };
-        tokenList[String(pool.token1).toUpperCase()] = {
-          address: pool.token1,
-          logo: getTokenLogo(pool.token1Symbol),
-          symbol: pool.token1Symbol,
-          pricePerToken: getTokenPrice(oraclePrices, pool.token1),
+        tokenList[String(pool.token1.id).toUpperCase()] = {
+          ...pool.token1,
+          address: pool?.token1?.id,
+          logo: getTokenLogo(pool.token1.symbol),
+          pricePerToken: pool.token1.priceUSD
         };
         poolData[pool?.pool] = poolInfo;
+      
       }
+
+      // for (const pool of data?.poolCreateds) {
+      //   const allPositions = data.positions;
+
+      //   const openPosiions = allPositions.filter(
+      //     (el) => el?.poolData?.pool == pool.pool
+      //   );
+
+      //   const poolInfo = {
+      //     ...pool,
+      //     poolAddress: pool?.pool,
+      //     hide: hidePools.includes(pool?.pool),
+      //     totalLiquidity:
+      //       fixedToShort(pool.token0Liquidity) *
+      //         getTokenPrice(oraclePrices, pool.token0) +
+      //       fixedToShort(pool.token1Liquidity) *
+      //         getTokenPrice(oraclePrices, pool.token1),
+      //     totalBorrowed:
+      //       fixedToShort(pool.totalBorrow0) *
+      //         getTokenPrice(oraclePrices, pool.token0) +
+      //       fixedToShort(pool.totalBorrow1) *
+      //         getTokenPrice(oraclePrices, pool.token1),
+      //     openPosition:
+      //       openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
+      //     token0: {
+      //       address: pool.token0,
+      //       logo: getTokenLogo(pool.token0Symbol),
+      //       symbol: pool.token0Symbol,
+      //     },
+      //     token1: {
+      //       address: pool.token1,
+      //       logo: getTokenLogo(pool.token1Symbol),
+      //       symbol: pool.token1Symbol,
+      //     },
+      //   };
+      //   tokenList[String(pool.token0).toUpperCase()] = {
+      //     address: pool.token0,
+      //     logo: getTokenLogo(pool.token0Symbol),
+      //     symbol: pool.token0Symbol,
+      //     pricePerToken: getTokenPrice(oraclePrices, pool.token0),
+      //   };
+      //   tokenList[String(pool.token1).toUpperCase()] = {
+      //     address: pool.token1,
+      //     logo: getTokenLogo(pool.token1Symbol),
+      //     symbol: pool.token1Symbol,
+      //     pricePerToken: getTokenPrice(oraclePrices, pool.token1),
+      //   };
+      //   poolData[pool?.pool] = poolInfo;
+      // }
       dispatch(setPools({ poolData, tokenList }));
     }
-  }, [data, user]);
+  }, [data , user]);
 
   return (
     <>

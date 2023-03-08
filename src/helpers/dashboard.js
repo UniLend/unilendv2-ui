@@ -436,7 +436,7 @@ export const userDashBoardQuery = (address) => {
       }
     }
   `;
-  return FILMS_QUERY;
+  return null;
 };
 
 export const sortByKey = (data, key, order) => {
@@ -514,77 +514,77 @@ export const getHistoryGraphQuery = (address) => {
     }
   }
   `
-  return query;
+  return null;
 }
 
 export const getPoolCreatedGraphQuery = (address) => {
   const query = gql`
-
   {
-    assetOracles {
-      asset
-      id
-      tokenPrice
-    }
     positions(where: {owner: "${address}"}) {
-      borrowBalance0
-      borrowBalance1
-      healthFactor0
-      healthFactor1
       id
-      currentLTV
+      owner
+      pool {
+        id
+        pool
+      }
+    }
+    pools {
+      blockNumber
+      blockTimestamp
       borrowApy0
+      borrowApy1
+      fullLiquidity0
+      id
+      interest0
+      interest1
+      lB
       lendApy0
       lendApy1
-      interestEarned1
-      borrowApy1
-      lendBalance0
-      lendBalance1
-      interestEarned0
-      owner
-      poolData {
+      lendingPositionCount
+      liquidity0
+      liquidity1
+      maxLTV
+      openPositionCount
+      pool
+      poolNo
+      positionCount
+      rf
+      token1 {
+        borrowCount
+        decimals
         id
-        interest0
-        interest1
-        ltv
-        pool
-        token0Liquidity
-        token1Liquidity
+        lentCount
+        poolCount
+        priceUSD
+        symbol
+        totalPoolsLiquidity
+        totalPoolsLiquidityUSD
+        txCount
       }
-      token0
-      token1
-      token0Symbol
-      token1Symbol
+      totalBorrow0
+      totalBorrow1
+      totalBorrowBalanceUSD
+      totalLendBalanceUSD
+      totalValueLockedUSD
+      transactionHash
+      txCount
+      token0 {
+        symbol
+        priceUSD
+        poolCount
+        lentCount
+        borrowCount
+        id
+        txCount
+        totalPoolsLiquidityUSD
+        totalPoolsLiquidity
+        decimals
+      }
+      cumulativeuLendUSD
+      cumulativeLiquidateUSD
+      cumulativeBorrowUSD
     }
-  poolCreateds {
-    id
-    token0
-    token1
-    token0Symbol
-    BorrowApy0
-    BorrowApy1
-    blockNumber
-    blockTimestamp
-    interest0
-    interest1
-    lb
-    ltv
-    pool
-    rf
-    token0Liquidity
-    token1Liquidity
-    token1Symbol
-    totalBorrow0
-    totalBorrow1
-    totalLendShare0
-    totalLendShare1
-    transactionHash
-    allBorrow
-    allLend
-    allRedeem
-    allRepay
   }
-}
   `
   return query;
 }
