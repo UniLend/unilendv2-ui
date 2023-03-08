@@ -222,3 +222,8 @@ export const getAllContracts = async (contractAddress, abi, web3) => {
   const contract = new web3.eth.Contract(abi, contractAddress);
   return contract;
 };
+
+
+export const getTokenUSDPrice = (price) => {
+  return Number(price) == 1 ? 1 : Number(price)/ (10**8)
+ }

@@ -76,6 +76,19 @@ const handleOpenSwitchNetwork = (visible) => {
   };
 
   useEffect(() => {
+    if (window.ethereum) {
+      window.ethereum.on("chainChanged", (chainId) => {
+        window.location.reload();
+        window.location.href = window.location.origin;
+
+      });
+      window.ethereum.on("accountsChanged", function (account) {
+        window.location.reload();
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     const {chain} = getNetwork()
 
     if(user?.network?.id == undefined && user?.network?.id){

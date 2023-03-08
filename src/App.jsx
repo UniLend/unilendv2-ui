@@ -69,6 +69,7 @@ import {
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
 import { zkEVMTestNet } from "./core/networks/Chains";
+import { getTokenUSDPrice } from "./helpers/contracts";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -115,43 +116,17 @@ function App() {
 
   const { chain, chains } = getNetwork();
   const {user} = useSelector((state) => state)
-  // const { address } = getAccount();
-  // const provider = getProvider();
   const query = getPoolCreatedGraphQuery(user?.address);
   const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
-  //const zkProvider = new ethers.providers.JsonRpcProvider('https://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a')
   const state = useSelector((state) => state);
-  const [chainId, setChainId] = useState(0);
   const { data, loading, error } = useQuery(query);
-  // const [smartContracts, setSmartContracts] = useState();
+
 
   document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`;
 
   // setting contract state to store from here
 
   const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
-
-  useEffect(() => {
-    const provider = getProvider();
-    provider.on("chainChanged", (chainId) => {
-      window.location.reload();
-      window.location.href = window.location.origin;
-    });
-    provider.on("accountsChanged", function (account) {
-      window.location.reload();
-    });
-
-    if (window.ethereum) {
-      window.ethereum.on("chainChanged", (chainId) => {
-        window.location.reload();
-        window.location.href = window.location.origin;
-
-      });
-      window.ethereum.on("accountsChanged", function (account) {
-        window.location.reload();
-      });
-    }
-  }, []);
 
   useEffect(() => {
     (async () => {
@@ -217,10 +192,6 @@ function App() {
           const web3 = defProv();
           const poolData = {};
           const account = getAccount();
-          // let provider = etherProvider;
-          // if (state?.user?.isConnected && account.isConnected) {
-          //   provider = getProvider();
-          // }
           const result = await getAllEvents(
             state.contracts.coreContract,
             "PoolCreated"
@@ -327,12 +298,7 @@ function App() {
     const networkID = user?.network?.id
 
     if ( data && networkID == 80001) {
-      const oraclePrices = {};
-
-      // for (const token of data?.assetOracles) {
-      //   oraclePrices[String(token.asset).toUpperCase()] =
-      //     Number(token.tokenPrice) / 10 ** 8;
-      // }
+     const allPositions = data?.positions
       console.log("Data", data);
       const poolData = {};
       const tokenList = {};
@@ -344,17 +310,27 @@ function App() {
         Number(pool.token0.priceUSD) +
         fixedToShort(pool.liquidity1) *
         Number(pool.token1.priceUSD) 
-
-        console.log("PoolCreated Data", li);
+       const openPosiions = allPositions.filter(
+          (el) => el?.pool?.pool == pool.pool
+        );
         const poolInfo = {
           ...pool,
           poolAddress: pool?.pool,
           hide: hidePools.includes(pool?.pool),
+
           totalLiquidity:
             fixedToShort(pool.liquidity0) *
-             Number(pool.token0.priceUSD) +
+            getTokenUSDPrice(pool.token0.priceUSD) +
              fixedToShort(pool.liquidity1) *
-             Number(pool.token1.priceUSD) ,
+             getTokenUSDPrice(pool.token1.priceUSD) ,
+
+          totalBorrowed:
+          fixedToShort(pool.totalBorrow0) *
+          getTokenUSDPrice(pool.token0.priceUSD) +
+           fixedToShort(pool.totalBorrow1) *
+           getTokenUSDPrice(pool.token1.priceUSD) ,
+
+           openPosition: openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
           token0:{
             ...pool.token0,
             address: pool?.token0?.id,

@@ -527,6 +527,8 @@ export const getPoolCreatedGraphQuery = (address) => {
         id
         pool
       }
+      lendBalance0
+      lendBalance1
     }
     pools {
       blockNumber
