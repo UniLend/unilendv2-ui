@@ -436,7 +436,7 @@ export const userDashBoardQuery = (address) => {
       }
     }
   `;
-  return null;
+  return FILMS_QUERY;
 };
 
 export const sortByKey = (data, key, order) => {
@@ -467,54 +467,85 @@ export const getHistoryGraphQuery = (address) => {
       blockNumber
       blockTimestamp
       id
-      pool
-      positionId
       sender
-      token
-      tokenSymbol
-      totalBorrows
       transactionHash
+      pool {
+        id
+        pool
+        token0 {
+          symbol
+          id
+        }
+        token1 {
+          id
+          symbol
+        }
+      }
+      positionId
     }
     lends(where: {sender: "${address}"}) {
       amount
       blockNumber
       blockTimestamp
       id
-      pool
-      positionId
       sender
-      token
-      tokenAmount
-      tokenSymbol
-      transactionHash
+      positionId
+      pool {
+        id
+        pool
+        token0 {
+          id
+          symbol
+        }
+        token1 {
+          id
+          symbol
+        }
+      }
     }
     redeems(where: {sender: "${address}"}) {
       amount
       blockNumber
       blockTimestamp
       id
-      pool
-      positionId
       sender
-      token
-      transactionHash
-      tokenSymbol
-    }
-    repayBorrows(where: {payer: "${address}"}) {
-      transactionHash
-      tokenSymbol
-      token
       positionId
-      pool
-      payer
-      id
-      blockTimestamp
-      blockNumber
-      amount
+      pool {
+        id
+        pool
+        token0 {
+          id
+          symbol
+        }
+        token1 {
+          id
+          symbol
+        }
+      }
     }
+    repays(where: {sender: "${address}"}) {
+      amount
+      blockNumber
+      blockTimestamp
+      id
+      sender
+      positionId
+      pool {
+        id
+        pool
+        token0 {
+          id
+          symbol
+        }
+        token1 {
+          id
+          symbol
+        }
+      }
   }
+}
   `
-  return null;
+  return query;
 }
 
 export const getPoolCreatedGraphQuery = (address) => {
