@@ -92,7 +92,7 @@ export default function UserDashboardComponent(props) {
 
     if (operation == "lend") {
       const sorted = sortByKey(positionData.lendArray, key, order);
-      console.log("sortingData", sorted);
+     
       setPositionData({ ...positionData, lendArray: sorted });
     } else if (operation == "borrow") {
       const sorted = sortByKey(positionData.borrowArray, key, order);
@@ -174,7 +174,7 @@ export default function UserDashboardComponent(props) {
 
   useEffect(() => {
     if (data) {
-      console.log('Positions', data);
+
       const position = getPositionData(data);
       setPositionData(position);
       setPositionDataBackup(position);
@@ -190,7 +190,6 @@ export default function UserDashboardComponent(props) {
         analytics.borrowAPY = borrowAPY;
       }
       if (position?.lendArray.length > 0) {
-        // console.log('Positions', "Lend",position);
         const earned = position.lendArray
           .map((el) => el.interestEarned)
           .reduce((ac, el) => ac + el);

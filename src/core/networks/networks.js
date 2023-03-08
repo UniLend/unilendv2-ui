@@ -106,6 +106,17 @@ export const networks = {
     rpcUrls: ['https://polygon-rpc.com/'],
     blockExplorerUrls: ['https://polygonscan.com/'],
   },
+  1442: {
+    chainId: `0x${Number(1442).toString(16)}`,
+    chainName: 'zkEVM Testnet',
+    nativeCurrency: {
+      name: 'ETH',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    rpcUrls: ['https://polygon-rpc.com/'],
+    blockExplorerUrls: ['https://polygonscan.com/'],
+  },
 };
 
 export const allNetworkIds = {

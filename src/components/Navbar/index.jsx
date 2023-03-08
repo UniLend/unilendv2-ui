@@ -47,21 +47,15 @@ export default function Navbar(props) {
   const dispatch = useDispatch();
   const [currentTheme , setCurrentTheme] = useState(theme)
   const {chain: networkchain} = getNetwork()
-
+  const availableChain = [80001,11155111, 1442]
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
   };
 
-//   useEffect(() => {
-// console.log("chain", "networkchain", networkchain);
-//   }, [networkchain])
 
   const handleTheme = (theme) => {
-    // const changeTo = theme == "dark" ? "light" : "dark"
-    // dispatch(setTheme(theme == "dark" ? "light" : "dark"));
-    // document.body.className = changeTo;
-    // saveToLocalStorage("unilendV2Theme", changeTo)
+
     saveToLocalStorage("unilendV2Theme", theme)
     setCurrentTheme(theme)
     dispatch(setTheme(theme));
@@ -83,19 +77,19 @@ const handleOpenSwitchNetwork = (visible) => {
 
   useEffect(() => {
     const {chain} = getNetwork()
-    if(chain == undefined && user?.network?.id){
+
+    if(user?.network?.id == undefined && user?.network?.id){
       const wallet = localStorage.getItem('wallet')
-      //handleConnect(wallet)
+      handleConnect(wallet)
     }
-    console.log("Network", chain);
-    if(chain?.id == 80001){
+    if(user?.network?.id == 80001){
       setIsPolygon(true)
     } else {
       setIsPolygon(false)
     }
    // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
-    if ( user?.network?.id && user?.network?.id != 11155111 && user?.network?.id != 80001) {
-      //setWrongNetworkModal(true);
+    if ( user?.network?.id && !availableChain.includes(user?.network?.id)) {
+     setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);
     }
@@ -125,11 +119,11 @@ const handleOpenSwitchNetwork = (visible) => {
       <div className='walletModel'>
         <h1>Wrong Network</h1>
         <p>
-          UniLend V2 is in testnet phase. <br /> Please connect to the Polygon Mumbai
+          UniLend V2 is in testnet phase. <br /> Please connect to the Sepolia
           network.
         </p>
         <div>
-          <button onClick={() => handleSwitchNetwork(80001)}>
+          <button onClick={() => handleSwitchNetwork(11155111)}>
             Switch Network
           </button>
         </div>
@@ -156,6 +150,7 @@ const handleOpenSwitchNetwork = (visible) => {
       <div className="sort_popover">
         <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
         <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
+        <p onClick={() => handleSwitchNetwork(1442)} >  zkEVM Testnet</p>
       </div>
     );
   });

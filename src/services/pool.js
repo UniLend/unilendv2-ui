@@ -1,5 +1,5 @@
 import { coreAbi, erc20Abi, helperAbi } from "../core/contractData/abi";
-import { getContract, readContract, fetchSigner } from "@wagmi/core";
+import { getContract, readContract, fetchSigner, getProvider } from "@wagmi/core";
 import {
   add,
   decimal2Fixed,
@@ -13,6 +13,7 @@ import {
   fromBigNumber
 } from '../helpers/contracts';
 import BigNumber from "bignumber.js";
+import { ethers } from "ethers";
 
 export const getContractInstance = async ( contractAddr, abi ) => {
 
@@ -221,8 +222,15 @@ export const getTokenPrice = async (
       // const data = await contracts.helperContract.methods
       //   .getPoolTokensData(poolAddress, userAddr)
       //   .call();
-      const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolTokensData', [poolAddress, userAddr])  
+      //const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolTokensData', [poolAddress, userAddr])  
+      const data = await contracts.helperContract.getPoolTokensData(poolAddress, userAddr)
+      // const etherProvider = new ethers.providers.getDefaultProvider("sepolia");
+      // const instance = new ethers.Contract(contracts.helperContract.address, helperAbi, etherProvider)
+      // const contractInstance = await instance.getPoolTokensData(poolAddress, userAddr)
+
+      // // console.log("Contract", contractInstance);
       
+      // console.log("Data", "Read", fromBigNumber(data._balance0), fromBigNumber(contractInstance._balance0));
       const pool = { ...poolData };
       pool.token0.balance = fromBigNumber(data._balance0);
       pool.token0.balanceFixed = fixed2Decimals(
@@ -271,9 +279,15 @@ export const getOracleData = async (contracts, poolData) => {
       //     decimal2Fixed(1, poolData.token0._decimals)
       //   )
       //   .call();
-       const data = await handleRead(contracts.coreContract.address, coreAbi, 'getOraclePrice', [  poolData.token0._address,
-        poolData.token1._address,
-        decimal2Fixed(1, poolData.token0._decimals)])
+      //  const data = await handleRead(contracts.coreContract.address, coreAbi, 'getOraclePrice', [  poolData.token0._address,
+      //   poolData.token1._address,
+      //   decimal2Fixed(1, poolData.token0._decimals)])
+
+        const data = await contracts.coreContract.getOraclePrice(
+          poolData.token0._address,
+            poolData.token1._address,
+            decimal2Fixed(1, poolData.token0._decimals)
+         )
       
       const tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
       const pool = { ...poolData };
@@ -331,7 +345,9 @@ export const getPoolBasicData = async (
       // const data = await contracts.helperContract.methods
       //   .getPoolData(poolAddress)
       //   .call();
-      const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolData', [poolAddress]  )
+      //const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolData', [poolAddress]  )
+      const data = await contracts.helperContract.getPoolData(poolAddress);
+      
      
       pool = {
         ...poolData,
@@ -382,8 +398,8 @@ export const getPoolAllData = async (
       // const data = await contracts.helperContract.methods
       //   .getPoolFullData(positionAddr, poolAddress, userAddr)
       //   .call();
-        const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolFullData', [contracts.positionContract.address, poolAddress, userAddr]  )
-        
+       // const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolFullData', [contracts.positionContract.address, poolAddress, userAddr]  )
+        const data = await contracts.helperContract.getPoolFullData(contracts.positionContract.address, poolAddress, userAddr)
         const totLiqFull0 = add(
         div(mul(poolData.token0.liquidity, 100), poolData.rf),
        fromBigNumber(data._totalBorrow0)

@@ -86,12 +86,13 @@ export const connectWallet = async (wallet) => {
     const user = getAccount()
     const { chain, chains } = getNetwork()
     const chainId = chain.id
-    const account = user.address;;
+    const account = user.address;
+    
     const bal =  await fetchBalance({
       address: account,
     })
    
- 
+    // console.log("User", "chain", user, chain);
     // const balance = fromWei(web3, bal).slice(0, 6);
     const networkByWeb3 = chain.name.toUpperCase()
     const Currentnetwork = networks[chainId] ? networks[chainId].chainName: networkByWeb3
