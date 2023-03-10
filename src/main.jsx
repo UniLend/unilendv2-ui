@@ -7,9 +7,9 @@ import App from './App';
 import { store } from './store/Store';
 import './index.css';
 import Ring from './components/Loader/Ring';
-
+  //uri: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend_mumbai",
 const client = new ApolloClient({
-  uri: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend_mumbai",
+  uri: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
   cache: new InMemoryCache()
 });
 

@@ -21,6 +21,7 @@ import {
   getBorrowedPowerUsed,
   getChartData,
   getNetHealthFactor,
+  getPieChartValues,
   getPositionData,
   getTokensFromUserWallet,
   sortByKey,
@@ -45,9 +46,9 @@ export default function UserDashboardComponent(props) {
   const { contracts, user, web3, isError, poolList, tokenList } = props;
   const { chain } = getNetwork();
   const navigate = useNavigate();
-  if (chain?.id !== 80001) {
-    navigate("/");
-  }
+  // if (chain?.id !== 80001) {
+  //   navigate("/");
+  // }
   const { address } = getAccount();
   const [userAddress, setUserAddress] = useState();
   const [verifiedAddress, setVerifiedAddress] = useState(address)
@@ -92,7 +93,6 @@ export default function UserDashboardComponent(props) {
 
     if (operation == "lend") {
       const sorted = sortByKey(positionData.lendArray, key, order);
-     
       setPositionData({ ...positionData, lendArray: sorted });
     } else if (operation == "borrow") {
       const sorted = sortByKey(positionData.borrowArray, key, order);
@@ -169,16 +169,19 @@ export default function UserDashboardComponent(props) {
 
 
   useEffect(() => {
-    setUserAddress(address);
+    setUserAddress(user.address);
+    handleSearchAddress(user.address)
   }, [user]);
 
   useEffect(() => {
     if (data) {
-
+  
       const position = getPositionData(data);
+     
       setPositionData(position);
       setPositionDataBackup(position);
-      const pieChart = getChartData(data, tokenList);
+       const pieChart = getPieChartValues(position) //getChartData(data, tokenList);
+
       setPieChartInputs(pieChart);
       const analytics = {};
       if (position?.borrowArray.length > 0) {
@@ -204,23 +207,25 @@ export default function UserDashboardComponent(props) {
         analytics.healthFactor = isNaN(HF) ? 0 : HF;
       }
       setHeaderAnalytics(analytics);
-    }
+     }
   }, [data, tokenList]);
 
   const getUserTokens = async (address) => {
     setWalletTokenLoading(true);
     setWalletTokens([]);
+   
     alchemy.core.getTokenBalances(`${address}`).then(async (bal) => {
-      const tokenPrices = await fetchTokenPriceInUSD()
-      const tokens = await getTokensFromUserWallet(bal, tokenPrices, tokenList);
+     // const tokenPrices = await fetchTokenPriceInUSD()
+       const tokens = await getTokensFromUserWallet(bal, tokenList);
       setWalletTokens(tokens);
-      setWalletTokenLoading(false);
+       setWalletTokenLoading(false);
     });
   };
 
   useEffect(() => {
     const account = getAccount();
-    if (verifiedAddress) {
+ 
+    if (verifiedAddress ) {
       getUserTokens(verifiedAddress || account.address);
     } else if(userAddress == '' || verifiedAddress == ''){
       getUserTokens(account.address);
@@ -413,7 +418,7 @@ export default function UserDashboardComponent(props) {
               {walletTokenLoading &&
                 new Array(3).fill(0).map((_, i) => {
                   return (
-                    <div className="tbody_row row_skeleton skeleton"></div>
+                    <div key={i} className="tbody_row row_skeleton skeleton"></div>
                   );
                 })}
             </div>
@@ -469,9 +474,9 @@ export default function UserDashboardComponent(props) {
                 </div>
                 <div className="tbody">
                   {positionData?.lendArray?.length > 0 ?
-                    positionData?.lendArray.map((pool) => {
+                    positionData?.lendArray.map((pool, i) => {
                       return (
-                        <div className="tbody_row">
+                        <div key={i} className="tbody_row">
                           <span onClick={() => navigateToPool(pool?.pool?.pool)}>
                             <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
                             <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
@@ -484,7 +489,7 @@ export default function UserDashboardComponent(props) {
                           <span>{pool?.tokenSymbol}</span>
                           <span>{Number(pool?.LendBalance).toFixed(2)}</span>
                           <span>{Number(pool?.apy).toFixed(2)}%</span>
-                          <span>{pool.pool.ltv}%</span>
+                          <span>{pool.pool.maxLTV}%</span>
                           <span>{Number(pool?.interestEarned).toFixed(8)}</span>
                           <span>
                             <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
@@ -498,7 +503,7 @@ export default function UserDashboardComponent(props) {
                             {Number(pool?.apy).toFixed(2)}% <br />{" "}
                             {Number(pool?.interestEarned).toFixed(6)}{" "}
                           </span>
-                          <span>{pool.pool.ltv}%</span>
+                          <span>{pool.pool.maxLTV}%</span>
                         </div>
                       );
                     }): (
@@ -535,9 +540,9 @@ export default function UserDashboardComponent(props) {
                 </div>
                 <div className="tbody">
                   {positionData?.borrowArray?.length > 0 ?
-                    positionData?.borrowArray.map((pool) => {
+                    positionData?.borrowArray.map((pool, i) => {
                       return (
-                        <div className="tbody_row">
+                        <div key={i} className="tbody_row">
                           <span>
                             <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
                             <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />

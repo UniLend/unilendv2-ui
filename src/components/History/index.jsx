@@ -71,10 +71,10 @@ import loader from '../../assets/Eclipse-loader.gif'
           ...data.borrows,
           ...data.lends,
           ...data.redeems,
-          ...data.repayBorrows,
+          ...data.repays,
         ];
         const sorted = sortByKey(newArray, "blockTimestamp", 1);
-        console.log(sorted);
+        console.log(pools, sorted);
         setGraphHistory(sorted);
         setGraphHistoryBackup(sorted);
         setIsPageLoading(false);
@@ -241,36 +241,34 @@ import loader from '../../assets/Eclipse-loader.gif'
                     <div>
                       <img
                         src={
-                          poolsData[String(txt.pool).toUpperCase()].token0.logo
+                          poolsData[String(txt.pool.pool).toUpperCase()].token0.logo
                         }
                         onError={imgError}
                         alt="token_icon"
                       />
                       <img
                         src={
-                          poolsData[String(txt.pool).toUpperCase()].token1.logo
+                          poolsData[String(txt.pool.pool).toUpperCase()].token1.logo
                         }
                         onError={imgError}
                         alt="token_icon"
                       />
                     </div>
-                    <a href={`pool/${txt.pool}`}>
+                    <a href={`pool/${txt.pool.pool}`}>
                     <p className="hide_for_mobile hide_for_tab">
-
-                      {poolsData[String(txt.pool).toUpperCase()].token0.symbol +
+                   
+                      {txt.pool.token0.symbol +
                         "/" +
-                        poolsData[String(txt.pool).toUpperCase()].token1.symbol}
+                        txt.pool.token0.symbol}
                     </p>
                     </a>
                   </div>
                   <div>
-                    <p>{txt?.tokenSymbol}</p>
+                    <p>{txt.pool.token0.symbol }</p>
                   </div>
                   <div>
                     <p>
-                      {txt?.__typename == "RepayBorrow"
-                        ? "Repay"
-                        : txt?.__typename}
+                        {txt?.__typename}
                     </p>
                   </div>
                   <div>
@@ -285,10 +283,10 @@ import loader from '../../assets/Eclipse-loader.gif'
                   <div className="hide_for_mobile">
                     <p>
                       <a
-                        href={`https://sepolia.etherscan.io/tx/${txt?.transactionHash}`}
+                        href="#"
                         target="_blank"
                       >
-                        {shortenAddress(txt?.transactionHash)}
+                        {shortenAddress(txt?.id)}
                       </a>
                     </p>
                   </div>
