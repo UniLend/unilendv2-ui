@@ -3,6 +3,7 @@ import { gql } from "@apollo/client";
 import { fetchBalance, getContract, getProvider } from "@wagmi/core";
 import { erc20Abi } from "../core/contractData/abi";
 import { fromBigNumber } from "./contracts";
+import { ethers } from "ethers";
 
 
 export const findTokenPrice = (list, address) => {
@@ -24,16 +25,16 @@ export const getChartData = (data, tokenList) => {
 
   for (const key in data) {
     if (Object.hasOwnProperty.call(data, key)) {
-      const actions = ["lends", "borrows", "redeems", "repayBorrows"];
+      const actions = ["lends", "borrows", "redeems", "repays"];
       for (const item of actions) {
         const actionObjects = data[item];
         let total = 0;
         const sub = {};
         //const totalAmount = Object.values(actionObjects).map((el) => Number(el.amount)).reduce((ac, el) => ac + el)
         for (const action of actionObjects) {
-          sub[action.tokenSymbol] =
-            (sub[action.tokenSymbol] || 0) + (fixedToShort(action.amount) * findTokenPrice(tokenList,action.token) );
-          total = total + (fixedToShort(action.amount) * findTokenPrice(tokenList,action.token));
+          sub[action.token.symbol] =
+            (sub[action.token.symbol] || 0) + (fixedToShort(action.amount)  );
+          total = total + (fixedToShort(action.amount) );
         }
         chart[item] = sub;
         chart[item]["total"] = total;
@@ -96,10 +97,70 @@ export const getChartData = (data, tokenList) => {
       donutBorrows.push(payload);
     }
   }
-
+   
+  console.log("Chart",chart);
 
   return { lendValues, borrowValues, donutLends, donutBorrows };
 };
+
+export const convertPrice = (price) =>{
+  return Number(price) == 1 ? Number(price) : Number(price) / 10**8
+}
+export const getPieChartValues = (positions) => {
+
+  const lendValues ={
+    total: 0
+  } 
+  const borrowValues={
+    total : 0
+  }
+  const donutLends = []
+  const donutBorrows =[]
+
+  for (const action of positions.lendArray) {
+    lendValues[action.tokenSymbol] = (lendValues[action.tokenSymbol] || 0 )+ Number(action.LendBalance) * convertPrice(action.token.priceUSD)
+    lendValues['total'] = (lendValues['total'] || 0)+ Number(action.LendBalance) * convertPrice(action.token.priceUSD)
+  }
+
+  for (const action of positions.borrowArray) {
+    borrowValues[action.tokenSymbol] = (borrowValues[action.tokenSymbol] || 0) + Number(action.borrowBalance) * convertPrice(action.token.priceUSD)
+    borrowValues['total'] = (borrowValues['total'] || 0)+ Number(action.borrowBalance) * convertPrice(action.token.priceUSD)
+ }
+
+
+ const sortedLend = Object.entries(lendValues)
+ .sort(([,a],[,b]) => b-a)
+ .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+
+ const sortedBorrow = Object.entries(borrowValues)
+ .sort(([,a],[,b]) => b-a)
+ .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+
+
+
+ for (const lend in sortedLend) {
+   const payload = {
+     type: lend,
+     value: getPercent(sortedLend[lend], sortedLend["total"]),
+   };
+   if (lend !== "total" && sortedLend[lend] > 0) {
+     donutLends.push(payload);
+   }
+ }
+
+ for (const borrow in sortedBorrow) {
+   const payload = {
+     type: borrow,
+     value: getPercent(sortedBorrow[borrow], sortedBorrow["total"]),
+   };
+   if (borrow !== "total" && sortedBorrow[borrow] > 0) {
+     donutBorrows.push(payload);
+   }
+ }
+  
+
+ return { lendValues, borrowValues, donutLends, donutBorrows };
+}
 
 const getPercent = (x, y) => {
 
@@ -120,49 +181,52 @@ export const getPositionData = (data) => {
       const BorrowObj = {};
 
       BorrowObj.borrowBalance = fixedToShort(object.borrowBalance0);
-      BorrowObj.tokenSymbol = object.token0Symbol;
-      BorrowObj.pool = object.poolData;
-      BorrowObj.apy = object.borrowApy0;
+      BorrowObj.tokenSymbol = object.pool.token0.symbol;
+      BorrowObj.token = object.pool.token0
+      BorrowObj.pool = object.pool;
+      BorrowObj.apy = object.pool.borrowApy0;
       BorrowObj.healthFactor = object.healthFactor0;
       BorrowObj.currentLTV = object.currentLTV;
       BorrowObj.poolInfo = {
-        token0Symbol: object.token0Symbol,
-        token0Logo: getTokenLogo(object.token0Symbol),
-        token1Symbol: object.token1Symbol,
-        token1Logo: getTokenLogo(object.token1Symbol),
+        token0Symbol: object.pool.token0.symbol,
+        token0Logo: getTokenLogo(object.pool.token0.symbol),
+        token1Symbol: object.pool.token1.symbol,
+        token1Logo: getTokenLogo(object.pool.token1.symbol),
       };
       borrowArray.push(BorrowObj);
 
       const LendObj = {};
 
       LendObj.LendBalance = fixedToShort(object.lendBalance1);
-      LendObj.tokenSymbol = object.token1Symbol;
-      LendObj.pool = object.poolData;
-      LendObj.apy = object.lendApy1;
+      LendObj.tokenSymbol = object.pool.token1.symbol;
+      LendObj.pool = object.pool;
+      LendObj.token = object.pool.token1
+      LendObj.apy = object.pool.lendApy1;
       LendObj.healthFactor = object.healthFactor1;
       LendObj.currentLTV = object.currentLTV;
       LendObj.poolInfo = {
-        token0Symbol: object.token0Symbol,
-        token0Logo: getTokenLogo(object.token0Symbol),
-        token1Symbol: object.token1Symbol,
-        token1Logo: getTokenLogo(object.token1Symbol),
+        token0Symbol: object.pool.token0.symbol,
+        token0Logo: getTokenLogo(object.pool.token0.symbol),
+        token1Symbol: object.pool.token1.symbol,
+        token1Logo: getTokenLogo(object.pool.token1.symbol),
       };
-      LendObj.interestEarned = fixedToShort(object.poolData.interest1);
+      LendObj.interestEarned = fixedToShort(object.pool.interest1);
       lendArray.push(LendObj);
      
     } else if (object.borrowBalance1 > 0 && object.borrowBalance0 == 0) {
       const BorrowObj = {};
 
       BorrowObj.borrowBalance = fixedToShort(object.borrowBalance1);
-      BorrowObj.tokenSymbol = object.token1Symbol;
-      BorrowObj.pool = object.poolData;
+      BorrowObj.tokenSymbol = object.pool.token1.symbol;
+      BorrowObj.token = object.pool.token1
+      BorrowObj.pool = object.pool;
       BorrowObj.poolInfo = {
-        token0Symbol: object.token0Symbol,
-        token0Logo: getTokenLogo(object.token0Symbol),
-        token1Symbol: object.token1Symbol,
-        token1Logo: getTokenLogo(object.token1Symbol),
+        token0Symbol: object.pool.token0.symbol,
+        token0Logo: getTokenLogo(object.pool.token0.symbol),
+        token1Symbol: object.pool.token1.symbol,
+        token1Logo: getTokenLogo(object.pool.token1.symbol),
       };
-      BorrowObj.apy = object.borrowApy1;
+      BorrowObj.apy = object.pool.borrowApy1;
       BorrowObj.healthFactor = object.healthFactor1;
       BorrowObj.currentLTV = object.currentLTV;
       borrowArray.push(BorrowObj);
@@ -170,86 +234,92 @@ export const getPositionData = (data) => {
       const LendObj = {};
 
       LendObj.LendBalance = fixedToShort(object.lendBalance0);
-      LendObj.tokenSymbol = object.token0Symbol;
-      LendObj.pool = object.poolData;
-      LendObj.apy = object.lendApy0;
+      LendObj.tokenSymbol = object.pool.token0.symbol;
+      LendObj.pool = object.pool;
+      LendObj.token = object.pool.token1
+      LendObj.apy = object.pool.lendApy0;
       LendObj.healthFactor = object.healthFactor0;
       LendObj.currentLTV = object.currentLTV;
-      LendObj.interestEarned = fixedToShort(object.poolData.interest0);
+      LendObj.interestEarned = fixedToShort(object.pool.interest0);
       LendObj.poolInfo = {
-        token0Symbol: object.token0Symbol,
-        token0Logo: getTokenLogo(object.token0Symbol),
-        token1Symbol: object.token1Symbol,
-        token1Logo: getTokenLogo(object.token1Symbol),
+        token0Symbol: object.pool.token0.symbol,
+        token0Logo: getTokenLogo(object.pool.token0.symbol),
+        token1Symbol: object.pool.token1.symbol,
+        token1Logo: getTokenLogo(object.pool.token1.symbol),
       };
       lendArray.push(LendObj);
     } else if (object.lendBalance0 > 0 && object.lendBalance1 == 0) {
       const LendObj = {};
 
+    
       LendObj.LendBalance = fixedToShort(object.lendBalance0);
-      LendObj.tokenSymbol = object.token0Symbol;
-      LendObj.pool = object.poolData;
-      LendObj.apy = object.lendApy0;
+      LendObj.tokenSymbol = object.pool.token0.symbol;
+      LendObj.token = object.pool.token0
+      LendObj.pool = object.pool;
+      LendObj.apy = object.pool.lendApy0;
       LendObj.healthFactor = object.healthFactor0;
-      LendObj.poolInfo = {
-        token0Symbol: object.token0Symbol,
-        token0Logo: getTokenLogo(object.token0Symbol),
-        token1Symbol: object.token1Symbol,
-        token1Logo: getTokenLogo(object.token1Symbol),
-      };
       LendObj.currentLTV = object.currentLTV;
-      LendObj.interestEarned = fixedToShort(object.poolData.interest0);
+      LendObj.interestEarned = fixedToShort(object.pool.interest0);
+      LendObj.poolInfo = {
+        token0Symbol: object.pool.token0.symbol,
+        token0Logo: getTokenLogo(object.pool.token0.symbol),
+        token1Symbol: object.pool.token1.symbol,
+        token1Logo: getTokenLogo(object.pool.token1.symbol),
+      };
       lendArray.push(LendObj);
     } else if (object.lendBalance1 > 0 && object.lendBalance0 == 0) {
       const LendObj = {};
 
       LendObj.LendBalance = fixedToShort(object.lendBalance1);
-      LendObj.tokenSymbol = object.token1Symbol;
-      LendObj.pool = object.poolData;
-      LendObj.apy = object.lendApy1;
-      LendObj.poolInfo = {
-        token0Symbol: object.token0Symbol,
-        token0Logo: getTokenLogo(object.token0Symbol),
-        token1Symbol: object.token1Symbol,
-        token1Logo: getTokenLogo(object.token1Symbol),
-      };
+      LendObj.tokenSymbol = object.pool.token1.symbol;
+      LendObj.pool = object.pool;
+      LendObj.token = object.pool.token1
+      LendObj.apy = object.pool.lendApy1;
       LendObj.healthFactor = object.healthFactor1;
       LendObj.currentLTV = object.currentLTV;
-      LendObj.interestEarned = fixedToShort(object.poolData.interest1);
+      LendObj.poolInfo = {
+        token0Symbol: object.pool.token0.symbol,
+        token0Logo: getTokenLogo(object.pool.token0.symbol),
+        token1Symbol: object.pool.token1.symbol,
+        token1Logo: getTokenLogo(object.pool.token1.symbol),
+      };
+      LendObj.interestEarned = fixedToShort(object.pool.interest1);
       lendArray.push(LendObj);
     } else if (object.lendBalance1 > 0 && object.lendBalance0 > 0) {
       const LendObj1 = {};
 
       LendObj1.LendBalance = fixedToShort(object.lendBalance0);
-      LendObj1.tokenSymbol = object.token0Symbol;
-      LendObj1.pool = object.poolData;
-      LendObj1.apy = object.lendApy0;
+      LendObj1.tokenSymbol = object.pool.token0.symbol;
+      LendObj1.pool = object.pool;
+      LendObj1.token = object.pool.token0
+      LendObj1.apy = object.pool.lendApy0;
       LendObj1.healthFactor = object.healthFactor0;
       LendObj1.poolInfo = {
-        token0Symbol: object.token0Symbol,
-        token0Logo: getTokenLogo(object.token0Symbol),
-        token1Symbol: object.token1Symbol,
-        token1Logo: getTokenLogo(object.token1Symbol),
+        token0Symbol: object.pool.token0.symbol,
+        token0Logo: getTokenLogo(object.pool.token0.symbol),
+        token1Symbol: object.pool.token1.symbol,
+        token1Logo: getTokenLogo(object.pool.token1.symbol),
       };
       LendObj1.currentLTV = object.currentLTV;
-      LendObj1.interestEarned = fixedToShort(object.poolData.interest0);
+      LendObj1.interestEarned = fixedToShort(object.pool.interest0);
       lendArray.push(LendObj1);
 
       const LendObj2 = {};
 
       LendObj2.LendBalance = fixedToShort(object.lendBalance1);
-      LendObj2.tokenSymbol = object.token1Symbol;
-      LendObj2.pool = object.poolData;
-      LendObj2.apy = object.lendApy1;
+      LendObj2.tokenSymbol = object.pool.token1.symbol;
+      LendObj2.pool = object.pool;
+      LendObj2.token = object.pool.token1
+      LendObj2.apy = object.pool.lendApy1;
       LendObj2.healthFactor = object.healthFactor1;
-      LendObj2.poolInfo = {
-        token0Symbol: object.token0Symbol,
-        token0Logo: getTokenLogo(object.token0Symbol),
-        token1Symbol: object.token1Symbol,
-        token1Logo: getTokenLogo(object.token1Symbol),
-      };
       LendObj2.currentLTV = object.currentLTV;
-      LendObj2.interestEarned = fixedToShort(object.poolData.interest1);
+      LendObj2.poolInfo = {
+        token0Symbol: object.pool.token0.symbol,
+        token0Logo: getTokenLogo(object.pool.token0.symbol),
+        token1Symbol: object.pool.token1.symbol,
+        token1Logo: getTokenLogo(object.pool.token1.symbol),
+      };
+      LendObj2.interestEarned = fixedToShort(object.pool.interest1);
       lendArray.push(LendObj2);
     }
   }
@@ -298,13 +368,15 @@ export const getTokensFromUserWallet = async (data, usdlist, tokenList) => {
   const tokensArray = data?.tokenBalances.map((token) => token.contractAddress);
 
   const tokensObject = [];
-
+const provider = getProvider()
   for (const tokenAddress of tokensArray) {
-    const contract = getContract({
-      address: tokenAddress,
-      abi: erc20Abi,
-      signerOrProvider: getProvider(),
-    });
+
+    const contract = new ethers.Contract(tokenAddress, erc20Abi, provider)
+     
+  //  const symbol = await contract.symbol()
+  //  const name = await contract.name()
+  //  const balance = await contract.balanceOf(data?.address)
+  // console.log("Contract", contract, symbol, name, balance);
     const res = await Promise.all([
       contract.symbol(),
       contract.name(),
@@ -319,14 +391,11 @@ export const getTokensFromUserWallet = async (data, usdlist, tokenList) => {
 
     };
     tokensObject.push(resInstance);
-  }
+   }
 
   return tokensObject;
 };
 
-const findTokenPriceUSD = (address, symbol, usdlist, tokenlist) => {
-
-}
 
 export const getBorrowedPowerUsed = (Positions) => {
   let num = 0;
@@ -348,92 +417,146 @@ export const getBorrowedPowerUsed = (Positions) => {
 export const userDashBoardQuery = (address) => {
   const FILMS_QUERY = gql`
     {
-      assetOracles {
-        asset
+       positions(where: {owner: "${address}"}) {
         id
-        tokenPrice
-      }
-      
-      positions(where: {owner: "${address}"}) {
-        borrowBalance0
-        borrowBalance1
-        healthFactor0
-        healthFactor1
-        id
-        currentLTV
-        borrowApy0
-        lendApy0
-        lendApy1
-        interestEarned1
-        borrowApy1
-        lendBalance0
-        lendBalance1
-        interestEarned0
         owner
-        poolData {
+        pool {
           id
+          pool
           interest0
           interest1
-          ltv
-          pool
-          token0Liquidity
-          token1Liquidity
+          lendApy0
+          lendApy1
+          borrowApy0
+          borrowApy1
+          liquidity0
+          liquidity1
+          maxLTV
+          totalBorrow0
+          totalBorrow1
+          token0 {
+            id
+            symbol
+            priceUSD
+          }
+          token1 {
+            id
+            priceUSD
+            symbol
+          }
         }
-        token0
-        token1
-        token0Symbol
-        token1Symbol
+        lendBalance0
+        lendBalance1
+        borrowBalance0
+        borrowBalance1
+        currentLTV
+        healthFactor0
+        healthFactor1
+        liquidationCount
       }
-  
-      lends(where: {sender: "${address}"}, orderBy: tokenSymbol) {
-        id
+
+      borrows(where: {sender: "${address}"}) {
         amount
-        tokenAmount
-        pool
-        positionId
-        sender
-        tokenSymbol
-        token
-        transactionHash
-        blockTimestamp
         blockNumber
-      }
-      redeems(where: {sender: "${address}"}, orderBy: id) {
+        blockTimestamp
         id
         sender
-        amount
-        pool
-        tokenSymbol
-        positionId
-        token
         transactionHash
-        blockTimestamp
-        blockNumber
+        token {
+          id
+          priceUSD
+          symbol
+        }
+        pool {
+          id
+          pool
+          token0 {
+            symbol
+            id
+          }
+          token1 {
+            id
+            symbol
+          }
+        }
+        positionId
       }
-      borrows(where: {sender: "${address}"}, orderBy: id) {
+      lends(where: {sender: "${address}"}) {
+        amount
+        blockNumber
+        blockTimestamp
         id
         sender
-        amount
-        pool
         positionId
-        tokenSymbol
-        token
-        transactionHash
-        blockTimestamp
-        blockNumber
+        token {
+          id
+          priceUSD
+          symbol
+        }
+        pool {
+          id
+          pool
+          token0 {
+            id
+            symbol
+          }
+          token1 {
+            id
+            symbol
+          }
+        }
       }
-      repayBorrows(where: {payer: "${address}"}, orderBy: id) {
+      redeems(where: {sender: "${address}"}) {
+        amount
+        blockNumber
+        blockTimestamp
         id
-        payer
-        amount
-        pool
+        sender
         positionId
-        token
-        transactionHash
-        tokenSymbol
-        blockTimestamp
-        blockNumber
+        token {
+          id
+          priceUSD
+          symbol
+        }
+        pool {
+          id
+          pool
+          token0 {
+            id
+            symbol
+          }
+          token1 {
+            id
+            symbol
+          }
+        }
       }
+      repays(where: {sender: "${address}"}) {
+        amount
+        blockNumber
+        blockTimestamp
+        id
+        sender
+        positionId
+        token {
+          id
+          priceUSD
+          symbol
+        }
+        pool {
+          id
+          pool
+          token0 {
+            id
+            symbol
+          }
+          token1 {
+            id
+            symbol
+          }
+        }
+    }
+
     }
   `;
   return FILMS_QUERY;
