@@ -33,10 +33,10 @@ export default function HeroComponent(props) {
         Array.isArray(poolBackup) &&
         poolBackup.filter(
           (pool) =>
-            String(pool?.token0Symbol)
+            String(pool?.token0.symbol)
               .toUpperCase()
               .includes(String(token1.symbol)) ||
-            String(pool?.token1Symbol)
+            String(pool?.token1.symbol)
               .toUpperCase()
               .includes(String(token1.symbol))
         );
@@ -46,10 +46,10 @@ export default function HeroComponent(props) {
         Array.isArray(poolBackup) &&
         poolBackup.filter(
           (pool) =>
-            String(pool?.token0Symbol)
+            String(pool?.token0.symbol)
               .toUpperCase()
               .includes(String(token2.symbol)) ||
-            String(pool?.token1Symbol)
+            String(pool?.token1.symbol)
               .toUpperCase()
               .includes(String(token2.symbol))
         );
@@ -60,19 +60,19 @@ export default function HeroComponent(props) {
         poolBackup
           .filter(
             (pool) =>
-              String(pool?.token0Symbol)
+              String(pool?.token0.symbol)
                 .toUpperCase()
                 .includes(String(token1.symbol)) ||
-              String(pool?.token1Symbol)
+              String(pool?.token1.symbol)
                 .toUpperCase()
                 .includes(String(token1.symbol))
           )
           .filter(
             (pool) =>
-              String(pool?.token0Symbol)
+              String(pool?.token0.symbol)
                 .toUpperCase()
                 .includes(String(token2.symbol)) ||
-              String(pool?.token1Symbol)
+              String(pool?.token1.symbol)
                 .toUpperCase()
                 .includes(String(token2.symbol))
           );

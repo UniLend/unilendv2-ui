@@ -264,7 +264,7 @@ import loader from '../../assets/Eclipse-loader.gif'
                     </a>
                   </div>
                   <div>
-                    <p>{txt.pool.token0.symbol }</p>
+                    <p>{txt.token.symbol }</p>
                   </div>
                   <div>
                     <p>

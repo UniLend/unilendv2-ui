@@ -175,7 +175,7 @@ export default function UserDashboardComponent(props) {
 
   useEffect(() => {
     if (data) {
-  
+   console.log("DATA", data);
       const position = getPositionData(data);
      
       setPositionData(position);
@@ -326,7 +326,7 @@ export default function UserDashboardComponent(props) {
               <div>
                 <div>
                   <p>Total Lend</p>
-                  <h5>{pieChartInputs?.lendValues?.total || 0}</h5>
+                  <h5>{Number(pieChartInputs?.lendValues?.total).toFixed(4) || 0}</h5>
                 </div>
                 {/* <div>
                   {" "}
@@ -357,7 +357,7 @@ export default function UserDashboardComponent(props) {
               <div>
                 <div>
                   <p>Total Borrow</p>
-                  <h5>{pieChartInputs?.borrowValues?.total || 0}</h5>
+                  <h5>{ Number(pieChartInputs?.borrowValues?.total).toFixed(4) || 0}</h5>
                 </div>
                 {/* <div>
                   {" "}
@@ -543,7 +543,7 @@ export default function UserDashboardComponent(props) {
                     positionData?.borrowArray.map((pool, i) => {
                       return (
                         <div key={i} className="tbody_row">
-                          <span>
+                          <span  onClick={() => navigateToPool(pool?.pool?.pool)}>
                             <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
                             <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
                             <p className="hide_for_mobile">
