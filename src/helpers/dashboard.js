@@ -210,7 +210,7 @@ export const getPositionData = (data) => {
         token1Symbol: object.pool.token1.symbol,
         token1Logo: getTokenLogo(object.pool.token1.symbol),
       };
-      LendObj.interestEarned = fixedToShort(object.pool.interest1);
+      LendObj.interestEarned = fixedToShort(object.interestEarned1);
       lendArray.push(LendObj);
      
     } else if (object.borrowBalance1 > 0 && object.borrowBalance0 == 0) {
@@ -240,7 +240,7 @@ export const getPositionData = (data) => {
       LendObj.apy = object.pool.lendApy0;
       LendObj.healthFactor = object.healthFactor0;
       LendObj.currentLTV = object.currentLTV;
-      LendObj.interestEarned = fixedToShort(object.pool.interest0);
+      LendObj.interestEarned = fixedToShort(object.interestEarned0);
       LendObj.poolInfo = {
         token0Symbol: object.pool.token0.symbol,
         token0Logo: getTokenLogo(object.pool.token0.symbol),
@@ -259,7 +259,7 @@ export const getPositionData = (data) => {
       LendObj.apy = object.pool.lendApy0;
       LendObj.healthFactor = object.healthFactor0;
       LendObj.currentLTV = object.currentLTV;
-      LendObj.interestEarned = fixedToShort(object.pool.interest0);
+      LendObj.interestEarned = fixedToShort(object.interestEarned0);
       LendObj.poolInfo = {
         token0Symbol: object.pool.token0.symbol,
         token0Logo: getTokenLogo(object.pool.token0.symbol),
@@ -283,7 +283,7 @@ export const getPositionData = (data) => {
         token1Symbol: object.pool.token1.symbol,
         token1Logo: getTokenLogo(object.pool.token1.symbol),
       };
-      LendObj.interestEarned = fixedToShort(object.pool.interest1);
+      LendObj.interestEarned = fixedToShort(object.interestEarned1);
       lendArray.push(LendObj);
     } else if (object.lendBalance1 > 0 && object.lendBalance0 > 0) {
       const LendObj1 = {};
@@ -301,7 +301,7 @@ export const getPositionData = (data) => {
         token1Logo: getTokenLogo(object.pool.token1.symbol),
       };
       LendObj1.currentLTV = object.currentLTV;
-      LendObj1.interestEarned = fixedToShort(object.pool.interest0);
+      LendObj1.interestEarned = fixedToShort(object.interestEarned0);
       lendArray.push(LendObj1);
 
       const LendObj2 = {};
@@ -319,7 +319,7 @@ export const getPositionData = (data) => {
         token1Symbol: object.pool.token1.symbol,
         token1Logo: getTokenLogo(object.pool.token1.symbol),
       };
-      LendObj2.interestEarned = fixedToShort(object.pool.interest1);
+      LendObj2.interestEarned = fixedToShort(object.interestEarned1);
       lendArray.push(LendObj2);
     }
   }
@@ -398,20 +398,21 @@ const provider = getProvider()
 
 
 export const getBorrowedPowerUsed = (Positions) => {
+  console.log("getBorrowedPowerUsed", Positions);
   let num = 0;
   let deno = 0;
   for (const position of Positions) {
     const cureentLTV = position.currentLTV > 1 ? position.currentLTV /100 : position.currentLTV
    
-    const usedInPer =
+    const tokenUsedInPercentage =
       (Number(cureentLTV * 100) / position.pool.ltv) * 100;
-    num += usedInPer * position.LendBalance;
+    num += tokenUsedInPercentage * position.LendBalance;
     deno += position.LendBalance;
   }
 
   const usedPower = (num / deno).toFixed(2);
 
-  return usedPower > 100 ? 100 : usedPower;
+  return isNaN(usedPower) ? 0 : usedPower > 100 ? 100 : usedPower;
 };
 
 export const userDashBoardQuery = (address) => {
@@ -453,6 +454,10 @@ export const userDashBoardQuery = (address) => {
         healthFactor0
         healthFactor1
         liquidationCount
+        interestEarned0
+        interestEarned1
+        intersetPaid0
+        intersetPaid1
       }
 
       borrows(where: {sender: "${address}"}) {
@@ -592,6 +597,11 @@ export const getHistoryGraphQuery = (address) => {
       id
       sender
       transactionHash
+      token {
+        id
+        priceUSD
+        symbol
+      }
       pool {
         id
         pool
@@ -613,6 +623,11 @@ export const getHistoryGraphQuery = (address) => {
       id
       sender
       positionId
+      token {
+        id
+        priceUSD
+        symbol
+      }
       pool {
         id
         pool
@@ -633,6 +648,11 @@ export const getHistoryGraphQuery = (address) => {
       id
       sender
       positionId
+      token {
+        id
+        priceUSD
+        symbol
+      }
       pool {
         id
         pool
@@ -653,6 +673,11 @@ export const getHistoryGraphQuery = (address) => {
       id
       sender
       positionId
+      token {
+        id
+        priceUSD
+        symbol
+      }
       pool {
         id
         pool

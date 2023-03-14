@@ -32,10 +32,16 @@ export default function HallOfPoolsComponent(props) {
       const toArray = Object.values(poolList).filter(
         (pool) => pool.hide == false
       );
+   
       setPools(toArray);
       setPoolBackup(toArray);
     }
+  
   }, [poolList]);
+
+  useEffect(() => {
+    console.log("pools", pools);
+  }, [pools])
 
   const handleSort = (key, order) => {
     const sorted = sortByKey(pools, key, order);
@@ -68,14 +74,15 @@ export default function HallOfPoolsComponent(props) {
 
   useEffect(() => {
     if (token1?.symbol && !token2?.symbol) {
+      console.log("poolBackup", poolBackup);
       const filtered =
         Array.isArray(poolBackup) &&
         poolBackup.filter(
           (pool) =>
-            String(pool?.token0Symbol)
+            String(pool?.token0.symbol)
               .toUpperCase()
               .includes(String(token1.symbol)) ||
-            String(pool?.token1Symbol)
+            String(pool?.token1.symbol)
               .toUpperCase()
               .includes(String(token1.symbol))
         );
@@ -85,10 +92,10 @@ export default function HallOfPoolsComponent(props) {
         Array.isArray(poolBackup) &&
         poolBackup.filter(
           (pool) =>
-            String(pool?.token0Symbol)
+            String(pool?.token0.symbol)
               .toUpperCase()
               .includes(String(token2.symbol)) ||
-            String(pool?.token1Symbol)
+            String(pool?.token1.symbol)
               .toUpperCase()
               .includes(String(token2.symbol))
         );
@@ -98,18 +105,18 @@ export default function HallOfPoolsComponent(props) {
         Array.isArray(poolBackup) &&
         poolBackup.filter(
           (pool) =>
-            String(pool?.token0Symbol)
+            String(pool?.token0.symbol)
               .toUpperCase()
               .includes(String(token1.symbol)) ||
-            String(pool?.token1Symbol)
+            String(pool?.token1.symbol)
               .toUpperCase()
               .includes(String(token1.symbol))
         ).filter(
           (pool) =>
-            String(pool?.token0Symbol)
+            String(pool?.token0.symbol)
               .toUpperCase()
               .includes(String(token2.symbol)) ||
-            String(pool?.token1Symbol)
+            String(pool?.token1.symbol)
               .toUpperCase()
               .includes(String(token2.symbol))
         );
@@ -117,7 +124,7 @@ export default function HallOfPoolsComponent(props) {
     } else {
       setPools(poolBackup)
     }
-  }, [token1, token2]);
+  }, [token1, token2, poolBackup]);
 
   const createPool = () => {};
 
