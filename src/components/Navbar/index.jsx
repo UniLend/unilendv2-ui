@@ -78,12 +78,12 @@ const handleOpenSwitchNetwork = (visible) => {
   useEffect(() => {
     if (window.ethereum) {
       window.ethereum.on("chainChanged", (chainId) => {
-        window.location.reload();
+        connectWallet();
         window.location.href = window.location.origin;
 
       });
       window.ethereum.on("accountsChanged", function (account) {
-        window.location.reload();
+        connectWallet();
       });
     }
   }, []);
@@ -109,9 +109,9 @@ const handleOpenSwitchNetwork = (visible) => {
     handleDomain(user)
   }, [user]);
 
-  const handleConnect = async (action) => {
+  const handleConnect = async (action, recursion) => {
     setIsWalletModalVisible(false)
-    const user = await connectWallet(action);
+    const user = await connectWallet(action, recursion);
      window.location.reload()
     handleDomain(user)
     dispatch(setUser(user));
@@ -171,11 +171,11 @@ const handleOpenSwitchNetwork = (visible) => {
   const WalletConnectModal = () => {
     return (
       <div className='walletConnectModal'>
-         <div onClick={()=> handleConnect('metamask')}>
+         <div onClick={()=> handleConnect('metamask', true)}>
             <img src={metamaskicon} alt="metamask icon" />
             <p>Connect to Metamask Wallet</p>
          </div>
-         <div onClick={()=> handleConnect('walletConnect')}>
+         <div onClick={()=> handleConnect('walletConnect', true)}>
          <img src={walletconnecticon} alt="walletconnect icon" />
          <p>Connect to WalletConnect Wallet</p>
          </div>
