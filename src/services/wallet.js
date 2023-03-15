@@ -48,7 +48,7 @@ export const handleDisconnect = async () => {
   window.location.reload();
 };
 
-export const connectWallet = async (wallet) => {
+export const connectWallet = async (wallet, recursion=false) => {
   //   await provider.sendAsync('eth_requestAccounts');
   // const net = (await web3.eth.net.getNetworkType()).toUpperCase();  
   const trigerWallet = wallet || localStorage.getItem('wallet');
@@ -61,6 +61,7 @@ export const connectWallet = async (wallet) => {
           return res;
         })
         localStorage.setItem('wallet', 'metamask')
+        console.log("USerObject", data);
       } catch (error) {
         const isError = (error?.message == 'Connector already connected')
         if(!isError){
@@ -82,12 +83,12 @@ export const connectWallet = async (wallet) => {
       })
       localStorage.setItem('wallet', 'walletConnect')
     }
- 
     const user = getAccount()
     const { chain, chains } = getNetwork()
     const chainId = chain.id
     const account = user.address;
     
+  
     const bal =  await fetchBalance({
       address: account,
     })
