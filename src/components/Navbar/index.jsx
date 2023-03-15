@@ -77,13 +77,22 @@ const handleOpenSwitchNetwork = (visible) => {
 
   useEffect(() => {
     if (window.ethereum) {
-      window.ethereum.on("chainChanged", (chainId) => {
-        connectWallet();
+      window.ethereum.on("chainChanged", async (chainId) => {
+       const user = await connectWallet();
+      handleDomain(user)
+      dispatch(setUser(user));
         window.location.href = window.location.origin;
 
       });
-      window.ethereum.on("accountsChanged", function (account) {
-        connectWallet();
+      window.ethereum.on("accountsChanged", async (account) => {
+        console.log("account", account);
+        const user = await connectWallet();
+        handleDomain(user)
+        dispatch(setUser(user));
+        setTimeout(() => {
+          
+          window.location.href = window.location.origin;
+        }, 1000);
       });
     }
   }, []);
@@ -111,8 +120,8 @@ const handleOpenSwitchNetwork = (visible) => {
 
   const handleConnect = async (action, recursion) => {
     setIsWalletModalVisible(false)
-    const user = await connectWallet(action, recursion);
-     window.location.reload()
+    const user = await connectWallet(action);
+     //window.location.reload()
     handleDomain(user)
     dispatch(setUser(user));
   };
