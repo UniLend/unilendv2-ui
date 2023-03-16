@@ -699,73 +699,67 @@ export const getHistoryGraphQuery = (address) => {
 export const getPoolCreatedGraphQuery = (address) => {
   const query = gql`
   {
-    positions(where: {owner: "${address}"}) {
-      id
-      owner
-      pool {
+      positions(where: {owner: "${address}"}) {
         id
-        pool
+        owner
+        pool {
+          id
+          pool
+        }
+        lendBalance0
+        lendBalance1
       }
-      lendBalance0
-      lendBalance1
-    }
-    pools {
-      blockNumber
-      blockTimestamp
-      borrowApy0
-      borrowApy1
-      fullLiquidity0
+      pools {
+            token0 {
+      symbol
+      priceUSD
+      poolCount
+      lentCount
+      borrowCount
       id
-      interest0
-      interest1
-      lB
-      lendApy0
-      lendApy1
-      lendingPositionCount
-      liquidity0
-      liquidity1
-      maxLTV
-      openPositionCount
-      pool
-      poolNo
-      positionCount
-      rf
-      token1 {
-        borrowCount
-        decimals
-        id
-        lentCount
-        poolCount
-        priceUSD
-        symbol
-        totalPoolsLiquidity
-        totalPoolsLiquidityUSD
-        txCount
-      }
-      totalBorrow0
-      totalBorrow1
-      totalBorrowBalanceUSD
-      totalLendBalanceUSD
-      totalValueLockedUSD
-      transactionHash
       txCount
-      token0 {
-        symbol
-        priceUSD
-        poolCount
-        lentCount
-        borrowCount
-        id
-        txCount
-        totalPoolsLiquidityUSD
-        totalPoolsLiquidity
-        decimals
-      }
-      cumulativeuLendUSD
-      cumulativeLiquidateUSD
-      cumulativeBorrowUSD
+      totalPoolsLiquidityUSD
+      totalPoolsLiquidity
+      decimals
     }
-  }
+        token1 {
+      symbol
+      priceUSD
+      poolCount
+      lentCount
+      borrowCount
+      id
+      txCount
+      totalPoolsLiquidityUSD
+      totalPoolsLiquidity
+      decimals
+    }
+        borrowApy0
+        borrowApy1
+        UtilizationRate0
+        UtilizationRate1
+        blockNumber
+        blockTimestamp
+        id
+        interest0
+        interest1
+        lB
+        lendApy0
+        lendApy1
+        lendingPositionCount
+        liquidity0
+        liquidity1
+        maxLTV
+        openPositionCount
+        pool
+        poolNo
+        rf
+        totalBorrow0
+        totalBorrow1
+        transactionHash
+        txCount
+      }
+    }
   `
   return query;
 }
