@@ -21,6 +21,8 @@ import faq from '../../assets/faq.svg'
 import copyIcon from '../../assets/copyIcon.svg';
 import doc from '../../assets/document.svg';
 import career from '../../assets/career.svg';
+import eth from '../../assets/eth.svg';
+import polygon from '../../assets/polygon.svg';
 import sun from '../../assets/sun.svg';
 import moon from '../../assets/moon.svg';
 import metamaskicon from '../../assets/metamaskicon.svg';
@@ -47,7 +49,7 @@ export default function Navbar(props) {
   const dispatch = useDispatch();
   const [currentTheme , setCurrentTheme] = useState(theme)
   const {chain: networkchain} = getNetwork()
-  const availableChain = [80001,11155111, 1442]
+  const availableChain = [11155111, 1442]
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -77,13 +79,22 @@ const handleOpenSwitchNetwork = (visible) => {
 
   useEffect(() => {
     if (window.ethereum) {
-      window.ethereum.on("chainChanged", (chainId) => {
-        connectWallet();
+      window.ethereum.on("chainChanged", async (chainId) => {
+       const user = await connectWallet();
+      handleDomain(user)
+      dispatch(setUser(user));
         window.location.href = window.location.origin;
 
       });
-      window.ethereum.on("accountsChanged", function (account) {
-        connectWallet();
+      window.ethereum.on("accountsChanged", async (account) => {
+        console.log("account", account);
+        const user = await connectWallet();
+        handleDomain(user)
+        dispatch(setUser(user));
+        setTimeout(() => {
+          
+          window.location.href = window.location.origin;
+        }, 1000);
       });
     }
   }, []);
@@ -111,8 +122,8 @@ const handleOpenSwitchNetwork = (visible) => {
 
   const handleConnect = async (action, recursion) => {
     setIsWalletModalVisible(false)
-    const user = await connectWallet(action, recursion);
-     window.location.reload()
+    const user = await connectWallet(action);
+     //window.location.reload()
     handleDomain(user)
     dispatch(setUser(user));
   };
@@ -130,15 +141,20 @@ const handleOpenSwitchNetwork = (visible) => {
   const WalletModalBody = () => {
     return (
       <div className='walletModel'>
-        <h1>Wrong Network</h1>
+        <h1>Network Not Supported</h1>
         <p>
-          UniLend V2 is in testnet phase. <br /> Please connect to the Sepolia
-          network.
+          UniLend V2 is in Testnet Phase. <br /> Please Connect to the Below
+          Networks.
         </p>
-        <div>
-          <button onClick={() => handleSwitchNetwork(11155111)}>
-            Switch Network
-          </button>
+        <div className='networks'>
+          <div onClick={() => handleSwitchNetwork(11155111)}>
+            <img src={eth} alt='Etherium'/>
+            <p>Sepolia</p>
+          </div>
+          <div onClick={() => handleSwitchNetwork(1442)}>
+          <img src={eth} alt='Etherium'/>
+            <p>zkEVM</p>
+          </div>
         </div>
       </div>
     );
@@ -162,7 +178,7 @@ const handleOpenSwitchNetwork = (visible) => {
     return (
       <div className="sort_popover">
         <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
-        <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
+        {/* <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p> */}
         <p onClick={() => handleSwitchNetwork(1442)} >  zkEVM Testnet</p>
       </div>
     );

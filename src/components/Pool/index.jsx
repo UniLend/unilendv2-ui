@@ -256,11 +256,21 @@ if(selectedToken && collateralToken){
     }
   };
 
+  useEffect(() => {
+    setMethodLoaded({
+      getPoolData: false,
+      getPoolFullData: false,
+      getOraclePrice: false,
+      getPoolTokensData: false,
+    })
+  }, [user])
+
   // get contract data
   useEffect(() => {
    if(selectedToken === null) setIsPageLoading(true)
     if (contracts.helperContract && contracts.coreContract && Object.values(poolList).length > 0) {
       (async function () {
+        console.log("User Changed", user, methodLoaded);
         if (!methodLoaded.getPoolData) {
           const pool = await getPoolBasicData(contracts, poolAddress, poolData, poolList[poolAddress]);
           setPoolData(pool);
@@ -272,6 +282,7 @@ if(selectedToken && collateralToken){
             poolAddress,
             user.address
           );
+         
           setMethodLoaded({ ...methodLoaded, getPoolFullData: true });
           setPoolData(pool);
         } else if (

@@ -48,7 +48,7 @@ export const handleDisconnect = async () => {
   window.location.reload();
 };
 
-export const connectWallet = async (wallet, recursion=false) => {
+export const connectWallet = async (wallet, ChangedAccount=null) => {
   //   await provider.sendAsync('eth_requestAccounts');
   // const net = (await web3.eth.net.getNetworkType()).toUpperCase();  
   const trigerWallet = wallet || localStorage.getItem('wallet');
@@ -86,14 +86,14 @@ export const connectWallet = async (wallet, recursion=false) => {
     const user = getAccount()
     const { chain, chains } = getNetwork()
     const chainId = chain.id
-    const account = user.address;
+    const account = ChangedAccount || user.address;
     
   
     const bal =  await fetchBalance({
       address: account,
     })
    
-    // console.log("User", "chain", user, chain);
+    console.log("User", "chain", user, chain);
     // const balance = fromWei(web3, bal).slice(0, 6);
     const networkByWeb3 = chain.name.toUpperCase()
     const Currentnetwork = networks[chainId] ? networks[chainId].chainName: networkByWeb3

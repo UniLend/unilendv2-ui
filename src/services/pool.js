@@ -231,6 +231,7 @@ export const getTokenPrice = async (
       // // console.log("Contract", contractInstance);
       
       // console.log("Data", "Read", fromBigNumber(data._balance0), fromBigNumber(contractInstance._balance0));
+  
       const pool = { ...poolData };
       pool.token0.balance = fromBigNumber(data._balance0);
       pool.token0.balanceFixed = fixed2Decimals(
@@ -257,6 +258,7 @@ export const getTokenPrice = async (
 
       pool.token0.tabs = getTabs(pool.token0);
       pool.token1.tabs = getTabs(pool.token1);
+      console.log("getPoolTokensData", pool);
       return pool;
     } catch (error) {
       return error;
