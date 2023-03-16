@@ -119,8 +119,9 @@ function App() {
   const query = getPoolCreatedGraphQuery(user?.address);
   const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
   const state = useSelector((state) => state);
-  const { data, loading, error } = useQuery(query);
 
+  const { data, loading, error } = useQuery(query);
+  console.log("Graph Data", data,  query);
 
   document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`;
 
@@ -297,9 +298,9 @@ function App() {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
 
+    console.log("Graph Data", data);
     if ( data && networkID == 80001) {
      const allPositions = data?.positions
-      console.log("Data", data);
       const poolData = {};
       const tokenList = {};
     const poolsData = Array.isArray(data.pools) && data.pools
