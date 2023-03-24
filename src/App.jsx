@@ -236,7 +236,7 @@ function App() {
             for (const poolElement of reverseResult) {
               poolData[poolElement.pool] = {
                 poolAddress: poolElement.pool,
-                hide: false,
+                hide: hidePools.includes(poolElement.pool),
                 token0: {
                   ...tokenList[poolElement.token0],
                   address: poolElement.token0,
