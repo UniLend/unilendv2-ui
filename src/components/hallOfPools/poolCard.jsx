@@ -46,11 +46,11 @@ export default function PoolCard({pool}) {
       <div className='pool_data'>
        <div>
         <p>Total Supply</p>
-        <h5> {totalLiquidity !== undefined? '$'+ Number(totalLiquidity).toFixed(2): '$1,25,000' } </h5>
+        <h5> {totalLiquidity !== undefined? '$'+ Number(totalLiquidity).toFixed(2): '$125000' } </h5>
        </div>
        <div>
        <p>Total Borrowed</p>
-        <h5>{totalBorrowed !== undefined? '$'+ Number(totalBorrowed).toFixed(2): '$30,000' }</h5>
+        <h5>{totalBorrowed !== undefined? '$'+ Number(totalBorrowed).toFixed(2): '$30000' }</h5>
        </div>
       </div>
       <div className='pool_footer'>
