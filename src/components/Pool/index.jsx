@@ -256,14 +256,14 @@ if(selectedToken && collateralToken){
     }
   };
 
-  useEffect(() => {
-    setMethodLoaded({
-      getPoolData: false,
-      getPoolFullData: false,
-      getOraclePrice: false,
-      getPoolTokensData: false,
-    })
-  }, [user])
+  // useEffect(() => {
+  //   setMethodLoaded({
+  //     getPoolData: false,
+  //     getPoolFullData: false,
+  //     getOraclePrice: false,
+  //     getPoolTokensData: false,
+  //   })
+  // }, [user])
 
   // get contract data
   useEffect(() => {
