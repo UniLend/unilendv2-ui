@@ -130,7 +130,6 @@ if(selectedToken && collateralToken){
       if (receipt.status == 1) {
         message.success(`Transaction for ${txnData.method} of ${Number(txnData.amount).toFixed(4)} for token ${txnData.tokenSymbol}`, 5)
         setMethodLoaded({ ...methodLoaded, getPoolFullData: false, getOraclePrice: false, getPoolTokensData: false });
-
         if(txnData.method !== 'approval') {
           setAmount(0);
           setShowTwitterModal(true)

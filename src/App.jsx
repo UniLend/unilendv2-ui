@@ -78,7 +78,7 @@ const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
   [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet],
-  [ publicProvider(), infuraProvider({ apiKey: infuraID }),  alchemyProvider({ apiKey: alchemyId })]
+  [ alchemyProvider({ apiKey: alchemyId }), publicProvider(), infuraProvider({ apiKey: infuraID }),]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
