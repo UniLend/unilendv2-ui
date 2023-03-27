@@ -397,7 +397,7 @@ if(selectedToken && collateralToken){
 
   return (
     <>
-    { (isPageLoading)? <PoolSkeleton/> :
+    { (isPageLoading ) && selectedToken == null? <PoolSkeleton/> :
     <div className="pool_container">
       <div className="token_container">
         <div
@@ -521,13 +521,13 @@ if(selectedToken && collateralToken){
             <p>
               <span>Liquidity</span>
               <span>
-                {Number(selectedToken?.liquidityFixed).toFixed(2)}{" "}
+                { isNaN(Number(selectedToken?.liquidityFixed).toFixed(2)) ? 0: Number(selectedToken?.liquidityFixed).toFixed(2)}{" "}
                 {selectedToken?._symbol}
               </span>
             </p>
             <p>
               <span>Utilization</span>
-              <span>{selectedToken?.utilRate} </span>
+              <span>{ isNaN(selectedToken?.utilRate) ? 0: selectedToken?.utilRate } </span>
             </p>
             <p>
               <span>Oracle</span>
@@ -545,14 +545,14 @@ if(selectedToken && collateralToken){
               <span>{activeOperation} APY</span>
               <h3>
                 {activeOperation === lend
-                  ? Number(selectedToken?.lendAPY).toFixed(4)
-                  : Number(selectedToken?.borrowAPY).toFixed(4)}
+                  ? isNaN(Number(selectedToken?.lendAPY).toFixed(4)) ? 0 : Number(selectedToken?.lendAPY).toFixed(4)
+                  : isNaN(Number(selectedToken?.borrowAPY).toFixed(4)) ? 0 : Number(selectedToken?.borrowAPY).toFixed(4) }
                 %
               </h3>
             </div>
             <div>
               <span>Utilization rate</span>
-              <h3>{selectedToken?.utilRate}%</h3>
+              <h3>{ isNaN(selectedToken?.utilRate) ? 0: selectedToken?.utilRate }%</h3>
             </div>
             <div>
               <span>Health Factor</span>
