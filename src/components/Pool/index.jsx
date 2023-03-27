@@ -313,19 +313,19 @@ if(selectedToken && collateralToken){
       
       const isAllTrue = Object.values(methodLoaded).find((el) => el === false);
       if (isAllTrue === undefined && selectedToken !==null && selectedToken?._symbol === poolData?.token0?._symbol) {
-        setSelectedToken(poolData.token0);
-        setCollaterralToken(poolData.token1);
-        setActiveOperation(poolData.token0.tabs[0]);
+        setSelectedToken(poolData?.token0);
+        setCollaterralToken(poolData?.token1);
+        setActiveOperation(poolData?.token0?.tabs[0]);
         setActiveToken(0)
         setIsPageLoading(false)
       } else if(isAllTrue === undefined && selectedToken !== null){
-        setSelectedToken(poolData.token1);
-        setCollaterralToken(poolData.token0);
+        setSelectedToken(poolData?.token1);
+        setCollaterralToken(poolData?.token0);
         setActiveOperation(poolData?.token1?.tabs[0]);
         setIsPageLoading(false)
       } else if(isAllTrue === undefined) {
-        setSelectedToken(poolData.token0);
-        setCollaterralToken(poolData.token1);
+        setSelectedToken(poolData?.token0);
+        setCollaterralToken(poolData?.token1);
         setActiveOperation(poolData?.token0?.tabs[0]);
         setActiveToken(0)
         setIsPageLoading(false)
