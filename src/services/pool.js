@@ -10,7 +10,8 @@ import {
   mul,
   sub,
   toAPY,
-  fromBigNumber
+  fromBigNumber,
+  fixed2Decimals18
 } from '../helpers/contracts';
 import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
@@ -597,7 +598,7 @@ export const handleLend = async (
   }
 
   try {
-    if (greaterThan(selectedToken.allowance, amount)) {
+    if (fixed2Decimals18(selectedToken.allowance) >= amount) {
 
        const instance  = await getContractInstance(contracts.coreContract.address, coreAbi)
       // const signer = await fetchSigner()
@@ -682,8 +683,7 @@ export const handleBorrow = async (
     Amount = mul(Amount, -1);
   }
   try {
-    if (greaterThan(collateralToken.allowance, collateral)) {
-
+    if (fixed2Decimals18(collateralToken.allowance) >= collateral) {
 
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
 

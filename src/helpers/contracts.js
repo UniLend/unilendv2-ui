@@ -110,8 +110,12 @@ export function decimal2Fixed(amount, decimals) {
   return newNum;
 }
 
-export function fixed2Decimals(amount, decimals) {
+export function fixed2Decimals(amount, decimals=18) {
   return new BigNumber(amount?._hex).dividedBy(10 ** decimals).toFixed();
+}
+
+export function fixed2Decimals18(amount, decimals=18){
+  return new BigNumber(amount).dividedBy(10 ** decimals).toFixed();
 }
 
 export function fromBigNumber(bignumber){
@@ -188,13 +192,13 @@ export const getActionBtn = (activeOperation, amount, selectedToken, collateralT
   if (amount <= 0) {
     btn = { text: "Enter Amount", disable: true };
   } else if (amount && activeOperation === lend) {
-    if ( Number(selectedToken?.allowance) <= 0) {
+    if (fixed2Decimals18(selectedToken?.allowance) < amount) {
       btn = { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.balanceFixed)) {
       btn = { text: "Low Balance in Wallet", disable: true };
     }
   } else if (amount && activeOperation === borrow) {
-    if ( Number(collateralToken?.allowance) <= 0) {
+    if ( fixed2Decimals18(collateralToken?.allowance) <= collateral) {
       btn = { text: "Approve " + collateralToken?._symbol };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
       btn = { text: "Not Enough Liquidity", disable: true };

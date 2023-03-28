@@ -130,7 +130,6 @@ if(selectedToken && collateralToken){
       if (receipt.status == 1) {
         message.success(`Transaction for ${txnData.method} of ${Number(txnData.amount).toFixed(4)} for token ${txnData.tokenSymbol}`, 5)
         setMethodLoaded({ ...methodLoaded, getPoolFullData: false, getOraclePrice: false, getPoolTokensData: false });
-
         if(txnData.method !== 'approval') {
           setAmount(0);
           setShowTwitterModal(true)
@@ -256,14 +255,14 @@ if(selectedToken && collateralToken){
     }
   };
 
-  useEffect(() => {
-    setMethodLoaded({
-      getPoolData: false,
-      getPoolFullData: false,
-      getOraclePrice: false,
-      getPoolTokensData: false,
-    })
-  }, [user])
+  // useEffect(() => {
+  //   setMethodLoaded({
+  //     getPoolData: false,
+  //     getPoolFullData: false,
+  //     getOraclePrice: false,
+  //     getPoolTokensData: false,
+  //   })
+  // }, [user])
 
   // get contract data
   useEffect(() => {
@@ -313,19 +312,19 @@ if(selectedToken && collateralToken){
       
       const isAllTrue = Object.values(methodLoaded).find((el) => el === false);
       if (isAllTrue === undefined && selectedToken !==null && selectedToken?._symbol === poolData?.token0?._symbol) {
-        setSelectedToken(poolData.token0);
-        setCollaterralToken(poolData.token1);
-        setActiveOperation(poolData.token0.tabs[0]);
+        setSelectedToken(poolData?.token0);
+        setCollaterralToken(poolData?.token1);
+        setActiveOperation(poolData?.token0?.tabs[0]);
         setActiveToken(0)
         setIsPageLoading(false)
       } else if(isAllTrue === undefined && selectedToken !== null){
-        setSelectedToken(poolData.token1);
-        setCollaterralToken(poolData.token0);
+        setSelectedToken(poolData?.token1);
+        setCollaterralToken(poolData?.token0);
         setActiveOperation(poolData?.token1?.tabs[0]);
         setIsPageLoading(false)
       } else if(isAllTrue === undefined) {
-        setSelectedToken(poolData.token0);
-        setCollaterralToken(poolData.token1);
+        setSelectedToken(poolData?.token0);
+        setCollaterralToken(poolData?.token1);
         setActiveOperation(poolData?.token0?.tabs[0]);
         setActiveToken(0)
         setIsPageLoading(false)
@@ -397,7 +396,7 @@ if(selectedToken && collateralToken){
 
   return (
     <>
-    { (isPageLoading)? <PoolSkeleton/> :
+    { (isPageLoading ) && selectedToken == null? <PoolSkeleton/> :
     <div className="pool_container">
       <div className="token_container">
         <div
@@ -521,13 +520,13 @@ if(selectedToken && collateralToken){
             <p>
               <span>Liquidity</span>
               <span>
-                {Number(selectedToken?.liquidityFixed).toFixed(2)}{" "}
+                { isNaN(Number(selectedToken?.liquidityFixed).toFixed(2)) ? 0: Number(selectedToken?.liquidityFixed).toFixed(2)}{" "}
                 {selectedToken?._symbol}
               </span>
             </p>
             <p>
               <span>Utilization</span>
-              <span>{selectedToken?.utilRate} </span>
+              <span>{ isNaN(selectedToken?.utilRate) ? 0: selectedToken?.utilRate } </span>
             </p>
             <p>
               <span>Oracle</span>
@@ -545,14 +544,14 @@ if(selectedToken && collateralToken){
               <span>{activeOperation} APY</span>
               <h3>
                 {activeOperation === lend
-                  ? Number(selectedToken?.lendAPY).toFixed(4)
-                  : Number(selectedToken?.borrowAPY).toFixed(4)}
+                  ? isNaN(Number(selectedToken?.lendAPY).toFixed(4)) ? 0 : Number(selectedToken?.lendAPY).toFixed(4)
+                  : isNaN(Number(selectedToken?.borrowAPY).toFixed(4)) ? 0 : Number(selectedToken?.borrowAPY).toFixed(4) }
                 %
               </h3>
             </div>
             <div>
               <span>Utilization rate</span>
-              <h3>{selectedToken?.utilRate}%</h3>
+              <h3>{ isNaN(selectedToken?.utilRate) ? 0: selectedToken?.utilRate }%</h3>
             </div>
             <div>
               <span>Health Factor</span>
