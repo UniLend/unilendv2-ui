@@ -149,12 +149,12 @@ export default function HallOfPoolsComponent(props) {
           >
             All Pools
           </Button>
-          <Button
+          {/* <Button
             onClick={() => setMyPoolTab(true)}
             className={`pool_btn ${myPoolTab ? "active_btn" : ""}`}
           >
             My Pools
-          </Button>
+          </Button> */}
         </div>
         <DropDown list={sortList} />
       </div>
