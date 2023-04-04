@@ -28,9 +28,7 @@ export const handleWrapAndDelegate = async (
   try {
 
     const instance = await getContractInstance(governanceAddress, govABI);
-    const txs = await instance.wrap(delegateAddress, fixedAmount, {
-      gasLimit: 210000,
-    });
+    const txs = await instance.wrap(delegateAddress, fixedAmount);
     const txtData = {
         message: `Wrap and Delegate ${amount} UFT `
     }
@@ -60,16 +58,13 @@ export const setApproval = async (contractAddress, abi, userAddress, checkTxnSta
       "115792089237316195423570985008687907853269984665640564039457584007913129639935";
     const instance = await getContractInstance(contractAddress, abi);
 
-    const txs = await instance.approve(userAddress, maxAllow, {
-      gasLimit: 210000,
-    });
+    const txs = await instance.approve(userAddress, maxAllow);
     const txtData = {
         message: `Approval Successfull! `
     }
     checkTxnStatus(txs?.hash, txtData);
 
   } catch (error) {
-    alert("Error")
     checkTxnError(error)
   }
 };
@@ -89,16 +84,13 @@ export const handleUnWrap = async (governanceAddress, govABI, amount, checkTxnSt
         //     Differance: (frombig - fixedAmount),
         //     DifferanceDec: (frombig- fixedAmount)/(10**18)
         // });
-        const txs = await instance.unwrap(fixedAmount, {
-          gasLimit: 210000,
-        });
+        const txs = await instance.unwrap(fixedAmount);
         
         const txtData = {
             message: `Unwrap ${amount} UFTG `
         }
         checkTxnStatus(txs?.hash, txtData);
     } catch (error) {
-        alert("Error")
         console.log("ERror:",{error});
         checkTxnError(error)
     }
@@ -115,9 +107,7 @@ export const handleUpdateDelegate = async (
     try {
         const instance = await getContractInstance(governanceAddress, govABI);
      
-        const txs = await instance.delegate(delegateAddress, {
-          gasLimit: 210000,
-        });
+        const txs = await instance.delegate(delegateAddress);
         const txtData = {
            message: `Delegation Updated to ${delegateAddress} `
         }
