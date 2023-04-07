@@ -1,11 +1,11 @@
-.poolcard {  
+.poolcard {
   height: 200px;
   background-color: var(--pure-white);
   border-radius: 15px;
   box-shadow: var(--box-shadow);
   cursor: pointer;
   transition: all 0.5s;
-  &:hover{
+  &:hover {
     transform: scale(1.05);
   }
   .pool_icons {
@@ -20,7 +20,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      &:first-child{
+      &:first-child {
         border-right: 1px solid var(--border-gray);
       }
 
@@ -38,43 +38,74 @@
       }
     }
   }
-  .pool_data{
+  .pool_data {
     display: flex;
     height: 35%;
-    div{
-        width: 50%;
-        border-bottom: 1px solid var(--border-gray);
-        &:first-child{
-            border-right: 1px solid var(--border-gray);
-          }
-        p,h5{
-            margin: 10px;
-            text-align: center;
-        }
-        p{
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--light-gray);
-            margin-top: 15px;
-        }
-        h5{
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--sharp-blue);
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    div {
+      width: 50%;
+      border-bottom: 1px solid var(--border-gray);
+      &:first-child {
+        border-right: 1px solid var(--border-gray);
+      }
+      p,
+      h5 {
+        margin: 10px;
+        text-align: center;
+      }
+      p {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--light-gray);
+        margin-top: 15px;
+      }
+      h5 {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--sharp-blue);
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }
-  .pool_footer{
+  .pool_footer {
     text-align: center;
     font-size: 11px;
     display: flex;
     align-items: center;
     justify-content: center;
-    p{
-        color: var(--light-gray);
-        margin: 10px;
+    p {
+      color: var(--light-gray);
+      margin: 10px;
+    }
+  }
+  .footer_img{
+    display: none;
+  }
+}
+.pool_theme {
+  position: relative;
+
+  background: linear-gradient(
+    109.08deg,
+    #cc9156 0%,
+    #edc093 50.05%,
+    #da9855 100.11%
+  );
+  .pool_footer > p,
+  .pool_data > div > p,
+  .pool_data > div > h5,
+  .pool_icons > div > h5 {
+    color: white;
+    z-index: 1;
+  }
+  .footer_img {
+    display: block;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 100%;
+    img {
+      width: 100%;
     }
   }
 }
