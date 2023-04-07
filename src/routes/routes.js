@@ -4,7 +4,7 @@ export const openRoutes = [
   {
     path: '/',
     exact: true,
-    element: lazy(() => import('../pages/heropage')),
+    element: lazy(() => import('../pages/heroPage')),
   },
   {
     path: '/pools',
