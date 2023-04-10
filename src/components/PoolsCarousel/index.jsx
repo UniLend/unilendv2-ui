@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Carousel from "react-simply-carousel";
-import { FaChevronDown } from 'react-icons/fa'
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
+import { RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri'
+import { FiChevronRight, FiLock} from 'react-icons/fi'
 import PoolCard from "../hallOfPools/poolCard";
 import "./styles/index.scss";
 import PoolCardSkeleton from "../Loader/PoolCardSkeleton";
@@ -79,13 +79,13 @@ export default function PoolCarousel({ pools, isLoading }) {
             }}
             forwardBtnProps={{
               children: (
-                <RightOutlined style={{ fontSize: "15px", fontWeight: 700 }} />
+                <RiArrowRightSLine style={{ fontSize: "25px", fontWeight: 700, position:'relative', right: '5px' }} />
               ),
               className: "forwardBtnProps",
             }}
             backwardBtnProps={{
               children: (
-                <LeftOutlined style={{ fontSize: "15px", fontWeight: 700 }} />
+                <RiArrowLeftSLine style={{ fontSize: "25px", fontWeight: 700, position:'relative', right: '5px' }} />
               ),
               className: "backwardBtnProps",
             }}
@@ -125,13 +125,13 @@ export default function PoolCarousel({ pools, isLoading }) {
             }}
             forwardBtnProps={{
               children: (
-                <RightOutlined style={{ fontSize: "15px", fontWeight: 700 }} />
+                <RiArrowRightSLine style={{ fontSize: "25px", fontWeight: 700, position:'relative', right: '5px' }} />
               ),
               className: "forwardBtnProps",
             }}
             backwardBtnProps={{
               children: (
-                <LeftOutlined style={{ fontSize: "15px", fontWeight: 700 }} />
+                <RiArrowLeftSLine style={{ fontSize: "25px", fontWeight: 700, position:'relative', right: '5px' }} />
               ),
               className: "backwardBtnProps",
             }}
