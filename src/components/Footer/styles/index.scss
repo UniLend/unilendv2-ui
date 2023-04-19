@@ -27,10 +27,10 @@ footer, .footer_nav{
     justify-content: center;
     a{
         margin: 0px 10px;
-        color: var(--light-gray);
+        color: var(--sharp-blue); 
         font-weight: 600;
         &:hover{
-            color: var(--sharp-blue);
+            color: var(--light-gray);
         }
     }
 }
@@ -42,10 +42,10 @@ footer, .footer_nav{
         width: 200px;
         margin: auto;
         a{
-            color: var(--light-gray);
+            color: var(--sharp-blue);
             cursor: pointer;
             &:hover{
-                color: var(--sharp-blue);
+                color: var(--light-gray); 
             }
         }
     }

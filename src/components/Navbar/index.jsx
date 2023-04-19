@@ -256,18 +256,18 @@ const handleOpenSwitchNetwork = (visible) => {
           </a> :
            <a href='#' className='disable_route'>
            Dashboard
-           <LockOutlined style={{ marginLeft: '5px' }} />
+           <FiLock style={{ marginLeft: '5px' }} />
          </a> 
 
         }
       
           <a href='#' className='disable_route'>
             Vote
-            <LockOutlined style={{ marginLeft: '5px' }} />
+            <FiLock style={{ marginLeft: '5px' }} />
           </a>
           <a href='#' className='disable_route'>
             Rewards
-            <LockOutlined style={{ marginLeft: '5px' }} />
+            <FiLock style={{ marginLeft: '5px' }} />
           </a>
           { true && <a
             href='/history'

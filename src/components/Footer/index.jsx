@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Link } from 'react-router-dom';
+import { FiLock } from 'react-icons/fi';
 import {
   FaLinkedinIn,
   FaInstagram,
@@ -29,9 +30,9 @@ export default function Footer() {
   return (
     <>
     <footer>
-      {/* <div className='poolFooter-copyright'>
+      <div className='poolFooter-copyright'>
         <p>©2022 UniLend. All Rights Reserved.</p>
-      </div> */}
+      </div>
       <div className='poolFooter-content'>
           <a href='https://unilend.gitbook.io/unilend-finance/' target='_blank'>
             Gitbook
@@ -87,17 +88,17 @@ export default function Footer() {
           </a> :
            <a href='#' className='disable_route'>
            Dashboard
-           <LockOutlined style={{ marginLeft: '5px' }} />
+           <FiLock style={{ marginLeft: '5px' }} />
          </a> 
 
         }
         <a href="#" className='disable_route'>
           Vote
-          <LockOutlined style={{marginLeft: '5px'}}/>
+          <FiLock style={{marginLeft: '5px'}}/>
         </a>
         <a href="#" className='disable_route'>
           Rewards
-          <LockOutlined style={{marginLeft: '5px'}}/>
+          <FiLock style={{marginLeft: '5px'}}/>
         </a>
         <a href="/history"
         className={`${pathname === '/history' ? 'active' : ''}`}
