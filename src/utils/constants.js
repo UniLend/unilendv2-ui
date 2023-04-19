@@ -143,6 +143,9 @@ const tokensBYSymbol = {
   },
   "BUNNY":{
     "logo":"https://i.imgur.com/KdK30Uo.png"
+  },
+  "FLOKI":{
+    "logo": "https://i.imgur.com/JYTPKWf.jpg"
   }
 };
 

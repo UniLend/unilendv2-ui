@@ -87,13 +87,11 @@ const handleOpenSwitchNetwork = (visible) => {
 
       });
       window.ethereum.on("accountsChanged", async (account) => {
-        console.log("account", account);
         const user = await connectWallet();
         handleDomain(user)
         dispatch(setUser(user));
-        setTimeout(() => {
-          
-          window.location.href = window.location.origin;
+        setTimeout(() => { 
+          window.location.reload()
         }, 1000);
       });
     }
