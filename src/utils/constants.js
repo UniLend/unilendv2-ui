@@ -234,6 +234,7 @@ const hidePools = [
   "0x0367B8fBc7ef37FCFda55a74e62a9e439CcB6Af1",
   "0x04D3eF50171b7B74E2921519A397C2Cf215De3e1",
   '0x8B01ffB7DED9d46bb8149BB3dB0D5BA67C55C755',
+  '0x8DBEdC5Ed650654dCC0D1ad92929124d097fe686'
 ];
 
 export { tokensBYSymbol, tokensByAddress, hidePools };
