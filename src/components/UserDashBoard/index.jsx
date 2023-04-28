@@ -176,8 +176,12 @@ export default function UserDashboardComponent(props) {
   useEffect(() => {
     if (data) {
    console.log("DATA", data);
-      const position = getPositionData(data);
-     
+ 
+   (async () => {
+     const position = await getPositionData(data, contracts);
+      console.log("getposition", position );
+
+     if(position){
       setPositionData(position);
       setPositionDataBackup(position);
        const pieChart = getPieChartValues(position) //getChartData(data, tokenList);
@@ -208,6 +212,8 @@ export default function UserDashboardComponent(props) {
       }
       setHeaderAnalytics(analytics);
      }
+    })()
+    }
   }, [data, tokenList]);
 
   const getUserTokens = async (address) => {
@@ -221,6 +227,10 @@ export default function UserDashboardComponent(props) {
        setWalletTokenLoading(false);
     });
   };
+
+  const checkNaN = (value) => {
+   return isNaN(value) ? 0: value
+  }
 
   useEffect(() => {
     const account = getAccount();
@@ -262,10 +272,10 @@ export default function UserDashboardComponent(props) {
                 <div className="values">
                   <p>Net Worth</p>
                   <h5>
-                    {Number(
+                    { checkNaN(Number(
                       pieChartInputs?.lendValues?.total -
                         pieChartInputs?.borrowValues?.total
-                    ).toFixed(2) || 0}
+                    ).toFixed(2)) || 0}
                   </h5>
                 </div>
               </div>
@@ -326,7 +336,7 @@ export default function UserDashboardComponent(props) {
               <div>
                 <div>
                   <p>Total Lend</p>
-                  <h5>{Number(pieChartInputs?.lendValues?.total).toFixed(4) || 0}</h5>
+                  <h5>{ checkNaN(Number(pieChartInputs?.lendValues?.total).toFixed(4) )|| 0}</h5>
                 </div>
                 {/* <div>
                   {" "}
@@ -357,7 +367,7 @@ export default function UserDashboardComponent(props) {
               <div>
                 <div>
                   <p>Total Borrow</p>
-                  <h5>{ Number(pieChartInputs?.borrowValues?.total).toFixed(4) || 0}</h5>
+                  <h5>{checkNaN(Number(pieChartInputs?.borrowValues?.total).toFixed(4)) || 0}</h5>
                 </div>
                 {/* <div>
                   {" "}
@@ -556,10 +566,10 @@ export default function UserDashboardComponent(props) {
                           <span>{Number(pool?.borrowBalance).toFixed(2)}</span>
                           <span>{Number(pool?.apy).toFixed(3)}%</span>
                           <span>
-                            {(Number(pool?.currentLTV) * 100).toFixed(2)}
+                            {(Number(pool?.currentLTV) ).toFixed(2)}%
                           </span>
                           <span>
-                            {Number(pool?.healthFactor / 10 ** 18).toFixed(2)}
+                            {Number(pool?.healthFactor)}
                           </span>
                           <span>
                             <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
@@ -571,10 +581,10 @@ export default function UserDashboardComponent(props) {
                           </span>
                           <span>
                             {Number(pool?.apy).toFixed(3)}% <br />{" "}
-                            {Number(pool?.healthFactor / 10 ** 18).toFixed(2)}{" "}
+                            {Number(pool?.healthFactor)}
                           </span>
                           <span>
-                            {(Number(pool?.currentLTV) * 100).toFixed(2)}
+                            {(Number(pool?.currentLTV) ).toFixed(2)}%
                           </span>
                         </div>
                       );
