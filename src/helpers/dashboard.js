@@ -2,7 +2,7 @@ import { getTokenLogo } from "../utils";
 import { gql } from "@apollo/client";
 import { fetchBalance, getContract, getProvider } from "@wagmi/core";
 import { erc20Abi } from "../core/contractData/abi";
-import { decimal2Fixed, fixed2Decimals, fromBigNumber, greaterThan } from "./contracts";
+import { add, decimal2Fixed, div, fixed2Decimals, fromBigNumber, greaterThan, mul, toAPY } from "./contracts";
 import { ethers } from "ethers";
 
 export const findTokenPrice = (list, address) => {
@@ -187,7 +187,7 @@ export const getPositionData = async (data, contracts) => {
   for (const object of position) {
     const positionPoolAddress = object.pool.pool;
 
-    const [ realTimePoolData, priceInBigNumber ] = await Promise.all([
+    const [ realTimePoolData, priceInBigNumber , poolBasicData] = await Promise.all([
       contracts.helperContract.getPoolFullData(
         contracts.positionContract.address,
         positionPoolAddress,
@@ -197,8 +197,24 @@ export const getPositionData = async (data, contracts) => {
         object.pool.token0.id,
         object.pool.token1.id,
           decimal2Fixed(1, 18)
-       )]
+       ),
+       contracts.helperContract.getPoolData(positionPoolAddress)
+      ]
     ) 
+
+    const token0Liq = fromBigNumber(poolBasicData._token0Liquidity)
+    const token1Liq = fromBigNumber(poolBasicData._token1Liquidity)
+    const decimals0 = fromBigNumber(poolBasicData._decimals0)
+    const decimals1 = fromBigNumber(poolBasicData._decimals1)
+    const totLiqFull0 = add(
+      div(mul(token0Liq, 100), fromBigNumber(poolBasicData.rf)),
+     fromBigNumber(realTimePoolData._totalBorrow0)
+    );
+
+    const totLiqFull1 = add(
+      div(mul(token1Liq, 100), fromBigNumber(poolBasicData.rf)),
+      fromBigNumber(realTimePoolData._totalBorrow1)
+    );
 
     // const realTimePoolData = await contracts.helperContract.getPoolFullData(
     //   contracts.positionContract.address,
@@ -217,7 +233,8 @@ export const getPositionData = async (data, contracts) => {
     console.log(
       "getPositionData",
       "pooldata",
-      realTimePoolData
+      realTimePoolData,
+      poolBasicData
     )
    
     if (object.borrowBalance0 > 0 && object.borrowBalance1 == 0) {
@@ -230,7 +247,9 @@ export const getPositionData = async (data, contracts) => {
       BorrowObj.tokenSymbol = object.pool.token0.symbol;
       BorrowObj.token = object.pool.token0;
       BorrowObj.pool = object.pool;
-      BorrowObj.apy = object.pool.borrowApy0;
+      BorrowObj.apy = toAPY(
+        fixed2Decimals(realTimePoolData._interest0, 18)
+      )//object.pool.borrowApy0;
       BorrowObj.healthFactor = greaterThan(
         fixed2Decimals(realTimePoolData._healthFactor0, 18),
         100
@@ -256,7 +275,10 @@ export const getPositionData = async (data, contracts) => {
       LendObj.tokenSymbol = object.pool.token1.symbol;
       LendObj.pool = object.pool;
       LendObj.token = object.pool.token1;
-      LendObj.apy = object.pool.lendApy1;
+      LendObj.apy = div(
+        toAPY(fixed2Decimals(realTimePoolData._interest1, 18)),
+        div(totLiqFull1, fromBigNumber(realTimePoolData._totalBorrow1))
+      );
       LendObj.currentLTV = calculateCurrentLTV(fixedToShort(
         fromBigNumber(realTimePoolData._borrowBalance0)
       ), fixedToShort(
@@ -296,7 +318,9 @@ export const getPositionData = async (data, contracts) => {
         token1Symbol: object.pool.token1.symbol,
         token1Logo: getTokenLogo(object.pool.token1.symbol),
       };
-      BorrowObj.apy = object.pool.borrowApy1;
+      BorrowObj.apy = toAPY(
+        fixed2Decimals(realTimePoolData._interest1, 18)
+      );
       BorrowObj.healthFactor = greaterThan(
         fixed2Decimals(realTimePoolData._healthFactor1, 18),
         100
@@ -316,7 +340,10 @@ export const getPositionData = async (data, contracts) => {
       LendObj.tokenSymbol = object.pool.token0.symbol;
       LendObj.pool = object.pool;
       LendObj.token = object.pool.token0;
-      LendObj.apy = object.pool.lendApy0;
+      LendObj.apy = div(
+        toAPY(fixed2Decimals(realTimePoolData._interest0, 18)),
+        div(totLiqFull0, fromBigNumber(realTimePoolData._totalBorrow0))
+      );
       LendObj.currentLTV = calculateCurrentLTV(fixedToShort(
         fromBigNumber(realTimePoolData._borrowBalance1)
       ), fixedToShort(
@@ -346,7 +373,10 @@ export const getPositionData = async (data, contracts) => {
       LendObj.tokenSymbol = object.pool.token0.symbol;
       LendObj.token = object.pool.token0;
       LendObj.pool = object.pool;
-      LendObj.apy = object.pool.lendApy0;
+      LendObj.apy = div(
+        toAPY(fixed2Decimals(realTimePoolData._interest0, 18)),
+        div(totLiqFull0, fromBigNumber(realTimePoolData._totalBorrow0))
+      );
       LendObj.currentLTV = calculateCurrentLTV(fixedToShort(
         fromBigNumber(realTimePoolData._borrowBalance1)
       ), fixedToShort(
@@ -376,7 +406,10 @@ export const getPositionData = async (data, contracts) => {
       LendObj.tokenSymbol = object.pool.token1.symbol;
       LendObj.pool = object.pool;
       LendObj.token = object.pool.token1;
-      LendObj.apy = object.pool.lendApy1;
+      LendObj.apy = div(
+        toAPY(fixed2Decimals(realTimePoolData._interest1, 18)),
+        div(totLiqFull1, fromBigNumber(realTimePoolData._totalBorrow1))
+      );
       LendObj.currentLTV = calculateCurrentLTV(fixedToShort(
         fromBigNumber(realTimePoolData._borrowBalance0)
       ), fixedToShort(
@@ -406,7 +439,10 @@ export const getPositionData = async (data, contracts) => {
       LendObj1.tokenSymbol = object.pool.token0.symbol;
       LendObj1.pool = object.pool;
       LendObj1.token = object.pool.token0;
-      LendObj1.apy = object.pool.lendApy0;
+      LendObj1.apy = div(
+        toAPY(fixed2Decimals(realTimePoolData._interest0, 18)),
+        div(totLiqFull0, fromBigNumber(realTimePoolData._totalBorrow0))
+      );
       LendObj1.currentLTV = calculateCurrentLTV(fixedToShort(
         fromBigNumber(realTimePoolData._borrowBalance1)
       ), fixedToShort(
@@ -436,7 +472,10 @@ export const getPositionData = async (data, contracts) => {
       LendObj2.tokenSymbol = object.pool.token1.symbol;
       LendObj2.pool = object.pool;
       LendObj2.token = object.pool.token1;
-      LendObj2.apy = object.pool.lendApy1;
+      LendObj2.apy = div(
+        toAPY(fixed2Decimals(realTimePoolData._interest1, 18)),
+        div(totLiqFull1, fromBigNumber(realTimePoolData._totalBorrow1))
+      );
       LendObj1.currentLTV = calculateCurrentLTV(fixedToShort(
         fromBigNumber(realTimePoolData._borrowBalance0)
       ), fixedToShort(
