@@ -476,11 +476,13 @@ export const getPositionData = async (data, contracts) => {
         toAPY(fixed2Decimals(realTimePoolData._interest1, 18)),
         div(totLiqFull1, fromBigNumber(realTimePoolData._totalBorrow1))
       );
-      LendObj1.currentLTV = calculateCurrentLTV(fixedToShort(
+      LendObj2.currentLTV = calculateCurrentLTV(fixedToShort(
         fromBigNumber(realTimePoolData._borrowBalance0)
       ), fixedToShort(
         fromBigNumber(realTimePoolData._lendBalance1)
       ), price1);
+
+
       LendObj2.healthFactor = greaterThan(
         fixed2Decimals(realTimePoolData._healthFactor1, 18),
         100
@@ -582,14 +584,13 @@ export const getBorrowedPowerUsed = (Positions) => {
   let num = 0;
   let deno = 0;
   for (const position of Positions) {
-    const curentLTV = position.currentLTV;
+     const curentLTV = position.currentLTV;
 
     const tokenUsedInPercentage =
       (Number(curentLTV) /  Number(position.pool.maxLTV)) * 100;
     num += tokenUsedInPercentage * position.LendBalance;
     deno += position.LendBalance;
  
-    console.log("getBorrowedPowerUsed", Positions, tokenUsedInPercentage, curentLTV, position.pool.maxLTV, position.LendBalance);
   }
 
   const usedPower = (num / deno).toFixed(2);
