@@ -12,7 +12,7 @@ import { FaWallet } from "react-icons/fa";
 import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
 import banner from "../../assets/dashboardbanner.svg";
 import { SearchOutlined } from "@ant-design/icons";
-import { Input, Button } from "antd";
+import { Input, Button, Pagination } from "antd";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DonutChart from "../Common/DonutChart";
@@ -69,6 +69,7 @@ export default function UserDashboardComponent(props) {
   const [walletTokens, setWalletTokens] = useState([]);
   const [walletTokenLoading, setWalletTokenLoading] = useState(false);
   const [positionLoading, setPositionLoading] = useState(true);
+  const [walletCurrentPage, setWalletCurrentPage] = useState(1)
 
   const handleLendingVisibleChange = (visible) => {
     setLendingVisible(visible);
@@ -474,7 +475,8 @@ export default function UserDashboardComponent(props) {
             <div className="tbody">
               {!walletTokenLoading &&
                 (walletTokens.length > 0 ? (
-                  walletTokens.map((token, i) => {
+                  walletTokens.slice((walletCurrentPage - 1) * 7, walletCurrentPage * 7)
+                  .map((token, i) => {
                     return (
                       <div key={i} className="tbody_row">
                         <span>
@@ -508,6 +510,17 @@ export default function UserDashboardComponent(props) {
                   );
                 })}
             </div>
+            <div className="pagination">
+        <Pagination
+          current={walletCurrentPage}
+          onChange={(el) => setWalletCurrentPage(el)}
+          pageSize={7}
+          size="small"
+          total={walletTokens.length}
+          showSizeChanger={false}
+          hideOnSinglePage={true}
+        />
+      </div>
           </div>
         </div>
 

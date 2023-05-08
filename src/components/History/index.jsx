@@ -37,6 +37,7 @@ import loader from '../../assets/Eclipse-loader.gif'
   const query = getHistoryGraphQuery(user?.address);
   const [called, setIsCalled] = useState(false)
   const [historyLoading, setHistoryLoading] = useState(false)
+  
  
   const { data, loading, error } = useQuery(query);
  

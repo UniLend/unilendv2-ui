@@ -332,8 +332,7 @@
         .tbody {
           margin: 30px 0px;
           margin-bottom: 10px;
-          min-height: 500px;
-          
+          height: 450px;
           .tbody_row {
             padding: 15px 0px;
             border-bottom: 1px solid var(--border-gray);
@@ -661,4 +660,38 @@
     background-color: aqua;
     border-radius: 50%;
   }
+}
+
+.pagination{
+  display: grid;
+  place-items: center center;
+  padding: 20px;
+}
+
+.ant-pagination-item-active{
+  border-color: var(--sharp-blue);
+  background-color: transparent;
+  a{
+      color: var(--sharp-blue) !important;
+      &:hover{
+          color: var(--sharp-blue) !important;
+      }
+  }
+}
+
+.ant-pagination-item, .ant-pagination-next, .ant-pagination-prev{
+  color: var(--pure-black) !important;
+  a{
+      color: var(--pure-black) ;
+  }
+  &:hover{
+      color: var(--sharp-blue) !important;
+      a{
+          color: var(--sharp-blue) !important;
+      }
+  }
+}
+
+.ant-pagination-prev button, .ant-pagination-next button, .ant-pagination-item-ellipsis {
+  color: var(--pure-black) !important;
 }
