@@ -69,7 +69,11 @@ export default function UserDashboardComponent(props) {
   const [walletTokens, setWalletTokens] = useState([]);
   const [walletTokenLoading, setWalletTokenLoading] = useState(false);
   const [positionLoading, setPositionLoading] = useState(true);
-  const [walletCurrentPage, setWalletCurrentPage] = useState(1)
+  const [walletCurrentPage, setWalletCurrentPage] = useState(1);
+  const [positionCurrentPage, setPositionCurrentPage] = useState({
+    lending:1,
+    borrowing: 1
+  })
 
   const handleLendingVisibleChange = (visible) => {
     setLendingVisible(visible);
@@ -427,7 +431,7 @@ export default function UserDashboardComponent(props) {
                 </div>
               ) : (
                 <div className="pieChart_loader">
-                    <p className="circle skeleton"></p>
+                  <p className="circle skeleton"></p>
                 </div>
               )}
 
@@ -475,24 +479,29 @@ export default function UserDashboardComponent(props) {
             <div className="tbody">
               {!walletTokenLoading &&
                 (walletTokens.length > 0 ? (
-                  walletTokens.slice((walletCurrentPage - 1) * 7, walletCurrentPage * 7)
-                  .map((token, i) => {
-                    return (
-                      <div key={i} className="tbody_row">
-                        <span>
-                          <img onError={imgError} src={token?.logo} alt="uft" />
-                          <p className="hide_for_mobile">
-                            {" "}
-                            {token?.name} / {token?.symbol}
-                          </p>
-                          <p className="hide_for_monitor">{token?.symbol}</p>
-                        </span>
-                        <span>-</span>
-                        <span>{token?.balance}</span>
-                        <span>-</span>
-                      </div>
-                    );
-                  })
+                  walletTokens
+                    .slice((walletCurrentPage - 1) * 7, walletCurrentPage * 7)
+                    .map((token, i) => {
+                      return (
+                        <div key={i} className="tbody_row">
+                          <span>
+                            <img
+                              onError={imgError}
+                              src={token?.logo}
+                              alt="uft"
+                            />
+                            <p className="hide_for_mobile">
+                              {" "}
+                              {token?.name} / {token?.symbol}
+                            </p>
+                            <p className="hide_for_monitor">{token?.symbol}</p>
+                          </span>
+                          <span>-</span>
+                          <span>{token?.balance}</span>
+                          <span>-</span>
+                        </div>
+                      );
+                    })
                 ) : (
                   <Lottie
                     options={defaultOptionsLotti}
@@ -511,16 +520,16 @@ export default function UserDashboardComponent(props) {
                 })}
             </div>
             <div className="pagination">
-        <Pagination
-          current={walletCurrentPage}
-          onChange={(el) => setWalletCurrentPage(el)}
-          pageSize={7}
-          size="small"
-          total={walletTokens.length}
-          showSizeChanger={false}
-          hideOnSinglePage={true}
-        />
-      </div>
+              <Pagination
+                current={walletCurrentPage}
+                onChange={(el) => setWalletCurrentPage(el)}
+                pageSize={7}
+                size="small"
+                total={walletTokens.length}
+                showSizeChanger={false}
+                hideOnSinglePage={true}
+              />
+            </div>
           </div>
         </div>
 
@@ -577,7 +586,8 @@ export default function UserDashboardComponent(props) {
                 </div>
                 <div className="tbody">
                   {positionData?.lendArray?.length > 0 && !positionLoading
-                    ? positionData?.lendArray.map((pool, i) => {
+                    ? positionData?.lendArray.slice((positionCurrentPage.lending - 1) * 5, positionCurrentPage.lending * 5)
+                    .map((pool, i) => {
                         return (
                           <div key={i} className="tbody_row">
                             <span
@@ -647,6 +657,20 @@ export default function UserDashboardComponent(props) {
                       );
                     })}
                 </div>
+              {
+                positionData?.lendArray?.length > 0 && !positionLoading &&
+               <div className="pagination">
+                  <Pagination
+                    current={positionCurrentPage.lending}
+                    onChange={(el) => setPositionCurrentPage({...positionCurrentPage, lending: el})}
+                    pageSize={5}
+                    size="small"
+                    total={positionData?.lendArray?.length}
+                    showSizeChanger={false}
+                    hideOnSinglePage={true}
+                  />
+                </div>
+            }
               </div>
             ) : (
               <div>
@@ -678,7 +702,8 @@ export default function UserDashboardComponent(props) {
                 </div>
                 <div className="tbody">
                   {positionData?.borrowArray?.length > 0 && !positionLoading
-                    ? positionData?.borrowArray.map((pool, i) => {
+                    ? positionData?.borrowArray.slice((positionCurrentPage.borrowing - 1) * 5, positionCurrentPage.borrowing * 5)
+                    .map((pool, i) => {
                         return (
                           <div key={i} className="tbody_row">
                             <span
@@ -748,6 +773,20 @@ export default function UserDashboardComponent(props) {
                       );
                     })}
                 </div>
+                {
+                positionData?.borrowArray?.length > 0 && !positionLoading &&
+               <div className="pagination">
+                  <Pagination
+                    current={positionCurrentPage.borrowing}
+                    onChange={(el) => setPositionCurrentPage({...positionCurrentPage, borrowing: el})}
+                    pageSize={5}
+                    size="small"
+                    total={positionData?.borrowArray?.length}
+                    showSizeChanger={false}
+                    hideOnSinglePage={true}
+                  />
+                </div>
+            }
               </div>
             )}
           </div>
