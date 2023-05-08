@@ -17,10 +17,11 @@ export const contractAddress = { '11155111': {
     poolAddress: '0x84D3B40256879601824A5E4F249d73dAE24D1fA3',
     unilendOracle: '0x7F1455c727e58A51dFA168fd711b8B664E1E48BA',
     uftToken : '0x5093af5dF5EAfd96B518a11cfb32c37DA2f8f0C3',
-    uftgToken: '0x5dabCD04f47Dd4b8A974C9fcBF75cdcdebac6DBb',
-    timeLock:'0xEC8283E65557Fc4E17AA75C56144eFb8eFA3B9e2',
-    delegate: '0xE0555dBE41dA929d6cEbe0b92c4f85679a37ED87',
-    delegator: '0xDdF869E44BD3d5877777f59058F738F4A916fC26'
+    uftgToken: '0xE6D4BEAc72EF4D4D525318C67Eb502C133da8B7f',
+    uftgTokenold: '0x5dabCD04f47Dd4b8A974C9fcBF75cdcdebac6DBb',//old
+    timeLock:'0xEC8283E65557Fc4E17AA75C56144eFb8eFA3B9e2', //old
+    delegate: '0xE0555dBE41dA929d6cEbe0b92c4f85679a37ED87', //old
+    delegator: '0xDdF869E44BD3d5877777f59058F738F4A916fC26' //old
   },
 
   '1442': {

@@ -34,17 +34,22 @@ export default function VoteComponent() {
   const [tokenBalance, setTokenBalance] = useState({ uft: "", uftg: "" });
   const [activeTab, setActiveTab] = useState(wrap);
   const [allowanceValue, setAllowanceValue] = useState("");
-  const [delegate, setDelegate] = useState(address);
+  const [delegate, setDelegate] = useState('0x000000000000000');
   const [isLoading, setIsLoading] = useState(false);
 
   const checkTxnStatus = (hash, data) => {
     waitForTransaction({
       hash,
     }).then((receipt) => {
-      if (receipt.status == 1) {
-        message.success(`${data.message}`);
-        setIsLoading(false);
-        getTokenBal();
+      
+      if (receipt.status == 1) {   
+        setTimeout(() => {
+           handleAllowance()
+           message.success(`${data.message}`);
+           setIsLoading(false);
+        }, 1000);
+      } else {
+        alert('Error Checked')
       }
     });
   };
@@ -66,8 +71,9 @@ export default function VoteComponent() {
       provider
     );
     const delegatesAddress = await UFTG.delegates(address);
-    setDelegate(delegatesAddress);
-  
+    const isValid = ethers.utils.isAddress(delegatesAddress);
+    console.log("validation", isValid, delegatesAddress !=0);
+    delegatesAddress != 0 && isValid && setDelegate(delegatesAddress);
     const uftBalance_BigNumber = await UFT.balanceOf(address);
     const uftgBalance_BigNumber = await UFTG.balanceOf(address);
     const uftBalance = fromBigNumber(uftBalance_BigNumber) / 10 ** 18;
@@ -90,8 +96,12 @@ export default function VoteComponent() {
   };
 
   useEffect(() => {
-    getTokenBal();
-    handleAllowance();
+    if(address){
+      setDelegate(address)
+      // getTokenBal();
+      handleAllowance();
+    }
+
   }, [address]);
 
   return (
@@ -114,7 +124,7 @@ export default function VoteComponent() {
             <span>(UFTG Balance)</span>
           </div>
           <div>
-            <h2>{shortenAddress(String(delegate))}</h2>
+            <h2>{ shortenAddress(String(delegate))}</h2>
             <p>Delegation address</p>
           </div>
         </div>
@@ -203,8 +213,8 @@ const WrapAndDelegate = ({
   const [valid, setValid] = useState(true);
 
   const [buttonText, setButtonText] = useState({
-    text: "Wrap & Delegate",
-    disable: false,
+    text: "Enter Amount",
+    disable: true,
   });
 
   useEffect(() => {
@@ -214,59 +224,68 @@ const WrapAndDelegate = ({
   const handleAmount = (e) => {
     const value = e.target.value;
     setAmount(value);
-    const isValid = ethers.utils.isAddress(address);
 
-    if (value > tokenBalance?.uft) {
-      setButtonText({
-        text: "Low Balance",
-        disable: true,
-      });
-    } else if (!isValid) {
-      setButtonText({
-        text: "Enter Valid Address",
-        disable: true,
-      });
-    } else if (decimal2Fixed(value, 18) > Number(allowanceValue)) {
-      setButtonText({
-        text: "Approve",
-        disable: false,
-      });
-    } else {
-      setButtonText({
-        text: "Wrap & Delegate",
-        disable: false,
-      });
-    }
   };
+
+
+useEffect(() => {
+  const isValid = ethers.utils.isAddress(address);
+  if (amount > tokenBalance?.uft) {
+    setButtonText({
+      text: "Low Balance",
+      disable: true,
+    });
+  } else if (!isValid) {
+    setButtonText({
+      text: "Enter Valid Address",
+      disable: true,
+    });
+  } else if (decimal2Fixed(amount, 18) > Number(allowanceValue)) {
+    setButtonText({
+      text: "Approve",
+      disable: false,
+    });
+  } else if(!(amount > 0)) {
+    setButtonText({
+      text: "Enter Amount",
+      disable: true,
+    });
+  }else {
+    setButtonText({
+      text: "Wrap & Delegate",
+      disable: false,
+    });
+  }
+}, [address, amount, allowanceValue, tokenBalance])
 
   const handleAddress = (e) => {
     setAddress(e.target.value);
     const isValid = ethers.utils.isAddress(e.target.value);
     setValid(isValid);
-    if (!isValid) {
-      setButtonText({
-        text: "Enter Valid Address",
-        disable: true,
-      });
-    } else if (amount > tokenBalance?.uft) {
-      setButtonText({
-        text: "Low Balance",
-        disable: true,
-      });
-    } else {
-      setButtonText({
-        text: "Wrap & Delegate",
-        disable: false,
-      });
-    }
+    // if (!isValid) {
+    //   setButtonText({
+    //     text: "Enter Valid Address",
+    //     disable: true,
+    //   });
+    // } else if (amount > tokenBalance?.uft) {
+    //   setButtonText({
+    //     text: "Low Balance",
+    //     disable: true,
+    //   });
+    // } else {
+    //   setButtonText({
+    //     text: "Wrap & Delegate",
+    //     disable: false,
+    //   });
+    // }
   };
 
   const handleWrap = async () => {
     const { chain } = getNetwork();
     const fixedValue = decimal2Fixed(amount, 18);
     const contracts = contractAddress[chain?.id || "1"];
-
-    if (Number(allowanceValue) > Number(fixedValue)) {
+console.log("handleWrap", Number(allowanceValue) , Number(fixedValue));
+    if (Number(allowanceValue) >= Number(fixedValue)) {
       setIsLoading(true);
       handleWrapAndDelegate(
         contracts?.uftgToken,
@@ -327,16 +346,23 @@ const UnWrap = ({
 }) => {
   const [amount, setAmount] = useState("");
   const [buttonText, setButtonText] = useState({
-    text: "Unwrap",
-    disable: false,
+    text: "Enter Amount",
+    disable: true,
   });
 
   const handleAmount = (e) => {
     const value = e.target.value;
     setAmount(value);
+    console.log("Handle Amount", value , tokenBalance?.uftg, value > tokenBalance?.uftg);
     if (value > tokenBalance?.uftg) {
       setButtonText({
         text: "Low Balance",
+        disable: true,
+      });
+    } else
+    if(!(value > 0)) {
+      setButtonText({
+        text: "Enter Amount",
         disable: true,
       });
     } else {

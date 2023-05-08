@@ -259,7 +259,7 @@ import loader from '../../assets/Eclipse-loader.gif'
                    
                       {txt.pool.token0.symbol +
                         "/" +
-                        txt.pool.token0.symbol}
+                        txt.pool.token1.symbol}
                     </p>
                     </a>
                   </div>

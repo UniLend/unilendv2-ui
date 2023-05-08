@@ -81,21 +81,32 @@ export default function Footer() {
         >
           Pools
         </a>
-        { isPolygon ?  <a href='/dashboard'
+        { isPolygon ? 
+        <>
+        <a href='/dashboard'
          className={`${pathname === '/dashboard' ? 'active' : ''}`}
          >
             Dashboard
-          </a> :
+          </a>
+          <a href='/vote'
+         className={`${pathname === '/vote' ? 'active' : ''}`}
+         >
+            Vote
+          </a>
+          </>
+           :
+           <>
            <a href='#' className='disable_route'>
            Dashboard
            <FiLock style={{ marginLeft: '5px' }} />
          </a> 
-
-        }
-        <a href="#" className='disable_route'>
+         <a href="#" className='disable_route'>
           Vote
           <FiLock style={{marginLeft: '5px'}}/>
         </a>
+           </>
+
+        }
         <a href="#" className='disable_route'>
           Rewards
           <FiLock style={{marginLeft: '5px'}}/>

@@ -132,7 +132,7 @@ if(selectedToken && collateralToken){
         setMethodLoaded({ ...methodLoaded, getPoolFullData: false, getOraclePrice: false, getPoolTokensData: false });
         if(txnData.method !== 'approval') {
           setAmount(0);
-         // setShowTwitterModal(true)
+          //setShowTwitterModal(true)
         }
         setMax(false);
         setIsOperationLoading(false);
