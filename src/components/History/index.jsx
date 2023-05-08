@@ -37,7 +37,7 @@ import loader from '../../assets/Eclipse-loader.gif'
   const query = getHistoryGraphQuery(user?.address);
   const [called, setIsCalled] = useState(false)
   const [historyLoading, setHistoryLoading] = useState(false)
-  
+
  
   const { data, loading, error } = useQuery(query);
  
@@ -260,7 +260,7 @@ import loader from '../../assets/Eclipse-loader.gif'
                    
                       {txt.pool.token0.symbol +
                         "/" +
-                        txt.pool.token0.symbol}
+                        txt.pool.token1.symbol}
                     </p>
                     </a>
                   </div>
