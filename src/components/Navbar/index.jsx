@@ -50,9 +50,9 @@ export default function Navbar(props) {
   const [isNetworkVisible, setIsNetworkVisible] = useState(false);
   const [isPolygon, setIsPolygon] = useState(false);
   const dispatch = useDispatch();
-  const [currentTheme, setCurrentTheme] = useState(theme);
-  const { chain: networkchain } = getNetwork();
-  const availableChain = [80001, 11155111, 1442];
+  const [currentTheme , setCurrentTheme] = useState(theme)
+  const {chain: networkchain} = getNetwork()
+  const availableChain = [11155111,1442, 80001]
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -173,12 +173,9 @@ export default function Navbar(props) {
   const SortContent = React.memo(() => {
     return (
       <div className="sort_popover">
-        <p onClick={() => handleSwitchNetwork(11155111)}>
-          {" "}
-          Sepolia Test Network
-        </p>
-        <p onClick={() => handleSwitchNetwork(80001)}> Polygon Mumbai</p>
-        <p onClick={() => handleSwitchNetwork(1442)}> zkEVM Testnet</p>
+        <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
+        <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
+        <p onClick={() => handleSwitchNetwork(1442)} >  zkEVM Testnet</p>
       </div>
     );
   });
