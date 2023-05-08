@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import Lottie from 'react-lottie';
+import Lottie from "react-lottie";
 import "./styles/index.scss";
 import { FiPercent } from "react-icons/fi";
-import {BsCheckLg, BsXLg} from "react-icons/bs"
+import { BsCheckLg, BsXLg } from "react-icons/bs";
 import { VscGraph } from "react-icons/vsc";
 import { GiReceiveMoney } from "react-icons/gi";
 import { ImStack } from "react-icons/im";
 import { Alchemy, Network } from "alchemy-sdk";
 import { FaWallet } from "react-icons/fa";
-import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
+import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
 import banner from "../../assets/dashboardbanner.svg";
 import { SearchOutlined } from "@ant-design/icons";
 import { Input, Button } from "antd";
@@ -17,7 +17,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DonutChart from "../Common/DonutChart";
 import {
-  getAverage, 
+  getAverage,
   getBorrowedPowerUsed,
   getChartData,
   getNetHealthFactor,
@@ -31,7 +31,7 @@ import { getAccount, getNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
 import { imgError } from "../../utils";
 import { fetchTokenPriceInUSD } from "../../utils/axios";
-import empty from '../../assets/searchEmpty.json'
+import empty from "../../assets/searchEmpty.json";
 import { ethers } from "ethers";
 
 //const endpoint = "https://api.spacex.land/graphql/";
@@ -51,7 +51,7 @@ export default function UserDashboardComponent(props) {
   // }
   const { address } = getAccount();
   const [userAddress, setUserAddress] = useState();
-  const [verifiedAddress, setVerifiedAddress] = useState(address)
+  const [verifiedAddress, setVerifiedAddress] = useState(address);
   const query = userDashBoardQuery(verifiedAddress || address);
   const [lendingVisible, setLendingVisible] = useState(false);
   const [borrowingVisible, setBorrowingVisible] = useState(false);
@@ -68,29 +68,28 @@ export default function UserDashboardComponent(props) {
   });
   const [walletTokens, setWalletTokens] = useState([]);
   const [walletTokenLoading, setWalletTokenLoading] = useState(false);
-  const [positionLoading, setPositionLoading] = useState(false);
+  const [positionLoading, setPositionLoading] = useState(true);
 
   const handleLendingVisibleChange = (visible) => {
     setLendingVisible(visible);
   };
 
   const handleSearchAddress = (addr) => {
-    setUserAddress(addr)
-    setVerifiedAddress('')
-    const isVerified = ethers.utils.isAddress(addr)
-    isVerified && setVerifiedAddress(addr)
-  }
+    setUserAddress(addr);
+    setVerifiedAddress("");
+    const isVerified = ethers.utils.isAddress(addr);
+    isVerified && setVerifiedAddress(addr);
+  };
 
   const navigateToPool = (addr) => {
-    navigate(`/pool/${addr}`)
-  }
+    navigate(`/pool/${addr}`);
+  };
 
   const handleLendBorrowTabs = (action) => {
     setIsLentab(action);
   };
 
   const positionSorting = (operation, key, order) => {
-
     if (operation == "lend") {
       const sorted = sortByKey(positionData.lendArray, key, order);
       setPositionData({ ...positionData, lendArray: sorted });
@@ -101,146 +100,177 @@ export default function UserDashboardComponent(props) {
   };
 
   const handleOpenPosition = (e) => {
-  const searched = String(e.target.value).toUpperCase();
-  const lendPosition = positionDataBackup.lendArray;
-  const BorrowPosition = positionDataBackup.borrowArray;
-  
-  const afterSearchedLend = lendPosition.filter((position) => String(position.poolInfo.tokenSymbol).toUpperCase().includes(searched) || String(position.poolInfo.token0Symbol).toUpperCase().includes(searched) || String(position.poolInfo.token1Symbol).toUpperCase().includes(searched) || String(position.pool.pool).toUpperCase().includes(searched) )
-  const afterSearchedBorrow = BorrowPosition.filter((position) => String(position.poolInfo.tokenSymbol).toUpperCase().includes(searched) || String(position.poolInfo.token0Symbol).toUpperCase().includes(searched) || String(position.poolInfo.token1Symbol).toUpperCase().includes(searched) || String(position.pool.pool).toUpperCase().includes(searched) )
-  
-  setPositionData({positionData, lendArray: afterSearchedLend, borrowArray: afterSearchedBorrow})
+    const searched = String(e.target.value).toUpperCase();
+    const lendPosition = positionDataBackup.lendArray;
+    const BorrowPosition = positionDataBackup.borrowArray;
 
-  }
+    const afterSearchedLend = lendPosition.filter(
+      (position) =>
+        String(position.poolInfo.tokenSymbol)
+          .toUpperCase()
+          .includes(searched) ||
+        String(position.poolInfo.token0Symbol)
+          .toUpperCase()
+          .includes(searched) ||
+        String(position.poolInfo.token1Symbol)
+          .toUpperCase()
+          .includes(searched) ||
+        String(position.pool.pool).toUpperCase().includes(searched)
+    );
+    const afterSearchedBorrow = BorrowPosition.filter(
+      (position) =>
+        String(position.poolInfo.tokenSymbol)
+          .toUpperCase()
+          .includes(searched) ||
+        String(position.poolInfo.token0Symbol)
+          .toUpperCase()
+          .includes(searched) ||
+        String(position.poolInfo.token1Symbol)
+          .toUpperCase()
+          .includes(searched) ||
+        String(position.pool.pool).toUpperCase().includes(searched)
+    );
+
+    setPositionData({
+      positionData,
+      lendArray: afterSearchedLend,
+      borrowArray: afterSearchedBorrow,
+    });
+  };
 
   const defaultOptionsLotti = {
     loop: true,
-    autoplay: true, 
+    autoplay: true,
     animationData: empty,
     rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice'
-    }
-  }
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   const lendDropdownList = [
     {
-      text: 'Amount',
+      text: "Amount",
       fun: () => positionSorting("lend", "LendBalance", 1),
-      icon: <ImArrowUp2/>
+      icon: <ImArrowUp2 />,
     },
     {
-      text: 'Amount',
+      text: "Amount",
       fun: () => positionSorting("lend", "LendBalance", 2),
-      icon: <ImArrowDown2/>
+      icon: <ImArrowDown2 />,
     },
     {
-      text: 'APY',
+      text: "APY",
       fun: () => positionSorting("lend", "apy", 1),
-      icon: <ImArrowUp2/>
+      icon: <ImArrowUp2 />,
     },
     {
-      text: 'APY',
+      text: "APY",
       fun: () => positionSorting("lend", "apy", 2),
-      icon: <ImArrowDown2/>
-    }
-  ]
+      icon: <ImArrowDown2 />,
+    },
+  ];
 
   const BorrowDropdownList = [
     {
-      text: 'Amount',
+      text: "Amount",
       fun: () => positionSorting("borrow", "borrowBalance", 1),
-      icon: <ImArrowUp2/>
+      icon: <ImArrowUp2 />,
     },
     {
-      text: 'Amount',
+      text: "Amount",
       fun: () => positionSorting("borrow", "borrowBalance", 2),
-      icon: <ImArrowDown2/>
+      icon: <ImArrowDown2 />,
     },
     {
-      text: 'APY',
+      text: "APY",
       fun: () => positionSorting("borrow", "apy", 1),
-      icon: <ImArrowUp2/>
+      icon: <ImArrowUp2 />,
     },
     {
-      text: 'APY',
+      text: "APY",
       fun: () => positionSorting("borrow", "apy", 2),
-      icon: <ImArrowDown2/>
-    }
-  ]
-
+      icon: <ImArrowDown2 />,
+    },
+  ];
 
   useEffect(() => {
     setUserAddress(user.address);
-    handleSearchAddress(user.address)
+    handleSearchAddress(user.address);
   }, [user]);
 
   useEffect(() => {
     if (data) {
-   console.log("DATA", data);
- 
-   (async () => {
-     const position = await getPositionData(data, contracts);
-      console.log("getposition", position );
+      console.log("DATA", data);
 
-     if(position){
-      setPositionData(position);
-      setPositionDataBackup(position);
-       const pieChart = getPieChartValues(position) //getChartData(data, tokenList);
+      (async () => {
+        setPositionLoading(true);
+        const position = await getPositionData(data, contracts);
+        console.log("getposition", position);
 
-      setPieChartInputs(pieChart);
-      const analytics = {};
-      if (position?.borrowArray.length > 0) {
-        const borrowAPY = getAverage(
-          position.borrowArray,
-          "apy",
-          "borrowBalance" 
-        );
-        analytics.borrowAPY = borrowAPY;
-      }
-      if (position?.lendArray.length > 0) {
-        const earned = position.lendArray
-          .map((el) => el.interestEarned)
-          .reduce((ac, el) => ac + el);
-        analytics.interestEarned = earned;
-        const lendAPY = getAverage(position.lendArray, "apy", "LendBalance");
-        analytics.lendAPY = lendAPY;
-        const powerUsed = getBorrowedPowerUsed(position.lendArray);
-        analytics.powerUsed = powerUsed;
-      }
-      if (data?.positions) {
-        const HF = getNetHealthFactor(data.positions);
-        analytics.healthFactor = isNaN(HF) ? 0 : HF;
-      }
-      setHeaderAnalytics(analytics);
-     }
-    })()
+        if (position) {
+          setPositionData(position);
+          setPositionDataBackup(position);
+          const pieChart = getPieChartValues(position); //getChartData(data, tokenList);
+
+          setPieChartInputs(pieChart);
+          const analytics = {};
+          if (position?.borrowArray.length > 0) {
+            const borrowAPY = getAverage(
+              position.borrowArray,
+              "apy",
+              "borrowBalance"
+            );
+            analytics.borrowAPY = borrowAPY;
+          }
+          if (position?.lendArray.length > 0) {
+            const earned = position.lendArray
+              .map((el) => el.interestEarned)
+              .reduce((ac, el) => ac + el);
+            analytics.interestEarned = earned;
+            const lendAPY = getAverage(
+              position.lendArray,
+              "apy",
+              "LendBalance"
+            );
+            analytics.lendAPY = lendAPY;
+            const powerUsed = getBorrowedPowerUsed(position.lendArray);
+            analytics.powerUsed = powerUsed;
+          }
+          if (data?.positions) {
+            const HF = getNetHealthFactor(data.positions);
+            analytics.healthFactor = isNaN(HF) ? 0 : HF;
+          }
+          setHeaderAnalytics(analytics);
+        }
+        setPositionLoading(false);
+      })();
     }
   }, [data, tokenList]);
 
   const getUserTokens = async (address) => {
     setWalletTokenLoading(true);
     setWalletTokens([]);
-   
+
     alchemy.core.getTokenBalances(`${address}`).then(async (bal) => {
-     // const tokenPrices = await fetchTokenPriceInUSD()
-       const tokens = await getTokensFromUserWallet(bal, tokenList);
+      // const tokenPrices = await fetchTokenPriceInUSD()
+      const tokens = await getTokensFromUserWallet(bal, tokenList);
       setWalletTokens(tokens);
-       setWalletTokenLoading(false);
+      setWalletTokenLoading(false);
     });
   };
 
   const checkNaN = (value) => {
-   return isNaN(value) ? 0: value
-  }
+    return isNaN(value) ? 0 : value;
+  };
 
   useEffect(() => {
     const account = getAccount();
- 
-    if (verifiedAddress ) {
+
+    if (verifiedAddress) {
       getUserTokens(verifiedAddress || account.address);
-    } else if(userAddress == '' || verifiedAddress == ''){
+    } else if (userAddress == "" || verifiedAddress == "") {
       getUserTokens(account.address);
     }
-
   }, [verifiedAddress, userAddress, user]);
 
   return (
@@ -252,8 +282,24 @@ export default function UserDashboardComponent(props) {
         <div className="user_tittle">
           <h1>User Overview</h1>
           <Input
-            addonBefore={ userAddress ?( verifiedAddress ? <BsCheckLg className="search_icon"/>: <BsXLg className="search_icon"/>) : <SearchOutlined className="search_icon" />}
-            className={`search_address ${userAddress ? (verifiedAddress ? 'verified_address':'not_verified') : ''}`}
+            addonBefore={
+              userAddress ? (
+                verifiedAddress ? (
+                  <BsCheckLg className="search_icon" />
+                ) : (
+                  <BsXLg className="search_icon" />
+                )
+              ) : (
+                <SearchOutlined className="search_icon" />
+              )
+            }
+            className={`search_address ${
+              userAddress
+                ? verifiedAddress
+                  ? "verified_address"
+                  : "not_verified"
+                : ""
+            }`}
             placeholder="Search address"
             value={userAddress}
             onChange={(e) => handleSearchAddress(e.target.value)}
@@ -272,10 +318,12 @@ export default function UserDashboardComponent(props) {
                 <div className="values">
                   <p>Net Worth</p>
                   <h5>
-                    { checkNaN(Number(
-                      pieChartInputs?.lendValues?.total -
-                        pieChartInputs?.borrowValues?.total
-                    ).toFixed(2)) || 0}
+                    {checkNaN(
+                      Number(
+                        pieChartInputs?.lendValues?.total -
+                          pieChartInputs?.borrowValues?.total
+                      ).toFixed(2)
+                    ) || 0}
                   </h5>
                 </div>
               </div>
@@ -323,20 +371,31 @@ export default function UserDashboardComponent(props) {
 
           <div className="content">
             <div className="lend_container">
-              <div>
-                {pieChartInputs?.donutLends?.length > 0 ? (
-                  <DonutChart data={pieChartInputs?.donutLends} />
-                ): (
-                  <Lottie options={defaultOptionsLotti}
-                  height={300}
-                  width={300}
-                  />
-                )}
-              </div>
+              {!positionLoading ? (
+                <div>
+                  {pieChartInputs?.donutLends?.length > 0 ? (
+                    <DonutChart data={pieChartInputs?.donutLends} />
+                  ) : (
+                    <Lottie
+                      options={defaultOptionsLotti}
+                      height={300}
+                      width={300}
+                    />
+                  )}
+                </div>
+              ) : (
+                <div className="pieChart_loader">
+                  <p className="circle skeleton"></p>
+                </div>
+              )}
               <div>
                 <div>
                   <p>Total Lend</p>
-                  <h5>{ checkNaN(Number(pieChartInputs?.lendValues?.total).toFixed(4) )|| 0}</h5>
+                  <h5>
+                    {checkNaN(
+                      Number(pieChartInputs?.lendValues?.total).toFixed(4)
+                    ) || 0}
+                  </h5>
                 </div>
                 {/* <div>
                   {" "}
@@ -353,21 +412,32 @@ export default function UserDashboardComponent(props) {
               </div>
             </div>
             <div className="borrow_container">
-              <div>
-                {pieChartInputs?.donutBorrows?.length > 0 ? (
-                  <DonutChart data={pieChartInputs?.donutBorrows} />
-                ): (
-                  <Lottie options={defaultOptionsLotti}
-                  height={300}
-                  width={300}
-                  />
-                )}
-              </div>
-             
+              {!positionLoading ? (
+                <div>
+                  {pieChartInputs?.donutBorrows?.length > 0 ? (
+                    <DonutChart data={pieChartInputs?.donutBorrows} />
+                  ) : (
+                    <Lottie
+                      options={defaultOptionsLotti}
+                      height={300}
+                      width={300}
+                    />
+                  )}
+                </div>
+              ) : (
+                <div className="pieChart_loader">
+                    <p className="circle skeleton"></p>
+                </div>
+              )}
+
               <div>
                 <div>
                   <p>Total Borrow</p>
-                  <h5>{checkNaN(Number(pieChartInputs?.borrowValues?.total).toFixed(4)) || 0}</h5>
+                  <h5>
+                    {checkNaN(
+                      Number(pieChartInputs?.borrowValues?.total).toFixed(4)
+                    ) || 0}
+                  </h5>
                 </div>
                 {/* <div>
                   {" "}
@@ -403,32 +473,38 @@ export default function UserDashboardComponent(props) {
             </div>
             <div className="tbody">
               {!walletTokenLoading &&
-               ( walletTokens.length > 0 ? walletTokens.map((token, i) => {
-                  return (
-                    <div key={i} className="tbody_row">
-                      <span>
-                        <img onError={imgError} src={token?.logo} alt="uft" />
-                        <p className="hide_for_mobile">
-                          {" "}
-                          {token?.name} / {token?.symbol}
-                        </p>
-                        <p className="hide_for_monitor">{token?.symbol}</p>
-                      </span>
-                      <span>-</span>
-                      <span>{token?.balance}</span>
-                      <span>-</span>
-                    </div>
-                  );
-                }): 
-                ( <Lottie options={defaultOptionsLotti}
-                  height={350}
-                  width={350}
-                  />)
-                )}
+                (walletTokens.length > 0 ? (
+                  walletTokens.map((token, i) => {
+                    return (
+                      <div key={i} className="tbody_row">
+                        <span>
+                          <img onError={imgError} src={token?.logo} alt="uft" />
+                          <p className="hide_for_mobile">
+                            {" "}
+                            {token?.name} / {token?.symbol}
+                          </p>
+                          <p className="hide_for_monitor">{token?.symbol}</p>
+                        </span>
+                        <span>-</span>
+                        <span>{token?.balance}</span>
+                        <span>-</span>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <Lottie
+                    options={defaultOptionsLotti}
+                    height={350}
+                    width={350}
+                  />
+                ))}
               {walletTokenLoading &&
-                new Array(3).fill(0).map((_, i) => {
+                new Array(7).fill(0).map((_, i) => {
                   return (
-                    <div key={i} className="tbody_row row_skeleton skeleton"></div>
+                    <div
+                      key={i}
+                      className="tbody_row row_skeleton skeleton"
+                    ></div>
                   );
                 })}
             </div>
@@ -462,7 +538,11 @@ export default function UserDashboardComponent(props) {
               <div>
                 <div className="action_container">
                   <div className="input_container">
-                    <input onChange={handleOpenPosition} type="text" placeholder="Search Txt/Token/Type" />
+                    <input
+                      onChange={handleOpenPosition}
+                      type="text"
+                      placeholder="Search Txt/Token/Type"
+                    />
                   </div>
                   <DropDown list={lendDropdownList} />
                 </div>
@@ -483,52 +563,87 @@ export default function UserDashboardComponent(props) {
                   <span>Max LTV</span>
                 </div>
                 <div className="tbody">
-                  {positionData?.lendArray?.length > 0 ?
-                    positionData?.lendArray.map((pool, i) => {
+                  {positionData?.lendArray?.length > 0 && !positionLoading
+                    ? positionData?.lendArray.map((pool, i) => {
+                        return (
+                          <div key={i} className="tbody_row">
+                            <span
+                              onClick={() => navigateToPool(pool?.pool?.pool)}
+                            >
+                              <img
+                                onError={imgError}
+                                src={pool.poolInfo.token0Logo}
+                                alt="uft"
+                              />
+                              <img
+                                onError={imgError}
+                                src={pool.poolInfo.token1Logo}
+                                alt="uft"
+                              />
+                              <p className="hide_for_mobile">
+                                {" "}
+                                {pool.poolInfo.token0Symbol} /{" "}
+                                {pool.poolInfo.token1Symbol}{" "}
+                              </p>
+                            </span>
+                            <span>{pool?.tokenSymbol}</span>
+                            <span>{Number(pool?.LendBalance).toFixed(2)}</span>
+                            <span>{Number(pool?.apy).toFixed(2)}%</span>
+                            <span>{pool.pool.maxLTV}%</span>
+                            <span>
+                              {Number(pool?.interestEarned).toFixed(8)}
+                            </span>
+                            <span>
+                              <img
+                                onError={imgError}
+                                src={pool.poolInfo.token0Logo}
+                                alt="uft"
+                              />
+                              <img
+                                onError={imgError}
+                                src={pool.poolInfo.token1Logo}
+                                alt="uft"
+                              />
+                            </span>
+                            <span>
+                              {pool?.tokenSymbol} <br />{" "}
+                              {Number(pool?.LendBalance).toFixed(2)}{" "}
+                            </span>
+                            <span>
+                              {Number(pool?.apy).toFixed(2)}% <br />{" "}
+                              {Number(pool?.interestEarned).toFixed(6)}{" "}
+                            </span>
+                            <span>{pool.pool.maxLTV}%</span>
+                          </div>
+                        );
+                      })
+                    : !positionLoading && (
+                        <Lottie
+                          options={defaultOptionsLotti}
+                          height={350}
+                          width={350}
+                        />
+                      )}
+                  {positionLoading &&
+                    new Array(8).fill(0).map((_, i) => {
                       return (
-                        <div key={i} className="tbody_row">
-                          <span onClick={() => navigateToPool(pool?.pool?.pool)}>
-                            <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
-                            <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
-                            <p className="hide_for_mobile">
-                              {" "}
-                              {pool.poolInfo.token0Symbol} /{" "}
-                              {pool.poolInfo.token1Symbol}{" "}
-                            </p>
-                          </span>
-                          <span>{pool?.tokenSymbol}</span>
-                          <span>{Number(pool?.LendBalance).toFixed(2)}</span>
-                          <span>{Number(pool?.apy).toFixed(2)}%</span>
-                          <span>{pool.pool.maxLTV}%</span>
-                          <span>{Number(pool?.interestEarned).toFixed(8)}</span>
-                          <span>
-                            <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
-                            <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
-                          </span>
-                          <span>
-                            {pool?.tokenSymbol} <br />{" "}
-                            {Number(pool?.LendBalance).toFixed(2)}{" "}
-                          </span>
-                          <span>
-                            {Number(pool?.apy).toFixed(2)}% <br />{" "}
-                            {Number(pool?.interestEarned).toFixed(6)}{" "}
-                          </span>
-                          <span>{pool.pool.maxLTV}%</span>
-                        </div>
+                        <div
+                          key={i}
+                          className="tbody_row row_skeleton skeleton"
+                        ></div>
                       );
-                    }): (
-                      <Lottie options={defaultOptionsLotti}
-                      height={350}
-                      width={350}
-                      />
-                    )}
+                    })}
                 </div>
               </div>
             ) : (
               <div>
                 <div className="action_container">
                   <div className="input_container">
-                    <input  onChange={handleOpenPosition}  type="text" placeholder="Search Txt/Token/Type" />
+                    <input
+                      onChange={handleOpenPosition}
+                      type="text"
+                      placeholder="Search Txt/Token/Type"
+                    />
                   </div>
                   <DropDown list={BorrowDropdownList} />
                 </div>
@@ -549,52 +664,76 @@ export default function UserDashboardComponent(props) {
                   <span>Current LTV</span>
                 </div>
                 <div className="tbody">
-                  {positionData?.borrowArray?.length > 0 ?
-                    positionData?.borrowArray.map((pool, i) => {
+                  {positionData?.borrowArray?.length > 0 && !positionLoading
+                    ? positionData?.borrowArray.map((pool, i) => {
+                        return (
+                          <div key={i} className="tbody_row">
+                            <span
+                              onClick={() => navigateToPool(pool?.pool?.pool)}
+                            >
+                              <img
+                                onError={imgError}
+                                src={pool.poolInfo.token0Logo}
+                                alt="uft"
+                              />
+                              <img
+                                onError={imgError}
+                                src={pool.poolInfo.token1Logo}
+                                alt="uft"
+                              />
+                              <p className="hide_for_mobile">
+                                {" "}
+                                {pool.poolInfo.token0Symbol} /{" "}
+                                {pool.poolInfo.token1Symbol}
+                              </p>
+                            </span>
+                            <span>{pool?.tokenSymbol}</span>
+                            <span>
+                              {Number(pool?.borrowBalance).toFixed(2)}
+                            </span>
+                            <span>{Number(pool?.apy).toFixed(3)}%</span>
+                            <span>{Number(pool?.currentLTV).toFixed(2)}%</span>
+                            <span>{Number(pool?.healthFactor)}</span>
+                            <span>
+                              <img
+                                onError={imgError}
+                                src={pool.poolInfo.token0Logo}
+                                alt="uft"
+                              />
+                              <img
+                                onError={imgError}
+                                src={pool.poolInfo.token1Logo}
+                                alt="uft"
+                              />
+                            </span>
+                            <span>
+                              {pool?.tokenSymbol} <br />{" "}
+                              {Number(pool?.borrowBalance).toFixed(2)}{" "}
+                            </span>
+                            <span>
+                              {Number(pool?.apy).toFixed(3)}% <br />{" "}
+                              {Number(pool?.healthFactor)}
+                            </span>
+                            <span>{Number(pool?.currentLTV).toFixed(2)}%</span>
+                          </div>
+                        );
+                      })
+                    : !positionLoading && (
+                        <Lottie
+                          options={defaultOptionsLotti}
+                          height={350}
+                          width={350}
+                        />
+                      )}
+                  {positionLoading &&
+                    new Array(8).fill(0).map((_, i) => {
                       return (
-                        <div key={i} className="tbody_row">
-                          <span  onClick={() => navigateToPool(pool?.pool?.pool)}>
-                            <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
-                            <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
-                            <p className="hide_for_mobile">
-                              {" "}
-                              {pool.poolInfo.token0Symbol} /{" "}
-                              {pool.poolInfo.token1Symbol}
-                            </p>
-                          </span>
-                          <span>{pool?.tokenSymbol}</span>
-                          <span>{Number(pool?.borrowBalance).toFixed(2)}</span>
-                          <span>{Number(pool?.apy).toFixed(3)}%</span>
-                          <span>
-                            {(Number(pool?.currentLTV) ).toFixed(2)}%
-                          </span>
-                          <span>
-                            {Number(pool?.healthFactor)}
-                          </span>
-                          <span>
-                            <img onError={imgError} src={pool.poolInfo.token0Logo} alt="uft" />
-                            <img onError={imgError} src={pool.poolInfo.token1Logo} alt="uft" />
-                          </span>
-                          <span>
-                            {pool?.tokenSymbol} <br />{" "}
-                            {Number(pool?.borrowBalance).toFixed(2)}{" "}
-                          </span>
-                          <span>
-                            {Number(pool?.apy).toFixed(3)}% <br />{" "}
-                            {Number(pool?.healthFactor)}
-                          </span>
-                          <span>
-                            {(Number(pool?.currentLTV) ).toFixed(2)}%
-                          </span>
-                        </div>
+                        <div
+                          key={i}
+                          className="tbody_row row_skeleton skeleton"
+                        ></div>
                       );
-                    }): (
-                      
-                      <Lottie options={defaultOptionsLotti}
-                      height={350}
-                      width={350}
-                      />
-                    )}
+                    })}
                 </div>
               </div>
             )}

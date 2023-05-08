@@ -332,6 +332,8 @@
         .tbody {
           margin: 30px 0px;
           margin-bottom: 10px;
+          min-height: 500px;
+          
           .tbody_row {
             padding: 15px 0px;
             border-bottom: 1px solid var(--border-gray);
@@ -645,5 +647,18 @@
   }
   .hide_for_monitor {
     display: block !important;
+  }
+}
+
+.pieChart_loader{
+  width: 100%;
+  margin: auto;
+  display: grid;
+  place-items: center;
+  .circle{
+    width: 200px;
+    height: 200px !important ;
+    background-color: aqua;
+    border-radius: 50%;
   }
 }
