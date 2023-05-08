@@ -403,6 +403,8 @@ export const getPoolAllData = async (
       //   .call();
        // const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolFullData', [contracts.positionContract.address, poolAddress, userAddr]  )
         const data = await contracts.helperContract.getPoolFullData(contracts.positionContract.address, poolAddress, userAddr)
+
+        console.log("getpoolAllDta", fromBigNumber(data._token0Liquidity), poolData);
         const totLiqFull0 = add(
         div(mul(poolData.token0.liquidity, 100), poolData.rf),
        fromBigNumber(data._totalBorrow0)
