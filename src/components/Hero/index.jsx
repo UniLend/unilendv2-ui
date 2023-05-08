@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ManageToken from "../ManageTokens/ManageToken";
 import banner from "../../assets/banner.svg";
+import darkbanner from "../../assets/darkBanner.svg";
 import "./styles/index.scss";
 import { useSelector } from "react-redux";
 import PoolCarousel from "../PoolsCarousel";
@@ -100,7 +101,7 @@ export default function HeroComponent(props) {
   return (
     <div className="hallofpools_container">
       <div className="banner">
-        <img src={banner} alt="v2-banner" />
+       { state.theme == 'dark' ? <img src={darkbanner} alt="v2-banner" /> : <img src={banner} alt="v2-banner" /> } 
       </div>
 
       <ManageToken

@@ -138,6 +138,15 @@ const tokensBYSymbol = {
   "ROSE":{
     "logo":"https://i.imgur.com/tHj6Sfm.png"
   },
+  'EGG': {
+    "logo": 'https://i.imgur.com/nxQ43qn.png'
+  },
+  "BUNNY":{
+    "logo":"https://i.imgur.com/KdK30Uo.png"
+  },
+  "FLOKI":{
+    "logo": "https://i.imgur.com/JYTPKWf.jpg"
+  }
 };
 
 const tokensByAddress = {
@@ -224,7 +233,8 @@ const hidePools = [
   "0xe21340de05A77179F0B2A55394bB3e479865061d",
   "0x0367B8fBc7ef37FCFda55a74e62a9e439CcB6Af1",
   "0x04D3eF50171b7B74E2921519A397C2Cf215De3e1",
-  '0x8B01ffB7DED9d46bb8149BB3dB0D5BA67C55C755'
+  '0x8B01ffB7DED9d46bb8149BB3dB0D5BA67C55C755',
+  '0x8DBEdC5Ed650654dCC0D1ad92929124d097fe686'
 ];
 
 export { tokensBYSymbol, tokensByAddress, hidePools };

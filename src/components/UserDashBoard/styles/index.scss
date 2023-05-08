@@ -332,6 +332,7 @@
         .tbody {
           margin: 30px 0px;
           margin-bottom: 10px;
+          height: 450px;
           .tbody_row {
             padding: 15px 0px;
             border-bottom: 1px solid var(--border-gray);
@@ -646,4 +647,51 @@
   .hide_for_monitor {
     display: block !important;
   }
+}
+
+.pieChart_loader{
+  width: 100%;
+  margin: auto;
+  display: grid;
+  place-items: center;
+  .circle{
+    width: 200px;
+    height: 200px !important ;
+    background-color: aqua;
+    border-radius: 50%;
+  }
+}
+
+.pagination{
+  display: grid;
+  place-items: center center;
+  padding: 20px;
+}
+
+.ant-pagination-item-active{
+  border-color: var(--sharp-blue);
+  background-color: transparent;
+  a{
+      color: var(--sharp-blue) !important;
+      &:hover{
+          color: var(--sharp-blue) !important;
+      }
+  }
+}
+
+.ant-pagination-item, .ant-pagination-next, .ant-pagination-prev{
+  color: var(--pure-black) !important;
+  a{
+      color: var(--pure-black) ;
+  }
+  &:hover{
+      color: var(--sharp-blue) !important;
+      a{
+          color: var(--sharp-blue) !important;
+      }
+  }
+}
+
+.ant-pagination-prev button, .ant-pagination-next button, .ant-pagination-item-ellipsis {
+  color: var(--pure-black) !important;
 }
