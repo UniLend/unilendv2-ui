@@ -6,10 +6,11 @@ import './styles/index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { connectWallet } from '../../services/wallet';
 import { setUser } from '../../store/Action';
+import { handleCreatePool } from '../../services/pool';
 
 export default function NoPoolFound({ token1, token2, createPool }) {
     const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
-    const {user} =  useSelector((state) => state); 
+    const {user,contracts} =  useSelector((state) => state); 
     const dispatch = useDispatch()
 
     const handleCloseModal = () => {
@@ -17,7 +18,9 @@ export default function NoPoolFound({ token1, token2, createPool }) {
     };
   
     const handleCreate = async () => {
-      await createPool(token1, token2);
+      // await createPool();
+      console.log("contracts",contracts);
+     await handleCreatePool(contracts)
     };
 
     const handleConnect = async () => {
@@ -83,7 +86,7 @@ export default function NoPoolFound({ token1, token2, createPool }) {
                   <img src={downoutline} alt="" />
                 </div>
               </div>
-              <Button onClick={handleCreate} disabled className='btn_class'>
+              <Button onClick={handleCreate}  className='btn_class'>
                 Create Pool Coming Soon
               </Button>
             </div>

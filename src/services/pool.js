@@ -851,3 +851,19 @@ export const getCollateralNeeded = (
   }
   setCollateral(collateralNeeded);
 };
+
+export const handleCreatePool = async (contracts) => {
+ try {
+  const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
+  const length = await instance.poolLength()
+  console.log("handleCreatePool", 'instance', instance, length);
+  const {hash} = await instance.createPool('0x4127976420204dF0869Ca3ED1C2f62c04F6cb137','0x8C57273241C2b4f4a295ccf3D1Feb29A08225A08', {
+    gasLimit: 2100000
+  })
+
+  console.log("handleCreatePool", hash);
+ } catch (error) {
+  console.log("handleCreatePool", "error", {error});
+ }
+
+}
