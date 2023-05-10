@@ -18,6 +18,7 @@ export const contractAddress = { '11155111': {
     unilendOracle: '0x7F1455c727e58A51dFA168fd711b8B664E1E48BA',
     uftToken : '0x5093af5dF5EAfd96B518a11cfb32c37DA2f8f0C3',
     uftgToken: '0xE6D4BEAc72EF4D4D525318C67Eb502C133da8B7f',
+    
     uftgTokenold: '0x5dabCD04f47Dd4b8A974C9fcBF75cdcdebac6DBb',//old
     timeLock:'0xEC8283E65557Fc4E17AA75C56144eFb8eFA3B9e2', //old
     delegate: '0xE0555dBE41dA929d6cEbe0b92c4f85679a37ED87', //old
