@@ -52,7 +52,7 @@ export default function Navbar(props) {
   const dispatch = useDispatch();
   const [currentTheme , setCurrentTheme] = useState(theme)
   const {chain: networkchain} = getNetwork()
-  const availableChain = [11155111,1442, 80001]
+  const availableChain = [11155111,1442, 80001, 280]
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
