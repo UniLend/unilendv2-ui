@@ -29,7 +29,8 @@ import {
   mainnet,
   polygonMumbai,
   sepolia,
-  polygonZkEvmTestnet
+  polygonZkEvmTestnet,
+  zkSyncTestnet
 } from "@wagmi/core/chains";
 import { ethers } from "ethers";
 import { WalletConnectConnector } from "@wagmi/core/connectors/walletConnect";
@@ -77,12 +78,12 @@ const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet],
+  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet],
   [ alchemyProvider({ apiKey: alchemyId }), publicProvider(), infuraProvider({ apiKey: infuraID }),]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
-  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet],
+  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet],
 });
 
 export const WalletConnector = new WalletConnectConnector({

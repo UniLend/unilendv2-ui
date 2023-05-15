@@ -16,6 +16,7 @@ import PoolCarousel from "../PoolsCarousel";
 import { Button } from "antd";
 import DropDown from "../Common/DropDown";
 import { sortByKey } from "../../helpers/dashboard";
+import { handleCreatePool } from "../../services/pool";
 
 export default function HallOfPoolsComponent(props) {
   const state = useSelector((state) => state);
@@ -126,7 +127,9 @@ export default function HallOfPoolsComponent(props) {
     }
   }, [token1, token2, poolBackup]);
 
-  const createPool = () => {};
+  const createPool = () => {
+    handleCreatePool()
+  };
 
   return (
     <div className="hallofpools_container">
@@ -170,7 +173,7 @@ export default function HallOfPoolsComponent(props) {
       ) : isLoadingPoolData ? (
         <PoolListSkeleton />
       ) : (
-        <NoPoolFound token1={token1} token2={token2} />
+        <NoPoolFound token1={token1} token2={token2} createPool={handleCreatePool} />
       )}
       {/* <PoolCarousel pools={pools} isLoading={!isLoadingPoolData}/> */}
 
