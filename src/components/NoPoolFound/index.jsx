@@ -86,7 +86,7 @@ export default function NoPoolFound({ token1, token2, createPool }) {
                   <img src={downoutline} alt="" />
                 </div>
               </div>
-              <Button onClick={handleCreate}  className='btn_class'>
+              <Button  disabled  className='btn_class'>
                 Create Pool Coming Soon
               </Button>
             </div>
