@@ -75,7 +75,7 @@ export default function VoteComponent() {
     console.log("validation", isValid, delegatesAddress !=0);
     delegatesAddress != 0 && isValid && setDelegate(delegatesAddress);
     const uftBalance_BigNumber = await UFT.balanceOf(address);
-    const uftgBalance_BigNumber = await UFTG.balanceOf(address);
+    const uftgBalance_BigNumber = await UFTG.getCurrentVotes(address);
     const uftBalance = fromBigNumber(uftBalance_BigNumber) / 10 ** 18;
     const uftgBalance = fromBigNumber(uftgBalance_BigNumber) / 10 ** 18;
 
