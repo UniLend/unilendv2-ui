@@ -8,9 +8,10 @@ import { VscGraph } from "react-icons/vsc";
 import { GiReceiveMoney } from "react-icons/gi";
 import { ImStack } from "react-icons/im";
 import { Alchemy, Network } from "alchemy-sdk";
-import { FaWallet } from "react-icons/fa";
+import { FaWallet, FaSearch } from "react-icons/fa";
 import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
-import banner from "../../assets/dashboardbanner.svg";
+import banner from "../../assets/dashboardbanner2.svg";
+import userIcon from "../../assets/userIcon.png";
 import { SearchOutlined } from "@ant-design/icons";
 import { Input, Button, Pagination } from "antd";
 import { useEffect } from "react";
@@ -204,7 +205,7 @@ export default function UserDashboardComponent(props) {
   }, [user]);
 
   useEffect(() => {
-    if (data) {
+    if (data && contracts) {
       console.log("DATA", data);
 
       (async () => {
@@ -250,7 +251,7 @@ export default function UserDashboardComponent(props) {
         setPositionLoading(false);
       })();
     }
-  }, [data, tokenList]);
+  }, [data, tokenList, contracts]);
 
   const getUserTokens = async (address) => {
     setWalletTokenLoading(true);
@@ -284,19 +285,14 @@ export default function UserDashboardComponent(props) {
         <img src={banner} alt="" />
       </div>
       <div className="user_portfolio">
+        <img src={userIcon} alt="icon" className="usericon" />
         <div className="user_tittle">
           <h1>User Overview</h1>
           <Input
             addonBefore={
-              userAddress ? (
-                verifiedAddress ? (
-                  <BsCheckLg className="search_icon" />
-                ) : (
-                  <BsXLg className="search_icon" />
-                )
-              ) : (
-                <SearchOutlined className="search_icon" />
-              )
+            
+                <FaSearch className="search_icon" />
+              
             }
             className={`search_address ${
               userAddress
