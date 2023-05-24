@@ -40,10 +40,10 @@
                 background-color: var(--light-blue);
                 border-radius: 5px;
                 font-weight: 700;
-                color: var(--dark-gray);
+                color: var(--low-gray);
                 &::placeholder{
                     font-weight: 700;
-                    color: var(--light-gray);
+                    color: var(--low-gray);
                 }
                 &:disabled{
                     cursor: not-allowed;
