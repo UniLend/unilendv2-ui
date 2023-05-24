@@ -714,7 +714,7 @@ export const getTokensFromUserWallet = async (data, usdlist, tokenList) => {
 };
 
 export const getBorrowedPowerUsed = (Positions) => {
-
+ 
   let num = 0;
   let deno = 0;
   for (const position of Positions) {
@@ -722,7 +722,8 @@ export const getBorrowedPowerUsed = (Positions) => {
 
     const tokenUsedInPercentage =
       (Number(curentLTV) /  Number(position.pool.maxLTV)) * 100;
-    num += tokenUsedInPercentage * position.LendBalance;
+      console.log("tokenUsedInPercentage", (tokenUsedInPercentage > 100 ? 100: tokenUsedInPercentage) ,position.currentLTV,  position.LendBalance);
+    num += (tokenUsedInPercentage > 100 ? 100: tokenUsedInPercentage) * position.LendBalance;
     deno += position.LendBalance;
  
   }
