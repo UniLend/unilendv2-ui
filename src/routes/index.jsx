@@ -1,9 +1,8 @@
-import React, { Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { openRoutes } from './routes';
+import React, { Suspense } from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
+import { openRoutes } from "./routes";
 
 export default function MainRoutes(props) {
-
   return (
     <Routes>
       {openRoutes.map((singleRoute) => {
@@ -16,6 +15,7 @@ export default function MainRoutes(props) {
           />
         );
       })}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
