@@ -52,7 +52,7 @@ export default function Navbar(props) {
   const dispatch = useDispatch();
   const [currentTheme , setCurrentTheme] = useState(theme)
   const {chain: networkchain} = getNetwork()
-  const availableChain = [11155111,1442, 80001]
+  const availableChain = [11155111,1442]
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -174,7 +174,7 @@ export default function Navbar(props) {
     return (
       <div className="sort_popover">
         <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
-        <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
+        {/* <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p> */}
         <p onClick={() => handleSwitchNetwork(1442)} >  zkEVM Testnet</p>
       </div>
     );
@@ -260,10 +260,10 @@ export default function Navbar(props) {
                   Dashboard
                 </a>
                 <a
-                  href="/vote"
-                  className={`${pathname === "/vote" ? "active" : ""}`}
+                  href="/governance"
+                  className={`${pathname === "/governance" ? "active" : ""}`}
                 >
-                  Vote
+                  Governance
                 </a>
               </>
             ) : (
@@ -273,7 +273,7 @@ export default function Navbar(props) {
                   <LockOutlined style={{ marginLeft: "5px" }} />
                 </a>
                 <a href="#" className="disable_route">
-                  Vote
+                  Governance
                   <LockOutlined style={{ marginLeft: "5px" }} />
                 </a>
               </>

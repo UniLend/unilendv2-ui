@@ -204,7 +204,7 @@ export default function UserDashboardComponent(props) {
   }, [user]);
 
   useEffect(() => {
-    if (data) {
+    if (data && contracts) {
       console.log("DATA", data);
 
       (async () => {
@@ -250,7 +250,7 @@ export default function UserDashboardComponent(props) {
         setPositionLoading(false);
       })();
     }
-  }, [data, tokenList]);
+  }, [data, tokenList, contracts]);
 
   const getUserTokens = async (address) => {
     setWalletTokenLoading(true);
