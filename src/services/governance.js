@@ -60,7 +60,8 @@ export const setApproval = async (contractAddress, abi, userAddress, checkTxnSta
 
     const txs = await instance.approve(userAddress, maxAllow);
     const txtData = {
-        message: `Approval Successfull! `
+        message: `Approval Successfull! `,
+        fn: 'approve'
     }
     checkTxnStatus(txs?.hash, txtData);
 

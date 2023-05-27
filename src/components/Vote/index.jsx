@@ -42,12 +42,21 @@ export default function VoteComponent() {
       hash,
     }).then((receipt) => {
       
-      if (receipt.status == 1) {   
-        setTimeout(() => {
-           handleAllowance()
-           message.success(`${data.message}`);
-           setIsLoading(false);
-        }, 1000);
+      if (receipt.status == 1) { 
+          if(data?.fn == 'approve'){
+            setTimeout(() => {
+              handleAllowance()
+              message.success(`${data.message}`);
+              setIsLoading(false);
+           }, 6000);
+          } else {
+            setTimeout(() => {
+              handleAllowance()
+              message.success(`${data.message}`);
+              setIsLoading(false);
+           }, 2000);
+          }
+      
       } else {
         alert('Error Checked')
       }
@@ -92,6 +101,7 @@ export default function VoteComponent() {
       contractsAdd?.uftgToken
     );
     const valueFromBigNumber = fromBigNumber(allowance);
+    console.log("delegrate","check", valueFromBigNumber);
     setAllowanceValue(valueFromBigNumber);
   };
 
@@ -230,6 +240,7 @@ const WrapAndDelegate = ({
 
 useEffect(() => {
   const isValid = ethers.utils.isAddress(address);
+  console.log("wrap$delegrate",allowanceValue, decimal2Fixed(amount, 18) );
   if (amount > tokenBalance?.uft) {
     setButtonText({
       text: "Low Balance",
