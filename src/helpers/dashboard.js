@@ -180,27 +180,64 @@ const calculateCurrentLTV = (borrow0, lend1, price1) => {
 
 export const getPositionData = async (data, contracts) => {
   const position = data["positions"];
-
+ 
   const lendArray = [];
   const borrowArray = [];
 
+  const allPositionAPoolddrs = Array.isArray(position) && position.map(function(pool){
+    return {owner: pool.owner, ...pool.pool}
+  })
+
+  const arrayPromise = allPositionAPoolddrs.map(function(pool) {
+    let promises =
+    [
+        contracts.helperContract.getPoolFullData(
+          contracts.positionContract.address,
+          pool.pool,
+          pool.owner
+        ),
+        contracts.coreContract.getOraclePrice(
+          pool.token0.id,
+          pool.token1.id,
+            decimal2Fixed(1, 18)
+         ),
+         contracts.helperContract.getPoolData(pool.pool)
+        ]
+
+        return promises
+
+  } )
+
+  const flatArray = [].concat(...arrayPromise)
+
+  const PromiseData =  await Promise.all(flatArray) 
+
+
+  var counter = 0
+  
   for (const object of position) {
     const positionPoolAddress = object.pool.pool;
 
-    const [ realTimePoolData, priceInBigNumber , poolBasicData] = await Promise.all([
-      contracts.helperContract.getPoolFullData(
-        contracts.positionContract.address,
-        positionPoolAddress,
-        object.owner
-      ),
-      contracts.coreContract.getOraclePrice(
-        object.pool.token0.id,
-        object.pool.token1.id,
-          decimal2Fixed(1, 18)
-       ),
-       contracts.helperContract.getPoolData(positionPoolAddress)
-      ]
-    ) 
+    // const [ realTimePoolData, priceInBigNumber , poolBasicData] = await Promise.all([
+    //   contracts.helperContract.getPoolFullData(
+    //     contracts.positionContract.address,
+    //     positionPoolAddress,
+    //     object.owner
+    //   ),
+    //   contracts.coreContract.getOraclePrice(
+    //     object.pool.token0.id,
+    //     object.pool.token1.id,
+    //       decimal2Fixed(1, 18)
+    //    ),
+    //    contracts.helperContract.getPoolData(positionPoolAddress)
+    //   ]
+    // ) 
+ 
+    const realTimePoolData = PromiseData[counter]
+    const priceInBigNumber = PromiseData[counter+1]
+    const poolBasicData = PromiseData[counter+2]
+
+    counter = counter+3
 
     const token0Liq = fromBigNumber(poolBasicData._token0Liquidity)
     const token1Liq = fromBigNumber(poolBasicData._token1Liquidity)
@@ -216,26 +253,11 @@ export const getPositionData = async (data, contracts) => {
       fromBigNumber(realTimePoolData._totalBorrow1)
     );
 
-    // const realTimePoolData = await contracts.helperContract.getPoolFullData(
-    //   contracts.positionContract.address,
-    //   positionPoolAddress,
-    //   object.owner
-    // );
 
-    // const data = await contracts.coreContract.getOraclePrice(
-    //   object.pool.token0.id,
-    //   object.pool.token1.id,
-    //     decimal2Fixed(1, 18)
-    //  )
   
   const price0 = Number(fixed2Decimals(priceInBigNumber, 18));
   const price1 = Number(1 / price0);
-    // console.log(
-    //   "getPositionData",
-    //   "pooldata",
-    //   realTimePoolData,
-    //   poolBasicData
-    // )
+
 
     if(fromBigNumber(realTimePoolData._borrowBalance0) > 0){
             const BorrowObj = {};
@@ -636,13 +658,6 @@ export const getPositionData = async (data, contracts) => {
     //   lendArray.push(LendObj2);
     // }
   }
-  console.log(
-    "getPositionData",
-    "pooldata",
-    
-    borrowArray, lendArray
-  )
-
 
   return { borrowArray, lendArray };
 };
