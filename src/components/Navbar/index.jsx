@@ -260,10 +260,10 @@ export default function Navbar(props) {
                   Dashboard
                 </a>
                 <a
-                  href="/vote"
-                  className={`${pathname === "/vote" ? "active" : ""}`}
+                  href="/governance"
+                  className={`${pathname === "/governance" ? "active" : ""}`}
                 >
-                  Vote
+                  Governance
                 </a>
               </>
             ) : (
@@ -273,7 +273,7 @@ export default function Navbar(props) {
                   <LockOutlined style={{ marginLeft: "5px" }} />
                 </a>
                 <a href="#" className="disable_route">
-                  Vote
+                  Governance
                   <LockOutlined style={{ marginLeft: "5px" }} />
                 </a>
               </>

@@ -27,7 +27,7 @@ export const openRoutes = [
     element: lazy(() => import('../pages/userDashboard')) ,
   },
   {
-    path: '/vote',
+    path: '/governance',
     exact: true,
     element: lazy(() => import('../pages/vote')),
   },

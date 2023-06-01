@@ -88,8 +88,8 @@ export default function Footer() {
          >
             Dashboard
           </a>
-          <a href='/vote'
-         className={`${pathname === '/vote' ? 'active' : ''}`}
+          <a href='/governance'
+         className={`${pathname === '/governance' ? 'active' : ''}`}
          >
             Vote
           </a>
@@ -101,7 +101,7 @@ export default function Footer() {
            <FiLock style={{ marginLeft: '5px' }} />
          </a> 
          <a href="#" className='disable_route'>
-          Vote
+         Vote
           <FiLock style={{marginLeft: '5px'}}/>
         </a>
            </>
