@@ -203,10 +203,12 @@ export const setAllowance = async (
 };
 
 export const getTabs = (token) => {
-  if (token.lendBalance && token.lendBalance > 0) {
-    return ['lend', 'redeem'];
-  } else if (token.borrowBalance && token.borrowBalance > 0) {
-    return ['borrow', 'repay'];
+  if (token.lendBalance && token.lendBalance > 0 && token.borrowBalance <=0) {
+    return ['lend', 'redeem' ,'borrow' ];
+  } else if (token.borrowBalance && token.borrowBalance > 0 && token.lendBalance <= 0) {
+    return ['borrow', 'repay', 'lend'];
+  }  else if (token.borrowBalance && token.borrowBalance > 0 && token.lendBalance && token.lendBalance > 0) {
+    return ['borrow', 'repay','lend', 'redeem'];
   } else {
     return ['lend', 'borrow'];
   }

@@ -238,9 +238,12 @@ if(selectedToken && collateralToken){
   };
 
   const toggleOperation = (operation) => {
-    setActiveOperation(operation);
-    setAmount(0);
-    setSelectLTV(5);
+    if(selectedToken?.tabs?.includes(operation)){
+      setActiveOperation(operation);
+      setAmount(0);
+      setSelectLTV(5);
+    }
+  
   };
 
   const handleLTVSlider = (value) => {
@@ -417,20 +420,37 @@ if(selectedToken && collateralToken){
       <div className="content">
         <div className="oparation_tab">
           <div
-            onClick={() => toggleOperation(selectedToken?.tabs[0])}
+            onClick={() => toggleOperation(lend)}
             className={
-              activeOperation === selectedToken?.tabs[0] ? "active" : ""
+              activeOperation === lend ? "active" : selectedToken?.tabs?.includes('lend') ? '': 'disable_tab'
             }
+            
           >
-            {selectedToken ? selectedToken?.tabs[0] : "Lend"}
+            Lend
           </div>
           <div
-            onClick={() => toggleOperation(selectedToken?.tabs[1])}
+            onClick={() => toggleOperation(redeem)}
             className={
-              activeOperation === selectedToken?.tabs[1] ? "active" : ""
+              activeOperation === redeem ? "active" : selectedToken?.tabs?.includes('redeem') ? '': 'disable_tab'
             }
           >
-            {selectedToken ? selectedToken?.tabs[1] : "Borrow"}
+            Redeem
+          </div>
+          <div
+            onClick={() => toggleOperation(borrow)}
+            className={
+              activeOperation === borrow ? "active" : selectedToken?.tabs?.includes('borrow') ? '': 'disable_tab'
+            }
+          >
+            Borrow
+          </div>
+          <div
+            onClick={() => toggleOperation(repay)}
+            className={
+              activeOperation === repay ? "active" : selectedToken?.tabs?.includes('repay') ? '': 'disable_tab'
+            }
+          >
+            Repay
           </div>
         </div>
 
