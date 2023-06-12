@@ -767,7 +767,7 @@ export const handleRepay = async (
     Amount = Max;
   }
   try {
-    if (greaterThan(selectedToken.allowance, amount)) {
+    if (fixed2Decimals18(selectedToken.allowance) >= amount) {
 
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
      const {hash} = await instance.repay(poolAddress, Amount, userAddr)
