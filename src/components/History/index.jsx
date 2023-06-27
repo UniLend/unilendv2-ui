@@ -75,7 +75,7 @@ import loader from '../../assets/Eclipse-loader.gif'
           ...data.repays,
         ];
         const sorted = sortByKey(newArray, "blockTimestamp", 1);
-        console.log(pools, sorted);
+        
         setGraphHistory(sorted);
         setGraphHistoryBackup(sorted);
         setIsPageLoading(false);

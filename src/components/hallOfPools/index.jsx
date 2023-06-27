@@ -40,9 +40,6 @@ export default function HallOfPoolsComponent(props) {
   
   }, [poolList]);
 
-  useEffect(() => {
-    console.log("pools", pools);
-  }, [pools])
 
   const handleSort = (key, order) => {
     const sorted = sortByKey(pools, key, order);
@@ -75,7 +72,7 @@ export default function HallOfPoolsComponent(props) {
 
   useEffect(() => {
     if (token1?.symbol && !token2?.symbol) {
-      console.log("poolBackup", poolBackup);
+    
       const filtered =
         Array.isArray(poolBackup) &&
         poolBackup.filter(

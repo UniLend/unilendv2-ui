@@ -19,7 +19,7 @@ export default function NoPoolFound({ token1, token2, createPool }) {
   
     const handleCreate = async () => {
       // await createPool();
-      console.log("contracts",contracts);
+     
      await handleCreatePool(contracts)
     };
 

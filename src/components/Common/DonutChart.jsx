@@ -7,12 +7,20 @@ const DonutChart = memo(function DonutChartMemo ({data}) {
 
 
   const config = {
-    appendPadding: 5,
+    appendPadding: 20,
     data,
     angleField: 'value',
     colorField: 'type',
     radius: 1,
     innerRadius: 0.4,
+    legend: {
+      itemName: {
+        style: {
+          fontSize: 10,
+          fontWeight: 900
+        },
+      },
+    },
     meta: {
         value: {
           formatter: (v) => `${v} %`,
@@ -57,6 +65,7 @@ const DonutChart = memo(function DonutChartMemo ({data}) {
           whiteSpace: 'pre-wrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
+          fontWeight:800
         },
         content: '',
       },

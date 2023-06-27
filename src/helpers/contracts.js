@@ -110,16 +110,16 @@ export function decimal2Fixed(amount, decimals) {
   return newNum;
 }
 
-export function fixed2Decimals(amount, decimals=18) {
+export function fixed2Decimals(amount, decimals = 18) {
   return new BigNumber(amount?._hex).dividedBy(10 ** decimals).toFixed();
 }
 
-export function fixed2Decimals18(amount, decimals=18){
+export function fixed2Decimals18(amount, decimals = 18) {
   return new BigNumber(amount).dividedBy(10 ** decimals).toFixed();
 }
 
-export function fromBigNumber(bignumber){
-   return ethers.BigNumber.from(bignumber).toString()
+export function fromBigNumber(bignumber) {
+  return ethers.BigNumber.from(bignumber).toString();
 }
 
 export function toFixed(num, fixed) {
@@ -158,16 +158,20 @@ export function getSelectLTV(
   inputBorrow,
   poolData
 ) {
-
   const MaxLTV = poolData.ltv / 100;
 
   const prevLTV =
-  Number(selectedToken.borrowBalanceFixed) > 0
-    ? Number(selectedToken.borrowBalanceFixed) /
-     (Number(collateralToken.lendBalanceFixed) * Number(collateralToken.price))
-    : 0;
+    Number(selectedToken.borrowBalanceFixed) > 0
+      ? Number(selectedToken.borrowBalanceFixed) /
+        (Number(collateralToken.lendBalanceFixed) *
+          Number(collateralToken.price))
+      : 0;
 
-  const ltv = prevLTV + Number(inputBorrow) / (Number(collateralToken.lendBalanceFixed) * Number(collateralToken.price));
+  const ltv =
+    prevLTV +
+    Number(inputBorrow) /
+      (Number(collateralToken.lendBalanceFixed) *
+        Number(collateralToken.price));
 
   const result = ltv > MaxLTV ? MaxLTV : ltv;
 
@@ -178,17 +182,25 @@ export function getCurrentLTV(selectedToken, collateralToken) {
   const prevLTV =
     Number(selectedToken.borrowBalanceFixed) > 0
       ? Number(selectedToken.borrowBalanceFixed) /
-       (Number(collateralToken.lendBalanceFixed) * Number(collateralToken.price))
+        (Number(collateralToken.lendBalanceFixed) *
+          Number(collateralToken.price))
       : 0;
 
   return (prevLTV.toFixed(4) * 100).toFixed(2);
 }
 
-export const getActionBtn = (activeOperation, amount, selectedToken, collateralToken, collateral) => {
+export const getActionBtn = (
+  activeOperation,
+  amount,
+  selectedToken,
+  collateralToken,
+  collateral
+) => {
   let btn = {
     text: `${activeOperation} ${selectedToken?._symbol}`,
     disable: false,
   };
+
   if (amount <= 0) {
     btn = { text: "Enter Amount", disable: true };
   } else if (amount && activeOperation === lend) {
@@ -198,23 +210,35 @@ export const getActionBtn = (activeOperation, amount, selectedToken, collateralT
       btn = { text: "Low Balance in Wallet", disable: true };
     }
   } else if (amount && activeOperation === borrow) {
-    if ( fixed2Decimals18(collateralToken?.allowance) <= collateral) {
+    if (
+      collateral > 0 &&
+      fixed2Decimals18(collateralToken?.allowance) <= collateral
+    ) {
       btn = { text: "Approve " + collateralToken?._symbol };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
       btn = { text: "Not Enough Liquidity", disable: true };
-    } else if (collateral > Number(collateralToken?.balanceFixed)){
-        btn = { text: "Low Balance in Wallet " + collateralToken?._symbol, disable: true };
+    } else if (collateral > Number(collateralToken?.balanceFixed)) {
+      btn = {
+        text: "Low Balance in Wallet " + collateralToken?._symbol,
+        disable: true,
+      };
     }
   } else if (amount && activeOperation === redeem) {
+  
     if (amount > Number(selectedToken.lendBalanceFixed)) {
       btn = { text: "Not Enough Amount Lent", disable: true };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
       btn = { text: "Not Enough Liquidity", disable: true };
-    } else if (amount > Number(selectedToken.redeemBalance)) {
-      btn = { text: "Not Enough Amount Lent", disable: true };
+    } else if (amount > Number(selectedToken.redeemBalanceFixed)) {
+      btn = { text: "Exceeds Redeemable Amount", disable: true };
     }
   } else if (amount && activeOperation === repay) {
-    if (amount > Number(selectedToken.balanceFixed)) {
+   
+    if (fixed2Decimals18(selectedToken?.allowance) < amount) {
+      btn = { text: "Approve " + selectedToken?._symbol };
+    } else if (amount > Number(selectedToken.borrowBalanceFixed)) {
+      btn = { text: "Exceeds Borrowed Amount", disable: true };
+    } else if (amount > Number(selectedToken.balanceFixed)) {
       btn = { text: "Low Balance in Wallet", disable: true };
     }
   }
@@ -227,7 +251,6 @@ export const getAllContracts = async (contractAddress, abi, web3) => {
   return contract;
 };
 
-
 export const getTokenUSDPrice = (price) => {
-  return Number(price) == 1 ? 1 : Number(price)/ (10**8)
- }
+  return Number(price) == 1 ? 1 : Number(price) / 10 ** 8;
+};

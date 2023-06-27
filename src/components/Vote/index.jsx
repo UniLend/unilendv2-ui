@@ -81,7 +81,7 @@ export default function VoteComponent() {
     );
     const delegatesAddress = await UFTG.delegates(address);
     const isValid = ethers.utils.isAddress(delegatesAddress);
-    console.log("validation", isValid, delegatesAddress !=0);
+
     delegatesAddress != 0 && isValid && setDelegate(delegatesAddress);
     const uftBalance_BigNumber = await UFT.balanceOf(address);
     const uftgBalance_BigNumber = await UFTG.getCurrentVotes(address);
@@ -101,7 +101,7 @@ export default function VoteComponent() {
       contractsAdd?.uftgToken
     );
     const valueFromBigNumber = fromBigNumber(allowance);
-    console.log("delegrate","check", valueFromBigNumber);
+  
     setAllowanceValue(valueFromBigNumber);
   };
 
@@ -240,7 +240,7 @@ const WrapAndDelegate = ({
 
 useEffect(() => {
   const isValid = ethers.utils.isAddress(address);
-  console.log("wrap$delegrate",allowanceValue, decimal2Fixed(amount, 18) );
+ 
   if (amount > tokenBalance?.uft) {
     setButtonText({
       text: "Low Balance",
@@ -295,7 +295,7 @@ useEffect(() => {
     const { chain } = getNetwork();
     const fixedValue = decimal2Fixed(amount, 18);
     const contracts = contractAddress[chain?.id || "1"];
-console.log("handleWrap", Number(allowanceValue) , Number(fixedValue));
+
     if (Number(allowanceValue) >= Number(fixedValue)) {
       setIsLoading(true);
       handleWrapAndDelegate(
@@ -364,7 +364,7 @@ const UnWrap = ({
   const handleAmount = (e) => {
     const value = e.target.value;
     setAmount(value);
-    console.log("Handle Amount", value , tokenBalance?.uftg, value > tokenBalance?.uftg);
+   
     if (value > tokenBalance?.uftg) {
       setButtonText({
         text: "Low Balance",

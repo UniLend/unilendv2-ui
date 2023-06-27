@@ -228,19 +228,22 @@ if(selectedToken && collateralToken){
     setSelectLTV(5);
     if (token === 0) {
       setSelectedToken(poolData.token0);
-      setActiveOperation(poolData.token0.tabs[0]);
+      //setActiveOperation(poolData.token0.tabs[0]);
       setCollaterralToken(poolData.token1);
     } else {
       setSelectedToken(poolData.token1);
-      setActiveOperation(poolData.token1.tabs[0]);
+      //setActiveOperation(poolData.token1.tabs[0]);
       setCollaterralToken(poolData.token0);
     }
   };
 
   const toggleOperation = (operation) => {
-    setActiveOperation(operation);
-    setAmount(0);
-    setSelectLTV(5);
+    if(selectedToken?.tabs?.includes(operation)){
+      setActiveOperation(operation);
+      setAmount(0);
+      setSelectLTV(5);
+    }
+  
   };
 
   const handleLTVSlider = (value) => {
@@ -269,7 +272,7 @@ if(selectedToken && collateralToken){
    if(selectedToken === null) setIsPageLoading(true)
     if (contracts.helperContract && contracts.coreContract && Object.values(poolList).length > 0) {
       (async function () {
-        console.log("User Changed", user, methodLoaded);
+      
         if (!methodLoaded.getPoolData) {
           const pool = await getPoolBasicData(contracts, poolAddress, poolData, poolList[poolAddress]);
           setPoolData(pool);
@@ -314,18 +317,18 @@ if(selectedToken && collateralToken){
       if (isAllTrue === undefined && selectedToken !==null && selectedToken?._symbol === poolData?.token0?._symbol) {
         setSelectedToken(poolData?.token0);
         setCollaterralToken(poolData?.token1);
-        setActiveOperation(poolData?.token0?.tabs[0]);
+        //setActiveOperation(poolData?.token0?.tabs[0]);
         setActiveToken(0)
         setIsPageLoading(false)
       } else if(isAllTrue === undefined && selectedToken !== null){
         setSelectedToken(poolData?.token1);
         setCollaterralToken(poolData?.token0);
-        setActiveOperation(poolData?.token1?.tabs[0]);
+        //setActiveOperation(poolData?.token1?.tabs[0]);
         setIsPageLoading(false)
       } else if(isAllTrue === undefined) {
         setSelectedToken(poolData?.token0);
         setCollaterralToken(poolData?.token1);
-        setActiveOperation(poolData?.token0?.tabs[0]);
+        //setActiveOperation(poolData?.token0?.tabs[0]);
         setActiveToken(0)
         setIsPageLoading(false)
       }
@@ -417,20 +420,37 @@ if(selectedToken && collateralToken){
       <div className="content">
         <div className="oparation_tab">
           <div
-            onClick={() => toggleOperation(selectedToken?.tabs[0])}
+            onClick={() => toggleOperation(lend)}
             className={
-              activeOperation === selectedToken?.tabs[0] ? "active" : ""
+              activeOperation === lend ? "active" : selectedToken?.tabs?.includes('lend') ? '': 'disable_tab'
             }
+            
           >
-            {selectedToken ? selectedToken?.tabs[0] : "Lend"}
+            Lend
           </div>
           <div
-            onClick={() => toggleOperation(selectedToken?.tabs[1])}
+            onClick={() => toggleOperation(redeem)}
             className={
-              activeOperation === selectedToken?.tabs[1] ? "active" : ""
+              activeOperation === redeem ? "active" : selectedToken?.tabs?.includes('redeem') ? '': 'disable_tab'
             }
           >
-            {selectedToken ? selectedToken?.tabs[1] : "Borrow"}
+            Redeem
+          </div>
+          <div
+            onClick={() => toggleOperation(borrow)}
+            className={
+              activeOperation === borrow ? "active" : selectedToken?.tabs?.includes('borrow') ? '': 'disable_tab'
+            }
+          >
+            Borrow
+          </div>
+          <div
+            onClick={() => toggleOperation(repay)}
+            className={
+              activeOperation === repay ? "active" : selectedToken?.tabs?.includes('repay') ? '': 'disable_tab'
+            }
+          >
+            Repay
           </div>
         </div>
 

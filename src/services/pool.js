@@ -203,10 +203,12 @@ export const setAllowance = async (
 };
 
 export const getTabs = (token) => {
-  if (token.lendBalance && token.lendBalance > 0) {
-    return ['lend', 'redeem'];
-  } else if (token.borrowBalance && token.borrowBalance > 0) {
-    return ['borrow', 'repay'];
+  if (token.lendBalance && token.lendBalance > 0 && token.borrowBalance <=0) {
+    return ['lend', 'redeem' ,'borrow' ];
+  } else if (token.borrowBalance && token.borrowBalance > 0 && token.lendBalance <= 0) {
+    return ['borrow', 'repay', 'lend'];
+  }  else if (token.borrowBalance && token.borrowBalance > 0 && token.lendBalance && token.lendBalance > 0) {
+    return ['borrow', 'repay','lend', 'redeem'];
   } else {
     return ['lend', 'borrow'];
   }
@@ -404,7 +406,7 @@ export const getPoolAllData = async (
        // const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolFullData', [contracts.positionContract.address, poolAddress, userAddr]  )
         const data = await contracts.helperContract.getPoolFullData(contracts.positionContract.address, poolAddress, userAddr)
 
-        console.log("getpoolAllDta", fromBigNumber(data._token0Liquidity), poolData);
+       
         const totLiqFull0 = add(
         div(mul(poolData.token0.liquidity, 100), poolData.rf),
        fromBigNumber(data._totalBorrow0)
@@ -765,7 +767,7 @@ export const handleRepay = async (
     Amount = Max;
   }
   try {
-    if (greaterThan(selectedToken.allowance, amount)) {
+    if (fixed2Decimals18(selectedToken.allowance) >= amount) {
 
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
      const {hash} = await instance.repay(poolAddress, Amount, userAddr)
@@ -856,12 +858,11 @@ export const handleCreatePool = async (contracts) => {
  try {
   const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
   const length = await instance.poolLength()
-  console.log("handleCreatePool", 'instance', instance, length);
+  
   const {hash} = await instance.createPool('0x4127976420204dF0869Ca3ED1C2f62c04F6cb137','0x8C57273241C2b4f4a295ccf3D1Feb29A08225A08', {
     gasLimit: 2100000
   })
 
-  console.log("handleCreatePool", hash);
  } catch (error) {
   console.log("handleCreatePool", "error", {error});
  }

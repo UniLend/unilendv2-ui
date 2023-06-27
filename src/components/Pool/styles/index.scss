@@ -81,7 +81,7 @@
                 width: 45%;
                 border-radius: 8px;
                 text-align: center;
-                font-size: 17px;
+                font-size: 12px;
                 font-weight: 700;
                 cursor: pointer;
                 text-transform: capitalize;
@@ -91,6 +91,11 @@
             .active {
                 background-color: var(--light-blue);
                 color: var(--sharp-blue);
+            }
+            .disable_tab{
+                background-color: var(--border-gray);
+                color: var(--low-gray);
+                cursor: not-allowed;
             }
         }
 
@@ -233,7 +238,7 @@
                 border: 0px;
                 height: 40px;
                 border-radius: 7px;
-                font-size: 18px;
+                font-size: 15px;
                 font-weight: 700;
                 cursor: pointer;
                 text-transform: capitalize;
