@@ -82,7 +82,7 @@ export default function HeroComponent(props) {
       setFilteredPools([]);
     }
 
-    console.log("filtered", token1, poolBackup);
+  
   }, [token1, token2]);
 
   const handleTokens = (token, selectedToken) => {

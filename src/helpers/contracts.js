@@ -200,7 +200,7 @@ export const getActionBtn = (
     text: `${activeOperation} ${selectedToken?._symbol}`,
     disable: false,
   };
-  // console.log('selectedToken', selectedToken, amount);
+
   if (amount <= 0) {
     btn = { text: "Enter Amount", disable: true };
   } else if (amount && activeOperation === lend) {
@@ -224,7 +224,7 @@ export const getActionBtn = (
       };
     }
   } else if (amount && activeOperation === redeem) {
-    console.log("selectedToken", selectedToken);
+  
     if (amount > Number(selectedToken.lendBalanceFixed)) {
       btn = { text: "Not Enough Amount Lent", disable: true };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
@@ -233,7 +233,7 @@ export const getActionBtn = (
       btn = { text: "Exceeds Redeemable Amount", disable: true };
     }
   } else if (amount && activeOperation === repay) {
-    console.log("selectedToken", selectedToken, collateralToken, collateral);
+   
     if (fixed2Decimals18(selectedToken?.allowance) < amount) {
       btn = { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.borrowBalanceFixed)) {

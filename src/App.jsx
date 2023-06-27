@@ -122,7 +122,7 @@ function App() {
   const state = useSelector((state) => state);
 
   const { data, loading, error } = useQuery(query);
-  console.log("Graph Data", data,  query);
+
 
   document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`;
 
@@ -299,7 +299,6 @@ function App() {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
 
-    console.log("Graph Data", data);
     if ( data && networkID == 80001) {
      const allPositions = data?.positions
       const poolData = {};

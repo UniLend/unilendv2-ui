@@ -737,7 +737,7 @@ export const getBorrowedPowerUsed = (Positions) => {
 
     const tokenUsedInPercentage =
       (Number(curentLTV) /  Number(position.pool.maxLTV)) * 100;
-      console.log("tokenUsedInPercentage", (tokenUsedInPercentage > 100 ? 100: tokenUsedInPercentage) ,position.currentLTV,  position.LendBalance);
+     
     num += (tokenUsedInPercentage > 100 ? 100: tokenUsedInPercentage) * position.LendBalance;
     deno += position.LendBalance;
  

@@ -206,12 +206,12 @@ export default function UserDashboardComponent(props) {
 
   useEffect(() => {
     if (data && contracts) {
-      console.log("DATA", data);
+   
 
       (async () => {
         setPositionLoading(true);
         const position = await getPositionData(data, contracts);
-        console.log("getposition", position);
+      
 
         if (position) {
           setPositionData(position);

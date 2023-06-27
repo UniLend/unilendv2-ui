@@ -272,7 +272,7 @@ if(selectedToken && collateralToken){
    if(selectedToken === null) setIsPageLoading(true)
     if (contracts.helperContract && contracts.coreContract && Object.values(poolList).length > 0) {
       (async function () {
-        console.log("User Changed", user, methodLoaded);
+      
         if (!methodLoaded.getPoolData) {
           const pool = await getPoolBasicData(contracts, poolAddress, poolData, poolList[poolAddress]);
           setPoolData(pool);
