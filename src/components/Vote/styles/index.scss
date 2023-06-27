@@ -36,16 +36,16 @@
         h2 {
           color: var(--sharp-blue);
           font-weight: 700;
-          font-size: 22px;
+          font-size: 28px;
         }
         p {
           color: var(--light-gray);
-          font-size: 15px;
+          font-size: 19px;
           font-weight: 600;
         }
         span {
           color: var(--low-gray);
-          font-size: 12px;
+          font-size: 13px;
         }
       }
       @media ($tablet) {
@@ -139,15 +139,15 @@
         .info {
           p {
             color: var(--low-gray);
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             text-align: justify;
             min-width: 90%;
           }
           h2 {
             color: var(--sharp-blue);
-            font-size: 25px;
-            font-weight: 700;
+            font-size: 30px;
+            font-weight: 800;
           }
         }
         .action {
@@ -262,7 +262,7 @@
         h2 {
           color: var(--sharp-blue);
           font-weight: 800;
-          font-size: 25px;
+          font-size: 27px;
         }
         p {
           color: var(--low-gray);
