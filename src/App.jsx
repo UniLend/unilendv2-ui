@@ -235,6 +235,9 @@ function App() {
             );
             const reverseResult = result.reverse();
             for (const poolElement of reverseResult) {
+              if(hidePools.includes(poolElement.pool)){
+                continue;
+              }
               poolData[poolElement.pool] = {
                 poolAddress: poolElement.pool,
                 hide: hidePools.includes(poolElement.pool),
@@ -271,6 +274,9 @@ function App() {
 
             const reverseResult = result.reverse();
             for (const poolElement of reverseResult) {
+              if(hidePools.includes(poolElement.pool)){
+                continue;
+              }
               poolData[poolElement.pool] = {
                 poolAddress: poolElement.pool,
                 hide: hidePools.includes(poolElement.pool),
@@ -306,6 +312,9 @@ function App() {
     const poolsData = Array.isArray(data.pools) && data.pools
 
       for(const pool of poolsData){
+        if(hidePools.includes(pool?.pool)){
+          continue;
+        }
        const li = 
        fixedToShort(pool.liquidity0) *
         Number(pool.token0.priceUSD) +
