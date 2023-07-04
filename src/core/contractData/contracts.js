@@ -1,4 +1,16 @@
-export const contractAddress = { '11155111': {
+export const contractAddress = { 
+  '137': {
+    helperAddress: import.meta.env.VITE_POLYGON_HELPER,
+  
+    coreAddress: import.meta.env.VITE_POLYGON_CORE,
+    positionAddress: import.meta.env.VITE_POLYGON_POSITION,
+  
+    poolAddress: import.meta.env.VITE_POLYGON_POOL,
+    unilendOracle: import.meta.env.VITE_POLYGON_ORACLE,
+    interestRateModal: import.meta.env.VITE_POLYGON_INTERESTRATEMODAL
+  },
+  
+  '11155111': {
     helperAddress: '0xDa7389416Fe3588122109B15B6CF069cb3E70038',
   
     coreAddress: '0x207Cb7aEb640fA6CEe696269dEe1A441D0425a3d',
