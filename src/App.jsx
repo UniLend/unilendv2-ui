@@ -98,14 +98,6 @@ export const WalletConnector = new WalletConnectConnector({
 const client = createClient({
   connectors: [
     new InjectedConnector({ chains }),
-    new WalletConnectConnector({
-      chains,
-      options: {
-        qrcode: true,
-        version: 2,
-        projectId: projectId,
-      },
-    }),
   ],
   autoConnect: true,
   provider,

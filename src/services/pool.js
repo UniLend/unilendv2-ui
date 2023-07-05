@@ -602,7 +602,7 @@ export const handleLend = async (
   }
 
   try {
-    if (fixed2Decimals18(selectedToken.allowance) >= amount) {
+    if (fixed2Decimals18(selectedToken.allowance, selectedToken._decimals) >= amount) {
 
        const instance  = await getContractInstance(contracts.coreContract.address, coreAbi)
       // const signer = await fetchSigner()
@@ -687,8 +687,7 @@ export const handleBorrow = async (
     Amount = mul(Amount, -1);
   }
   try {
-    if (fixed2Decimals18(collateralToken.allowance) >= collateral) {
-
+    if (fixed2Decimals18(collateralToken.allowance, collateralToken._decimals) >= collateral) {
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
 
       const transaction = await instance.borrow(poolData._address, Amount, Collateral, userAddr);
@@ -767,7 +766,7 @@ export const handleRepay = async (
     Amount = Max;
   }
   try {
-    if (fixed2Decimals18(selectedToken.allowance) >= amount) {
+    if (fixed2Decimals18(selectedToken.allowance, selectedToken._decimals) >= amount) {
 
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
      const {hash} = await instance.repay(poolAddress, Amount, userAddr)
