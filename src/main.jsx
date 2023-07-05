@@ -15,7 +15,7 @@ const activeAcount = JSON.parse(localStorage.getItem('wagmi.store'))?.state?.dat
 
 const activeChainID = activeAcount?.chain?.id || 80001
 
-console.log("activeChain", activeAcount, activeChainID, activeChainID);
+// console.log("activeChain", activeAcount, activeChainID, activeChainID);
 
 const graphURL = {
   80001:  "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
@@ -29,7 +29,7 @@ const client = new ApolloClient({
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
+    {/* <ApolloProvider client={client}> */}
       <Suspense fallback={<Ring />}>
         <Provider store={store}>
           <BrowserRouter>
@@ -38,6 +38,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           </BrowserRouter>
         </Provider>
       </Suspense>
-    </ApolloProvider>
+    {/* </ApolloProvider> */}
   </React.StrictMode>
 );
