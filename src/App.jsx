@@ -3,7 +3,6 @@ import Web3 from "web3";
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery } from "@apollo/client";
 import "antd/dist/antd.css";
-
 import {
   createClient,
   getAccount,
@@ -121,6 +120,7 @@ function App() {
   const query = getPoolCreatedGraphQuery(user?.address);
   const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
   const state = useSelector((state) => state);
+  const networksWithGraph = [80001, 137]
 
   const { data, loading, error } = useQuery(query);
 
@@ -188,7 +188,7 @@ function App() {
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-    if (state.contracts.coreContract && networkID != 80001) {
+    if (state.contracts.coreContract && !networksWithGraph.includes(networkID)) {
 
       try {
         (async () => {
@@ -300,7 +300,7 @@ function App() {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
 
-    if ( data && networkID == 80001) {
+    if ( data && networksWithGraph.includes(networkID)) {
      const allPositions = data?.positions
       const poolData = {};
       const tokenList = {};
@@ -360,54 +360,7 @@ function App() {
       
       }
 
-      // for (const pool of data?.poolCreateds) {
-      //   const allPositions = data.positions;
-
-      //   const openPosiions = allPositions.filter(
-      //     (el) => el?.poolData?.pool == pool.pool
-      //   );
-
-      //   const poolInfo = {
-      //     ...pool,
-      //     poolAddress: pool?.pool,
-      //     hide: hidePools.includes(pool?.pool),
-      //     totalLiquidity:
-      //       fixedToShort(pool.token0Liquidity) *
-      //         getTokenPrice(oraclePrices, pool.token0) +
-      //       fixedToShort(pool.token1Liquidity) *
-      //         getTokenPrice(oraclePrices, pool.token1),
-      //     totalBorrowed:
-      //       fixedToShort(pool.totalBorrow0) *
-      //         getTokenPrice(oraclePrices, pool.token0) +
-      //       fixedToShort(pool.totalBorrow1) *
-      //         getTokenPrice(oraclePrices, pool.token1),
-      //     openPosition:
-      //       openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
-      //     token0: {
-      //       address: pool.token0,
-      //       logo: getTokenLogo(pool.token0Symbol),
-      //       symbol: pool.token0Symbol,
-      //     },
-      //     token1: {
-      //       address: pool.token1,
-      //       logo: getTokenLogo(pool.token1Symbol),
-      //       symbol: pool.token1Symbol,
-      //     },
-      //   };
-      //   tokenList[String(pool.token0).toUpperCase()] = {
-      //     address: pool.token0,
-      //     logo: getTokenLogo(pool.token0Symbol),
-      //     symbol: pool.token0Symbol,
-      //     pricePerToken: getTokenPrice(oraclePrices, pool.token0),
-      //   };
-      //   tokenList[String(pool.token1).toUpperCase()] = {
-      //     address: pool.token1,
-      //     logo: getTokenLogo(pool.token1Symbol),
-      //     symbol: pool.token1Symbol,
-      //     pricePerToken: getTokenPrice(oraclePrices, pool.token1),
-      //   };
-      //   poolData[pool?.pool] = poolInfo;
-      // }
+      console.log("activeChain", poolData, tokenList);
       dispatch(setPools({ poolData, tokenList }));
     }
   }, [data , user]);

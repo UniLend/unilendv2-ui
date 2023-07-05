@@ -27,6 +27,8 @@ export default function PoolCard({pool}) {
 if(token0?.symbol == 'BUNNY' && token1?.symbol == 'EGG'){
   setPoolTheme(true)
 }
+
+console.log("totalBorrowed", totalBorrowed);
   },[])
 
   return (
