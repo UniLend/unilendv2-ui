@@ -48,12 +48,17 @@ export const fetchUserDomain = async (addr) => {
 
 
 export const  fetchGraphQlData = async (endpoint, FILMS_QUERY) => {
-    return axios({
-        url: endpoint,
-        method: "POST",
-        data: {
-          query: FILMS_QUERY
-        }
-      })
-    .then((response) => response.data.data)
+  try {
+   const data =  await axios({
+      url: endpoint,
+      method: "POST",
+      data: {
+        query: FILMS_QUERY
+      }
+    })
+    return data.data.data
+  } catch (err) {
+    
+  }
+ 
 }

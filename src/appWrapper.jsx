@@ -14,7 +14,19 @@ const graphURL = {
 };
 
 export default function AppWrapper() {
-  const queryClient = new QueryClient();
+  
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        refetchOnReconnect: false,
+        retry: false,
+        
+      },
+    },
+  });
+
   return (
     <QueryClientProvider client={queryClient}>
       <App />

@@ -7,7 +7,9 @@ export const contractAddress = {
   
     poolAddress: import.meta.env.VITE_POLYGON_POOL,
     unilendOracle: import.meta.env.VITE_POLYGON_ORACLE,
-    interestRateModal: import.meta.env.VITE_POLYGON_INTERESTRATEMODAL
+    interestRateModal: import.meta.env.VITE_POLYGON_INTERESTRATEMODAL,
+    uftToken : import.meta.env.VITE_POLYGON_UFT,
+    uftgToken: import.meta.env.VITE_POLYGON_UFTG
   },
   
   '11155111': {

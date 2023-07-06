@@ -103,7 +103,7 @@ export default function Navbar(props) {
       const wallet = localStorage.getItem("wallet");
       handleConnect(wallet);
     }
-    if (user?.network?.id == 80001) {
+    if (user?.network?.id == 80001 || user?.network?.id == 137) {
       setIsPolygon(true);
     } else {
       setIsPolygon(false);

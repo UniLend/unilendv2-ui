@@ -240,7 +240,13 @@ const WrapAndDelegate = ({
 
 useEffect(() => {
   const isValid = ethers.utils.isAddress(address);
- 
+
+  if (decimal2Fixed(amount, 18) > Number(allowanceValue)) {
+    setButtonText({
+      text: "Approve",
+      disable: false,
+    });
+  } else
   if (amount > tokenBalance?.uft) {
     setButtonText({
       text: "Low Balance",
@@ -250,11 +256,6 @@ useEffect(() => {
     setButtonText({
       text: "Enter Valid Address",
       disable: true,
-    });
-  } else if (decimal2Fixed(amount, 18) > Number(allowanceValue)) {
-    setButtonText({
-      text: "Approve",
-      disable: false,
     });
   } else if(!(amount > 0)) {
     setButtonText({
@@ -295,7 +296,7 @@ useEffect(() => {
     const { chain } = getNetwork();
     const fixedValue = decimal2Fixed(amount, 18);
     const contracts = contractAddress[chain?.id || "1"];
-
+   
     if (Number(allowanceValue) >= Number(fixedValue)) {
       setIsLoading(true);
       handleWrapAndDelegate(

@@ -61,7 +61,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import "./App.scss";
 import { getFromLocalStorage, getTokenLogo } from "./utils";
-import { fetchCoinLogo } from "./utils/axios";
+import { fetchCoinLogo, fetchGraphQlData } from "./utils/axios";
 import { useState } from "react";
 import {
   checkOpenPosition,
@@ -115,8 +115,12 @@ function App() {
   const state = useSelector((state) => state);
   const networksWithGraph = [80001, 137]
 
- // const { data, loading, error } = useQuery('pools',fetchGraphQlData('https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend', query) );
- let data ;
+ const { data, loading, error } = useQuery('pools', async () => {
+ const fetchedDATA = await fetchGraphQlData('https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend', query)
+//  console.log("graphdata", fetchedDATA);
+ return fetchedDATA;
+ } );
+
 
   document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`;
 
@@ -289,10 +293,19 @@ function App() {
     }
   }, [state.contracts, chain?.id, user]);
 
+
+//   useEffect(()=> {
+//     // (async ()=>{
+//     //   const graphDATA = await fetchGraphQlData('https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend', query)
+//     //   console.log("graphdata",1, graphDATA);
+//     // })()
+// console.log("graphdata", data);
+//   }, [data])
+
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-
+    console.log("graphdata", data);
     if ( data && networksWithGraph.includes(networkID)) {
      const allPositions = data?.positions
       const poolData = {};
