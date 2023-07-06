@@ -1,8 +1,12 @@
 import React from "react";
 import App from "./App";
-
-import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
-import { getNetwork } from "@wagmi/core";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "react-query";
 
 const graphURL = {
   80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
@@ -10,28 +14,10 @@ const graphURL = {
 };
 
 export default function AppWrapper() {
-  const activeAcount = JSON.parse(localStorage.getItem("wagmi.store"))?.state
-    ?.data;
-
-  const { chain, chains } = getNetwork();
-  const activeChainID = chain?.id || activeAcount?.chain?.id || 137;
-
-  console.log(
-    "activeChainID",
-    activeChainID,
-    chain?.id,
-    activeAcount?.chain?.id
-  );
-
-  const client = new ApolloClient({
-    uri: graphURL[activeChainID],
-    cache: new InMemoryCache(),
-  });
+  const queryClient = new QueryClient();
   return (
-    <ApolloProvider client={client}>
-      <>
-        <App />
-      </>
-    </ApolloProvider>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
   );
 }

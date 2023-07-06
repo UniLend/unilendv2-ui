@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
-import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { store } from "./store/Store";
@@ -22,14 +21,9 @@ const graphURL = {
   137:"https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon"
 }
 
-const client = new ApolloClient({
-  uri: graphURL[activeChainID],
-  cache: new InMemoryCache(),
-});
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    {/* <ApolloProvider client={client}> */}
       <Suspense fallback={<Ring />}>
         <Provider store={store}>
           <BrowserRouter>
@@ -38,6 +32,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           </BrowserRouter>
         </Provider>
       </Suspense>
-    {/* </ApolloProvider> */}
   </React.StrictMode>
 );

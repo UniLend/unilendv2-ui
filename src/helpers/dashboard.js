@@ -1,5 +1,5 @@
 import { getTokenLogo } from "../utils";
-import { gql } from "@apollo/client";
+// import { gql } from "@apollo/client";
 import { fetchBalance, getContract, getProvider } from "@wagmi/core";
 import { erc20Abi } from "../core/contractData/abi";
 import { add, decimal2Fixed, div, fixed2Decimals, fromBigNumber, greaterThan, mul, toAPY } from "./contracts";
@@ -749,7 +749,7 @@ export const getBorrowedPowerUsed = (Positions) => {
 };
 
 export const userDashBoardQuery = (address) => {
-  const FILMS_QUERY = gql`
+  const FILMS_QUERY = `
     {
        positions(where: {owner: "${address}"}) {
         id
@@ -925,7 +925,7 @@ export const sortByKey = (data, key, order) => {
 };
 
 export const getHistoryGraphQuery = (address) => {
-  const query = gql`
+  const query = `
   {
     borrows(where: {sender: "${address}"}) {
       amount
@@ -1034,7 +1034,7 @@ export const getHistoryGraphQuery = (address) => {
 };
 
 export const getPoolCreatedGraphQuery = (address) => {
-  const query = gql`
+  const query = `
   {
       positions(where: {owner: "${address}"}) {
         id

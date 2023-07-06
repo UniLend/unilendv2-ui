@@ -45,3 +45,15 @@ export const fetchUserDomain = async (addr) => {
         return {reverse : false};
     })
 }
+
+
+export const  fetchGraphQlData = async (endpoint, FILMS_QUERY) => {
+    return axios({
+        url: endpoint,
+        method: "POST",
+        data: {
+          query: FILMS_QUERY
+        }
+      })
+    .then((response) => response.data.data)
+}

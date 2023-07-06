@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import Web3 from "web3";
 import { useDispatch, useSelector } from "react-redux";
-import { useQuery } from "@apollo/client";
+//import { useQuery } from "@apollo/client";
+import { useQuery} from "react-query";
 import "antd/dist/antd.css";
 import {
   createClient,
@@ -114,8 +115,8 @@ function App() {
   const state = useSelector((state) => state);
   const networksWithGraph = [80001, 137]
 
-  const { data, loading, error } = useQuery(query);
-
+ // const { data, loading, error } = useQuery('pools',fetchGraphQlData('https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend', query) );
+ let data ;
 
   document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`;
 
