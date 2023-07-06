@@ -540,7 +540,7 @@ if(selectedToken && collateralToken){
             <p>
               <span>Liquidity</span>
               <span>
-                { isNaN(Number(selectedToken?.liquidityFixed).toFixed(2)) ? 0: Number(selectedToken?.liquidityFixed).toFixed(2)}{" "}
+                { isNaN(Number(selectedToken?.liquidityFixed).toFixed(2)) ? 0: Number(selectedToken?.liquidityFixed).toFixed(6)}{" "}
                 {selectedToken?._symbol}
               </span>
             </p>
