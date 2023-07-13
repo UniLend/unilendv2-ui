@@ -52,7 +52,7 @@ export default function Navbar(props) {
   const dispatch = useDispatch();
   const [currentTheme , setCurrentTheme] = useState(theme)
   const {chain: networkchain} = getNetwork()
-  const availableChain = [11155111,1442, 80001]
+  const availableChain = [11155111,1442, 80001, 137]
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -103,7 +103,7 @@ export default function Navbar(props) {
       const wallet = localStorage.getItem("wallet");
       handleConnect(wallet);
     }
-    if (user?.network?.id == 80001) {
+    if (user?.network?.id == 80001 || user?.network?.id == 137) {
       setIsPolygon(true);
     } else {
       setIsPolygon(false);
@@ -175,6 +175,7 @@ export default function Navbar(props) {
       <div className="sort_popover">
         <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
         <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
+        <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p>
         <p onClick={() => handleSwitchNetwork(1442)} >  zkEVM Testnet</p>
       </div>
     );

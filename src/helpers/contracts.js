@@ -204,7 +204,7 @@ export const getActionBtn = (
   if (amount <= 0) {
     btn = { text: "Enter Amount", disable: true };
   } else if (amount && activeOperation === lend) {
-    if (fixed2Decimals18(selectedToken?.allowance) < amount) {
+    if (fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals) < amount) {
       btn = { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.balanceFixed)) {
       btn = { text: "Low Balance in Wallet", disable: true };
@@ -212,7 +212,7 @@ export const getActionBtn = (
   } else if (amount && activeOperation === borrow) {
     if (
       collateral > 0 &&
-      fixed2Decimals18(collateralToken?.allowance) <= collateral
+      fixed2Decimals18(collateralToken?.allowance, collateralToken._decimals) <= collateral
     ) {
       btn = { text: "Approve " + collateralToken?._symbol };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
@@ -234,7 +234,7 @@ export const getActionBtn = (
     }
   } else if (amount && activeOperation === repay) {
    
-    if (fixed2Decimals18(selectedToken?.allowance) < amount) {
+    if (fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals) < amount) {
       btn = { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.borrowBalanceFixed)) {
       btn = { text: "Exceeds Borrowed Amount", disable: true };

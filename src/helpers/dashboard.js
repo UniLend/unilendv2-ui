@@ -1,5 +1,5 @@
 import { getTokenLogo } from "../utils";
-import { gql } from "@apollo/client";
+// import { gql } from "@apollo/client";
 import { fetchBalance, getContract, getProvider } from "@wagmi/core";
 import { erc20Abi } from "../core/contractData/abi";
 import { add, decimal2Fixed, div, fixed2Decimals, fromBigNumber, greaterThan, mul, toAPY } from "./contracts";
@@ -749,7 +749,75 @@ export const getBorrowedPowerUsed = (Positions) => {
 };
 
 export const userDashBoardQuery = (address) => {
-  const FILMS_QUERY = gql`
+  const query = `
+  {
+      positions(where: {owner: "${address}"}) {
+        id
+        owner
+        pool {
+          id
+          pool
+        }
+        lendBalance0
+        lendBalance1
+      }
+      pools {
+            token0 {
+      symbol
+      priceUSD
+      poolCount
+      lentCount
+      borrowCount
+      id
+      txCount
+      totalPoolsLiquidityUSD
+      totalPoolsLiquidity
+      decimals
+    }
+        token1 {
+      symbol
+      priceUSD
+      poolCount
+      lentCount
+      borrowCount
+      id
+      txCount
+      totalPoolsLiquidityUSD
+      totalPoolsLiquidity
+      decimals
+    }
+        borrowApy0
+        borrowApy1
+        UtilizationRate0
+        UtilizationRate1
+        blockNumber
+        blockTimestamp
+        id
+        interest0
+        interest1
+        lB
+        lendApy0
+        lendApy1
+        lendingPositionCount
+        liquidity0
+        liquidity1
+        maxLTV
+        openPositionCount
+        pool
+        poolNo
+        rf
+        totalBorrow0
+        totalBorrow1
+        transactionHash
+        txCount
+      }
+    }
+  `;
+  return query;
+};
+
+export const userDashBoardQuery0 = (address) => {
+  const FILMS_QUERY = `
     {
        positions(where: {owner: "${address}"}) {
         id
@@ -925,7 +993,7 @@ export const sortByKey = (data, key, order) => {
 };
 
 export const getHistoryGraphQuery = (address) => {
-  const query = gql`
+  const query = `
   {
     borrows(where: {sender: "${address}"}) {
       amount
@@ -1034,7 +1102,7 @@ export const getHistoryGraphQuery = (address) => {
 };
 
 export const getPoolCreatedGraphQuery = (address) => {
-  const query = gql`
+  const query = `
   {
       positions(where: {owner: "${address}"}) {
         id
