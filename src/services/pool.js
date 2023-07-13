@@ -79,9 +79,9 @@ export const handleRedeem = async (
 ) => {
   let Amount = decimal2Fixed(amount, selectedToken._decimals);
   let maxAmount = selectedToken.lendShare;
-  // if(Number(selectedToken.lendShare) > Number(selectedToken.liquidity)){
-  //   maxAmount = selectedToken.liquidity;
-  // } 
+  if(Number(selectedToken.lendShare) > Number(selectedToken.liquidity)){
+    maxAmount = selectedToken.liquidity;
+  } 
   if (selectedToken._address == poolData.token0._address) {
     Amount = mul(Amount, -1);
     maxAmount = mul(maxAmount, -1);

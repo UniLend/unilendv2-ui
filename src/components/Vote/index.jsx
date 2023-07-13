@@ -35,6 +35,7 @@ export default function VoteComponent() {
   const [activeTab, setActiveTab] = useState(wrap);
   const [allowanceValue, setAllowanceValue] = useState("");
   const [delegate, setDelegate] = useState('0x000000000000000');
+  const [votingPower, setVotingPower] = useState('')
   const [isLoading, setIsLoading] = useState(false);
 
   const checkTxnStatus = (hash, data) => {
@@ -84,10 +85,12 @@ export default function VoteComponent() {
 
     delegatesAddress != 0 && isValid && setDelegate(delegatesAddress);
     const uftBalance_BigNumber = await UFT.balanceOf(address);
-    const uftgBalance_BigNumber = await UFTG.getCurrentVotes(address);
+    const uftgBalance_BigNumber = await UFTG.balanceOf(address);
+    const uftgVotes_BigNumber = await UFTG.getCurrentVotes(address);
     const uftBalance = fromBigNumber(uftBalance_BigNumber) / 10 ** 18;
     const uftgBalance = fromBigNumber(uftgBalance_BigNumber) / 10 ** 18;
-
+    const uftgVotes = fromBigNumber(uftgVotes_BigNumber) / 10 **18;
+    setVotingPower(uftgVotes)
     setTokenBalance({ uft: uftBalance, uftg: uftgBalance });
   };
 
@@ -129,7 +132,7 @@ export default function VoteComponent() {
             <span>(UFT + UFTG Balance)</span>
           </div>
           <div>
-            <h2>{Number(tokenBalance.uftg).toFixed(2)}</h2>
+            <h2>{Number(votingPower).toFixed(2)}</h2>
             <p>Voting Power</p>
             <span>(UFTG Balance)</span>
           </div>
