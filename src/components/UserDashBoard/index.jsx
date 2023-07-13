@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useQuery } from "@apollo/client";
+// import { useQuery } from "@apollo/client";
 import Lottie from "react-lottie";
 import "./styles/index.scss";
 import { FiPercent } from "react-icons/fi";
@@ -17,21 +17,24 @@ import { Input, Button, Pagination } from "antd";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DonutChart from "../Common/DonutChart";
+import { useQuery, useQueryClient} from "react-query";
 import {
   getAverage,
   getBorrowedPowerUsed,
   getChartData,
   getNetHealthFactor,
   getPieChartValues,
+  getPoolCreatedGraphQuery,
   getPositionData,
   getTokensFromUserWallet,
   sortByKey,
   userDashBoardQuery,
+  userDashBoardQuery0,
 } from "../../helpers/dashboard";
 import { getAccount, getNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
 import { imgError } from "../../utils";
-import { fetchTokenPriceInUSD } from "../../utils/axios";
+import { fetchGraphQlData, fetchTokenPriceInUSD } from "../../utils/axios";
 import empty from "../../assets/searchEmpty.json";
 import { ethers } from "ethers";
 
@@ -43,6 +46,13 @@ const config = {
 };
 const alchemy = new Alchemy(config);
 
+
+const graphURL = {
+  80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
+  137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
+};
+
+
 export default function UserDashboardComponent(props) {
   const { contracts, user, web3, isError, poolList, tokenList } = props;
   const { chain } = getNetwork();
@@ -51,16 +61,23 @@ export default function UserDashboardComponent(props) {
   //   navigate("/");
   // }
   const { address } = getAccount();
+  const queryClient = useQueryClient()
   const [userAddress, setUserAddress] = useState();
-  const [verifiedAddress, setVerifiedAddress] = useState(address);
-  const query = userDashBoardQuery(verifiedAddress || address);
+  const [verifiedAddress, setVerifiedAddress] = useState(address ||user?.address );
+  const query = userDashBoardQuery0(verifiedAddress || address);
   const [lendingVisible, setLendingVisible] = useState(false);
   const [borrowingVisible, setBorrowingVisible] = useState(false);
   const [isLendTab, setIsLentab] = useState(true);
   const [pieChartInputs, setPieChartInputs] = useState({});
+  const query0 = getPoolCreatedGraphQuery(user?.address);
   const [positionData, setPositionData] = useState({});
   const [positionDataBackup, setPositionDataBackup] = useState();
-  const { data, loading, error } = useQuery(query);
+  // const { data, loading, error } = useQuery(query);
+  const { data, loading, error, refetch } = useQuery('userDashboard', async () => {
+    const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
+    return fetchedDATA;
+    });
+
   const [headerAnalytics, setHeaderAnalytics] = useState({
     healthFactor: 0,
     powerUsed: 0,
@@ -271,7 +288,7 @@ export default function UserDashboardComponent(props) {
 
   useEffect(() => {
     const account = getAccount();
-
+    refetch()
     if (verifiedAddress) {
       getUserTokens(verifiedAddress || account.address);
     } else if (userAddress == "" || verifiedAddress == "") {
