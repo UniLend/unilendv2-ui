@@ -79,6 +79,9 @@ export const handleRedeem = async (
 ) => {
   let Amount = decimal2Fixed(amount, selectedToken._decimals);
   let maxAmount = selectedToken.lendShare;
+  if(Number(selectedToken.lendShare) > Number(selectedToken.liquidity)){
+    maxAmount = selectedToken.liquidity;
+  } 
   if (selectedToken._address == poolData.token0._address) {
     Amount = mul(Amount, -1);
     maxAmount = mul(maxAmount, -1);
@@ -91,11 +94,16 @@ export const handleRedeem = async (
 
     if (max) {
       if (selectedToken.collateralBalance > '0') {
-        maxAmount = selectedToken.redeemBalance;
+        if(Number(selectedToken.redeemBalance) > Number(selectedToken.liquidity)){
+          maxAmount = selectedToken.liquidity;
+        } else {
+          maxAmount = selectedToken.redeemBalance;
+        }
         if (selectedToken._address == poolData.token0._address) {
           maxAmount = mul(maxAmount, -1);
         }
       }
+
  
       const txn = await instance.redeem(poolAddress, maxAmount, userAddr)
 
@@ -602,7 +610,7 @@ export const handleLend = async (
   }
 
   try {
-    if (fixed2Decimals18(selectedToken.allowance) >= amount) {
+    if (fixed2Decimals18(selectedToken.allowance, selectedToken._decimals) >= amount) {
 
        const instance  = await getContractInstance(contracts.coreContract.address, coreAbi)
       // const signer = await fetchSigner()
@@ -687,8 +695,7 @@ export const handleBorrow = async (
     Amount = mul(Amount, -1);
   }
   try {
-    if (fixed2Decimals18(collateralToken.allowance) >= collateral) {
-
+    if (fixed2Decimals18(collateralToken.allowance, collateralToken._decimals) >= collateral) {
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
 
       const transaction = await instance.borrow(poolData._address, Amount, Collateral, userAddr);
@@ -767,7 +774,7 @@ export const handleRepay = async (
     Amount = Max;
   }
   try {
-    if (fixed2Decimals18(selectedToken.allowance) >= amount) {
+    if (fixed2Decimals18(selectedToken.allowance, selectedToken._decimals) >= amount) {
 
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
      const {hash} = await instance.repay(poolAddress, Amount, userAddr)
