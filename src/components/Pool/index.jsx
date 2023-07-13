@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Slider, Button, message, Modal, Popover } from "antd";
+import {FaChevronDown} from 'react-icons/fa'
 import { waitForTransaction } from "@wagmi/core";
 import "./styles/index.scss";
 import { useNavigate, useParams } from "react-router-dom";
+import { DownOutlined } from "@ant-design/icons";
 import {
   getPoolBasicData,
   getPoolAllData,
@@ -24,6 +26,7 @@ import {
 import PoolSkeleton from "../Loader/PoolSkeleton";
 import TwitterModal from "../Common/TwitterModal";
 import { tokensBYSymbol } from "../../utils/constants";
+import TokenListMoadal from "../ManageTokens/TokenListMoadal";
 
 const lend = "lend";
 const borrow = "borrow";
@@ -43,7 +46,7 @@ export default function PoolComponent(props) {
   const [isOperationLoading, setIsOperationLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
-  const [showTwitterModal, setShowTwitterModal] = useState(false);
+  const [showSelectTokenModal, setShowSelectTokenModal] = useState(false);
   const [isMoreThanPoolLTV, setIsMoreThanPoolLTV] = useState(false);
   const [colleteral, setColleteral] = useState(0);
   const [methodLoaded, setMethodLoaded] = useState({
@@ -52,8 +55,8 @@ export default function PoolComponent(props) {
     getOraclePrice: false,
     getPoolTokensData: false,
   });
-  const [visible0, setVisible0] = useState(false);
-  const [visible1, setVisible1] = useState(false);
+  const [openToken0, setOpenToken0] = useState(false);
+  const [openToken1, setOpenToken1] = useState(false);
   const [selectedTokens, setSelectedTokens] = useState({
     token0: "UFT",
     token1: "",
@@ -346,23 +349,33 @@ export default function PoolComponent(props) {
       ) {
         setSelectedToken(poolData?.token0);
         setCollaterralToken(poolData?.token1);
-        //setActiveOperation(poolData?.token0?.tabs[0]);
+
         setActiveToken(0);
         setIsPageLoading(false);
+        // setSelectedTokens({
+        //   token0: poolData?.token0?.symbol,
+        //   token1: poolData?.token1?.symbol
+        // })
       } else if (isAllTrue === undefined && selectedToken !== null) {
         setSelectedToken(poolData?.token1);
         setCollaterralToken(poolData?.token0);
-        //setActiveOperation(poolData?.token1?.tabs[0]);
         setIsPageLoading(false);
+        // setSelectedTokens({
+        //   token0: poolData?.token0?.symbol,
+        //   token1: poolData?.token1?.symbol
+        // })
       } else if (isAllTrue === undefined) {
         setSelectedToken(poolData?.token0);
         setCollaterralToken(poolData?.token1);
-        //setActiveOperation(poolData?.token0?.tabs[0]);
         setActiveToken(0);
         setIsPageLoading(false);
+        // setSelectedTokens({
+        //   token0: poolData?.token0?.symbol,
+        //   token1: poolData?.token1?.symbol
+        // })
       }
     }
-  }, [contracts, methodLoaded, user, poolList, selectedPool ]);
+  }, [contracts, methodLoaded, user, poolList, selectedPool]);
 
   // max trigger for sending max values in redeem, lend, borrow, repay;
   const maxTrigger = () => {
@@ -437,7 +450,6 @@ export default function PoolComponent(props) {
       let poolAddress;
       const poolsArray = Object.values(poolList);
       for (let i = 0; i < poolsArray.length; i++) {
-        
         const pool = poolsArray[i];
         if (
           (poolsArray[i].token0.symbol == tokens.token0 &&
@@ -445,29 +457,33 @@ export default function PoolComponent(props) {
           (poolsArray[i].token0.symbol == tokens.token1 &&
             poolsArray[i].token1.symbol == tokens.token0)
         ) {
-          poolAddress = pool.poolAddress;  
-              setMethodLoaded({
-      getPoolData: false,
-      getPoolFullData: false,
-      getOraclePrice: false,
-      getPoolTokensData: false,
-    })
-          setSelectedPool(poolAddress)
-          setIsPageLoading(true)
-          setSelectedToken(null)
-          setVisible0(false)
-          setVisible1(false)
+          poolAddress = pool.poolAddress;
+          setMethodLoaded({
+            getPoolData: false,
+            getPoolFullData: false,
+            getOraclePrice: false,
+            getPoolTokensData: false,
+          });
+          setSelectedPool(poolAddress);
+          setIsPageLoading(true);
+          setSelectedToken(null);
+          // setVisible0(false);
+          // setVisible1(false);
           break;
         }
       }
-      console.log('poolAddress', poolAddress);
+      console.log("poolAddress", poolAddress);
     }
 
     console.log("handlePoolAndTokenSelect", tokens);
     setSelectedTokens(tokens);
+    setShowSelectTokenModal(false)
   };
-  const handleVisible = (bool) => {
-    setVisible0(bool);
+  const handleSelectTokens = (key, symbol) => {
+    // setVisible0(bool);
+    const token = {
+      ...selectedToken
+    }
   };
 
   const SortContent = () => {
@@ -525,13 +541,23 @@ export default function PoolComponent(props) {
     }
   }, [poolList]);
 
+
+  const handleOpenSelectTokenMoadal = (bool, token) => {
+    if(token === 'token0'){
+      setOpenToken0(true)
+    } else if (token === 'token1'){
+      setOpenToken1(true)
+    }
+    setShowSelectTokenModal(bool)
+  }
+
   return (
     <>
       {isPageLoading && selectedToken == null ? (
         <PoolSkeleton />
       ) : (
         <div className="pool_container">
-          <div className="token_container">
+          {/* <div className="token_container">
             <Popover
               content={<SortContent />}
               trigger="click"
@@ -556,21 +582,31 @@ export default function PoolComponent(props) {
                 <p>List</p>
               </div>
             </Popover>
-          </div>
+          </div> */}
           <div className="token_container">
-            <div
-              onClick={() => toggleToken(0)}
-              className={activeToken === 0 ? "active" : ""}
-            >
-              <img src={poolData?.token0?.logo} onError={imgError} alt="" />
-              <h2>{poolData?.token0?._symbol}</h2>
+            <div>
+              <div
+                onClick={() => toggleToken(0)}
+                className={`token_tab ${activeToken === 0 ? " active" : ""}`}
+              >
+                <img src={poolData?.token0?.logo} onError={imgError} alt="" />
+                <h2>{poolData?.token0?._symbol}</h2>
+              </div>
+              <div onClick={() => handleOpenSelectTokenMoadal(true, 'token0')} className="dropdown">
+              <FaChevronDown className="dropicon"/>
+              </div>
             </div>
-            <div
-              onClick={() => toggleToken(1)}
-              className={activeToken === 1 ? "active" : ""}
-            >
-              <img src={poolData?.token1?.logo} onError={imgError} alt="" />
-              <h2>{poolData?.token1?._symbol}</h2>
+            <div>
+              <div
+                onClick={() => toggleToken(1)}
+                className={`token_tab ${activeToken === 1 ? " active" : ""}`}
+              >
+                <img src={poolData?.token1?.logo} onError={imgError} alt="" />
+                <h2>{poolData?.token1?._symbol}</h2>
+              </div>
+              <div onClick={() => handleOpenSelectTokenMoadal(true, 'token1')} className="dropdown">
+                <FaChevronDown className="dropicon"/>
+              </div>
             </div>
           </div>
           <div className="content">
@@ -796,7 +832,7 @@ export default function PoolComponent(props) {
           >
             {<ConfirmationModal />}
           </Modal>
-          <Modal
+          {/* <Modal
             className="antd_modal_overlay"
             visible={showTwitterModal}
             centered
@@ -805,6 +841,16 @@ export default function PoolComponent(props) {
             closable={false}
           >
             {<TwitterModal />}
+          </Modal> */}
+          <Modal
+            className="antd_modal_overlay"
+            visible={showSelectTokenModal}
+            centered
+            onCancel={() => setShowSelectTokenModal(false)}
+            footer={null}
+            closable={false}
+          >
+            <TokenListMoadal openToken={{token0: openToken0, token1: openToken1}}  handlePoolAndTokenSelect={handlePoolAndTokenSelect} />
           </Modal>
         </div>
       )}
