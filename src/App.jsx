@@ -70,8 +70,8 @@ import {
   getTokenPrice,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
-import { zkEVMTestNet } from "./core/networks/Chains";
-import { getTokenUSDPrice } from "./helpers/contracts";
+import { zkEVMTestNet, shardeumTestnet } from "./core/networks/Chains";
+import { fromBigNumber, getTokenUSDPrice } from "./helpers/contracts";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -79,12 +79,12 @@ const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon],
+  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
   [ alchemyProvider({ apiKey: alchemyId }), publicProvider(), infuraProvider({ apiKey: infuraID }),]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
-  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon],
+  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
 });
 
 export const WalletConnector = new WalletConnectConnector({
@@ -196,6 +196,8 @@ function App() {
           const web3 = defProv();
           const poolData = {};
           const account = getAccount();
+          const length = await state.contracts.coreContract.poolLength();
+          // console.log("PoolCreated", fromBigNumber(length));
           const result = await getAllEvents(
             state.contracts.coreContract,
             "PoolCreated"
