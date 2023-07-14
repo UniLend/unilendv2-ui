@@ -850,7 +850,7 @@ export default function PoolComponent(props) {
             footer={null}
             closable={false}
           >
-            <TokenListMoadal openToken={{token0: openToken0, token1: openToken1}}  handlePoolAndTokenSelect={handlePoolAndTokenSelect} />
+            <TokenListMoadal openToken={{token0: openToken0, token1: openToken1}}   />
           </Modal>
         </div>
       )}
