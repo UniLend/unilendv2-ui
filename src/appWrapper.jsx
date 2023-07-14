@@ -7,6 +7,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "react-query";
+import Navbar from "./components/Navbar";
 
 const graphURL = {
   80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
@@ -29,7 +30,8 @@ export default function AppWrapper() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <App />
+      {/* <App /> */}
+      <Navbar/>
     </QueryClientProvider>
   );
 }

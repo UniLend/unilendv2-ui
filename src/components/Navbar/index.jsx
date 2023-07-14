@@ -30,15 +30,24 @@ import walletconnecticon from "../../assets/walletconnecticon.png";
 import viewExplorer from "../../assets/viewExplorerIcon.svg";
 import "./styles/index.scss";
 import Sider from "antd/lib/layout/Sider";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setTheme, setUser } from "../../store/Action";
 import { changeNetwork } from "../../services/wallet";
 import { fetchUserDomain } from "../../utils/axios";
-import { getNetwork, switchNetwork } from "@wagmi/core";
+import { getNetwork, switchNetwork , connect} from "wagmi/actions";
+import { useAccount, useConnect } from 'wagmi'
 import DropDown from "../Common/DropDown";
+import {
+  useConnectModal,
+  useAccountModal,
+  useChainModal,
+  ConnectButton
+} from '@rainbow-me/rainbowkit';
 
 export default function Navbar(props) {
-  const { user, theme } = props;
+  const { user, theme } = useSelector((state) => state);
+  const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
+  const { openConnectModal } = useConnectModal();
   const pathname = window.location.pathname;
   const [wrongNetworkModal, setWrongNetworkModal] = useState(false);
   const [isWalletModalVisible, setIsWalletModalVisible] = useState(false);
@@ -66,7 +75,8 @@ export default function Navbar(props) {
   };
 
   const handleOpenWalletModal = () => {
-    setIsWalletModalVisible(true);
+    // setIsWalletModalVisible(true);
+    openConnectModal()
   };
 
   const handleOpenSwitchNetwork = (visible) => {
@@ -302,7 +312,7 @@ export default function Navbar(props) {
         </div>
       </div>
       <div className="last_container">
-        {user?.isConnected ? (
+        {/* { true ? (
           <>
             <div className="wallet_connection">
               <Popover
@@ -345,7 +355,8 @@ export default function Navbar(props) {
               Connect Wallet
             </Button>
           </div>
-        )}
+        )} */}
+        <ConnectButton/>
         <div className="hamberger">
           <Popover
             overlayClassName="hamburger_popover"

@@ -78,32 +78,32 @@ const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
-const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon],
-  [ alchemyProvider({ apiKey: alchemyId }), publicProvider(), infuraProvider({ apiKey: infuraID }),]
-);
+// const { chains, provider, webSocketProvider } = configureChains(
+//   [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon],
+//   [ alchemyProvider({ apiKey: alchemyId }), publicProvider(), infuraProvider({ apiKey: infuraID }),]
+// );
 
-export const MetaMaskconnector = new MetaMaskConnector({
-  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon],
-});
+// export const MetaMaskconnector = new MetaMaskConnector({
+//   chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon],
+// });
 
-export const WalletConnector = new WalletConnectConnector({
-  chains,
-  options: {
-    qrcode: true,
-    version: 2,
-    projectId: projectId,
-  },
-});
+// export const WalletConnector = new WalletConnectConnector({
+//   chains,
+//   options: {
+//     qrcode: true,
+//     version: 2,
+//     projectId: projectId,
+//   },
+// });
 
-const client = createClient({
-  connectors: [
-    new InjectedConnector({ chains }),
-  ],
-  autoConnect: true,
-  provider,
-  webSocketProvider,
-});
+// const client = createClient({
+//   connectors: [
+//     new InjectedConnector({ chains }),
+//   ],
+//   autoConnect: true,
+//   provider,
+//   webSocketProvider,
+// });
 
 const graphURL = {
   80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
@@ -370,12 +370,12 @@ function App() {
   return (
     <>
       <Navbar {...state} />
-      <div className="app_container">
+      {/* <div className="app_container">
         <div className="app">
           <MainRoutes {...state} />
         </div>
-      </div>
-      <Footer />
+      </div> */}
+      {/* <Footer /> */}
     </>
   );
 }
