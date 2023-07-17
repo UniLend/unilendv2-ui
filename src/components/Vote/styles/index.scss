@@ -128,7 +128,7 @@
         display: flex;
         justify-content: space-between;
         height: 250px;
-        div {
+        &>div {
           width: 35%;
           margin: 20px;
           height: 100%;
@@ -151,6 +151,39 @@
           }
         }
         .action {
+          .input_wraper{
+             position: relative;
+            input {
+              background: var(--light-blue);
+              color: var(--light-gray);
+              font-weight: 700;
+              width: 100%;
+              border: none;
+              padding-right: 50px;
+              &:focus,
+              &:hover {
+                box-shadow: none;
+                border: none;
+              }
+            }
+            .max {
+              position: absolute;
+              right: -15px;
+              top: 5px;
+              background: var(--pure-white);
+              color: var(--light-gray);
+              font-weight: 600;
+              width: 40px;
+              font-size: 10px;
+              margin: 10px;
+              height: 30px;
+              border: none;
+              cursor: pointer;
+              &:hover{
+                  color: var(--dark-gray);
+              }
+            }
+          }
           input,
           button {
             width: 100%;
@@ -212,7 +245,7 @@
         .operation_content_container {
           flex-direction: column;
           height: max-content !important;
-          div {
+          &>div {
             width: 100%;
             display: flex;
             margin: 10px 0px;

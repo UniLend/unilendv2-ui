@@ -120,7 +120,7 @@ function App() {
   const state = useSelector((state) => state);
   const networksWithGraph = [80001, 137]
 
- const { data, loading, error } = useQuery('pools', async () => {
+ const { data, loading, error, refetch } = useQuery('pools', async () => {
  const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
  return fetchedDATA;
  } );
@@ -131,6 +131,10 @@ function App() {
   // setting contract state to store from here
 
   const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
+
+  useEffect(() => {
+    refetch()
+  }, [chain, user])
 
   useEffect(() => {
     (async () => {

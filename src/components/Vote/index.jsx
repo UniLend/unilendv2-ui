@@ -237,7 +237,6 @@ const WrapAndDelegate = ({
   const handleAmount = (e) => {
     const value = e.target.value;
     setAmount(value);
-
   };
 
 
@@ -328,12 +327,16 @@ useEffect(() => {
         </p>
       </div>
       <div className="action">
+        <div className="input_wraper">
         <Input
           type="number"
           placeholder="Amount"
           onChange={handleAmount}
           value={amount}
         />
+        <button onClick={() => setAmount(tokenBalance?.uft)} className="max">MAX</button>
+        </div>
+  
         <Input
           type="text"
           placeholder="Address"
@@ -388,6 +391,27 @@ const UnWrap = ({
     }
   };
 
+
+  useEffect(() => {
+    if (amount > tokenBalance?.uftg) {
+      setButtonText({
+        text: "Low Balance",
+        disable: true,
+      });
+    } else
+    if(!(amount > 0)) {
+      setButtonText({
+        text: "Enter Amount",
+        disable: true,
+      });
+    } else {
+      setButtonText({
+        text: "Unwrap",
+        disable: false,
+      });
+    }
+  }, [amount])
+
   const handleUnWrapOperation = async () => {
     const { chain } = getNetwork();
     const contracts = contractAddress[chain?.id || "1"];
@@ -412,12 +436,16 @@ const UnWrap = ({
         </p>
       </div>
       <div className="action">
+        <div className="input_wraper">
         <Input
           type="number"
           placeholder="Amount"
           onChange={handleAmount}
           value={amount}
         />
+         <button onClick={() => setAmount(tokenBalance?.uftg)} className="max">MAX</button>
+        </div>
+  
         <Button
           loading={isLoading}
           onClick={handleUnWrapOperation}
