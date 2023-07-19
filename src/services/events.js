@@ -1,9 +1,10 @@
 import { poolAbi, positionAbi } from "../core/contractData/abi";
 import { fromBigNumber, getAllContracts } from "../helpers/contracts";
 import { readContract, getContract, getProvider } from "@wagmi/core";
+import { watchContractEvent } from 'wagmi/actions'
 import Web3 from "web3";
 
-export const getAllEvents = async (contract, event) => {
+export const getAllEvents = async (contract, abi, event) => {
   try {
     // const result = await contract.getPastEvents(
     //   event,
@@ -18,8 +19,22 @@ export const getAllEvents = async (contract, event) => {
     //   }
     // );
 
-    const result = await contract.queryFilter(event);
-    return result.map((item) => item.args);
+    // const result = await contract.watchEvent.get('_',event)  ;
+    console.log("pool",    {
+      address: contract.address,
+      abi: abi,
+      eventName: event,
+    } );
+    const unwatch = watchContractEvent(
+      {
+        address: contract.address,
+        abi: abi,
+        eventName: event,
+      
+      },
+      (log) => console.log(log),
+    )
+    // return result.map((item) => item.args);
   } catch (error) {
     return error;
   }

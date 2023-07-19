@@ -14,16 +14,33 @@ import { mainnet, polygon, optimism, arbitrum, zora, sepolia, polygonMumbai, pol
 import { publicProvider } from "wagmi/providers/public";
 import App1 from "./app1";
 
+import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+import {
+  injectedWallet,
+  rainbowWallet,
+  walletConnectWallet,
+  metaMaskWallet
+} from '@rainbow-me/rainbowkit/wallets';
+
 const { chains, publicClient } = configureChains(
   [mainnet, polygon, optimism, arbitrum, zora, sepolia, polygonMumbai, polygonZkEvm],
   [publicProvider()]
 );
+const walletConnectProjectID = '45c3755af7419aaf09eb64929022acdd'
+// const { connectors } = getDefaultWallets({
+//   appName: "RainbowKit demo",
+//   projectId: "45c3755af7419aaf09eb64929022acdd",
+//   chains,
+// });
 
-const { connectors } = getDefaultWallets({
-  appName: "RainbowKit demo",
-  projectId: "45c3755af7419aaf09eb64929022acdd",
-  chains,
-});
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Recommended',
+    wallets: [
+      injectedWallet({ chains }),
+    ],
+  },
+]);
 
 const wagmiConfig = createConfig({
   autoConnect: true,
@@ -36,7 +53,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Suspense fallback={<Ring />}>
       <Provider store={store}>
-        <WagmiConfig config={wagmiConfig}>
+        <WagmiConfig  config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
             <BrowserRouter>
             {/* <App1 /> */}
