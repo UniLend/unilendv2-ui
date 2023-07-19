@@ -192,7 +192,7 @@ function App() {
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-    if (state.contracts.coreContract && !networksWithGraph.includes(networkID) && Object.values(poolList).length == 0) {
+    if (state.contracts.coreContract && !networksWithGraph.includes(networkID) ) {
 
       try {
         (async () => {
