@@ -23,12 +23,12 @@ export default function PoolCard({pool}) {
     }
   }
 
-  useEffect(() => {
-if(token0?.symbol == 'BUNNY' && token1?.symbol == 'EGG'){
-  setPoolTheme(true)
-}
+//   useEffect(() => {
+// if(token0?.symbol == 'BUNNY' && token1?.symbol == 'EGG'){
+//   setPoolTheme(true)
+// }
 
-  },[])
+//   },[])
 
   return (
     <div onClick={handleNavigate} className={`${poolTheme ? 'pool_theme': ''} poolcard`}>
