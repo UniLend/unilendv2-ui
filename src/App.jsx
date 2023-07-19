@@ -325,7 +325,7 @@ function App() {
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-    if ( data && networksWithGraph.includes(networkID)) {
+    if ( data && networksWithGraph.includes(networkID) && false) {
      const allPositions = data?.positions
       const poolData = {};
       const tokenList = {};
