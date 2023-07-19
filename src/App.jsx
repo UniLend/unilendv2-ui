@@ -114,9 +114,9 @@ function App() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient()
   const { chain, chains } = getNetwork();
-  const {user} = useSelector((state) => state)
+  const {user, poolList} = useSelector((state) => state)
   const query = getPoolCreatedGraphQuery(user?.address);
-  const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
+  // const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
   const state = useSelector((state) => state);
   const networksWithGraph = [80001, 137]
 
@@ -140,11 +140,14 @@ function App() {
           localStorage.getItem("wagmi.connected")
         );
         // const account = getAccount();
-        let provider = etherProvider;
+        let provider ;
         if (walletconnect && user?.isConnected ) {
           const user = await connectWallet();
           dispatch(setUser(user));
           provider = getProvider();
+        } else {
+          console.log("providerwalletconnect", user, walletconnect);
+           provider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
         }
         // dispatch(setWeb3(web3));
         const { chain: nextChain, chains } = getNetwork();
@@ -184,16 +187,16 @@ function App() {
         dispatch(setError(error));
       }
     })();
-  }, [isSame, getFromLocalStorage("ethEvent")]);
+  }, []);
 
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-    if (state.contracts.coreContract && !networksWithGraph.includes(networkID)) {
+    if (state.contracts.coreContract && !networksWithGraph.includes(networkID) && Object.values(poolList).length == 0) {
 
       try {
         (async () => {
-          const web3 = defProv();
+        
           const poolData = {};
           const account = getAccount();
           const result = await getAllEvents(
@@ -210,7 +213,7 @@ function App() {
 
           //if wallet not connected
           if (!account.isConnected) {
-         
+            const web3 = defProv();
             const ERC20contracts = await Promise.all(
               poolTokens.map((addr) => new web3.eth.Contract(erc20Abi, addr))
             );
@@ -308,7 +311,7 @@ function App() {
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-    if ( data && networksWithGraph.includes(networkID)) {
+    if ( data && networksWithGraph.includes(networkID)  && Object.values(poolList).length == 0 ) {
      const allPositions = data?.positions
       const poolData = {};
       const tokenList = {};
