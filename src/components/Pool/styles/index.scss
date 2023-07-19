@@ -21,12 +21,12 @@
             border: 1px solid var(--light-blue);
             border-radius: 10px ;
             .token_tab{
-            width: 75%;  
+            width: 100%;  
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 5px;
-            border-radius: 10px 0px 0px 10px;
+            border-radius: 10px;
             cursor: pointer;
 
             h2 {

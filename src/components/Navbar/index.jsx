@@ -52,7 +52,7 @@ export default function Navbar(props) {
   const dispatch = useDispatch();
   const [currentTheme , setCurrentTheme] = useState(theme)
   const {chain: networkchain} = getNetwork()
-  const availableChain = [11155111,1442, 80001, 137]
+  const availableChain = [11155111,1442]
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -174,8 +174,8 @@ export default function Navbar(props) {
     return (
       <div className="sort_popover">
         <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
-        <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
-        <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p>
+        {/* <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
+        <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p> */}
         <p onClick={() => handleSwitchNetwork(1442)} >  zkEVM Testnet</p>
       </div>
     );
