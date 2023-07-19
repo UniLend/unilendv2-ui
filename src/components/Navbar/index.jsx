@@ -30,7 +30,7 @@ import walletconnecticon from "../../assets/walletconnecticon.png";
 import viewExplorer from "../../assets/viewExplorerIcon.svg";
 import "./styles/index.scss";
 import Sider from "antd/lib/layout/Sider";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setTheme, setUser } from "../../store/Action";
 import { changeNetwork } from "../../services/wallet";
 import { fetchUserDomain } from "../../utils/axios";
@@ -38,7 +38,7 @@ import { getNetwork, switchNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
 
 export default function Navbar(props) {
-  const { user, theme } = props;
+  const { user, theme } = useSelector((state) => state);
   const pathname = window.location.pathname;
   const [wrongNetworkModal, setWrongNetworkModal] = useState(false);
   const [isWalletModalVisible, setIsWalletModalVisible] = useState(false);
@@ -120,18 +120,19 @@ export default function Navbar(props) {
     setIsWalletModalVisible(false);
     const user = await connectWallet(action);
     //window.location.reload()
+    setCurrentUser(user)
     handleDomain(user);
     dispatch(setUser(user));
   };
 
   const handleDomain = async (user) => {
-    // const meta = await fetchUserDomain(user.address);
-    // const domain = meta.reverse ? meta.domain : shortenAddress(user.address);
-    // const UserData = {
-    //   ...user,
-    //   domain,
-    // };
-    // setCurrentUser(UserData);
+    const meta = await fetchUserDomain(user.address);
+    const domain = meta.reverse ? meta.domain : shortenAddress(user.address);
+    const UserData = {
+      ...user,
+      domain,
+    };
+     setCurrentUser(UserData);
   };
 
   const WalletModalBody = () => {

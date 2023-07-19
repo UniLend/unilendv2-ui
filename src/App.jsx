@@ -80,7 +80,7 @@ const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
   [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
-  [ alchemyProvider({ apiKey: alchemyId }), publicProvider(), infuraProvider({ apiKey: infuraID }),]
+  [ alchemyProvider({ apiKey: alchemyId }), publicProvider()]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
@@ -120,6 +120,7 @@ function App() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient()
   const { chain, chains } = getNetwork();
+  const { address } = getAccount()
   const {user, poolList } = useSelector((state) => state)
   const query = getPoolCreatedGraphQuery(user?.address);
   //const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
@@ -196,7 +197,7 @@ function App() {
         dispatch(setError(error));
       }
     })();
-  }, [isSame, getFromLocalStorage("ethEvent")]);
+  }, [address, user?.isConnected, isSame ]);
 
   useEffect(() => {
     const { chain } = getNetwork();
@@ -318,7 +319,7 @@ function App() {
         dispatch(setError(error));
       }
     }
-  }, [state.contracts, chain?.id, user]);
+  }, [state.contracts, chain?.id, user?.network?.id]);
 
 
 
@@ -388,7 +389,7 @@ function App() {
       console.log("activeChain", poolData, tokenList);
       dispatch(setPools({ poolData, tokenList }));
     }
-  }, [data , user]);
+  }, [data , user?.network?.id]);
 
   return (
     <>
