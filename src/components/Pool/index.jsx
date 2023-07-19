@@ -55,6 +55,7 @@ export default function PoolComponent(props) {
     getOraclePrice: false,
     getPoolTokensData: false,
   });
+ const [reFetching, setReFetching] = useState(false)
   const [openToken0, setOpenToken0] = useState(false);
   const [openToken1, setOpenToken1] = useState(false);
   const [selectedTokens, setSelectedTokens] = useState({
@@ -86,7 +87,8 @@ export default function PoolComponent(props) {
     amount,
     selectedToken,
     collateralToken,
-    colleteral
+    colleteral,
+    reFetching
   );
 
   const handleAmount = (e) => {
@@ -148,15 +150,23 @@ export default function PoolComponent(props) {
             ).toFixed(4)} for token ${txnData.tokenSymbol}`,
             5
           );
-          setMethodLoaded({
-            ...methodLoaded,
-            getPoolFullData: false,
-            getOraclePrice: false,
-            getPoolTokensData: false,
-          });
+          setReFetching(true)
           if (txnData.method !== "approval") {
             setAmount(0);
             //setShowTwitterModal(true)
+            setMethodLoaded({
+              getPoolData: false,
+              getPoolFullData: false,
+              getOraclePrice: false,
+              getPoolTokensData: false,
+            });
+          } else {
+            setMethodLoaded({
+              getPoolData: true,
+              getPoolFullData: true,
+              getOraclePrice: true,
+              getPoolTokensData: false,
+            });
           }
           setMax(false);
           setIsOperationLoading(false);
@@ -288,94 +298,126 @@ export default function PoolComponent(props) {
   // }, [user])
 
   // get contract data
+
+
+  const fetchPoolDATA = async () => {
+    try {
+
+    if (!methodLoaded.getPoolData) {
+      const pool = await getPoolBasicData(
+        contracts,
+        selectedPool,
+        poolData,
+        poolList[selectedPool]
+      );
+      if(pool?.token0 && pool?.token1){
+        setPoolData(pool);
+        setMethodLoaded({ ...methodLoaded, getPoolData: true });
+      }
+ 
+    } else if (methodLoaded.getPoolData && !methodLoaded.getPoolFullData) {
+      const pool = await getPoolAllData(
+        contracts,
+        poolData,
+        selectedPool,
+        user.address
+      );
+      if(pool?.token0 && pool?.token1){
+      setMethodLoaded({ ...methodLoaded, getPoolFullData: true });
+      setPoolData(pool);
+      }
+    } else if (
+      methodLoaded.getPoolData &&
+      methodLoaded.getPoolFullData &&
+      !methodLoaded.getOraclePrice
+    ) {
+      const pool = await getOracleData(contracts, poolData);
+      if(pool?.token0 && pool?.token1){
+      setPoolData(pool);
+      setMethodLoaded({ ...methodLoaded, getOraclePrice: true });
+      }
+    } else if (
+      methodLoaded.getPoolData &&
+      methodLoaded.getPoolFullData &&
+      methodLoaded.getOraclePrice &&
+      !methodLoaded.getPoolTokensData
+    ) {
+      const poolTokensPrice = await getTokenPrice(
+        contracts,
+        poolData,
+        selectedPool,
+        user.address
+      );
+      if(poolTokensPrice?.token0 && poolTokensPrice?.token1){
+
+      setPoolData(poolTokensPrice);
+      setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
+      }
+    }
+          
+  } catch (error) {
+      throw error
+  }
+  }
+
+
   useEffect(() => {
     if (selectedToken === null) setIsPageLoading(true);
+
+    const isAllTrue = Object.values(methodLoaded).find((el) => el === false) === undefined ? true: false;
+
     if (
       contracts.helperContract &&
       contracts.coreContract &&
-      Object.values(poolList).length > 0
+      Object.values(poolList).length > 0 &&
+      isAllTrue == false
     ) {
-      (async function () {
-        if (!methodLoaded.getPoolData) {
-          const pool = await getPoolBasicData(
-            contracts,
-            selectedPool,
-            poolData,
-            poolList[selectedPool]
-          );
-          setPoolData(pool);
-          setMethodLoaded({ ...methodLoaded, getPoolData: true });
-        } else if (methodLoaded.getPoolData && !methodLoaded.getPoolFullData) {
-          const pool = await getPoolAllData(
-            contracts,
-            poolData,
-            selectedPool,
-            user.address
-          );
+    
+      try {
+        fetchPoolDATA()
+      } catch (error) {
+        console.log("Error Refetch");
+        fetchPoolDATA()
+      }
 
-          setMethodLoaded({ ...methodLoaded, getPoolFullData: true });
-          setPoolData(pool);
-        } else if (
-          methodLoaded.getPoolData &&
-          methodLoaded.getPoolFullData &&
-          !methodLoaded.getOraclePrice
-        ) {
-          const pool = await getOracleData(contracts, poolData);
-          setPoolData(pool);
-          setMethodLoaded({ ...methodLoaded, getOraclePrice: true });
-        } else if (
-          methodLoaded.getPoolData &&
-          methodLoaded.getPoolFullData &&
-          methodLoaded.getOraclePrice &&
-          !methodLoaded.getPoolTokensData
-        ) {
-          const poolTokensPrice = await getTokenPrice(
-            contracts,
-            poolData,
-            selectedPool,
-            user.address
-          );
-
-          setPoolData(poolTokensPrice);
-          setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
-        }
-      })();
-
-      const isAllTrue = Object.values(methodLoaded).find((el) => el === false);
+    }
+      console.log("FetchingDATA", methodLoaded);
       if (
-        isAllTrue === undefined &&
+        isAllTrue  &&
         selectedToken !== null &&
         selectedToken?._symbol === poolData?.token0?._symbol
       ) {
         setSelectedToken(poolData?.token0);
         setCollaterralToken(poolData?.token1);
-
+        setReFetching(false)
         setActiveToken(0);
         setIsPageLoading(false);
         // setSelectedTokens({
         //   token0: poolData?.token0?.symbol,
         //   token1: poolData?.token1?.symbol
         // })
-      } else if (isAllTrue === undefined && selectedToken !== null) {
+      } else if (isAllTrue  && selectedToken !== null) {
         setSelectedToken(poolData?.token1);
         setCollaterralToken(poolData?.token0);
         setIsPageLoading(false);
+        setReFetching(false)
         // setSelectedTokens({
         //   token0: poolData?.token0?.symbol,
         //   token1: poolData?.token1?.symbol
         // })
-      } else if (isAllTrue === undefined) {
+      } else if (isAllTrue ) {
         setSelectedToken(poolData?.token0);
         setCollaterralToken(poolData?.token1);
         setActiveToken(0);
         setIsPageLoading(false);
+        setReFetching(false)
         // setSelectedTokens({
         //   token0: poolData?.token0?.symbol,
         //   token1: poolData?.token1?.symbol
         // })
       }
-    }
-  }, [contracts, methodLoaded, user, poolList, selectedPool]);
+    
+  }, [contracts, methodLoaded, user, poolList, selectedPool, poolData]);
 
   // max trigger for sending max values in redeem, lend, borrow, repay;
   const maxTrigger = () => {
@@ -815,7 +857,7 @@ export default function PoolComponent(props) {
             <div className="operation_btn">
               <Button
                 onClick={handleOperationWithConfirmation}
-                loading={isOperationLoading}
+                loading={isOperationLoading || reFetching}
                 disabled={buttonAction.disable}
               >
                 {buttonAction.text}
