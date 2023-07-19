@@ -120,7 +120,7 @@ export default function Navbar(props) {
     }
     // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
     if (user?.network?.id && !availableChain.includes(user?.network?.id)) {
-      setWrongNetworkModal(true);
+      // setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);
     }

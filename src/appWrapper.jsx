@@ -31,7 +31,7 @@ export default function AppWrapper() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* <App /> */}
-      <Navbar/>
+      {/* <Navbar/> */}
     </QueryClientProvider>
   );
 }

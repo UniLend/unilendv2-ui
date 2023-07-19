@@ -10,12 +10,12 @@ import AppWrapper from "./appWrapper";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, zora } from "wagmi/chains";
+import { mainnet, polygon, optimism, arbitrum, zora, sepolia, polygonMumbai, polygonZkEvm } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import App1 from "./app1";
 
 const { chains, publicClient } = configureChains(
-  [mainnet, polygon, optimism, arbitrum, zora],
+  [mainnet, polygon, optimism, arbitrum, zora, sepolia, polygonMumbai, polygonZkEvm],
   [publicProvider()]
 );
 
