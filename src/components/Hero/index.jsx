@@ -26,7 +26,6 @@ export default function HeroComponent(props) {
     }
   }, [poolList]);
 
-  useEffect(() => {}, []);
 
   useEffect(() => {
     if (token1?.symbol && !token2?.symbol) {

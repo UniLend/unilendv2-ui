@@ -122,7 +122,7 @@ function App() {
   const { chain, chains } = getNetwork();
   const {user} = useSelector((state) => state)
   const query = getPoolCreatedGraphQuery(user?.address);
-  const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
+  // const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
   const state = useSelector((state) => state);
   const networksWithGraph = [80001, 137]
 
@@ -150,11 +150,13 @@ function App() {
           localStorage.getItem("wagmi.connected")
         );
         // const account = getAccount();
-        let provider = etherProvider;
+        let provider;
         if (walletconnect && user?.isConnected ) {
           const user = await connectWallet();
           dispatch(setUser(user));
           provider = getProvider();
+        } else {
+          provider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
         }
         // dispatch(setWeb3(web3));
         const { chain: nextChain, chains } = getNetwork();
@@ -203,7 +205,7 @@ function App() {
 
       try {
         (async () => {
-          const web3 = defProv();
+          
           const poolData = {};
           const account = getAccount();
           const length = await state.contracts.coreContract.poolLength();
@@ -220,7 +222,7 @@ function App() {
           }
           
           // const pools = await state.contracts.coreContract.filters.PoolCreated()
-          console.log("PoolCreated", result);
+          // console.log("PoolCreated", result);
           const array = [];
           const tokenList = {};
           for (const pool of result) {
@@ -230,7 +232,7 @@ function App() {
         
           //if wallet not connected
           if (!account.isConnected) {
-         
+            const web3 = defProv();
             const ERC20contracts = await Promise.all(
               poolTokens.map((addr) => new web3.eth.Contract(erc20Abi, addr))
             );
