@@ -120,9 +120,9 @@ function App() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient()
   const { chain, chains } = getNetwork();
-  const {user} = useSelector((state) => state)
+  const {user, poolList } = useSelector((state) => state)
   const query = getPoolCreatedGraphQuery(user?.address);
-  // const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
+  //const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
   const state = useSelector((state) => state);
   const networksWithGraph = [80001, 137]
 
@@ -156,7 +156,7 @@ function App() {
           dispatch(setUser(user));
           provider = getProvider();
         } else {
-          provider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
+           provider = new ethers.providers.JsonRpcProvider(`https://sepolia.infura.io/v3/${infuraID}`);
         }
         // dispatch(setWeb3(web3));
         const { chain: nextChain, chains } = getNetwork();
@@ -201,7 +201,7 @@ function App() {
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-    if (state.contracts.coreContract && !networksWithGraph.includes(networkID)) {
+    if (state.contracts.coreContract && !networksWithGraph.includes(networkID) && Object.values(poolList).length == 0) {
 
       try {
         (async () => {
@@ -231,7 +231,7 @@ function App() {
           const poolTokens = [...new Set(array)];
         
           //if wallet not connected
-          if (!account.isConnected) {
+          if (!account.isConnected && state.contracts.coreContract && Object.values(poolList).length == 0 ) {
             const web3 = defProv();
             const ERC20contracts = await Promise.all(
               poolTokens.map((addr) => new web3.eth.Contract(erc20Abi, addr))
@@ -325,7 +325,7 @@ function App() {
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-    if ( data && networksWithGraph.includes(networkID)) {
+    if ( data && networksWithGraph.includes(networkID) && Object.values(poolList).length == 0) {
      const allPositions = data?.positions
       const poolData = {};
       const tokenList = {};

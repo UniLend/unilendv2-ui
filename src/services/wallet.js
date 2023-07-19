@@ -5,6 +5,7 @@ import { providerOptions } from '../constants/wallet';
 import { fromWei, removeFromLocalStorage, saveToLocalStorage } from '../utils';
 import { networks } from '../core/networks/networks';
 import { MetaMaskconnector, WalletConnector } from '../App';
+import { ethers } from "ethers";
 
 const API = import.meta.env.VITE_INFURA_ID;
 
