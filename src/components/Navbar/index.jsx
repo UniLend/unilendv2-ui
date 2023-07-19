@@ -52,7 +52,7 @@ export default function Navbar(props) {
   const dispatch = useDispatch();
   const [currentTheme , setCurrentTheme] = useState(theme)
   const {chain: networkchain} = getNetwork()
-  const availableChain = [11155111,1442, 80001, 137]
+  const availableChain = [11155111,1442, 80001, 137, 8081]
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -98,7 +98,6 @@ export default function Navbar(props) {
 
   useEffect(() => {
     const { chain } = getNetwork();
-
     if (user?.network?.id == undefined && user?.network?.id) {
       const wallet = localStorage.getItem("wallet");
       handleConnect(wallet);

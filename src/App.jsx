@@ -70,8 +70,8 @@ import {
   getTokenPrice,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
-import { zkEVMTestNet } from "./core/networks/Chains";
-import { getTokenUSDPrice } from "./helpers/contracts";
+import { zkEVMTestNet, shardeumTestnet } from "./core/networks/Chains";
+import { fromBigNumber, getTokenUSDPrice } from "./helpers/contracts";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -79,12 +79,12 @@ const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon],
+  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
   [ alchemyProvider({ apiKey: alchemyId }), publicProvider(), infuraProvider({ apiKey: infuraID }),]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
-  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon],
+  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
 });
 
 export const WalletConnector = new WalletConnectConnector({
@@ -109,6 +109,12 @@ const graphURL = {
   80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
   137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
 };
+
+const shardeumPools = [{
+  pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
+  token1: '0xd146878affF8c8dd3e9EBd9177F2AE4f6d4e5979',
+  token0:'0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1'
+}]
 
 function App() {
   const dispatch = useDispatch();
@@ -200,18 +206,28 @@ function App() {
           const web3 = defProv();
           const poolData = {};
           const account = getAccount();
-          const result = await getAllEvents(
-            state.contracts.coreContract,
-            "PoolCreated"
-          );
+          const length = await state.contracts.coreContract.poolLength();
+          //  console.log("PoolCreated", fromBigNumber(length));
+          let result;
 
+          if(networkID == 8081){
+            result = shardeumPools
+          } else {
+            result = await getAllEvents(
+              state.contracts.coreContract,
+              "PoolCreated"
+            );
+          }
+          
+          // const pools = await state.contracts.coreContract.filters.PoolCreated()
+          console.log("PoolCreated", result);
           const array = [];
           const tokenList = {};
           for (const pool of result) {
             array.push(pool.token0, pool.token1);
           }
           const poolTokens = [...new Set(array)];
-
+        
           //if wallet not connected
           if (!account.isConnected) {
          
@@ -276,6 +292,7 @@ function App() {
             );
 
             const reverseResult = result.reverse();
+            // console.log("PoolCreated", reverseResult);
             for (const poolElement of reverseResult) {
               poolData[poolElement.pool] = {
                 poolAddress: poolElement.pool,

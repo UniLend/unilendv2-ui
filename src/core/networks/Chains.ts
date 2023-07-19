@@ -1,4 +1,4 @@
-
+import { Chain } from "@wagmi/core"
 export const zkEVMTestNet = {
     id: 1442,
     name: 'zkEVM Testnet',
@@ -19,4 +19,26 @@ export const zkEVMTestNet = {
       },
     },
     testnet: true,
-} 
+} as Chain;
+
+export const shardeumTestnet = {
+  id: 8081,
+  name: " Shardeum Sphinx DApp 1.X ",
+  network: " Shardeum Sphinx DApp 1.X ",
+  nativeCurrency: { name: "shardeum", symbol: "SHM", decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: [ "https://dapps.shardeum.org/"],
+    },
+    public: {
+      http: [ " https://dapps.shardeum.org/ "],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "shardeum",
+      url: "https://explorer-dapps.shardeum.org/",
+    },
+  },
+  testnet: true,
+} as Chain;

@@ -11,7 +11,16 @@ export const contractAddress = {
     uftToken : import.meta.env.VITE_POLYGON_UFT,
     uftgToken: import.meta.env.VITE_POLYGON_UFTG
   },
+  '8081': {
+    helperAddress: '0xAD2bC0ba9368d932c9648dbb40C3D38B4Da36E6E',
   
+    coreAddress: '0x084e270Fe5b92295703527732aF6e834c1767BE8',
+    positionAddress: '0xCD720950b194e98744520991C75Af8d9b57c2763',
+  
+    poolAddress: '0xBA98A84e0A77823b8DA87c1D1eAce1879F8EF0Ca',
+    unilendOracle: '0x63CaE3Ac0d8024FC5F11d93A036f9D3775fe85e3',
+    interestRateModal:'0x2e6fa297973280c4f5ab7324AD74C86788EC5eEa'
+  },
   '11155111': {
     helperAddress: '0xDa7389416Fe3588122109B15B6CF069cb3E70038',
   
