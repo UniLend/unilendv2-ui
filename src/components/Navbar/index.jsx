@@ -125,13 +125,13 @@ export default function Navbar(props) {
   };
 
   const handleDomain = async (user) => {
-    const meta = await fetchUserDomain(user.address);
-    const domain = meta.reverse ? meta.domain : shortenAddress(user.address);
-    const UserData = {
-      ...user,
-      domain,
-    };
-    setCurrentUser(UserData);
+    // const meta = await fetchUserDomain(user.address);
+    // const domain = meta.reverse ? meta.domain : shortenAddress(user.address);
+    // const UserData = {
+    //   ...user,
+    //   domain,
+    // };
+    // setCurrentUser(UserData);
   };
 
   const WalletModalBody = () => {
@@ -172,10 +172,10 @@ export default function Navbar(props) {
   const SortContent = React.memo(() => {
     return (
       <div className="sort_popover">
-        <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
+        <p onClick={ async () => await handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
         {/* <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
         <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p> */}
-        <p onClick={() => handleSwitchNetwork(1442)} >  zkEVM Testnet</p>
+        <p onClick={ async () => await handleSwitchNetwork(1442)} >  zkEVM Testnet</p>
       </div>
     );
   });
