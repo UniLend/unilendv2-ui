@@ -272,7 +272,7 @@ export const getTokenPrice = async (
       console.log("getPoolTokensData", pool);
       return pool;
     } catch (error) {
-      return error;
+      throw error;
     }
   }
 };
@@ -334,7 +334,7 @@ export const getOracleData = async (contracts, poolData) => {
 
       return pool;
     } catch (error) {
-      return error;
+      throw error;
     }
   }
 };
@@ -395,7 +395,7 @@ export const getPoolBasicData = async (
     } catch (error) {
       
       // console.error(error);
-      return error;
+      throw error;
     }
   }
 };
@@ -583,7 +583,7 @@ export const getPoolAllData = async (
       return pool;
     } catch (error) {
       console.error(error);
-      return error;
+      throw error;
     }
   }
 };
