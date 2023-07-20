@@ -50,9 +50,9 @@ export default function Navbar(props) {
   const [isNetworkVisible, setIsNetworkVisible] = useState(false);
   const [isPolygon, setIsPolygon] = useState(false);
   const dispatch = useDispatch();
-  const [currentTheme , setCurrentTheme] = useState(theme)
-  const {chain: networkchain} = getNetwork()
-  const availableChain = [11155111,1442, 8001,173, 8081]
+  const [currentTheme, setCurrentTheme] = useState(theme);
+  const { chain: networkchain } = getNetwork();
+  const availableChain = [11155111, 1442, 80001, 173, 8081];
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -173,11 +173,14 @@ export default function Navbar(props) {
   const SortContent = React.memo(() => {
     return (
       <div className="sort_popover">
-        <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
-        <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
-        <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p>
-        <p onClick={() => handleSwitchNetwork(1442)} >  zkEVM Testnet</p>
-        <p onClick={() => handleSwitchNetwork(8081)} >  Shardeum Testnet</p>
+        <p onClick={() => handleSwitchNetwork(11155111)}>
+          {" "}
+          Sepolia Test Network
+        </p>
+        <p onClick={() => handleSwitchNetwork(80001)}> Polygon Mumbai</p>
+        <p onClick={() => handleSwitchNetwork(137)}> Polygon Mainnet</p>
+        <p onClick={() => handleSwitchNetwork(1442)}> zkEVM Testnet</p>
+        <p onClick={() => handleSwitchNetwork(8081)}> Shardeum Testnet</p>
       </div>
     );
   });

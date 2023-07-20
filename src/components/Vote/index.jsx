@@ -34,32 +34,30 @@ export default function VoteComponent() {
   const [tokenBalance, setTokenBalance] = useState({ uft: "", uftg: "" });
   const [activeTab, setActiveTab] = useState(wrap);
   const [allowanceValue, setAllowanceValue] = useState("");
-  const [delegate, setDelegate] = useState('0x000000000000000');
-  const [votingPower, setVotingPower] = useState('')
+  const [delegate, setDelegate] = useState("0x000000000000000");
+  const [votingPower, setVotingPower] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const checkTxnStatus = (hash, data) => {
     waitForTransaction({
       hash,
     }).then((receipt) => {
-      
-      if (receipt.status == 1) { 
-          if(data?.fn == 'approve'){
-            setTimeout(() => {
-              handleAllowance()
-              message.success(`${data.message}`);
-              setIsLoading(false);
-           }, 6000);
-          } else {
-            setTimeout(() => {
-              handleAllowance()
-              message.success(`${data.message}`);
-              setIsLoading(false);
-           }, 2000);
-          }
-      
+      if (receipt.status == 1) {
+        if (data?.fn == "approve") {
+          setTimeout(() => {
+            handleAllowance();
+            message.success(`${data.message}`);
+            setIsLoading(false);
+          }, 6000);
+        } else {
+          setTimeout(() => {
+            handleAllowance();
+            message.success(`${data.message}`);
+            setIsLoading(false);
+          }, 2000);
+        }
       } else {
-        alert('Error Checked')
+        alert("Error Checked");
       }
     });
   };
@@ -89,8 +87,8 @@ export default function VoteComponent() {
     const uftgVotes_BigNumber = await UFTG.getCurrentVotes(address);
     const uftBalance = fromBigNumber(uftBalance_BigNumber) / 10 ** 18;
     const uftgBalance = fromBigNumber(uftgBalance_BigNumber) / 10 ** 18;
-    const uftgVotes = fromBigNumber(uftgVotes_BigNumber) / 10 **18;
-    setVotingPower(uftgVotes)
+    const uftgVotes = fromBigNumber(uftgVotes_BigNumber) / 10 ** 18;
+    setVotingPower(uftgVotes);
     setTokenBalance({ uft: uftBalance, uftg: uftgBalance });
   };
 
@@ -104,17 +102,16 @@ export default function VoteComponent() {
       contractsAdd?.uftgToken
     );
     const valueFromBigNumber = fromBigNumber(allowance);
-  
+
     setAllowanceValue(valueFromBigNumber);
   };
 
   useEffect(() => {
-    if(address){
-      setDelegate(address)
+    if (address) {
+      setDelegate(address);
       // getTokenBal();
       handleAllowance();
     }
-
   }, [address]);
 
   return (
@@ -137,7 +134,7 @@ export default function VoteComponent() {
             <span>(UFTG Balance)</span>
           </div>
           <div>
-            <h2>{ shortenAddress(String(delegate))}</h2>
+            <h2>{shortenAddress(String(delegate))}</h2>
             <p>Delegation address</p>
           </div>
         </div>
@@ -237,41 +234,38 @@ const WrapAndDelegate = ({
   const handleAmount = (e) => {
     const value = e.target.value;
     setAmount(value);
-
   };
 
+  useEffect(() => {
+    const isValid = ethers.utils.isAddress(address);
 
-useEffect(() => {
-  const isValid = ethers.utils.isAddress(address);
-
-  if (decimal2Fixed(amount, 18) > Number(allowanceValue)) {
-    setButtonText({
-      text: "Approve",
-      disable: false,
-    });
-  } else
-  if (amount > tokenBalance?.uft) {
-    setButtonText({
-      text: "Low Balance",
-      disable: true,
-    });
-  } else if (!isValid) {
-    setButtonText({
-      text: "Enter Valid Address",
-      disable: true,
-    });
-  } else if(!(amount > 0)) {
-    setButtonText({
-      text: "Enter Amount",
-      disable: true,
-    });
-  }else {
-    setButtonText({
-      text: "Wrap & Delegate",
-      disable: false,
-    });
-  }
-}, [address, amount, allowanceValue, tokenBalance])
+    if (decimal2Fixed(amount, 18) > Number(allowanceValue)) {
+      setButtonText({
+        text: "Approve",
+        disable: false,
+      });
+    } else if (amount > tokenBalance?.uft) {
+      setButtonText({
+        text: "Low Balance",
+        disable: true,
+      });
+    } else if (!isValid) {
+      setButtonText({
+        text: "Enter Valid Address",
+        disable: true,
+      });
+    } else if (!(amount > 0)) {
+      setButtonText({
+        text: "Enter Amount",
+        disable: true,
+      });
+    } else {
+      setButtonText({
+        text: "Wrap & Delegate",
+        disable: false,
+      });
+    }
+  }, [address, amount, allowanceValue, tokenBalance]);
 
   const handleAddress = (e) => {
     setAddress(e.target.value);
@@ -299,7 +293,7 @@ useEffect(() => {
     const { chain } = getNetwork();
     const fixedValue = decimal2Fixed(amount, 18);
     const contracts = contractAddress[chain?.id || "1"];
-   
+
     if (Number(allowanceValue) >= Number(fixedValue)) {
       setIsLoading(true);
       handleWrapAndDelegate(
@@ -312,8 +306,13 @@ useEffect(() => {
       );
     } else {
       setIsLoading(true);
-      setApproval(contracts?.uftToken, erc20Abi, contracts?.uftgToken, checkTxnStatus,
-        checkTxnError);
+      setApproval(
+        contracts?.uftToken,
+        erc20Abi,
+        contracts?.uftgToken,
+        checkTxnStatus,
+        checkTxnError
+      );
     }
   };
 
@@ -328,12 +327,20 @@ useEffect(() => {
         </p>
       </div>
       <div className="action">
-        <Input
-          type="number"
-          placeholder="Amount"
-          onChange={handleAmount}
-          value={amount}
-        />
+        <div className="amount_input_wraper">
+          <Input
+            type="number"
+            placeholder="Amount"
+            onChange={handleAmount}
+            value={amount}
+          />
+          <button
+            onClick={() => setAmount(tokenBalance?.uft)}
+            className="max_btn"
+          >
+            MAX
+          </button>
+        </div>
         <Input
           type="text"
           placeholder="Address"
@@ -368,14 +375,13 @@ const UnWrap = ({
   const handleAmount = (e) => {
     const value = e.target.value;
     setAmount(value);
-   
+
     if (value > tokenBalance?.uftg) {
       setButtonText({
         text: "Low Balance",
         disable: true,
       });
-    } else
-    if(!(value > 0)) {
+    } else if (!(value > 0)) {
       setButtonText({
         text: "Enter Amount",
         disable: true,
@@ -401,6 +407,25 @@ const UnWrap = ({
     );
   };
 
+  useEffect(() => {
+    if (amount > tokenBalance?.uftg) {
+      setButtonText({
+        text: "Low Balance",
+        disable: true,
+      });
+    } else if (!(amount > 0)) {
+      setButtonText({
+        text: "Enter Amount",
+        disable: true,
+      });
+    } else {
+      setButtonText({
+        text: "Unwrap",
+        disable: false,
+      });
+    }
+  }, [amount]);
+
   return (
     <div className="operation_content_container">
       <div className="info">
@@ -412,12 +437,20 @@ const UnWrap = ({
         </p>
       </div>
       <div className="action">
-        <Input
-          type="number"
-          placeholder="Amount"
-          onChange={handleAmount}
-          value={amount}
-        />
+        <div className="amount_input_wraper">
+          <Input
+            type="number"
+            placeholder="Amount"
+            onChange={handleAmount}
+            value={amount}
+          />
+          <button
+            onClick={() => setAmount(tokenBalance?.uftg)}
+            className="max_btn"
+          >
+            MAX
+          </button>
+        </div>
         <Button
           loading={isLoading}
           onClick={handleUnWrapOperation}
@@ -447,7 +480,7 @@ const UpdateDelegation = ({
   const handleAddress = (e) => {
     const userAddr = e.target.value;
     const isValid = ethers.utils.isAddress(userAddr);
-  
+
     setAddress(userAddr);
     if (!isValid || userAddr == "") {
       setButtonText({
@@ -465,7 +498,7 @@ const UpdateDelegation = ({
   const handleUpdate = () => {
     const { chain } = getNetwork();
     const contracts = contractAddress[chain?.id || "1"];
-    setIsLoading(true)
+    setIsLoading(true);
     handleUpdateDelegate(
       contracts?.uftgToken,
       uftgABI,
@@ -492,7 +525,11 @@ const UpdateDelegation = ({
           value={address}
           onChange={handleAddress}
         />
-        <Button loading={isLoading} onClick={handleUpdate} disabled={buttonText?.disable}>
+        <Button
+          loading={isLoading}
+          onClick={handleUpdate}
+          disabled={buttonText?.disable}
+        >
           {" "}
           {buttonText?.text}
         </Button>

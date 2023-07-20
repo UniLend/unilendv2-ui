@@ -50,9 +50,9 @@
       }
       @media ($tablet) {
         height: 100px;
-        
+
         div {
-            padding: 15px 0px;
+          padding: 15px 0px;
           h2 {
             font-size: 20px;
           }
@@ -128,7 +128,7 @@
         display: flex;
         justify-content: space-between;
         height: 250px;
-        div {
+        & > div {
           width: 35%;
           margin: 20px;
           height: 100%;
@@ -151,13 +151,38 @@
           }
         }
         .action {
+          .amount_input_wraper {
+            position: relative;
+            input {
+              width: 100%;
+              background: var(--light-blue);
+              color: var(--light-gray);
+              font-weight: 700;
+              padding-right: 52px;
+            }
+            .max_btn {
+              position: absolute;
+              right: -14px;
+              top: 5px;
+              width: 40px;
+              height: 30px;
+              font-size: 10px;
+              font-weight: 600;
+              background: var(--pure-white);
+              color: var(--light-gray);
+              margin: 10px;
+              &:hover {
+                cursor: pointer;
+                color: var(--dark-gray);
+              }
+            }
+          }
           input,
           button {
             width: 100%;
             margin: 10px;
             height: 40px;
             border-radius: 5px;
-   
           }
           input {
             background: var(--light-blue);
@@ -175,9 +200,9 @@
             color: var(--pure-white);
             font-weight: 600;
             border: none;
-            &:disabled{
-                background: var(--light-blue);
-                color: var(--low-gray);
+            &:disabled {
+              background: var(--light-blue);
+              color: var(--low-gray);
             }
           }
         }
@@ -212,7 +237,7 @@
         .operation_content_container {
           flex-direction: column;
           height: max-content !important;
-          div {
+          & > div {
             width: 100%;
             display: flex;
             margin: 10px 0px;
@@ -221,9 +246,9 @@
             h2 {
               font-size: 20px !important;
             }
-            p{
-                width: 90% !important;
-                margin: auto;
+            p {
+              width: 90% !important;
+              margin: auto;
             }
           }
           .action {
@@ -291,7 +316,7 @@
             font-size: 20px;
             text-align: center;
           }
-          p{
+          p {
             width: 90%;
           }
         }
@@ -303,6 +328,6 @@
     }
   }
 }
-.app{
-    margin-bottom: 0px;
+.app {
+  margin-bottom: 0px;
 }
