@@ -36,6 +36,7 @@ import { changeNetwork } from "../../services/wallet";
 import { fetchUserDomain } from "../../utils/axios";
 import { getNetwork, switchNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
+import { ChangeNetwork } from "../../core/networks/networks";
 
 export default function Navbar(props) {
   const { user, theme } = props;
@@ -50,9 +51,9 @@ export default function Navbar(props) {
   const [isNetworkVisible, setIsNetworkVisible] = useState(false);
   const [isPolygon, setIsPolygon] = useState(false);
   const dispatch = useDispatch();
-  const [currentTheme, setCurrentTheme] = useState(theme);
-  const { chain: networkchain } = getNetwork();
-  const availableChain = [11155111, 1442, 80001, 173, 8081];
+  const [currentTheme , setCurrentTheme] = useState(theme)
+  const {chain: networkchain} = getNetwork()
+  const availableChain = [11155111,1442,80001,137, 8081]
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -152,15 +153,25 @@ export default function Navbar(props) {
             <img src={eth} alt="Etherium" />
             <p>zkEVM</p>
           </div>
+          <div onClick={() => handleSwitchNetwork(8081)}>
+            <img src={eth} alt="Etherium" />
+            <p>Shardeum (8081)</p>
+          </div>
         </div>
       </div>
     );
   };
 
   const handleSwitchNetwork = async (id) => {
-    const network = await switchNetwork({
-      chainId: id,
-    });
+    try {
+      const network = await switchNetwork({
+        chainId: id,
+      });
+    } catch (error) {
+      // console.log("switchError", {error});
+      await ChangeNetwork(id)
+    }
+
     const connector = localStorage.getItem("wallet");
     if (connector == "walletConnect") {
       setTimeout(() => {
@@ -173,6 +184,7 @@ export default function Navbar(props) {
   const SortContent = React.memo(() => {
     return (
       <div className="sort_popover">
+<<<<<<< HEAD
         <p onClick={() => handleSwitchNetwork(11155111)}>
           {" "}
           Sepolia Test Network
@@ -181,6 +193,13 @@ export default function Navbar(props) {
         <p onClick={() => handleSwitchNetwork(137)}> Polygon Mainnet</p>
         <p onClick={() => handleSwitchNetwork(1442)}> zkEVM Testnet</p>
         <p onClick={() => handleSwitchNetwork(8081)}> Shardeum Testnet</p>
+=======
+        <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
+        <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
+        {/* <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p> */}
+        <p onClick={() => handleSwitchNetwork(1442)} >  zkEVM Testnet</p>
+        <p onClick={() => handleSwitchNetwork(8081)} >  Shardeum Testnet</p>
+>>>>>>> deploy-netlify-july
       </div>
     );
   });
