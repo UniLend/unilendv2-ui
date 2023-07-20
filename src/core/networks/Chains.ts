@@ -2,7 +2,7 @@
 import { Chain } from "@wagmi/core"
 export const zkEVMTestNet = {
     id: 1442,
-    name: 'zkEVM Testnet',
+    name: 'zkEVM Testnet 5',
     network: 'polygon-zkevm-testnet',
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     rpcUrls: {
@@ -24,15 +24,15 @@ export const zkEVMTestNet = {
 
 export const shardeumTestnet = {
   id: 8081,
-  name: " Shardeum Testnet",
-  network: " Shardeum  Testnet",
+  name: "Shardeum Testnet",
+  network: "Shardeum Sphinx Dapp 1.X",
   nativeCurrency: { name: "shardeum", symbol: "SHM", decimals: 18 },
   rpcUrls: {
     default: {
-      http: [ "https://dapps.shardeum.org/"],
+      http: [ 'https://dapps.shardeum.org/'],
     },
     public: {
-      http: [ " https://dapps.shardeum.org/ "],
+      http: [ 'https://dapps.shardeum.org/ '],
     },
   },
   blockExplorers: {

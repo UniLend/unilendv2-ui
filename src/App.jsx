@@ -79,12 +79,12 @@ const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
+  [mainnet, bsc, polygonMumbai, sepolia, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
   [ alchemyProvider({ apiKey: alchemyId }), publicProvider(), infuraProvider({ apiKey: infuraID }),]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
-  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
+  chains: [mainnet, polygonMumbai, sepolia, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
 });
 
 export const WalletConnector = new WalletConnectConnector({
@@ -318,11 +318,10 @@ function App() {
   }, [state.contracts, chain?.id, user]);
 
 
-
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-    if ( data && networksWithGraph.includes(networkID)  && Object.values(poolList).length == 0 && false) {
+    if ( data && networksWithGraph.includes(networkID) ) {
      const allPositions = data?.positions
       const poolData = {};
       const tokenList = {};
