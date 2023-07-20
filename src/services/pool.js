@@ -79,6 +79,9 @@ export const handleRedeem = async (
 ) => {
   let Amount = decimal2Fixed(amount, selectedToken._decimals);
   let maxAmount = selectedToken.lendShare;
+  if(Number(selectedToken.lendShare) > Number(selectedToken.liquidity)){
+    maxAmount = selectedToken.liquidity;
+  } 
   if (selectedToken._address == poolData.token0._address) {
     Amount = mul(Amount, -1);
     maxAmount = mul(maxAmount, -1);
@@ -91,11 +94,16 @@ export const handleRedeem = async (
 
     if (max) {
       if (selectedToken.collateralBalance > '0') {
-        maxAmount = selectedToken.redeemBalance;
+        if(Number(selectedToken.redeemBalance) > Number(selectedToken.liquidity)){
+          maxAmount = selectedToken.liquidity;
+        } else {
+          maxAmount = selectedToken.redeemBalance;
+        }
         if (selectedToken._address == poolData.token0._address) {
           maxAmount = mul(maxAmount, -1);
         }
       }
+
  
       const txn = await instance.redeem(poolAddress, maxAmount, userAddr)
 
@@ -140,7 +148,7 @@ export const handleRedeem = async (
   } catch (error) {
     console.error('Redeem:', error);
     checkTxnError(error);
-    return error;
+    throw error;
   }
 };
 /*
@@ -264,7 +272,7 @@ export const getTokenPrice = async (
       console.log("getPoolTokensData", pool);
       return pool;
     } catch (error) {
-      return error;
+      throw error;
     }
   }
 };
@@ -326,7 +334,7 @@ export const getOracleData = async (contracts, poolData) => {
 
       return pool;
     } catch (error) {
-      return error;
+      throw error;
     }
   }
 };
@@ -387,7 +395,7 @@ export const getPoolBasicData = async (
     } catch (error) {
       
       // console.error(error);
-      return error;
+      throw error;
     }
   }
 };
@@ -575,7 +583,7 @@ export const getPoolAllData = async (
       return pool;
     } catch (error) {
       console.error(error);
-      return error;
+      throw error;
     }
   }
 };
@@ -602,7 +610,7 @@ export const handleLend = async (
   }
 
   try {
-    if (fixed2Decimals18(selectedToken.allowance) >= amount) {
+    if (fixed2Decimals18(selectedToken.allowance, selectedToken._decimals) >= amount) {
 
        const instance  = await getContractInstance(contracts.coreContract.address, coreAbi)
       // const signer = await fetchSigner()
@@ -660,7 +668,7 @@ export const handleLend = async (
     console.error('Lend:', error);
     console.log({error});
     checkTxnError(error);
-    return error;
+    throw error;
   }
 };
 
@@ -687,8 +695,7 @@ export const handleBorrow = async (
     Amount = mul(Amount, -1);
   }
   try {
-    if (fixed2Decimals18(collateralToken.allowance) >= collateral) {
-
+    if (fixed2Decimals18(collateralToken.allowance, collateralToken._decimals) >= collateral) {
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
 
       const transaction = await instance.borrow(poolData._address, Amount, Collateral, userAddr);
@@ -736,7 +743,7 @@ export const handleBorrow = async (
   } catch (error) {
     console.error('Borrow:', error);
     checkTxnError(error);
-    return error;
+    throw error;
   }
 };
 
@@ -767,7 +774,7 @@ export const handleRepay = async (
     Amount = Max;
   }
   try {
-    if (fixed2Decimals18(selectedToken.allowance) >= amount) {
+    if (fixed2Decimals18(selectedToken.allowance, selectedToken._decimals) >= amount) {
 
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
      const {hash} = await instance.repay(poolAddress, Amount, userAddr)
@@ -813,7 +820,7 @@ export const handleRepay = async (
   } catch (error) {
     console.error('Repay:', error);
     checkTxnError(error);
-    return error;
+    throw error;
   }
 };
 

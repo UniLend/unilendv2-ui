@@ -194,31 +194,34 @@ export const getActionBtn = (
   amount,
   selectedToken,
   collateralToken,
-  collateral
+  collateral,
+  reFetching
 ) => {
   let btn = {
     text: `${activeOperation} ${selectedToken?._symbol}`,
     disable: false,
   };
-
+   if(reFetching){
+    return { text: "Fetching Data", disable: false };
+   }
   if (amount <= 0) {
-    btn = { text: "Enter Amount", disable: true };
+   return { text: "Enter Amount", disable: true };
   } else if (amount && activeOperation === lend) {
-    if (fixed2Decimals18(selectedToken?.allowance) < amount) {
-      btn = { text: "Approve " + selectedToken?._symbol };
+    if (fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals) < amount) {
+      return  { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.balanceFixed)) {
-      btn = { text: "Low Balance in Wallet", disable: true };
+      return  { text: "Low Balance in Wallet", disable: true };
     }
   } else if (amount && activeOperation === borrow) {
     if (
       collateral > 0 &&
-      fixed2Decimals18(collateralToken?.allowance) <= collateral
+      fixed2Decimals18(collateralToken?.allowance, collateralToken._decimals) <= collateral
     ) {
-      btn = { text: "Approve " + collateralToken?._symbol };
+      return  { text: "Approve " + collateralToken?._symbol };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
-      btn = { text: "Not Enough Liquidity", disable: true };
+      return { text: "Not Enough Liquidity", disable: true };
     } else if (collateral > Number(collateralToken?.balanceFixed)) {
-      btn = {
+      return {
         text: "Low Balance in Wallet " + collateralToken?._symbol,
         disable: true,
       };
@@ -226,20 +229,20 @@ export const getActionBtn = (
   } else if (amount && activeOperation === redeem) {
   
     if (amount > Number(selectedToken.lendBalanceFixed)) {
-      btn = { text: "Not Enough Amount Lent", disable: true };
+      return { text: "Not Enough Amount Lent", disable: true };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
-      btn = { text: "Not Enough Liquidity", disable: true };
+      return { text: "Not Enough Liquidity", disable: true };
     } else if (amount > Number(selectedToken.redeemBalanceFixed)) {
-      btn = { text: "Exceeds Redeemable Amount", disable: true };
+      return { text: "Exceeds Redeemable Amount", disable: true };
     }
   } else if (amount && activeOperation === repay) {
    
-    if (fixed2Decimals18(selectedToken?.allowance) < amount) {
-      btn = { text: "Approve " + selectedToken?._symbol };
+    if (fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals) < amount) {
+      return { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.borrowBalanceFixed)) {
-      btn = { text: "Exceeds Borrowed Amount", disable: true };
+      return { text: "Exceeds Borrowed Amount", disable: true };
     } else if (amount > Number(selectedToken.balanceFixed)) {
-      btn = { text: "Low Balance in Wallet", disable: true };
+      return { text: "Low Balance in Wallet", disable: true };
     }
   }
 
