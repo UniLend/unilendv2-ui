@@ -70,7 +70,7 @@ import {
   getTokenPrice,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
-import { zkEVMTestNet } from "./core/networks/Chains";
+import { zkEVMTestNet, shardeumTestnet } from "./core/networks/Chains";
 import { getTokenUSDPrice } from "./helpers/contracts";
 
 // import ends here
@@ -79,12 +79,12 @@ const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon],
+  [mainnet, bsc, polygonMumbai, sepolia, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
   [ alchemyProvider({ apiKey: alchemyId }), publicProvider(), infuraProvider({ apiKey: infuraID }),]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
-  chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon],
+  chains: [mainnet, polygonMumbai, sepolia, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
 });
 
 export const WalletConnector = new WalletConnectConnector({
@@ -109,6 +109,12 @@ const graphURL = {
   80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
   137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
 };
+
+const shardeumPools = [{
+  pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
+  token1: '0xd146878affF8c8dd3e9EBd9177F2AE4f6d4e5979',
+  token0:'0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1'
+}]
 
 function App() {
   const dispatch = useDispatch();
@@ -147,13 +153,13 @@ function App() {
           provider = getProvider();
         } else {
           console.log("providerwalletconnect", user, walletconnect);
-           provider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
+           provider = new ethers.providers.JsonRpcProvider( `https://rpc.public.zkevm-test.net`);
         }
         // dispatch(setWeb3(web3));
         const { chain: nextChain, chains } = getNetwork();
         const networkID = user?.network?.id
         const { coreAddress, helperAddress, positionAddress } =
-          contractAddress[chain?.id || nextChain?.id || networkID || "11155111"];
+          contractAddress[chain?.id || nextChain?.id || networkID || "1442"];
 
          
         const preparedData = [
@@ -193,17 +199,22 @@ function App() {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
     if (state.contracts.coreContract && !networksWithGraph.includes(networkID) ) {
-
       try {
         (async () => {
         
           const poolData = {};
           const account = getAccount();
-          const result = await getAllEvents(
-            state.contracts.coreContract,
-            "PoolCreated"
-          );
+          let result;
 
+          if(networkID == 8081){
+            result = shardeumPools
+          } else {
+            result = await getAllEvents(
+              state.contracts.coreContract,
+              "PoolCreated"
+            );
+          }
+          
           const array = [];
           const tokenList = {};
           for (const pool of result) {
@@ -307,11 +318,10 @@ function App() {
   }, [state.contracts, chain?.id, user]);
 
 
-
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-    if ( data && networksWithGraph.includes(networkID)  && Object.values(poolList).length == 0 && false) {
+    if ( data && networksWithGraph.includes(networkID) ) {
      const allPositions = data?.positions
       const poolData = {};
       const tokenList = {};

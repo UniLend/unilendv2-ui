@@ -148,7 +148,7 @@ export const handleRedeem = async (
   } catch (error) {
     console.error('Redeem:', error);
     checkTxnError(error);
-    return error;
+    throw error;
   }
 };
 /*
@@ -272,7 +272,7 @@ export const getTokenPrice = async (
       console.log("getPoolTokensData", pool);
       return pool;
     } catch (error) {
-      return error;
+      throw error;
     }
   }
 };
@@ -334,7 +334,7 @@ export const getOracleData = async (contracts, poolData) => {
 
       return pool;
     } catch (error) {
-      return error;
+      throw error;
     }
   }
 };
@@ -395,7 +395,7 @@ export const getPoolBasicData = async (
     } catch (error) {
       
       // console.error(error);
-      return error;
+      throw error;
     }
   }
 };
@@ -583,7 +583,7 @@ export const getPoolAllData = async (
       return pool;
     } catch (error) {
       console.error(error);
-      return error;
+      throw error;
     }
   }
 };
@@ -668,7 +668,7 @@ export const handleLend = async (
     console.error('Lend:', error);
     console.log({error});
     checkTxnError(error);
-    return error;
+    throw error;
   }
 };
 
@@ -743,7 +743,7 @@ export const handleBorrow = async (
   } catch (error) {
     console.error('Borrow:', error);
     checkTxnError(error);
-    return error;
+    throw error;
   }
 };
 
@@ -820,7 +820,7 @@ export const handleRepay = async (
   } catch (error) {
     console.error('Repay:', error);
     checkTxnError(error);
-    return error;
+    throw error;
   }
 };
 
