@@ -131,7 +131,7 @@ export default function VoteComponent() {
           <div>
             <h2>{Number(votingPower).toFixed(2)}</h2>
             <p>Voting Power</p>
-            <span>(UFTG Balance)</span>
+            {/* <span>(UFTG Balance)</span> */}
           </div>
           <div>
             <h2>{shortenAddress(String(delegate))}</h2>

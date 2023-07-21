@@ -22,6 +22,7 @@ import copyIcon from "../../assets/copyIcon.svg";
 import doc from "../../assets/document.svg";
 import career from "../../assets/career.svg";
 import eth from "../../assets/eth.svg";
+import ethlogo from "../../assets/ethlogo.png";
 import shardeumLogo from "../../assets/shardeumLogo.png";
 import polygon from "../../assets/polygon.svg";
 import sun from "../../assets/sun.svg";
@@ -147,11 +148,11 @@ export default function Navbar(props) {
         </p>
         <div className="networks">
           <div onClick={() => handleSwitchNetwork(11155111)}>
-            <img src={eth} alt="Etherium" />
+            <img src={ethlogo} alt="Etherium" />
             <p>Sepolia</p>
           </div>
           <div onClick={() => handleSwitchNetwork(1442)}>
-            <img src={eth} alt="Etherium" />
+            <img src={ethlogo} alt="Etherium" />
             <p>zkEVM</p>
           </div>
           <div onClick={() => handleSwitchNetwork(8081)}>
