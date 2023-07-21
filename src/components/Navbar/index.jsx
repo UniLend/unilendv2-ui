@@ -22,6 +22,8 @@ import copyIcon from "../../assets/copyIcon.svg";
 import doc from "../../assets/document.svg";
 import career from "../../assets/career.svg";
 import eth from "../../assets/eth.svg";
+import ethlogo from "../../assets/ethlogo.png";
+import shardeumLogo from "../../assets/shardeumLogo.png";
 import polygon from "../../assets/polygon.svg";
 import sun from "../../assets/sun.svg";
 import moon from "../../assets/moon.svg";
@@ -51,9 +53,9 @@ export default function Navbar(props) {
   const [isNetworkVisible, setIsNetworkVisible] = useState(false);
   const [isPolygon, setIsPolygon] = useState(false);
   const dispatch = useDispatch();
-  const [currentTheme , setCurrentTheme] = useState(theme)
-  const {chain: networkchain} = getNetwork()
-  const availableChain = [11155111,1442,80001,137, 8081]
+  const [currentTheme, setCurrentTheme] = useState(theme);
+  const { chain: networkchain } = getNetwork();
+  const availableChain = [11155111, 1442, 80001, 137, 8081];
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -146,16 +148,16 @@ export default function Navbar(props) {
         </p>
         <div className="networks">
           <div onClick={() => handleSwitchNetwork(11155111)}>
-            <img src={eth} alt="Etherium" />
+            <img src={ethlogo} alt="Etherium" />
             <p>Sepolia</p>
           </div>
           <div onClick={() => handleSwitchNetwork(1442)}>
-            <img src={eth} alt="Etherium" />
+            <img src={ethlogo} alt="Etherium" />
             <p>zkEVM</p>
           </div>
           <div onClick={() => handleSwitchNetwork(8081)}>
-            <img src={eth} alt="Etherium" />
-            <p>Shardeum (8081)</p>
+            <img src={shardeumLogo} alt="Etherium" />
+            <p>Shardeum</p>
           </div>
         </div>
       </div>
@@ -169,7 +171,7 @@ export default function Navbar(props) {
       });
     } catch (error) {
       // console.log("switchError", {error});
-      await ChangeNetwork(id)
+      await ChangeNetwork(id);
     }
 
     const connector = localStorage.getItem("wallet");
@@ -184,11 +186,14 @@ export default function Navbar(props) {
   const SortContent = React.memo(() => {
     return (
       <div className="sort_popover">
-        <p onClick={() => handleSwitchNetwork(11155111)} > Sepolia Test Network</p>
-        <p onClick={() => handleSwitchNetwork(80001)} > Polygon Mumbai</p>
+        <p onClick={() => handleSwitchNetwork(11155111)}>
+          {" "}
+          Sepolia Test Network
+        </p>
+        <p onClick={() => handleSwitchNetwork(80001)}> Polygon Mumbai</p>
         {/* <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p> */}
-        <p onClick={() => handleSwitchNetwork(1442)} >  zkEVM Testnet</p>
-        <p onClick={() => handleSwitchNetwork(8081)} >  Shardeum Testnet</p>
+        <p onClick={() => handleSwitchNetwork(1442)}> zkEVM Testnet</p>
+        <p onClick={() => handleSwitchNetwork(8081)}> Shardeum Testnet</p>
       </div>
     );
   });

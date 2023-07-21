@@ -153,13 +153,13 @@ function App() {
           provider = getProvider();
         } else {
           console.log("providerwalletconnect", user, walletconnect);
-           provider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
+           provider = new ethers.providers.JsonRpcProvider( `https://rpc.public.zkevm-test.net`);
         }
         // dispatch(setWeb3(web3));
         const { chain: nextChain, chains } = getNetwork();
         const networkID = user?.network?.id
         const { coreAddress, helperAddress, positionAddress } =
-          contractAddress[chain?.id || nextChain?.id || networkID || "11155111"];
+          contractAddress[chain?.id || nextChain?.id || networkID || "1442"];
 
          
         const preparedData = [
