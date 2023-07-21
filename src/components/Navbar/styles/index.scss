@@ -378,6 +378,9 @@
             }
 
             }
+            @media ($mobile){
+                grid-template-columns: repeat(2, 150px);
+            }
         }
 }
 
