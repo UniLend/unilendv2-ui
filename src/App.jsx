@@ -193,7 +193,7 @@ function App() {
         dispatch(setError(error));
       }
     })();
-  }, []);
+  }, [user?.address]);
 
   useEffect(() => {
     const { chain } = getNetwork();
