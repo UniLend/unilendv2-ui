@@ -2,7 +2,7 @@
 import { Chain } from "@wagmi/core"
 export const zkEVMTestNet = {
     id: 1442,
-    name: 'zkEVM Testnet 5',
+    name: 'zkEVM Testnet',
     network: 'polygon-zkevm-testnet',
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     rpcUrls: {
