@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Slider, Button, message, Modal, Popover } from "antd";
+import { Slider, Button, message, Modal, Popover, Tooltip } from "antd";
 import {FaChevronDown} from 'react-icons/fa'
 import { waitForTransaction } from "@wagmi/core";
 import "./styles/index.scss";
@@ -677,6 +677,7 @@ export default function PoolComponent(props) {
               >
                 Redeem
               </div>
+              <Tooltip title={selectedToken?.tabs?.includes("borrow")? '': 'Oracle is not set'} defaultOpen >
               <div
                 onClick={() => toggleOperation(borrow)}
                 className={
@@ -689,6 +690,7 @@ export default function PoolComponent(props) {
               >
                 Borrow
               </div>
+              </Tooltip>
               <div
                 onClick={() => toggleOperation(repay)}
                 className={
@@ -705,11 +707,13 @@ export default function PoolComponent(props) {
 
             <div className="user_liquidity">
               <p>{liquidityText[activeOperation]}</p>
+              <Tooltip title={getLiquidityAmount[activeOperation]} trigger='hover'>
               <h1>
                 {selectedToken
                   ? shortNumber(getLiquidityAmount[activeOperation])
                   : 0}
               </h1>
+              </Tooltip>
             </div>
 
             <div className="token_balance_container">

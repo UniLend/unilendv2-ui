@@ -152,13 +152,7 @@ export default function VoteComponent() {
         <div className="user_info">
           <div>
             <h2>{Number(tokenBalance.uft + tokenBalance.uftg).toFixed(2)}</h2>
-            <Popover
-              content={<BalancePopover />}
-              overlayClassName="total_balance_popover"
-              open={true}
-              placement="bottomRight"
-              // placement="rightBottom"
-            >
+      
               <div
                 style={{
                   display: "flex",
@@ -169,9 +163,16 @@ export default function VoteComponent() {
                 }}
               >
                 <p>Total Balance</p>
+                <Popover
+              content={<BalancePopover />}
+              overlayClassName="total_balance_popover"
+              open={true}
+              placement="bottom"
+            >
                 <img src={infoIcon} alt="info" />
+                </Popover>
               </div>
-            </Popover>
+           
             {/* <span>(UFT + UFTG Balance)</span> */}
           </div>
           <div>
