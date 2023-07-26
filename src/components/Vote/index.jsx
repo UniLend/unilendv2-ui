@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Popover } from "antd";
 import {
   getAccount,
   getNetwork,
@@ -8,13 +9,16 @@ import {
 import { Input, Button, message } from "antd";
 import banner from "../../assets/dashboardbanner.svg";
 import Vote from "../../assets/vote.svg";
+import copyIcon from "../../assets/copyIcon.svg";
+import uftIcon from "../../assets/uft.svg";
+import infoIcon from "../../assets/info.svg";
 import "./styles/index.scss";
 import { shortenAddress } from "../../utils";
 import { contractAddress } from "../../core/contractData/contracts";
 import { useEffect } from "react";
 import { ethers } from "ethers";
 import { erc20Abi, uftgABI } from "../../core/contractData/abi";
-import { decimal2Fixed, fromBigNumber } from "../../helpers/contracts";
+import { decimal2Fixed, div, fromBigNumber } from "../../helpers/contracts";
 import {
   checkAllowance,
   handleUnWrap,
@@ -22,6 +26,7 @@ import {
   handleWrapAndDelegate,
   setApproval,
 } from "../../services/governance";
+import { fetchUserAddressByDomain, fetchUserDomain } from "../../utils/axios";
 
 const wrap = "wrap";
 const unWrap = "unWrap";
@@ -69,6 +74,7 @@ export default function VoteComponent() {
     message.error(error?.message ? errorText : "Error: Transaction Error");
   };
 
+  //
   const getTokenBal = async () => {
     const contractsAdd = contractAddress[chain?.id || "1"];
     const provider = getProvider();
@@ -106,6 +112,27 @@ export default function VoteComponent() {
     setAllowanceValue(valueFromBigNumber);
   };
 
+  const BalancePopover = () => {
+    return (
+      <div className="balance_popover_container">
+        <div className="balance_popover_item">
+          <img src={uftIcon} alt="uftLogo" />
+          <p>
+            <span className="uft_span">UFT:</span>{" "}
+            <span>{Number(tokenBalance.uft).toFixed(2)}</span>{" "}
+          </p>
+        </div>
+        <div className="balance_popover_item">
+          <img src={uftIcon} alt="uftLogo" />
+          <p>
+            <span className="uftg_span">UFTG:</span>{" "}
+            <span>{Number(tokenBalance.uftg).toFixed(2)}</span>{" "}
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   useEffect(() => {
     if (address) {
       setDelegate(address);
@@ -124,9 +151,29 @@ export default function VoteComponent() {
         {/* User Info */}
         <div className="user_info">
           <div>
-            <h2> {Number(tokenBalance.uft + tokenBalance.uftg).toFixed(2)}</h2>
-            <p>Total Balance</p>
-            <span>(UFT + UFTG Balance)</span>
+            <h2>{Number(tokenBalance.uft + tokenBalance.uftg).toFixed(2)}</h2>
+      
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  padding: 0,
+                  height: "18px",
+                  alignItems: "flex-start",
+                }}
+              >
+                <p>Total Balance</p>
+                <Popover
+              content={<BalancePopover />}
+              overlayClassName="total_balance_popover"
+              open={true}
+              placement="bottom"
+            >
+                <img src={infoIcon} alt="info" />
+                </Popover>
+              </div>
+           
+            {/* <span>(UFT + UFTG Balance)</span> */}
           </div>
           <div>
             <h2>{Number(votingPower).toFixed(2)}</h2>
@@ -221,6 +268,19 @@ const WrapAndDelegate = ({
   const [amount, setAmount] = useState("");
   const [address, setAddress] = useState(userAddress);
   const [valid, setValid] = useState(true);
+  const [domainDetail, setDomainDetail] = useState({
+    value: "",
+    isAddress: false,
+  });
+  const [debounceDomainInput, setDebounceDomainInput] = useState("");
+  const key =
+    "https://eth-mainnet.g.alchemy.com/v2/rKxeroDp_Tas9KMG_wFBveulFr14py7W";
+  // "https://sepolia.infura.io/v3/0d48b35e22a0494d93e130aa133e9735";
+  // "https://polygon-mumbai.g.alchemy.com/v2/NWRaRuKnQbi8M2HMuf44rZS8Tro6FIH8";
+
+  // "https://eth-sepolia.g.alchemy.com/v2/VZuKJ8r8DNkp7-YEc8NNg51BQnuwdhXK";
+  // "https://eth-mainnet.g.alchemy.com/v2/rKxeroDp_Tas9KMG_wFBveulFr14py7W";
+  const provider = new ethers.providers.JsonRpcProvider(key);
 
   const [buttonText, setButtonText] = useState({
     text: "Enter Amount",
@@ -267,10 +327,36 @@ const WrapAndDelegate = ({
     }
   }, [address, amount, allowanceValue, tokenBalance]);
 
-  const handleAddress = (e) => {
+  const handleAddress = async (e) => {
+    // setDomainDetail({
+    //   value: "",
+    //   isAddress: false,
+    // });
     setAddress(e.target.value);
     const isValid = ethers.utils.isAddress(e.target.value);
     setValid(isValid);
+
+    //testAdd : 0x88bc9b6c56743a38223335fac05825d9355e9f83
+    //testDomain: jim-unstoppable.x
+
+    // if (isValid) {
+    //   const meta = await fetchUserDomain(e.target.value);
+    //   const data = await provider.lookupAddress(e.target.value);
+    //   setDomainDetail({
+    //     value: meta.domain ? meta.domain : data,
+    //     isAddress: false,
+    //   });
+    //   console.log("DOMAINDEATILS", domainDetail);
+    // } else {
+    //   const meta = await fetchUserAddressByDomain(e.target.value);
+    //   const address = await provider.resolveName(e.target.value);
+    //   setDomainDetail({
+    //     value: meta.owner ? meta.owner : address,
+    //     isAddress: true,
+    //   });
+    //   console.log("DOMAINDEATILS", domainDetail);
+    // }
+
     // if (!isValid) {
     //   setButtonText({
     //     text: "Enter Valid Address",
@@ -289,6 +375,42 @@ const WrapAndDelegate = ({
     // }
   };
 
+  const handleDomain = async (isValid, input) => {
+    setDomainDetail({
+      value: "",
+      isAddress: false,
+    });
+
+    if (isValid) {
+      const meta = await fetchUserDomain(input);
+      const data = await provider.lookupAddress(input);
+      setDomainDetail({
+        value: meta.domain ? meta.domain : data,
+        isAddress: false,
+      });
+      console.log("DOMAINDEATILS", domainDetail);
+    } else {
+      const meta = await fetchUserAddressByDomain(input);
+      const address = await provider.resolveName(input);
+      setDomainDetail({
+        value: meta.owner ? meta.owner : address,
+        isAddress: true,
+      });
+      console.log("DOMAINDEATILS", domainDetail);
+    }
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleDomain(valid, address);
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [address, 500]);
+
+  const copyAddress = (text) => {
+    navigator.clipboard.writeText(text);
+  };
+
   const handleWrap = async () => {
     const { chain } = getNetwork();
     const fixedValue = decimal2Fixed(amount, 18);
@@ -300,7 +422,7 @@ const WrapAndDelegate = ({
         contracts?.uftgToken,
         uftgABI,
         address,
-        amount,
+        domainDetail.isAddress ? domainDetail.value : amount,
         checkTxnStatus,
         checkTxnError
       );
@@ -347,6 +469,21 @@ const WrapAndDelegate = ({
           value={address}
           onChange={handleAddress}
         />
+        {!domainDetail.isAddress ? (
+          <div className="domain-data">
+            <p>{domainDetail.value ? domainDetail.value : ""}</p>
+          </div>
+        ) : (
+          <div
+            onClick={() => copyAddress(domainDetail.value)}
+            className="domain-data"
+          >
+            <p>
+              {domainDetail.value ? shortenAddress(domainDetail.value) : ""}
+            </p>
+            {domainDetail.value && <img src={copyIcon} alt="copy" />}
+          </div>
+        )}
         <Button
           loading={isLoading}
           onClick={handleWrap}
