@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./styles/index.scss";
 import { Popover, Pagination } from "antd";
-import { useQuery } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { FaChevronDown } from "react-icons/fa";
 import { shortenAddress, imgError } from "../../utils";
@@ -15,6 +14,14 @@ import { getAccount, getNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
 import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
 import loader from '../../assets/Eclipse-loader.gif'
+import { useQuery} from "react-query";
+import { fetchGraphQlData } from "../../utils/axios";
+
+const graphURL = {
+  80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
+  137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
+};
+
 
  function HistoryComponent(props) {
   const { contracts, user, web3, poolList, tokenList } = props;
@@ -39,7 +46,10 @@ import loader from '../../assets/Eclipse-loader.gif'
   const [historyLoading, setHistoryLoading] = useState(false)
 
  
-  const { data, loading, error } = useQuery(query);
+  const { data, loading, error, refetch } = useQuery('history', async () => {
+    const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
+    return fetchedDATA;
+    });
  
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
