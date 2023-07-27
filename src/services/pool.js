@@ -266,9 +266,9 @@ export const getTokenPrice = async (
         data._allowance1,
         poolData.token1._decimals
       );
-
-      pool.token0.tabs = getTabs(pool.token0);
-      pool.token1.tabs = getTabs(pool.token1);
+      
+      pool.token0.tabs = (pool.token0.price == '0' || pool.token0.price == 'Infinity' ) ? getTabs(pool.token0).filter(v => v !== 'borrow') : getTabs(pool.token0);
+      pool.token1.tabs = (pool.token1.price ==  "Infinity" || pool.token1.price ==  "0" ) ? getTabs(pool.token1).filter(v => v !== 'borrow') : getTabs(pool.token1);
       console.log("getPoolTokensData", pool);
       return pool;
     } catch (error) {

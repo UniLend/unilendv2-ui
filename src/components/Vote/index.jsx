@@ -168,6 +168,7 @@ export default function VoteComponent() {
         <div className="user_info">
           <div>
             <h2>{Number(tokenBalance.uft + tokenBalance.uftg).toFixed(2)}</h2>
+<<<<<<< HEAD
             <div className="total_balance">
               <p>Total Balance</p>
               <Popover
@@ -178,6 +179,30 @@ export default function VoteComponent() {
                 <FiInfo />
               </Popover>
             </div>
+=======
+      
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  padding: 0,
+                  height: "18px",
+                  alignItems: "flex-start",
+                }}
+              >
+                <p>Total Balance</p>
+                <Popover
+              content={<BalancePopover />}
+              overlayClassName="total_balance_popover"
+              open={true}
+              placement="bottom"
+            >
+                <img src={infoIcon} alt="info" />
+                </Popover>
+              </div>
+           
+            {/* <span>(UFT + UFTG Balance)</span> */}
+>>>>>>> netlify
           </div>
           <div>
             <h2>{Number(votingPower).toFixed(2)}</h2>
