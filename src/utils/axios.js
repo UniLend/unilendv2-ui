@@ -60,41 +60,9 @@ export const fetchUserAddressByDomain = async (domain) => {
       return response.data.meta;
     })
     .catch(() => {
-      return { reverse: false }; // update it
+      return { reverse: false };
     });
 };
-
-// export const getUserDomain = async (address) => {
-//   try {
-//     const { data } = await axios.get(
-//       `https://resolve.unstoppabledomains.com/reverse/${address}`,
-//       {
-//         headers: {
-//           Authorization: `Bearer ${process.env.UNSTOPPABLEDOMAINS_KEY}`, // update KEY in env
-//         },
-//       }
-//     );
-//     return data.meta.domain;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
-// export const getUserAddress = async (domain) => {
-//   try {
-//     const { data } = await axios.get(
-//       `https://resolve.unstoppabledomains.com/domains/${domain}`,
-//       {
-//         headers: {
-//           Authorization: `Bearer ${process.env.UNSTOPPABLEDOMAINS_KEY}`, // update KEY in env
-//         },
-//       }
-//     );
-//     return data.meta.owner;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
 
 export const fetchGraphQlData = async (endpoint, FILMS_QUERY) => {
   try {
