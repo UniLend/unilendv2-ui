@@ -75,12 +75,13 @@ import { getTokenUSDPrice } from "./helpers/contracts";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
+const alchemyId2 = import.meta.env.VITE_ALCHEMY_ID2;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
   [mainnet, bsc, polygonMumbai, sepolia, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
-  [ alchemyProvider({ apiKey: alchemyId }), infuraProvider({ apiKey: infuraID, stallTimeout: 1_000  }), publicProvider()]
+  [ alchemyProvider({ apiKey: alchemyId }),alchemyProvider({ apiKey: alchemyId2 }), infuraProvider({ apiKey: infuraID, stallTimeout: 1_000  }), publicProvider()]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
@@ -152,7 +153,6 @@ function App() {
           dispatch(setUser(user));
           provider = getProvider();
         } else {
-          console.log("providerwalletconnect", user, walletconnect);
            provider = new ethers.providers.JsonRpcProvider( `https://rpc.public.zkevm-test.net`);
         }
         // dispatch(setWeb3(web3));
@@ -214,7 +214,7 @@ function App() {
               "PoolCreated"
             );
           }
-          
+          // console.log('poolcreated', result);
           const array = [];
           const tokenList = {};
           for (const pool of result) {
