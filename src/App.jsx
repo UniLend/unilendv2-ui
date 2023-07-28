@@ -64,6 +64,7 @@ import { hidePools } from "./utils/constants";
 import { zkEVMTestNet } from "./core/networks/Chains";
 import { getTokenUSDPrice } from "./helpers/contracts";
 import { useWalletClient } from 'wagmi'
+import { getContractLib } from "./lib/fun/functions";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -103,95 +104,94 @@ const graphURL = {
 };
 
 function App() {
-  const dispatch = useDispatch();
-  const queryClient = useQueryClient()
-  const { data: walletClient, isError, isLoading } = useWalletClient()
-  const { chain, chains } = getNetwork();
-  const {user} = useSelector((state) => state)
-  const query = getPoolCreatedGraphQuery(user?.address);
-  const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
+//   const dispatch = useDispatch();
+//   const queryClient = useQueryClient()
+//   const { data: walletClient, isError, isLoading } = useWalletClient()
+//   const { chain, chains } = getNetwork();
+//   const {user} = useSelector((state) => state)
+//   const query = getPoolCreatedGraphQuery(user?.address);
+//   const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
   const state = useSelector((state) => state);
-  const networksWithGraph = [80001, 137]
+//   const networksWithGraph = [80001, 137]
 
- const { data, loading, error } = useQuery('pools', async () => {
- const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
- return fetchedDATA;
- } );
+//  const { data, loading, error } = useQuery('pools', async () => {
+//  const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
+//  return fetchedDATA;
+//  } );
 
 
   document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`;
 
   // setting contract state to store from here
 
-  const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
+  // const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
 
-  useEffect(() => {
-    (async () => {
-      try {
-        dispatch(setLoading(true));
-        const walletconnect = JSON.parse(
-          localStorage.getItem("wagmi.connected")
-        );
-        // const account = getAccount();
-        let provider = etherProvider;
-        if (walletconnect && user?.isConnected ) {
-          // const user = await connectWallet();
-          // dispatch(setUser(user));
-          // provider = getProvider();
-        }
-        // dispatch(setWeb3(web3));
-        const { chain: nextChain, chains } = getNetwork();
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       dispatch(setLoading(true));
+  //       const walletconnect = JSON.parse(
+  //         localStorage.getItem("wagmi.connected")
+  //       );
+  //       // const account = getAccount();
+  //       let provider = etherProvider;
+  //       if (walletconnect && user?.isConnected ) {
+  //         // const user = await connectWallet();
+  //         // dispatch(setUser(user));
+  //         // provider = getProvider();
+  //       }
+  //       // dispatch(setWeb3(web3));
+  //       // const { chain: nextChain, chains } = getNetwork();
 
-        const networkID = user?.network?.id
-        const { coreAddress, helperAddress, positionAddress } = contractAddress["11155111"];
+  //       const networkID = user?.network?.id
+  //       const { coreAddress, helperAddress, positionAddress } = contractAddress["11155111"];
 
-          console.log("preparedData", coreAddress);
-        const preparedData = [
-          { abi: coreAbi, address: coreAddress },
-          { abi: helperAbi, address: helperAddress },
-          { abi: positionAbi, address: positionAddress },
-        ];
+  //         console.log("preparedData", coreAddress);
+  //       const preparedData = [
+  //         { abi: coreAbi, address: coreAddress },
+  //         { abi: helperAbi, address: helperAddress },
+  //         { abi: positionAbi, address: positionAddress },
+  //       ];
       
-        Promise.all(
-          preparedData.map((item) =>
-            getContract({
-              address: item.address,
-              abi: item.abi,
-              walletClient,
-            })
-          )
-        )
-          .then((res) => {
-            const payload = {
-              coreContract: res[0],
-              helperContract: res[1],
-              positionContract: res[2],
-            };
+  //       Promise.all(
+  //         preparedData.map((item) =>
+  //           getContractLib({
+  //             address: item.address,
+  //             abi: item.abi
+  //           })
+  //         )
+  //       )
+  //         .then((res) => {
+  //           const payload = {
+  //             coreContract: res[0],
+  //             helperContract: res[1],
+  //             positionContract: res[2],
+  //           };
 
-            dispatch(setContracts(payload));
+  //           dispatch(setContracts(payload));
 
-          })
-          .catch((err) => {
-            // throw err;
-            console.log("errors");
-          });
-      } catch (error) {
-        console.error(error.message);
-        dispatch(setError(error));
-      }
-    })();
-  }, [isSame, getFromLocalStorage("ethEvent")]);
+  //         })
+  //         .catch((err) => {
+  //           // throw err;
+  //           console.log("errors");
+  //         });
+  //     } catch (error) {
+  //       console.error(error.message);
+  //       dispatch(setError(error));
+  //     }
+  //   })();
+  // }, [isSame, getFromLocalStorage("ethEvent")]);
 
   useEffect(() => {
-    const { chain } = getNetwork();
-    const networkID = user?.network?.id
-    if (state.contracts.coreContract && !networksWithGraph.includes(networkID)) {
+    // const { chain } = getNetwork();
+    // const networkID = user?.network?.id
+    if (state?.contracts?.coreContract ) {
 
       try {
         (async () => {
           // const web3 = defProv();
           // const poolData = {};
-          const account = getAccount();
+          // const account = getAccount();
           // const preparedData = [
           //   { abi: coreAbi, address: coreAddress },
           //   { abi: helperAbi, address: helperAddress },
@@ -202,7 +202,7 @@ function App() {
             coreAbi,
             "PoolCreated"
           );
-        //  console.log('PoolCreated', result);
+         console.log('PoolCreated', result);
           // const array = [];
           // const tokenList = {};
           // for (const pool of result) {
@@ -297,7 +297,7 @@ function App() {
         dispatch(setError(error));
       }
     }
-  }, [state.contracts, chain?.id, user]);
+  }, [state.contracts]);
 
 
 

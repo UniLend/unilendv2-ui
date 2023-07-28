@@ -56,8 +56,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <WagmiConfig  config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
             <BrowserRouter>
-            {/* <App1 /> */}
-            <AppWrapper/>
+
             </BrowserRouter>
           </RainbowKitProvider>
         </WagmiConfig>

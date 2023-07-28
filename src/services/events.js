@@ -20,23 +20,26 @@ export const getAllEvents = async (contract, abi, event) => {
     // );
 
     // const result = await contract.watchEvent.get('_',event)  ;
-    console.log("pool",    {
-      address: contract.address,
-      abi: abi,
-      eventName: event,
-    } );
-    const unwatch = watchContractEvent(
-      {
-        address: contract.address,
-        abi: abi,
-        eventName: event,
+
+    // const unwatch = watchContractEvent(
+    //   {
+    //     address: contract.address,
+    //     abi: abi,
+    //     eventName: event,
       
-      },
-      (log) => console.log(log),
-    )
+    //   },
+    //   (log) => console.log(log),
+    //   (log) => console.log(log),
+    // )
+
+    // console.log("poolEvent",    {
+    //   address: contract.address,
+    //   abi: abi,
+    //   eventName: event,
+    // } );
     // return result.map((item) => item.args);
   } catch (error) {
-    return error;
+    throw error
   }
 };
 

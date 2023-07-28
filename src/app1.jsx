@@ -9,7 +9,7 @@ function App1() {
         padding: 12,
       }}
     >
-      <ConnectButton />
+      {/* <ConnectButton /> */}
     </div>
   );
 }
