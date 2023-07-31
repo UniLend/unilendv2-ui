@@ -64,7 +64,7 @@ export default function VoteComponent() {
 
   const checkTxnError = (error) => {
     setIsLoading(false);
-    console.log("Error", { error });
+  
     const errorText = String(error.reason);
     message.error(error?.message ? errorText : "Error: Transaction Error");
   };

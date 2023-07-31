@@ -70,7 +70,7 @@ import {
   getTokenPrice,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
-import { zkEVMTestNet, shardeumTestnet } from "./core/networks/Chains";
+import { zkEVMTestNet, shardeumTestnet, sepoliaTestnet } from "./core/networks/Chains";
 import { getTokenUSDPrice } from "./helpers/contracts";
 
 // import ends here
@@ -80,12 +80,12 @@ const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepolia, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
+  [mainnet, bsc, polygonMumbai, sepoliaTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
   [ alchemyProvider({ apiKey: alchemyId }),alchemyProvider({ apiKey: alchemyId2 }), infuraProvider({ apiKey: infuraID, stallTimeout: 1_000  }), publicProvider()]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
-  chains: [mainnet, polygonMumbai, sepolia, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
+  chains: chains,
 });
 
 export const WalletConnector = new WalletConnectConnector({
@@ -120,6 +120,7 @@ const shardeumPools = [{
 function App() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient()
+  const {isConnected} = getAccount();
   const { chain, chains } = getNetwork();
   const {user, poolList} = useSelector((state) => state)
   const query = getPoolCreatedGraphQuery(user?.address);
@@ -127,7 +128,7 @@ function App() {
   const state = useSelector((state) => state);
   const networksWithGraph = [80001, 137]
 
- const { data, loading, error } = useQuery('pools', async () => {
+ const { data, loading, error , refetch} = useQuery('pools', async () => {
  const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
  return fetchedDATA;
  } );
@@ -138,6 +139,14 @@ function App() {
   // setting contract state to store from here
 
   const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
+
+
+  useEffect(() => {
+    if(isConnected){
+
+      refetch()
+    }
+  }, [isConnected])
 
   useEffect(() => {
     (async () => {
@@ -189,7 +198,7 @@ function App() {
             throw err;
           });
       } catch (error) {
-        console.error(error.message);
+       
         dispatch(setError(error));
       }
     })();
@@ -214,7 +223,7 @@ function App() {
               "PoolCreated"
             );
           }
-          // console.log('poolcreated', result);
+        
           const array = [];
           const tokenList = {};
           for (const pool of result) {
@@ -311,7 +320,7 @@ function App() {
           dispatch(setPools({ poolData, tokenList }));
         })();
       } catch (error) {
-        console.error(error);
+       
         dispatch(setError(error));
       }
     }
@@ -384,7 +393,7 @@ function App() {
       
       }
 
-      console.log("activeChain", poolData, tokenList);
+    
       dispatch(setPools({ poolData, tokenList }));
     }
   }, [data , user]);

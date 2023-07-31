@@ -23,7 +23,7 @@ export default function TokenListMoadal({openToken, handlePoolAndTokenSelect}) {
         el?.symbol?.toLowerCase().includes(input.toLowerCase()) ||
         el?.address?.toLowerCase().includes(input.toLowerCase())
     );
-    console.log("handleSearchToken", filtered);
+  
     setTokenList(filtered);
   };
 
@@ -47,7 +47,7 @@ export default function TokenListMoadal({openToken, handlePoolAndTokenSelect}) {
         setSelectedToken('token1')
       }
 
-      console.log("openToken", openToken);
+
       // cleanup event listener when component unmounts
     //   return () => window.removeEventListener('resize', handleResize);
 

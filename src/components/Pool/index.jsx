@@ -177,8 +177,8 @@ export default function PoolComponent(props) {
         }
       })
       .catch((error) => {
-        console.error("status:", error);
-        console.log({ error });
+      
+     
         setTimeout(function () {
           checkTxnStatus(hash, txnData);
         }, 1000);
@@ -189,7 +189,7 @@ export default function PoolComponent(props) {
     setAmount(0);
     setMax(false);
     setIsOperationLoading(false);
-    console.log("Error", { error });
+
     const errorText = String(error.reason);
     message.error(error?.message ? errorText : "Error: Transaction Error");
   };
@@ -376,12 +376,12 @@ export default function PoolComponent(props) {
       try {
         fetchPoolDATA()
       } catch (error) {
-        console.log("Error Refetch");
+       
         fetchPoolDATA()
       }
 
     }
-      console.log("FetchingDATA", methodLoaded);
+
       if (
         isAllTrue  &&
         selectedToken !== null &&
@@ -514,10 +514,10 @@ export default function PoolComponent(props) {
           break;
         }
       }
-      console.log("poolAddress", poolAddress);
+   
     }
 
-    console.log("handlePoolAndTokenSelect", tokens);
+
     setSelectedTokens(tokens);
     setShowSelectTokenModal(false)
   };
@@ -579,7 +579,7 @@ export default function PoolComponent(props) {
           }
         });
       setTokensWithCreatedPools(filtered);
-      console.log("PoolArray", poolsArray, filtered);
+   
     }
   }, [poolList]);
 

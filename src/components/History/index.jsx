@@ -165,7 +165,7 @@ const graphURL = {
         }
         setIsPageLoading(false);
       } catch (error) {
-        console.log("Error", {error});
+      
         setIsPageLoading(false);
         setHistoryLoading(false)
       }
