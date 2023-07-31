@@ -53,6 +53,34 @@
           color: var(--low-gray);
           font-size: 13px;
         }
+
+        .total_balance {
+          display: flex;
+          flex-direction: row;
+          padding: 0;
+          height: 18px;
+          align-items: flex-start;
+
+          svg {
+            width: 20px;
+            height: 20px;
+            color: var(--light-gray);
+          }
+        }
+
+        .address_with_copy {
+          display: flex;
+          flex-direction: row;
+          padding: 0;
+          gap: 4px;
+
+          svg {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            color: var(--sharp-blue);
+          }
+        }
       }
       @media ($tablet) {
         height: 100px;
@@ -67,6 +95,19 @@
           }
           span {
             font-size: 10px;
+          }
+          .total_balance {
+            svg {
+              width: 15px;
+              height: 15px;
+            }
+          }
+        }
+
+        .address_with_copy {
+          svg {
+            width: 15px;
+            height: 15px;
           }
         }
       }
@@ -83,6 +124,20 @@
           }
           span {
             font-size: 8px;
+          }
+
+          .total_balance {
+            svg {
+              width: 12px;
+              height: 12px;
+            }
+          }
+
+          .address_with_copy {
+            svg {
+              width: 12px;
+              height: 12px;
+            }
           }
         }
       }
@@ -183,22 +238,31 @@
               }
             }
           }
-          .domain-data {
+          .domain_data {
             display: flex;
             gap: 8px;
             align-items: center;
-            p {
+            .domain_value {
+              width: fit-content;
               color: var(--light-green);
               margin: 0;
               height: 14px;
               font-size: 14px;
               margin: 4px 0 4px 10px;
             }
-            img {
+            svg {
               width: 16px;
               height: 16px;
               cursor: pointer;
+              color: var(--light-green);
             }
+          }
+          .invalid_add {
+            color: var(--light-red);
+            margin: 0;
+            height: 14px;
+            font-size: 14px;
+            margin: 4px 0 4px 10px;
           }
           input,
           button {
@@ -275,6 +339,9 @@
             }
           }
           .action {
+            .domain_data {
+              width: fit-content;
+            }
             input,
             button {
               width: 100%;
@@ -311,6 +378,7 @@
           color: var(--sharp-blue);
           font-weight: 800;
           font-size: 27px;
+          cursor: pointer;
         }
         p {
           color: var(--low-gray);
@@ -358,43 +426,31 @@
 .total_balance_popover {
   // margin-top: -28px;
   // margin-left: 160px;
-  // .ant-popover-arrow {
-  //   display: none;
-  // }
-  // .ant-popover-inner-content {
-  //   padding: 32px;
-  //   border-radius: 16px;
-  //   border: none;
-  //   outline: none;
-  // }
+  .ant-popover-arrow {
+    display: none;
+  }
+  .ant-popover-inner-content {
+    padding: 32px;
+    border-radius: 16px;
+    border: none;
+    outline: none;
+  }
 
-  // .ant-popover-open {
-  //   padding: 0;
-  // }
-  // .ant-popover-inner {
-  //   border-radius: 16px;
-  //   // border: 0.95px solid;
-  //   background: linear-gradient(
-  //       150.54deg,
-  //       #dbe5fe 11.45%,
-  //       rgba(196, 216, 253, 0.900833) 39.92%,
-  //       rgba(218, 232, 255, 0.871071) 59.42%,
-  //       rgba(193, 217, 253, 0.83) 86.33%
-  //     ),
-  //     linear-gradient(
-  //       134.42deg,
-  //       rgba(255, 255, 255, 0.65) 20.53%,
-  //       rgba(224, 233, 255, 0.51) 97.99%
-  //     );
+  .ant-popover-open {
+    padding: 0;
+  }
+  .ant-popover-inner {
+    border-radius: 16px;
 
-  //   border-image-source: linear-gradient(
-  //     150.54deg,
-  //     #dbe5fe 11.45%,
-  //     rgba(196, 216, 253, 0.900833) 39.92%,
-  //     rgba(218, 232, 255, 0.871071) 59.42%,
-  //     rgba(193, 217, 253, 0.83) 86.33%
-  //   );
-  // }
+    background: linear-gradient(
+      142deg,
+      rgba(255, 255, 255, 0.65) 0%,
+      rgba(224, 233, 255, 0.51) 100%
+    );
+    box-shadow: 11.36966609954834px 12.317137718200684px 18.949443817138672px -0.9474721550941467px
+      rgba(0, 0, 0, 0.11);
+    backdrop-filter: blur(12.790874481201172px);
+  }
 
   @media ($tablet) {
     .ant-popover-inner-content {

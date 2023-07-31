@@ -9,9 +9,8 @@ import {
 import { Input, Button, message } from "antd";
 import banner from "../../assets/dashboardbanner.svg";
 import Vote from "../../assets/vote.svg";
-import copyIcon from "../../assets/copyIcon.svg";
 import uftIcon from "../../assets/uft.svg";
-import infoIcon from "../../assets/info.svg";
+import { FiCopy, FiInfo } from "react-icons/fi";
 import "./styles/index.scss";
 import { shortenAddress } from "../../utils";
 import { contractAddress } from "../../core/contractData/contracts";
@@ -27,10 +26,12 @@ import {
   setApproval,
 } from "../../services/governance";
 import { fetchUserAddressByDomain, fetchUserDomain } from "../../utils/axios";
+import { Link } from "react-router-dom";
 
 const wrap = "wrap";
 const unWrap = "unWrap";
 const update = "update";
+const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 
 export default function VoteComponent() {
   const { address } = getAccount();
@@ -42,6 +43,10 @@ export default function VoteComponent() {
   const [delegate, setDelegate] = useState("0x000000000000000");
   const [votingPower, setVotingPower] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [domainDetail, setDomainDetail] = useState("");
+
+  const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
+  const provider = new ethers.providers.JsonRpcProvider(key);
 
   const checkTxnStatus = (hash, data) => {
     waitForTransaction({
@@ -133,6 +138,17 @@ export default function VoteComponent() {
     );
   };
 
+  const handleDomain = async (address) => {
+    setDomainDetail("");
+    const meta = await fetchUserDomain(address);
+    const data = await provider.lookupAddress(address);
+    setDomainDetail(meta.domain ? meta.domain : data);
+  };
+
+  useEffect(() => {
+    handleDomain(delegate);
+  }, [delegate]);
+
   useEffect(() => {
     if (address) {
       setDelegate(address);
@@ -152,36 +168,33 @@ export default function VoteComponent() {
         <div className="user_info">
           <div>
             <h2>{Number(tokenBalance.uft + tokenBalance.uftg).toFixed(2)}</h2>
-      
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  padding: 0,
-                  height: "18px",
-                  alignItems: "flex-start",
-                }}
+            <div className="total_balance">
+              <p>Total Balance</p>
+              <Popover
+                content={<BalancePopover />}
+                overlayClassName="total_balance_popover"
+                placement="rightTop"
               >
-                <p>Total Balance</p>
-                <Popover
-              content={<BalancePopover />}
-              overlayClassName="total_balance_popover"
-              open={true}
-              placement="bottom"
-            >
-                <img src={infoIcon} alt="info" />
-                </Popover>
-              </div>
-           
-            {/* <span>(UFT + UFTG Balance)</span> */}
+                <FiInfo />
+              </Popover>
+            </div>
           </div>
           <div>
             <h2>{Number(votingPower).toFixed(2)}</h2>
             <p>Voting Power</p>
-            {/* <span>(UFTG Balance)</span> */}
           </div>
           <div>
-            <h2>{shortenAddress(String(delegate))}</h2>
+            <div
+              onClick={() => {
+                navigator.clipboard.writeText(delegate);
+              }}
+              className="address_with_copy"
+            >
+              <h2>
+                {domainDetail ? domainDetail : shortenAddress(String(delegate))}
+              </h2>
+              <FiCopy />
+            </div>
             <p>Delegation address</p>
           </div>
         </div>
@@ -243,7 +256,12 @@ export default function VoteComponent() {
             <img src={Vote} alt="vote info" />
           </div>
           <div>
-            <h2>Participate In Governance</h2>
+            <Link
+              to="https://commonwealth.im/unilend-finance/discussions"
+              target="_blank"
+            >
+              <h2>Participate In Governance</h2>
+            </Link>
             <p>
               You can either vote on each proposal yourself or delegate your
               votes to a third party. You can either vote on each proposal
@@ -272,14 +290,7 @@ const WrapAndDelegate = ({
     value: "",
     isAddress: false,
   });
-  const [debounceDomainInput, setDebounceDomainInput] = useState("");
-  const key =
-    "https://eth-mainnet.g.alchemy.com/v2/rKxeroDp_Tas9KMG_wFBveulFr14py7W";
-  // "https://sepolia.infura.io/v3/0d48b35e22a0494d93e130aa133e9735";
-  // "https://polygon-mumbai.g.alchemy.com/v2/NWRaRuKnQbi8M2HMuf44rZS8Tro6FIH8";
-
-  // "https://eth-sepolia.g.alchemy.com/v2/VZuKJ8r8DNkp7-YEc8NNg51BQnuwdhXK";
-  // "https://eth-mainnet.g.alchemy.com/v2/rKxeroDp_Tas9KMG_wFBveulFr14py7W";
+  const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
   const provider = new ethers.providers.JsonRpcProvider(key);
 
   const [buttonText, setButtonText] = useState({
@@ -297,7 +308,9 @@ const WrapAndDelegate = ({
   };
 
   useEffect(() => {
-    const isValid = ethers.utils.isAddress(address);
+    const isValid = ethers.utils.isAddress(
+      domainDetail.isAddress ? domainDetail.value : address
+    );
 
     if (decimal2Fixed(amount, 18) > Number(allowanceValue)) {
       setButtonText({
@@ -325,37 +338,12 @@ const WrapAndDelegate = ({
         disable: false,
       });
     }
-  }, [address, amount, allowanceValue, tokenBalance]);
+  }, [address, domainDetail.value, amount, allowanceValue, tokenBalance]);
 
   const handleAddress = async (e) => {
-    // setDomainDetail({
-    //   value: "",
-    //   isAddress: false,
-    // });
     setAddress(e.target.value);
     const isValid = ethers.utils.isAddress(e.target.value);
     setValid(isValid);
-
-    //testAdd : 0x88bc9b6c56743a38223335fac05825d9355e9f83
-    //testDomain: jim-unstoppable.x
-
-    // if (isValid) {
-    //   const meta = await fetchUserDomain(e.target.value);
-    //   const data = await provider.lookupAddress(e.target.value);
-    //   setDomainDetail({
-    //     value: meta.domain ? meta.domain : data,
-    //     isAddress: false,
-    //   });
-    //   console.log("DOMAINDEATILS", domainDetail);
-    // } else {
-    //   const meta = await fetchUserAddressByDomain(e.target.value);
-    //   const address = await provider.resolveName(e.target.value);
-    //   setDomainDetail({
-    //     value: meta.owner ? meta.owner : address,
-    //     isAddress: true,
-    //   });
-    //   console.log("DOMAINDEATILS", domainDetail);
-    // }
 
     // if (!isValid) {
     //   setButtonText({
@@ -388,7 +376,6 @@ const WrapAndDelegate = ({
         value: meta.domain ? meta.domain : data,
         isAddress: false,
       });
-      console.log("DOMAINDEATILS", domainDetail);
     } else {
       const meta = await fetchUserAddressByDomain(input);
       const address = await provider.resolveName(input);
@@ -396,7 +383,6 @@ const WrapAndDelegate = ({
         value: meta.owner ? meta.owner : address,
         isAddress: true,
       });
-      console.log("DOMAINDEATILS", domainDetail);
     }
   };
 
@@ -421,8 +407,8 @@ const WrapAndDelegate = ({
       handleWrapAndDelegate(
         contracts?.uftgToken,
         uftgABI,
-        address,
-        domainDetail.isAddress ? domainDetail.value : amount,
+        domainDetail.isAddress ? domainDetail.value : address,
+        amount,
         checkTxnStatus,
         checkTxnError
       );
@@ -470,18 +456,20 @@ const WrapAndDelegate = ({
           onChange={handleAddress}
         />
         {!domainDetail.isAddress ? (
-          <div className="domain-data">
-            <p>{domainDetail.value ? domainDetail.value : ""}</p>
+          <div className="domain_data">
+            <p className="domain_value">
+              {domainDetail.value ? domainDetail.value : ""}
+            </p>
           </div>
         ) : (
           <div
             onClick={() => copyAddress(domainDetail.value)}
-            className="domain-data"
+            className="domain_data"
           >
-            <p>
+            <p className="domain_value">
               {domainDetail.value ? shortenAddress(domainDetail.value) : ""}
             </p>
-            {domainDetail.value && <img src={copyIcon} alt="copy" />}
+            {domainDetail.value && <FiCopy />}
           </div>
         )}
         <Button
@@ -613,13 +601,39 @@ const UpdateDelegation = ({
     text: "Enter Address",
     disable: true,
   });
+  const [valid, setValid] = useState(false);
+  const [domainDetail, setDomainDetail] = useState({
+    value: "",
+    isAddress: false,
+  });
+  const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
+  const provider = new ethers.providers.JsonRpcProvider(key);
 
   const handleAddress = (e) => {
     const userAddr = e.target.value;
     const isValid = ethers.utils.isAddress(userAddr);
+    setValid(isValid);
 
     setAddress(userAddr);
-    if (!isValid || userAddr == "") {
+    // if (!isValid || userAddr == "") {
+    //   setButtonText({
+    //     text: "Enter Valid Address",
+    //     disable: true,
+    //   });
+    // } else {
+    //   setButtonText({
+    //     text: "Update Delegation",
+    //     disable: false,
+    //   });
+    // }
+  };
+
+  useEffect(() => {
+    const isValid = ethers.utils.isAddress(
+      domainDetail.isAddress ? domainDetail.value : address
+    );
+
+    if (!isValid) {
       setButtonText({
         text: "Enter Valid Address",
         disable: true,
@@ -630,6 +644,41 @@ const UpdateDelegation = ({
         disable: false,
       });
     }
+  }, [address, domainDetail.value]);
+
+  const handleDomain = async (isValid, input) => {
+    setDomainDetail({
+      value: "",
+      isAddress: false,
+    });
+
+    if (isValid) {
+      const meta = await fetchUserDomain(input);
+      const data = await provider.lookupAddress(input);
+      setDomainDetail({
+        value: meta.domain ? meta.domain : data,
+        isAddress: false,
+      });
+    } else {
+      const meta = await fetchUserAddressByDomain(input);
+      const address = await provider.resolveName(input);
+      setDomainDetail({
+        value: meta.owner ? meta.owner : address,
+        isAddress: true,
+      });
+      setValid(true);
+    }
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleDomain(valid, address);
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [address, 500]);
+
+  const copyAddress = (text) => {
+    navigator.clipboard.writeText(text);
   };
 
   const handleUpdate = () => {
@@ -639,7 +688,7 @@ const UpdateDelegation = ({
     handleUpdateDelegate(
       contracts?.uftgToken,
       uftgABI,
-      address,
+      domainDetail.isAddress ? domainDetail.value : address,
       checkTxnStatus,
       checkTxnError
     );
@@ -662,12 +711,28 @@ const UpdateDelegation = ({
           value={address}
           onChange={handleAddress}
         />
+        {!domainDetail.isAddress ? (
+          <div className="domain_data">
+            <p className="domain_value">
+              {domainDetail.value ? domainDetail.value : ""}
+            </p>
+          </div>
+        ) : (
+          <div
+            onClick={() => copyAddress(domainDetail.value)}
+            className="domain_data"
+          >
+            <p className="domain_value">
+              {domainDetail.value ? shortenAddress(domainDetail.value) : ""}
+            </p>
+            {domainDetail.value && <FiCopy />}
+          </div>
+        )}
         <Button
           loading={isLoading}
           onClick={handleUpdate}
           disabled={buttonText?.disable}
         >
-          {" "}
           {buttonText?.text}
         </Button>
       </div>
