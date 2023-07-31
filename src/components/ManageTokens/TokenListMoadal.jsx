@@ -12,7 +12,10 @@ export default function TokenListMoadal({openToken, handlePoolAndTokenSelect, se
     const [selectedToken, setSelectedToken] = useState('')
     const [page, setPage] = React.useState(1);
     const [search, setSearch] = useState('')
-    const [tokenListBackup, setTokenListBackup] = useState(Object.values(tokenList) || [])
+    const [tokenListBackup, setTokenListBackup] = useState({
+      token0: [],
+      token1: []
+    })
     const [tokensList, setTokensList] = useState({
       token0: [],
       token1: []
@@ -23,14 +26,14 @@ export default function TokenListMoadal({openToken, handlePoolAndTokenSelect, se
   const handleSearchToken = (e) => {
     const input = String(e.target.value)
     setSearch(input);
-    const filtered = Object.values(tokenList).filter(
+    const filtered = tokenListBackup[selectedToken].filter(
       (el) =>
         el?.name?.toLowerCase().includes(input.toLowerCase()) ||
         el?.symbol?.toLowerCase().includes(input.toLowerCase()) ||
         el?.address?.toLowerCase().includes(input.toLowerCase())
     );
-    console.log("handleSearchToken", filtered);
-    setTokensList(filtered);
+ 
+    setTokensList({...tokenListBackup, [`${selectedToken}`]: filtered});
   };
 
   const selectToken = (symbol) => {
@@ -80,10 +83,19 @@ export default function TokenListMoadal({openToken, handlePoolAndTokenSelect, se
               return { token: pool.token0};
             }
           });
+
+         delete tokensBySymbolObject0[selectedTokens.token0]
+         delete tokensBySymbolObject0[selectedTokens.token1]
+         delete tokensBySymbolObject1[selectedTokens.token0]
+         delete tokensBySymbolObject1[selectedTokens.token1]
         // setTokensWithCreatedPools(poolsWithToken0);
        const withToken0 = sortByKey( Object.values(tokensBySymbolObject0), 'withPool', 1)
        const withToken1 = sortByKey( Object.values(tokensBySymbolObject1), 'withPool', 1)
        setTokensList({
+        token1: withToken0,
+        token0: withToken1
+       })
+       setTokenListBackup({
         token1: withToken0,
         token0: withToken1
        })
