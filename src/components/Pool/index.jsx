@@ -59,7 +59,7 @@ export default function PoolComponent(props) {
   const [openToken0, setOpenToken0] = useState(false);
   const [openToken1, setOpenToken1] = useState(false);
   const [selectedTokens, setSelectedTokens] = useState({
-    token0: "UFT",
+    token0: "",
     token1: "",
   });
   const [tokensWithCreatedPools, setTokensWithCreatedPools] = useState([]);
@@ -392,29 +392,29 @@ export default function PoolComponent(props) {
         setReFetching(false)
         setActiveToken(0);
         setIsPageLoading(false);
-        // setSelectedTokens({
-        //   token0: poolData?.token0?.symbol,
-        //   token1: poolData?.token1?.symbol
-        // })
+        setSelectedTokens({
+          token0: poolData?.token0?.symbol,
+          token1: poolData?.token1?.symbol
+        })
       } else if (isAllTrue  && selectedToken !== null) {
         setSelectedToken(poolData?.token1);
         setCollaterralToken(poolData?.token0);
         setIsPageLoading(false);
         setReFetching(false)
-        // setSelectedTokens({
-        //   token0: poolData?.token0?.symbol,
-        //   token1: poolData?.token1?.symbol
-        // })
+        setSelectedTokens({
+          token0: poolData?.token0?.symbol,
+          token1: poolData?.token1?.symbol
+        })
       } else if (isAllTrue ) {
         setSelectedToken(poolData?.token0);
         setCollaterralToken(poolData?.token1);
         setActiveToken(0);
         setIsPageLoading(false);
         setReFetching(false)
-        // setSelectedTokens({
-        //   token0: poolData?.token0?.symbol,
-        //   token1: poolData?.token1?.symbol
-        // })
+        setSelectedTokens({
+          token0: poolData?.token0?.symbol,
+          token1: poolData?.token1?.symbol
+        })
       }
     
   }, [contracts, methodLoaded, user, poolList, selectedPool, poolData]);
@@ -487,7 +487,8 @@ export default function PoolComponent(props) {
       ...selectedTokens,
       [key]: token,
     };
-
+    setSelectedTokens(tokens);
+    setShowSelectTokenModal(false)
     if (tokens.token0 && tokens.token1) {
       let poolAddress;
       const poolsArray = Object.values(poolList);
@@ -500,13 +501,14 @@ export default function PoolComponent(props) {
             poolsArray[i].token1.symbol == tokens.token0)
         ) {
           poolAddress = pool.poolAddress;
+          navigate(`/pool/${pool.poolAddress}`)
           setMethodLoaded({
             getPoolData: false,
             getPoolFullData: false,
             getOraclePrice: false,
             getPoolTokensData: false,
           });
-          setSelectedPool(poolAddress);
+          setSelectedPool(pool.poolAddress);
           setIsPageLoading(true);
           setSelectedToken(null);
           // setVisible0(false);
@@ -514,12 +516,18 @@ export default function PoolComponent(props) {
           break;
         }
       }
-      console.log("poolAddress", poolAddress);
+
+      if(poolAddress == undefined){
+        setSelectedTokens({
+          token0: poolData?.token0?.symbol,
+          token1: poolData?.token1?.symbol
+        })
+      }
+      console.log("poolAddressFound", poolAddress, poolData);
     }
 
-    console.log("handlePoolAndTokenSelect", tokens);
-    setSelectedTokens(tokens);
-    setShowSelectTokenModal(false)
+    // console.log("handlePoolAndTokenSelect", tokens);
+
   };
   const handleSelectTokens = (key, symbol) => {
     // setVisible0(bool);
@@ -565,30 +573,42 @@ export default function PoolComponent(props) {
   useEffect(() => {
     const poolsArray = Object.values(poolList);
     if (poolsArray.length) {
-      const filtered = poolsArray
-        .filter(
-          (pool) =>
-            pool.token0.symbol === selectedTokens.token0 ||
-            pool.token1.symbol === selectedTokens.token0
-        )
-        .map((pool) => {
-          if (pool.token0.symbol === selectedTokens.token0) {
-            return { token: pool.token1 };
-          } else if (pool.token1.symbol === selectedTokens.token0) {
-            return { token: pool.token0 };
-          }
-        });
-      setTokensWithCreatedPools(filtered);
-      console.log("PoolArray", poolsArray, filtered);
+      // const poolsWithToken0 = poolsArray
+      //   .filter(
+      //     (pool) =>
+      //       pool.token0.symbol === selectedTokens.token0 ||
+      //       pool.token1.symbol === selectedTokens.token0
+      //   )
+      //   .map((pool) => {
+      //     if (pool.token0.symbol === selectedTokens.token0) {
+      //       return { token: pool.token1 };
+      //     } else if (pool.token1.symbol === selectedTokens.token0) {
+      //       return { token: pool.token0 };
+      //     }
+      //   });
+      //   const poolsWithToken1 = poolsArray
+      //   .map((pool) => {
+      //     if (pool.token0.symbol === selectedTokens.token1) {
+      //       return { token: pool.token1, pool: true };
+      //     } else if (pool.token1.symbol === selectedTokens.token1) {
+      //       return { token: pool.token0, pool: true };
+      //     } else {
+      //       return { token: pool.token0, pool: true };
+      //     }
+      //   });
+      // setTokensWithCreatedPools(poolsWithToken0);
+      console.log("PoolArray", );
     }
-  }, [poolList]);
+  }, [poolList, selectedTokens]);
 
 
   const handleOpenSelectTokenMoadal = (bool, token) => {
     if(token === 'token0'){
       setOpenToken0(true)
+      setOpenToken1(false)
     } else if (token === 'token1'){
       setOpenToken1(true)
+      setOpenToken0(false)
     }
     setShowSelectTokenModal(bool)
   }
@@ -634,9 +654,9 @@ export default function PoolComponent(props) {
                 <img src={poolData?.token0?.logo} onError={imgError} alt="" />
                 <h2>{poolData?.token0?._symbol}</h2>
               </div>
-              {/* <div onClick={() => handleOpenSelectTokenMoadal(true, 'token0')} className="dropdown">
+              <div onClick={() => handleOpenSelectTokenMoadal(true, 'token0')} className="dropdown">
               <FaChevronDown className="dropicon"/>
-              </div> */}
+              </div>
             </div>
             <div>
               <div
@@ -646,9 +666,9 @@ export default function PoolComponent(props) {
                 <img src={poolData?.token1?.logo} onError={imgError} alt="" />
                 <h2>{poolData?.token1?._symbol}</h2>
               </div>
-              {/* <div onClick={() => handleOpenSelectTokenMoadal(true, 'token1')} className="dropdown">
+              <div onClick={() => handleOpenSelectTokenMoadal(true, 'token1')} className="dropdown">
                 <FaChevronDown className="dropicon"/>
-              </div> */}
+              </div>
             </div>
           </div>
           <div className="content">
@@ -896,7 +916,7 @@ export default function PoolComponent(props) {
             footer={null}
             closable={false}
           >
-            <TokenListMoadal openToken={{token0: openToken0, token1: openToken1}}   />
+            <TokenListMoadal openToken={{token0: openToken0, token1: openToken1}} handlePoolAndTokenSelect={handlePoolAndTokenSelect} selectedTokens={selectedTokens} />
           </Modal>
         </div>
       )}
