@@ -119,6 +119,7 @@ const shardeumPools = [{
 function App() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient()
+  const {address, isConnected} = getAccount();
   const { chain, chains } = getNetwork();
   const {user, poolList} = useSelector((state) => state)
   const query = getPoolCreatedGraphQuery(user?.address);
@@ -126,7 +127,7 @@ function App() {
   const state = useSelector((state) => state);
   const networksWithGraph = [80001, 137]
 
- const { data, loading, error } = useQuery('pools', async () => {
+ const { data, loading, error, refetch } = useQuery('pools', async () => {
  const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
  return fetchedDATA;
  } );
@@ -137,6 +138,14 @@ function App() {
   // setting contract state to store from here
 
   const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
+
+
+  useEffect(() => {
+    if(isConnected){
+
+      refetch()
+    }
+  }, [isConnected])
 
   useEffect(() => {
     (async () => {
