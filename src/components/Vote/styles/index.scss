@@ -385,6 +385,19 @@
           font-size: 12px;
           text-align: justify;
         }
+        button {
+          margin-top: 24px;
+          min-width: fit-content;
+          width: 100px;
+          color: var(--dark-gray);
+          border: 1px solid var(--border-gray);
+          border-radius: 5px;
+          font-weight: 600;
+          padding: 5px 10px;
+          font-size: 14px;
+          background-color: var(--sharp-blue);
+          color: var(--pure-white);
+        }
       }
       @media ($tablet) {
         width: 100%;
@@ -409,6 +422,9 @@
           }
           p {
             width: 90%;
+          }
+          button {
+            width: 100%;
           }
         }
       }
