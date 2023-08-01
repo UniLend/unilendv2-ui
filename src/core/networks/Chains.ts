@@ -43,3 +43,25 @@ export const shardeumTestnet = {
   },
   testnet: true,
 } as Chain;
+
+export const sepoliaTestnet = {
+  id: 11155111,
+  name: "Sepolia Testnet",
+  network: "Sepolia Testnet",
+  nativeCurrency: { name: "Etherium", symbol: "ETH", decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: [ 'https://sepolia.infura.io/v3/603c7bc2fa6c46ecb189576fded15f81' ,'https://eth-sepolia.g.alchemy.com/v2/mibiTKAFT4EkiFnw5Fkl55NkwpOVibgP'],
+    },
+    public: {
+      http: [ 'https://sepolia.infura.io/v3/ '],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "sepolia",
+      url: "https://sepolia.etherscan.io/",
+    },
+  },
+  testnet: true,
+} as Chain;

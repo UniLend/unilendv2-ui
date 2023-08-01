@@ -70,7 +70,7 @@ import {
   getTokenPrice,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
-import { zkEVMTestNet, shardeumTestnet } from "./core/networks/Chains";
+import { zkEVMTestNet, shardeumTestnet, sepoliaTestnet } from "./core/networks/Chains";
 import { getTokenUSDPrice } from "./helpers/contracts";
 
 // import ends here
@@ -79,12 +79,12 @@ const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepolia, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
-  [ alchemyProvider({ apiKey: alchemyId }), publicProvider(), infuraProvider({ apiKey: infuraID }),]
+  [mainnet, bsc, polygonMumbai, sepoliaTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
+  [ alchemyProvider({ apiKey: alchemyId }), publicProvider(), infuraProvider({ apiKey: infuraID, stallTimeout: 1_000 }),]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
-  chains: [mainnet, polygonMumbai, sepolia, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
+  chains: chains,
 });
 
 export const WalletConnector = new WalletConnectConnector({
@@ -111,14 +111,15 @@ const graphURL = {
 };
 
 const shardeumPools = [{
-  pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
-  token1: '0xd146878affF8c8dd3e9EBd9177F2AE4f6d4e5979',
-  token0:'0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1'
+  pool: '0x665ACEc556dC92C2E504beFA061d5f65Cd9493e2',
+  token1: '0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1',
+  token0:'0x11f13ad374e79b466a36eb835747e431fbbe3890'
 }]
 
 function App() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient()
+  const {address, isConnected} = getAccount();
   const { chain, chains } = getNetwork();
   const {user, poolList} = useSelector((state) => state)
   const query = getPoolCreatedGraphQuery(user?.address);
@@ -126,7 +127,7 @@ function App() {
   const state = useSelector((state) => state);
   const networksWithGraph = [80001, 137]
 
- const { data, loading, error } = useQuery('pools', async () => {
+ const { data, loading, error, refetch } = useQuery('pools', async () => {
  const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
  return fetchedDATA;
  } );
@@ -137,6 +138,14 @@ function App() {
   // setting contract state to store from here
 
   const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
+
+
+  useEffect(() => {
+    if(isConnected){
+
+      refetch()
+    }
+  }, [isConnected])
 
   useEffect(() => {
     (async () => {
