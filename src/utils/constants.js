@@ -101,12 +101,12 @@ const tokensBYSymbol = {
   },
   FRA: {
     address: "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
-    symbol: "BUSD",
+    symbol: "FRA",
     logo: "https://i.imgur.com/V824oSR.png",
   },
   MAR: {
     address: "0x5fB282Df60a3264c06b2Cb36c74d0Fd23D727f82",
-    symbol: "BUSD",
+    symbol: "MAR",
     logo: "https://i.imgur.com/0lGiSbo.png",
   },
   POR: {
@@ -116,36 +116,38 @@ const tokensBYSymbol = {
   },
   SANTA: {
     logo: "https://i.imgur.com/70sMFN7.png",
+    symbol: "SANTA",
   },
   GIFT: {
     logo: "https://i.imgur.com/tWu6HLM.png",
+    symbol: "GIFT",
   },
-  "SANTA":{
-    "logo": "https://i.imgur.com/70sMFN7.png"
-  }, 
-  "GIFT":{
-    "logo":"https://i.imgur.com/tWu6HLM.png"
+  pBTC:{
+    logo:"https://s2.coinmarketcap.com/static/img/coins/64x64/5434.png",
+    symbol: "pBTC",
   },
-  "pBTC":{
-    "logo":"https://s2.coinmarketcap.com/static/img/coins/64x64/5434.png"
+  MAI:{
+    logo:"https://i.imgur.com/0uPSnqM_d.webp?maxwidth=760&fidelity=grand",
+    symbol: "MAI",
   },
-  "MAI":{
-    "logo":"https://i.imgur.com/0uPSnqM_d.webp?maxwidth=760&fidelity=grand"
+  LOVE:{
+    logo:"https://i.imgur.com/fXBrprS.png",
+    symbol: "LOVE",
   },
-  'LOVE':{
-    "logo":"https://i.imgur.com/fXBrprS.png"
+  ROSE:{
+    logo:"https://i.imgur.com/tHj6Sfm.png",
+    symbol: "ROSE",
   },
-  "ROSE":{
-    "logo":"https://i.imgur.com/tHj6Sfm.png"
+  EGG: {
+    logo: 'https://i.imgur.com/nxQ43qn.png'
   },
-  'EGG': {
-    "logo": 'https://i.imgur.com/nxQ43qn.png'
+  BUNNY:{
+    logo:"https://i.imgur.com/KdK30Uo.png",
+    symbol: "BUNNY",
   },
-  "BUNNY":{
-    "logo":"https://i.imgur.com/KdK30Uo.png"
-  },
-  "FLOKI":{
-    "logo": "https://i.imgur.com/JYTPKWf.jpg"
+  FLOKI:{
+    logo: "https://i.imgur.com/JYTPKWf.jpg",
+    symbol: "FLOKI",
   }
 };
 

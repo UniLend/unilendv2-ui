@@ -27,8 +27,12 @@ const API = import.meta.env.VITE_INFURA_ID;
 
 export const defProv = () => {
   const provider = new Web3.providers.HttpProvider(
-    `https://sepolia.infura.io/v3/${API}`
-  );
+    'https://rpc.public.zkevm-test.net')
+
+    const web3 = new Web3(provider)
+    web3.default = true;
+   return web3;
+}
 
   const web3 = new Web3(provider);
   web3.default = true;

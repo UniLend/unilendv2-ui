@@ -117,6 +117,44 @@ export const networks = {
     rpcUrls: ['https://polygon-rpc.com/'],
     blockExplorerUrls: ['https://polygonscan.com/'],
   },
+  8081: {
+    chainId: `0x${Number(8081).toString(16)}`,
+    chainName: 'Shardeum Sphinx Dapp 1.X',
+    nativeCurrency:{ name: "shardeum", symbol: "SHM", decimals: 18 },
+    rpcUrls: ['https://dapps.shardeum.org/'],
+    blockExplorerUrls: ["https://explorer-dapps.shardeum.org/"],
+  }
+};
+
+
+export const ChangeNetwork = async (networkId) => {
+  try {
+    if (!window.ethereum) throw new Error('No crypto wallet found');
+    const account = await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [
+        {
+          chainId: `0x${Number(Number(networkId)).toString(16)}`,
+        },
+      ],
+    });
+  } catch (switchError) {
+    // This error code indicates that the chain has not been added to MetaMask.
+    if (switchError.code === 4902) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              ...networks[networkId],
+            },
+          ],
+        });
+      } catch (err) {
+        setError(err.message);
+      }
+    }
+  }
 };
 
 export const allNetworkIds = {
