@@ -110,15 +110,15 @@ const shardeumPools = [{
 }]
 
 function App() {
-//   const dispatch = useDispatch();
-//   const queryClient = useQueryClient()
-//   const {address, isConnected} = getAccount();
-//   const { chain, chains } = getNetwork();
-//   const {user, poolList} = useSelector((state) => state)
-//   const query = getPoolCreatedGraphQuery(user?.address);
-//   // const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
-//   const state = useSelector((state) => state);
-// //   const networksWithGraph = [80001, 137]
+  const dispatch = useDispatch();
+  const queryClient = useQueryClient()
+  const {address, isConnected} = getAccount();
+  const { chain, chains } = getNetwork();
+  const {user, poolList} = useSelector((state) => state)
+  const query = getPoolCreatedGraphQuery(user?.address);
+  // const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
+  const state = useSelector((state) => state);
+  const networksWithGraph = [80001, 137]
 
 //  const { data, loading, error, refetch } = useQuery('pools', async () => {
 //  const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
@@ -130,63 +130,62 @@ function App() {
 
   // setting contract state to store from here
 
-  // const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
+  const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
 
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       dispatch(setLoading(true));
-  //       const walletconnect = JSON.parse(
-  //         localStorage.getItem("wagmi.connected")
-  //       );
-  //       // const account = getAccount();
-  //       let provider = etherProvider;
-  //       if (walletconnect && user?.isConnected ) {
-  //         // const user = await connectWallet();
-  //         // dispatch(setUser(user));
-  //         // provider = getProvider();
-  //       }
-  //       // dispatch(setWeb3(web3));
-  //       // const { chain: nextChain, chains } = getNetwork();
+  useEffect(() => {
+    (async () => {
+      try {
+        dispatch(setLoading(true));
+        const walletconnect = JSON.parse(
+          localStorage.getItem("wagmi.connected")
+        );
+        // const account = getAccount();
+        // let provider = etherProvider;
+        if (walletconnect && user?.isConnected ) {
+          const user = await connectWallet();
+          dispatch(setUser(user));
+          // provider = getProvider();
+        }
+        // dispatch(setWeb3(web3));
+        // const { chain: nextChain, chains } = getNetwork();
 
-  //       const networkID = user?.network?.id
-  //       const { coreAddress, helperAddress, positionAddress } = contractAddress["11155111"];
+        const networkID = user?.network?.id
+        const { coreAddress, helperAddress, positionAddress } = contractAddress['1442'];
 
-  //         console.log("preparedData", coreAddress);
-  //       const preparedData = [
-  //         { abi: coreAbi, address: coreAddress },
-  //         { abi: helperAbi, address: helperAddress },
-  //         { abi: positionAbi, address: positionAddress },
-  //       ];
+          // console.log("preparedData", coreAddress);
+        const preparedData = [
+          { abi: coreAbi, address: coreAddress },
+          { abi: helperAbi, address: helperAddress },
+          { abi: positionAbi, address: positionAddress },
+        ];
       
-  //       Promise.all(
-  //         preparedData.map((item) =>
-  //           getContractLib({
-  //             address: item.address,
-  //             abi: item.abi
-  //           })
-  //         )
-  //       )
-  //         .then((res) => {
-  //           const payload = {
-  //             coreContract: res[0],
-  //             helperContract: res[1],
-  //             positionContract: res[2],
-  //           };
+        Promise.all(
+          preparedData.map((item) =>
+            getContractLib({
+              address: item.address,
+              abi: item.abi
+            })
+          )
+        )
+          .then((res) => {
+            const payload = {
+              coreContract: res[0],
+              helperContract: res[1],
+              positionContract: res[2],
+            };
 
-  //           dispatch(setContracts(payload));
+            dispatch(setContracts(payload));
 
-  //         })
-  //         .catch((err) => {
-  //           // throw err;
-  //           console.log("errors");
-  //         });
-  //     } catch (error) {
-  //       console.error(error.message);
-  //       dispatch(setError(error));
-  //     }
-  //   })();
-  // }, [isSame, getFromLocalStorage("ethEvent")]);
+          })
+          .catch((err) => {
+            // throw err;
+            console.log("errors");
+          });
+      } catch (error) {
+        dispatch(setError(error));
+      }
+    })();
+  }, [isSame, getFromLocalStorage("ethEvent")]);
 
 
   // useEffect(() => {
@@ -196,184 +195,136 @@ function App() {
   //   }
   // }, [isConnected])
 
-  // useEffect(() => {
-  //   (async () => {
-  //     try {
-  //       dispatch(setLoading(true));
-  //       const walletconnect = JSON.parse(
-  //         localStorage.getItem("wagmi.connected")
-  //       );
-  //       // const account = getAccount();
-  //       let provider ;
-  //       if (walletconnect && user?.isConnected ) {
-  //         const user = await connectWallet();
-  //         dispatch(setUser(user));
-  //         provider = getProvider();
-  //       } else {
-  //         console.log("providerwalletconnect", user, walletconnect);
-  //          provider = new ethers.providers.JsonRpcProvider( `https://rpc.public.zkevm-test.net`);
-  //       }
-  //       // dispatch(setWeb3(web3));
-  //       const { chain: nextChain, chains } = getNetwork();
-  //       const networkID = user?.network?.id
-  //       const { coreAddress, helperAddress, positionAddress } =
-  //         contractAddress[chain?.id || nextChain?.id || networkID || "1442"];
 
-         
-  //       const preparedData = [
-  //         { abi: coreAbi, address: coreAddress },
-  //         { abi: helperAbi, address: helperAddress },
-  //         { abi: positionAbi, address: positionAddress },
-  //       ];
-  //       Promise.all(
-  //         preparedData.map((item) =>
-  //           getContract({
-  //             address: item.address,
-  //             abi: item.abi,
-  //             signerOrProvider: provider,
-  //           })
-  //         )
-  //       )
-  //         .then((res) => {
-  //           const payload = {
-  //             coreContract: res[0],
-  //             helperContract: res[1],
-  //             positionContract: res[2],
-  //           };
-
-  //           dispatch(setContracts(payload));
-  //         })
-  //         .catch((err) => {
-  //           throw err;
-  //         });
-  //     } catch (error) {
-  //       console.error(error.message);
-  //       dispatch(setError(error));
-  //     }
-  //   })();
-  // }, [user?.address]);
-
-  // useEffect(() => {
-  //   const { chain } = getNetwork();
-  //   const networkID = user?.network?.id
-  //   if (state.contracts.coreContract && !networksWithGraph.includes(networkID) ) {
-  //     try {
-  //       (async () => {
+  useEffect(() => {
+    const { chain } = getNetwork();
+    const networkID = user?.network?.id
+    if (state.contracts.coreContract && !networksWithGraph.includes(networkID) ) {
+      try {
+        (async () => {
         
-  //         const poolData = {};
-  //         const account = getAccount();
-  //         let result;
+          const poolData = {};
+          const account = getAccount();
+          let result;
 
-  //         if(networkID == 8081){
-  //           result = shardeumPools
-  //         } else {
-  //           result = await getAllEvents(
-  //             state.contracts.coreContract,
-  //             "PoolCreated"
-  //           );
-  //         }
+          const length = await state?.contracts?.coreContract?.read.poolLength()
+
+          console.log('length', length);
+
+          result = await getAllEvents(
+            state.contracts.coreContract,
+            "PoolCreated"
+          );
+          // if(networkID == 8081){
+          //   result = shardeumPools
+          // } else {
+          //   result = await getAllEvents(
+          //     state.contracts.coreContract,
+          //     "PoolCreated"
+          //   );
+          // }
           
-  //         const array = [];
-  //         const tokenList = {};
-  //         for (const pool of result) {
-  //           array.push(pool.token0, pool.token1);
-  //         }
-  //         const poolTokens = [...new Set(array)];
+          // const array = [];
+          // const tokenList = {};
+          // for (const pool of result) {
+          //   array.push(pool.token0, pool.token1);
+          // }
+          // const poolTokens = [...new Set(array)];
 
-  //         //if wallet not connected
-  //         if (!account.isConnected) {
-  //           const web3 = defProv();
-  //           const ERC20contracts = await Promise.all(
-  //             poolTokens.map((addr) => new web3.eth.Contract(erc20Abi, addr))
-  //           );
+          //if wallet not connected
+          if (!account.isConnected) {
+          //   const web3 = defProv();
+          //   const ERC20contracts = await Promise.all(
+          //     poolTokens.map((addr) => new web3.eth.Contract(erc20Abi, addr))
+          //   );
 
-  //         //   const Symbols = await Promise.all(
-  //         //     ERC20contracts.map((contract, i) =>
-  //         //       contract.methods.symbol().call()
-  //         //     )
-  //         //   );
-  //         //   Symbols.forEach(
-  //         //     (symbol, i) => (tokenList[poolTokens[i]] = { symbol })
-  //         //   );
+          //   const Symbols = await Promise.all(
+          //     ERC20contracts.map((contract, i) =>
+          //       contract.methods.symbol().call()
+          //     )
+          //   );
+          //   Symbols.forEach(
+          //     (symbol, i) => (tokenList[poolTokens[i]] = { symbol })
+          //   );
 
-  //         //   const logos = await Promise.all(
-  //         //     Symbols.map((sym, i) => fetchCoinLogo(sym))
-  //         //   );
+          //   const logos = await Promise.all(
+          //     Symbols.map((sym, i) => fetchCoinLogo(sym))
+          //   );
 
-  //           logos.forEach(
-  //             (logo, i) =>
-  //               (tokenList[poolTokens[i]] = {
-  //                 ...tokenList[poolTokens[i]],
-  //                 logo,
-  //               })
-  //           );
-  //           const reverseResult = result.reverse();
-  //           for (const poolElement of reverseResult) {
-  //             if(hidePools.includes(poolElement.pool)){
-  //               continue;
-  //             }
-  //             poolData[poolElement.pool] = {
-  //               poolAddress: poolElement.pool,
-  //               hide: hidePools.includes(poolElement.pool),
-  //               token0: {
-  //                 ...tokenList[poolElement.token0],
-  //                 address: poolElement.token0,
-  //               },
-  //               token1: {
-  //                 ...tokenList[poolElement.token1],
-  //                 address: poolElement.token1,
-  //               },
-  //             };
-  //           }
-  //         } else {
+            // logos.forEach(
+            //   (logo, i) =>
+            //     (tokenList[poolTokens[i]] = {
+            //       ...tokenList[poolTokens[i]],
+            //       logo,
+            //     })
+            // );
+            // const reverseResult = result.reverse();
+            // for (const poolElement of reverseResult) {
+            //   if(hidePools.includes(poolElement.pool)){
+            //     continue;
+            //   }
+            //   poolData[poolElement.pool] = {
+            //     poolAddress: poolElement.pool,
+            //     hide: hidePools.includes(poolElement.pool),
+            //     token0: {
+            //       ...tokenList[poolElement.token0],
+            //       address: poolElement.token0,
+            //     },
+            //     token1: {
+            //       ...tokenList[poolElement.token1],
+            //       address: poolElement.token1,
+            //     },
+            //   };
+            // }
+          } else {
          
-  //         //   const ercTokens = await Promise.all(
-  //         //     poolTokens.map((contract, i) => fetchToken({ address: contract }))
-  //         //   );
-  //         //   ercTokens.forEach(
-  //         //     (token, i) =>
-  //         //       (tokenList[poolTokens[i]] = { symbol: token.symbol })
-  //         //   );
-  //         //   const logos = await Promise.all(
-  //         //     ercTokens.map((token, i) => fetchCoinLogo(token.symbol))
-  //         //   );
+          //   const ercTokens = await Promise.all(
+          //     poolTokens.map((contract, i) => fetchToken({ address: contract }))
+          //   );
+          //   ercTokens.forEach(
+          //     (token, i) =>
+          //       (tokenList[poolTokens[i]] = { symbol: token.symbol })
+          //   );
+          //   const logos = await Promise.all(
+          //     ercTokens.map((token, i) => fetchCoinLogo(token.symbol))
+          //   );
 
-  //         //   logos.forEach(
-  //         //     (logo, i) =>
-  //         //       (tokenList[poolTokens[i]] = {
-  //         //         ...tokenList[poolTokens[i]],
-  //         //         logo,
-  //         //       })
-  //         //   );
+          //   logos.forEach(
+          //     (logo, i) =>
+          //       (tokenList[poolTokens[i]] = {
+          //         ...tokenList[poolTokens[i]],
+          //         logo,
+          //       })
+          //   );
 
-  //           const reverseResult = result.reverse();
-  //           for (const poolElement of reverseResult) {
-  //             if(hidePools.includes(poolElement.pool)){
-  //               continue;
-  //             }
-  //             poolData[poolElement.pool] = {
-  //               poolAddress: poolElement.pool,
-  //               hide: hidePools.includes(poolElement.pool),
-  //               token0: {
-  //                 ...tokenList[poolElement.token0],
-  //                 address: poolElement.token0,
-  //               },
-  //               token1: {
-  //                 ...tokenList[poolElement.token1],
-  //                 address: poolElement.token1,
-  //               },
-  //             };
-  //           }
-  //         }
+            // const reverseResult = result.reverse();
+            // for (const poolElement of reverseResult) {
+            //   if(hidePools.includes(poolElement.pool)){
+            //     continue;
+            //   }
+            //   poolData[poolElement.pool] = {
+            //     poolAddress: poolElement.pool,
+            //     hide: hidePools.includes(poolElement.pool),
+            //     token0: {
+            //       ...tokenList[poolElement.token0],
+            //       address: poolElement.token0,
+            //     },
+            //     token1: {
+            //       ...tokenList[poolElement.token1],
+            //       address: poolElement.token1,
+            //     },
+            //   };
+            // }
+          }
 
-  //         // dispatch(setPools({ poolData, tokenList }));
-  //       })();
-  //     } catch (error) {
-  //       console.error(error);
-  //       dispatch(setError(error));
-  //     }
-  //   }
-  // }, [state.contracts]);
+          // dispatch(setPools({ poolData, tokenList }));
+        })();
+      } catch (error) {
+        console.error(error);
+        dispatch(setError(error));
+      }
+    }
+  }, [state.contracts]);
 
 
   // useEffect(() => {

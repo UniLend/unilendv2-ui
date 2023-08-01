@@ -54,7 +54,7 @@ export const sepoliaTestnet = {
       http: [ 'https://sepolia.infura.io/v3/603c7bc2fa6c46ecb189576fded15f81' ,'https://eth-sepolia.g.alchemy.com/v2/mibiTKAFT4EkiFnw5Fkl55NkwpOVibgP'],
     },
     public: {
-      http: [ 'https://sepolia.infura.io/v3/ '],
+      http: [ 'https://sepolia.infura.io/v3/603c7bc2fa6c46ecb189576fded15f81 '],
     },
   },
   blockExplorers: {

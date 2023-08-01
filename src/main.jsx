@@ -22,8 +22,10 @@ import {
   metaMaskWallet
 } from '@rainbow-me/rainbowkit/wallets';
 
+import { sepoliaTestnet, zkEVMTestNet } from "./core/networks/Chains";
+
 const { chains, publicClient } = configureChains(
-  [mainnet, polygon, optimism, arbitrum, zora, sepolia, polygonMumbai, polygonZkEvm],
+  [sepoliaTestnet, zkEVMTestNet],
   [publicProvider()]
 );
 const walletConnectProjectID = '45c3755af7419aaf09eb64929022acdd'
@@ -56,7 +58,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <WagmiConfig  config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
             <BrowserRouter>
-
+        <AppWrapper/>
             </BrowserRouter>
           </RainbowKitProvider>
         </WagmiConfig>

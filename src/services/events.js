@@ -1,44 +1,33 @@
-import { poolAbi, positionAbi } from "../core/contractData/abi";
+import { poolAbi, positionAbi, coreAbi } from "../core/contractData/abi";
 import { fromBigNumber, getAllContracts } from "../helpers/contracts";
 import { readContract, getContract, getProvider } from "@wagmi/core";
-import { watchContractEvent } from 'wagmi/actions'
+import { watchContractEvent, getWalletClient, getPublicClient } from 'wagmi/actions'
+import { parseAbiItem } from 'viem' 
 import Web3 from "web3";
 
-export const getAllEvents = async (contract, abi, event) => {
+export const getAllEvents = async (contract, event) => {
   try {
-    // const result = await contract.getPastEvents(
-    //   event,
-    //   {
-    //     fromBlock: 0,
-    //     toBlock: 'latest',
-    //   },
-    //   function (error, events) {
-    //     if (error) {
-    //       console.log(error);
-    //     }
-    //   }
-    // );
+    const walletClient = await getWalletClient()
+    const publicClient = getPublicClient()
 
-    // const result = await contract.watchEvent.get('_',event)  ;
+     
+  //  const filter = await publicClient.createContractEventFilter({
+  //   abi: coreAbi,
+  //   address: contract.address,
+  //   eventName: event 
+  // })
 
-    // const unwatch = watchContractEvent(
-    //   {
-    //     address: contract.address,
-    //     abi: abi,
-    //     eventName: event,
-      
-    //   },
-    //   (log) => console.log(log),
-    //   (log) => console.log(log),
-    // )
+ const logs = await publicClient.getLogs({
+  address: contract.address,
+  event: parseAbiItem('event PoolCreated(address indexed token0, address indexed token1, address pool, uint)')
+ })
+  console.log("walletClient", walletClient, publicClient, logs);
+  //  const unwatch = contract.watchEvent.PoolCreated(
+  //   { onLogs: logs => console.log(logs) }
+  //  )
 
-    // console.log("poolEvent",    {
-    //   address: contract.address,
-    //   abi: abi,
-    //   eventName: event,
-    // } );
-    // return result.map((item) => item.args);
   } catch (error) {
+    console.log({error});
     throw error
   }
 };
