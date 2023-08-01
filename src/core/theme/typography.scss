@@ -159,7 +159,7 @@ $primaryText: var(--pure-black);
   margin: unset;
   font-style: normal;
   font-weight: $font-weight-regular; //400
-  @include font-size($font-size-sxm); // 12px
+  @include font-size($font-size-xsm); // 12px
   line-height: $line-height-sm;
 
   //   $(mobile){
