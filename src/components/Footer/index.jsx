@@ -11,21 +11,21 @@ import {
 import { LockOutlined } from '@ant-design/icons'
 import './styles/index.scss';
 import { useSelector } from 'react-redux';
-import { getNetwork } from '@wagmi/core';
+import { getNetwork } from 'wagmi/actions';
 
 export default function Footer() {
   const [isPolygon, setIsPolygon] = useState(false)
-  const {user}= useSelector((state) => state);
   const pathname = window.location.pathname;
+  const {chain} = getNetwork()
 
   useEffect(() => {
-    const {chain} = getNetwork()
+ 
     if(chain?.id == 80001){
       setIsPolygon(true)
     } else {
       setIsPolygon(false)
     }
-  }, [user]);
+  }, [chain?.id]);
 
   return (
     <>

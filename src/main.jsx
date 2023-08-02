@@ -10,17 +10,26 @@ import AppWrapper from "./appWrapper";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, zora, sepolia, polygonMumbai, polygonZkEvm } from "wagmi/chains";
+import {
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  zora,
+  sepolia,
+  polygonMumbai,
+  polygonZkEvm,
+} from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import App1 from "./app1";
 
-import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import {
   injectedWallet,
   rainbowWallet,
   walletConnectWallet,
-  metaMaskWallet
-} from '@rainbow-me/rainbowkit/wallets';
+  metaMaskWallet,
+} from "@rainbow-me/rainbowkit/wallets";
 
 import { sepoliaTestnet, zkEVMTestNet } from "./core/networks/Chains";
 
@@ -28,7 +37,7 @@ const { chains, publicClient } = configureChains(
   [sepoliaTestnet, zkEVMTestNet],
   [publicProvider()]
 );
-const walletConnectProjectID = '45c3755af7419aaf09eb64929022acdd'
+const walletConnectProjectID = "45c3755af7419aaf09eb64929022acdd";
 // const { connectors } = getDefaultWallets({
 //   appName: "RainbowKit demo",
 //   projectId: "45c3755af7419aaf09eb64929022acdd",
@@ -37,10 +46,8 @@ const walletConnectProjectID = '45c3755af7419aaf09eb64929022acdd'
 
 const connectors = connectorsForWallets([
   {
-    groupName: 'Recommended',
-    wallets: [
-      injectedWallet({ chains }),
-    ],
+    groupName: "Recommended",
+    wallets: [injectedWallet({ chains })],
   },
 ]);
 
@@ -55,10 +62,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Suspense fallback={<Ring />}>
       <Provider store={store}>
-        <WagmiConfig  config={wagmiConfig}>
+        <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
             <BrowserRouter>
-        <AppWrapper/>
+              <AppWrapper />
             </BrowserRouter>
           </RainbowKitProvider>
         </WagmiConfig>

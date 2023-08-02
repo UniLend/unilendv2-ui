@@ -62,7 +62,7 @@ export default function NoPoolFound({ token1, token2, createPool }) {
         {isCreateModalOpen && (
           <Modal
             className='antd_modal_overlay'
-            visible={isCreateModalOpen}
+            open={isCreateModalOpen}
             centered
             onCancel={handleCloseModal}
             footer={null}

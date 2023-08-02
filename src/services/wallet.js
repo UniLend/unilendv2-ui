@@ -1,9 +1,9 @@
 import Web3 from "web3";
 import {
-
+  getAccount,
+  getNetwork,
   disconnect,
-
-
+fetchBalance
 } from "wagmi/actions";
 // local imports
 import { providerOptions } from "../constants/wallet";
@@ -52,10 +52,9 @@ export const handleDisconnect = async () => {
 };
 
 export const connectWallet = async (wallet, ChangedAccount = null) => {
-  //   await provider.sendAsync('eth_requestAccounts');
-  // const net = (await web3.eth.net.getNetworkType()).toUpperCase();
-  // const trigerWallet = wallet || localStorage.getItem('wallet');
-  // try {
+  
+const trigerWallet = wallet || localStorage.getItem('wallet');
+   try {
   //   if(trigerWallet == 'metamask'){
   //     try {
   //       const data = await connect({
@@ -84,23 +83,23 @@ export const connectWallet = async (wallet, ChangedAccount = null) => {
   //     })
   //     localStorage.setItem('wallet', 'walletConnect')
   //   }
-  //   const user = getAccount()
-  //   const { chain, chains } = getNetwork()
-  //   const chainId = chain.id
-  //   const account = ChangedAccount || user.address;
-  //   const bal =  await fetchBalance({
-  //     address: account,
-  //   })
-  //   // const balance = fromWei(web3, bal).slice(0, 6);
-  //   const networkByWeb3 = chain.name.toUpperCase()
-  //   const Currentnetwork = networks[chainId] ? networks[chainId].chainName: networkByWeb3
-  //   const obj = { address: account, balance: Number(bal?.formatted ).toFixed(4), network: {id: chainId, name: Currentnetwork} , isConnected: true}
-  //   saveToLocalStorage('user', obj)
-  //   return obj;
-  // } catch (error) {
-  //   console.error("Walleterror",error.message);
-  //   throw error;
-  // }
+    const user = getAccount()
+    const { chain, chains } = getNetwork()
+    const chainId = chain.id
+    const account = ChangedAccount || user.address;
+    const bal =  await fetchBalance({
+      address: account,
+    })
+    // const balance = fromWei(web3, bal).slice(0, 6);
+    const networkByWeb3 = chain.name.toUpperCase()
+    const Currentnetwork = networks[chainId] ? networks[chainId].chainName: networkByWeb3
+    const obj = { address: account, balance: Number(bal?.formatted ).toFixed(4), network: {id: chainId, name: Currentnetwork} , isConnected: true}
+    saveToLocalStorage('user', obj)
+    return obj;
+  } catch (error) {
+    console.error("Walleterror",error.message);
+    throw error;
+  }
 };
 
 export const changeNetwork = async (networkId) => {

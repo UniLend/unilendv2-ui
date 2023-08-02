@@ -4,27 +4,18 @@ import { readContract, getContract, getProvider } from "@wagmi/core";
 import { watchContractEvent, getWalletClient, getPublicClient } from 'wagmi/actions'
 import { parseAbiItem } from 'viem' 
 import Web3 from "web3";
+import { getEtherContract } from "../lib/fun/wagmi";
 
 export const getAllEvents = async (contract, event) => {
   try {
     const walletClient = await getWalletClient()
     const publicClient = getPublicClient()
 
-     
-  //  const filter = await publicClient.createContractEventFilter({
-  //   abi: coreAbi,
-  //   address: contract.address,
-  //   eventName: event 
-  // })
+  const contractInstance =  await getEtherContract(contract.address, coreAbi)
 
- const logs = await publicClient.getLogs({
-  address: contract.address,
-  event: parseAbiItem('event PoolCreated(address indexed token0, address indexed token1, address pool, uint)')
- })
-  console.log("walletClient", walletClient, publicClient, logs);
-  //  const unwatch = contract.watchEvent.PoolCreated(
-  //   { onLogs: logs => console.log(logs) }
-  //  )
+  const events = await contractInstance.queryFilter(event);
+
+  console.log('events', events, logs);
 
   } catch (error) {
     console.log({error});

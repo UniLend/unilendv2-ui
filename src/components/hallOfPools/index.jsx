@@ -19,14 +19,13 @@ import { sortByKey } from "../../helpers/dashboard";
 import { handleCreatePool } from "../../services/pool";
 
 export default function HallOfPoolsComponent(props) {
-  const state = useSelector((state) => state);
+  const {poolList, isLoadingPoolData,} = useSelector((state) => state);
   const [token1, setToken1] = useState({});
   const [token2, setToken2] = useState({});
   const [pools, setPools] = useState([]);
   const [myPoolTab, setMyPoolTab] = useState(false);
   const [poolBackup, setPoolBackup] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const { contracts, web3, poolList, isLoadingPoolData, user } = state;
 
   useEffect(() => {
     if (Object.values(poolList).length > 0) {

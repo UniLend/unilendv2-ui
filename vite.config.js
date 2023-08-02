@@ -19,13 +19,9 @@ export default defineConfig({
     }
   }, 
 
-  build: {
-    target: ["esnext"], // 👈 build.target
-  },
   plugins: [
     react(),
     // ↓ Needed for development mode
-    !production &&
       nodePolyfills({
         include: [
           'node_modules/**/*.js',

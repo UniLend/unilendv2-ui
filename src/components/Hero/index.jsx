@@ -10,14 +10,14 @@ import PoolListSkeleton from "../Loader/PoolListSkeleton";
 import NoPoolFound from "../NoPoolFound";
 
 export default function HeroComponent(props) {
-  const state = useSelector((state) => state);
+  const {poolList, isLoadingPoolData, theme} = useSelector((state) => state);
   const [token1, setToken1] = useState({});
   const [token2, setToken2] = useState({});
   const [pools, setPools] = useState({});
   const [filteredPools, setFilteredPools] = useState([]);
   const [poolBackup, setPoolBackup] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const { contracts, web3, poolList, isLoadingPoolData, user } = state;
+
 
   useEffect(() => {
     if (Object.values(poolList).length > 0) {
@@ -101,7 +101,7 @@ export default function HeroComponent(props) {
   return (
     <div className="hallofpools_container">
       <div className="banner">
-       { state.theme == 'dark' ? <img src={darkbanner} alt="v2-banner" /> : <img src={banner} alt="v2-banner" /> } 
+       { theme == 'dark' ? <img src={darkbanner} alt="v2-banner" /> : <img src={banner} alt="v2-banner" /> } 
       </div>
 
       <ManageToken

@@ -94,13 +94,13 @@ export default function PoolCarousel({ pools, isLoading }) {
           >
             {poolDataByTime.length > 0 && isLoading
               ? poolDataByTime.map((pool, i) => (
-                  <div className="poolcard_div">
+                  <div key={i} className="poolcard_div">
                     {" "}
-                    <PoolCard pool={pool} key={i} />{" "}
+                    <PoolCard pool={pool}  />{" "}
                   </div>
                 ))
               : new Array(5).fill(0).map((pool, i) => (
-                  <div className="poolcard_div">
+                  <div  key={i} className="poolcard_div">
                     {" "}
                     <PoolCardSkeleton key={i}/>{" "}
                   </div>
@@ -140,13 +140,13 @@ export default function PoolCarousel({ pools, isLoading }) {
           >
             {poolDataByLiquidity.length > 0 && isLoading
               ? poolDataByLiquidity.map((pool, i) => (
-                  <div className="poolcard_div">
+                  <div key={i} className="poolcard_div">
                     {" "}
                     <PoolCard pool={pool} key={i} />{" "}
                   </div>
                 ))
               : new Array(5).fill(0).map((pool, i) => (
-                  <div className="poolcard_div">
+                  <div key={i} className="poolcard_div">
                     {" "}
                     <PoolCardSkeleton  key={i}/>{" "}
                   </div>

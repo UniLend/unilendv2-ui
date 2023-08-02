@@ -4,30 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 //import { useQuery } from "@apollo/client";
 import { useQuery, useQueryClient} from "react-query";
 import "antd/dist/antd.css";
-import { getNetwork, getContract , getAccount} from "wagmi/actions";
-import { publicProvider } from "@wagmi/core/providers/public";
+import { getNetwork, getContract , getAccount, fetchToken} from "wagmi/actions";
+import { Buffer } from 'buffer';
 
-import { InjectedConnector } from "@wagmi/core/connectors/injected";
-import { MetaMaskConnector } from "@wagmi/core/connectors/metaMask";
-import { alchemyProvider } from "@wagmi/core/providers/alchemy";
-import { infuraProvider } from '@wagmi/core/providers/infura'
 
-import { CoinbaseWalletConnector } from "@wagmi/core/connectors/coinbaseWallet";
-
-import {
-  avalanche,
-  bsc,
-  mainnet,
-  polygonMumbai,
-  sepolia,
-  polygonZkEvmTestnet,
-  zkSyncTestnet,
-  polygon
-} from "@wagmi/core/chains";
-import { ethers } from "ethers";
-import { WalletConnectConnector } from "@wagmi/core/connectors/walletConnect";
-
-// internal imports
 import {
   setTheme,
   setUser,
@@ -64,7 +44,7 @@ import { hidePools } from "./utils/constants";
 import { zkEVMTestNet, shardeumTestnet, sepoliaTestnet } from "./core/networks/Chains";
 import { getTokenUSDPrice } from "./helpers/contracts";
 import { useWalletClient } from 'wagmi'
-import { getContractLib } from "./lib/fun/functions";
+import { getContractLib, getPastEvents } from "./lib/fun/functions";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -109,15 +89,19 @@ const shardeumPools = [{
   token0:'0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1'
 }]
 
+window.global = window.global ?? window;
+window.Buffer = window.Buffer ?? Buffer;
+
+
 function App() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient()
   const {address, isConnected} = getAccount();
   const { chain, chains } = getNetwork();
-  const {user, poolList} = useSelector((state) => state)
+
+  const {user, contracts } = useSelector((state) => state);
   const query = getPoolCreatedGraphQuery(user?.address);
   // const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
-  const state = useSelector((state) => state);
   const networksWithGraph = [80001, 137]
 
 //  const { data, loading, error, refetch } = useQuery('pools', async () => {
@@ -130,7 +114,7 @@ function App() {
 
   // setting contract state to store from here
 
-  const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
+  const isSame = user?.address != getFromLocalStorage("user")?.address;
 
   useEffect(() => {
     (async () => {
@@ -150,7 +134,7 @@ function App() {
         // const { chain: nextChain, chains } = getNetwork();
 
         const networkID = user?.network?.id
-        const { coreAddress, helperAddress, positionAddress } = contractAddress['1442'];
+        const { coreAddress, helperAddress, positionAddress } = contractAddress[chain.id || '11155111'];
 
           // console.log("preparedData", coreAddress);
         const preparedData = [
@@ -199,7 +183,10 @@ function App() {
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-    if (state.contracts.coreContract && !networksWithGraph.includes(networkID) ) {
+
+
+
+    if (contracts.coreContract && !networksWithGraph.includes(networkID) ) {
       try {
         (async () => {
         
@@ -207,29 +194,29 @@ function App() {
           const account = getAccount();
           let result;
 
-          const length = await state?.contracts?.coreContract?.read.poolLength()
+          console.log("contracts", contracts.coreContract  );
+          const length = await contracts?.coreContract?.read?.poolLength()
 
           console.log('length', length);
 
-          result = await getAllEvents(
-            state.contracts.coreContract,
-            "PoolCreated"
-          );
-          // if(networkID == 8081){
-          //   result = shardeumPools
-          // } else {
-          //   result = await getAllEvents(
-          //     state.contracts.coreContract,
-          //     "PoolCreated"
-          //   );
-          // }
+       
+          if(networkID == 8081){
+            result = shardeumPools
+          } else {
+            result = await getPastEvents(
+              contracts.coreContract.address,
+              coreAbi,
+              "PoolCreated"
+            );
+            result = result.map((item) => item.args);
+          }
           
-          // const array = [];
-          // const tokenList = {};
-          // for (const pool of result) {
-          //   array.push(pool.token0, pool.token1);
-          // }
-          // const poolTokens = [...new Set(array)];
+          const array = [];
+          const tokenList = {};
+          for (const pool of result) {
+            array.push(pool.token0, pool.token1);
+          }
+          const poolTokens = [...new Set(array)];
 
           //if wallet not connected
           if (!account.isConnected) {
@@ -277,54 +264,53 @@ function App() {
             //   };
             // }
           } else {
-         
-          //   const ercTokens = await Promise.all(
-          //     poolTokens.map((contract, i) => fetchToken({ address: contract }))
-          //   );
-          //   ercTokens.forEach(
-          //     (token, i) =>
-          //       (tokenList[poolTokens[i]] = { symbol: token.symbol })
-          //   );
-          //   const logos = await Promise.all(
-          //     ercTokens.map((token, i) => fetchCoinLogo(token.symbol))
-          //   );
+            const ercTokens = await Promise.all(
+              poolTokens.map((contract, i) => fetchToken({ address: contract }))
+            );
+            ercTokens.forEach(
+              (token, i) =>
+                (tokenList[poolTokens[i]] = { symbol: token.symbol })
+            );
+            const logos = await Promise.all(
+              ercTokens.map((token, i) => fetchCoinLogo(token.symbol))
+            );
 
-          //   logos.forEach(
-          //     (logo, i) =>
-          //       (tokenList[poolTokens[i]] = {
-          //         ...tokenList[poolTokens[i]],
-          //         logo,
-          //       })
-          //   );
+            logos.forEach(
+              (logo, i) =>
+                (tokenList[poolTokens[i]] = {
+                  ...tokenList[poolTokens[i]],
+                  logo,
+                })
+            );
 
-            // const reverseResult = result.reverse();
-            // for (const poolElement of reverseResult) {
-            //   if(hidePools.includes(poolElement.pool)){
-            //     continue;
-            //   }
-            //   poolData[poolElement.pool] = {
-            //     poolAddress: poolElement.pool,
-            //     hide: hidePools.includes(poolElement.pool),
-            //     token0: {
-            //       ...tokenList[poolElement.token0],
-            //       address: poolElement.token0,
-            //     },
-            //     token1: {
-            //       ...tokenList[poolElement.token1],
-            //       address: poolElement.token1,
-            //     },
-            //   };
-            // }
+            const reverseResult = result.reverse();
+            for (const poolElement of reverseResult) {
+              if(hidePools.includes(poolElement.pool)){
+                continue;
+              }
+              poolData[poolElement.pool] = {
+                poolAddress: poolElement.pool,
+                hide: hidePools.includes(poolElement.pool),
+                token0: {
+                  ...tokenList[poolElement.token0],
+                  address: poolElement.token0,
+                },
+                token1: {
+                  ...tokenList[poolElement.token1],
+                  address: poolElement.token1,
+                },
+              };
+            }
           }
 
-          // dispatch(setPools({ poolData, tokenList }));
+          dispatch(setPools({ poolData, tokenList }));
         })();
       } catch (error) {
         console.error(error);
         dispatch(setError(error));
       }
     }
-  }, [state.contracts]);
+  }, [contracts]);
 
 
   // useEffect(() => {
@@ -400,13 +386,13 @@ function App() {
 
   return (
     <>
-      {/* <Navbar {...state} /> */}
-      {/* <div className="app_container">
+      <Navbar  />
+      <div className="app_container">
         <div className="app">
-          <MainRoutes {...state} />
+          <MainRoutes />
         </div>
-      </div> */}
-      {/* <Footer /> */}
+      </div>
+      <Footer />
     </>
   );
 }

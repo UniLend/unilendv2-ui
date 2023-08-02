@@ -890,7 +890,7 @@ export default function PoolComponent(props) {
           </div>
           <Modal
             className="antd_modal_overlay"
-            visible={isOpenConfirmModal}
+            open={isOpenConfirmModal}
             centered
             onCancel={handleCloseModals}
             footer={null}
@@ -910,7 +910,7 @@ export default function PoolComponent(props) {
           </Modal> */}
           <Modal
             className="antd_modal_overlay"
-            visible={showSelectTokenModal}
+            open={showSelectTokenModal}
             centered
             onCancel={() => setShowSelectTokenModal(false)}
             footer={null}

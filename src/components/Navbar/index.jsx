@@ -56,7 +56,7 @@ export default function Navbar(props) {
   const [isWalletModalVisible, setIsWalletModalVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState({
     ...user,
-    domain: shortenAddress(user.address),
+    domain: shortenAddress(user?.address),
   });
   const [visible, setVisible] = useState(false);
   const [isNetworkVisible, setIsNetworkVisible] = useState(false);
@@ -131,16 +131,23 @@ export default function Navbar(props) {
   }, [user]);
 
   const handleConnect = async (action, recursion) => {
+    try {
+      
+ 
     setIsWalletModalVisible(false);
     const user = await connectWallet(action);
     //window.location.reload()
     handleDomain(user);
     dispatch(setUser(user));
+
+  } catch (error) {
+      
+  }
   };
 
   const handleDomain = async (user) => {
-    const meta = await fetchUserDomain(user.address);
-    const domain = meta.reverse ? meta.domain : shortenAddress(user.address);
+    const meta = await fetchUserDomain(user?.address);
+    const domain = meta.reverse ? meta.domain : shortenAddress(user?.address);
     const UserData = {
       ...user,
       domain,
@@ -397,7 +404,7 @@ export default function Navbar(props) {
 
       <Modal
         className="antd_modal_overlay"
-        visible={wrongNetworkModal}
+        open={wrongNetworkModal}
         centered
         footer={null}
         closable={false}
@@ -406,7 +413,7 @@ export default function Navbar(props) {
       </Modal>
       <Modal
         className="antd_modal_overlay"
-        visible={isWalletModalVisible}
+        open={isWalletModalVisible}
         centered
         footer={null}
         onCancel={() => setIsWalletModalVisible(false)}

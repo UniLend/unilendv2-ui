@@ -293,7 +293,7 @@ const ManageToken = ({handleTokens, tokens, pools}) => {
       {isOpenTokenList && (
         <Modal
           className="antd_modal_overlay"
-          visible={isOpenTokenList}
+          open={isOpenTokenList}
           centered
           onCancel={handleCloseModals}
           footer={null}
@@ -306,7 +306,7 @@ const ManageToken = ({handleTokens, tokens, pools}) => {
         className="antd_modal_overlay"
         centered
         onCancel={handleCloseModals}
-        visible={isOpenMangeToken}
+        open={isOpenMangeToken}
         footer={null}
         closable={false}
       >
