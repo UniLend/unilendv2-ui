@@ -15,7 +15,7 @@ import {
   handleBorrow,
   handleRepay,
 } from "../../services/pool";
-import { imgError } from "../../utils";
+import { fixFormatNumber, imgError } from "../../utils";
 import {
   shortNumber,
   getBorrowMax,
@@ -589,6 +589,7 @@ export default function PoolComponent(props) {
     setShowSelectTokenModal(bool)
   }
 
+
   return (
     <>
       {isPageLoading && selectedToken == null ? (
@@ -706,7 +707,7 @@ export default function PoolComponent(props) {
               <Tooltip title={getLiquidityAmount[activeOperation]} trigger='hover'>
               <h1>
                 {selectedToken
-                  ? shortNumber(getLiquidityAmount[activeOperation])
+                  ? fixFormatNumber(getLiquidityAmount[activeOperation])
                   : 0}
               </h1>
               </Tooltip>

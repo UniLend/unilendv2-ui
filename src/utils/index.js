@@ -65,3 +65,14 @@ export const saveToLocalStorage = (key, value) => {
     source.onerror = null;
     return true;
 }
+
+export function fixFormatNumber(number) {
+    // Convert the number to a string representation with three decimals
+    const numberString = Number(number).toFixed(3);
+  
+    // Check if the string representation contains any non-zero digits after the decimal point
+    const hasNonZeroDigits = /\.\d*[1-9]/.test(numberString);
+  
+    // Return the formatted number with 6 decimals if true, otherwise with 3 decimals
+    return hasNonZeroDigits ? Number(number).toFixed(3) : Number(number).toFixed(6);
+  }
