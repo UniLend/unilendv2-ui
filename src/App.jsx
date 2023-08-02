@@ -114,7 +114,13 @@ const shardeumPools = [{
   pool: '0x665ACEc556dC92C2E504beFA061d5f65Cd9493e2',
   token1: '0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1',
   token0:'0x11f13ad374e79b466a36eb835747e431fbbe3890'
-}]
+},
+// {
+//   pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
+//   token1: '0xd146878affF8c8dd3e9EBd9177F2AE4f6d4e5979',
+//   token0:'0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1'
+// }
+]
 
 function App() {
   const dispatch = useDispatch();

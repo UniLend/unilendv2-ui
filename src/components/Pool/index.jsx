@@ -143,6 +143,8 @@ export default function PoolComponent(props) {
       hash,
     })
       .then((receipt) => {
+
+        console.log("receipt", receipt);
         if (receipt.status == 1) {
           message.success(
             `Transaction for ${txnData.method} of ${Number(
@@ -177,8 +179,6 @@ export default function PoolComponent(props) {
         }
       })
       .catch((error) => {
-        console.error("status:", error);
-        console.log({ error });
         setTimeout(function () {
           checkTxnStatus(hash, txnData);
         }, 1000);
@@ -195,6 +195,8 @@ export default function PoolComponent(props) {
   };
 
   const handleOperation = () => {
+    try {
+
     (async () => {
       setIsOperationLoading(true);
       if (contracts.coreContract) {
@@ -251,6 +253,10 @@ export default function PoolComponent(props) {
         }
       }
     })();
+          
+  } catch (error) {
+      
+  }
   };
 
   const toggleToken = (token) => {
@@ -570,36 +576,6 @@ export default function PoolComponent(props) {
     );
   };
 
-  useEffect(() => {
-    const poolsArray = Object.values(poolList);
-    if (poolsArray.length) {
-      // const poolsWithToken0 = poolsArray
-      //   .filter(
-      //     (pool) =>
-      //       pool.token0.symbol === selectedTokens.token0 ||
-      //       pool.token1.symbol === selectedTokens.token0
-      //   )
-      //   .map((pool) => {
-      //     if (pool.token0.symbol === selectedTokens.token0) {
-      //       return { token: pool.token1 };
-      //     } else if (pool.token1.symbol === selectedTokens.token0) {
-      //       return { token: pool.token0 };
-      //     }
-      //   });
-      //   const poolsWithToken1 = poolsArray
-      //   .map((pool) => {
-      //     if (pool.token0.symbol === selectedTokens.token1) {
-      //       return { token: pool.token1, pool: true };
-      //     } else if (pool.token1.symbol === selectedTokens.token1) {
-      //       return { token: pool.token0, pool: true };
-      //     } else {
-      //       return { token: pool.token0, pool: true };
-      //     }
-      //   });
-      // setTokensWithCreatedPools(poolsWithToken0);
-      console.log("PoolArray", );
-    }
-  }, [poolList, selectedTokens]);
 
 
   const handleOpenSelectTokenMoadal = (bool, token) => {
