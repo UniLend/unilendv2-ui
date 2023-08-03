@@ -134,7 +134,7 @@ function App() {
   const networksWithGraph = [80001, 137]
 
  const { data, loading, error, refetch } = useQuery('pools', async () => {
- const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
+ const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
  return fetchedDATA;
  } );
 
@@ -152,7 +152,7 @@ function App() {
       refetch()
     }
   }, [isConnected])
-
+//  for creating contract instances
   useEffect(() => {
     (async () => {
       try {
@@ -210,6 +210,7 @@ function App() {
     })();
   }, [user?.address]);
 
+  // for getting the pools and tokens datafor non graph networks
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
@@ -332,7 +333,7 @@ function App() {
     }
   }, [state.contracts, chain?.id, user]);
 
-
+// get pools details from graph
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
