@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Slider, Button, message, Modal, Popover, Tooltip } from "antd";
-import {FaChevronDown} from 'react-icons/fa'
+import { FaChevronDown } from "react-icons/fa";
 import { waitForTransaction } from "@wagmi/core";
 import "./styles/index.scss";
 import { useNavigate, useParams } from "react-router-dom";
@@ -55,7 +55,7 @@ export default function PoolComponent(props) {
     getOraclePrice: false,
     getPoolTokensData: false,
   });
- const [reFetching, setReFetching] = useState(false)
+  const [reFetching, setReFetching] = useState(false);
   const [openToken0, setOpenToken0] = useState(false);
   const [openToken1, setOpenToken1] = useState(false);
   const [selectedTokens, setSelectedTokens] = useState({
@@ -150,7 +150,7 @@ export default function PoolComponent(props) {
             ).toFixed(4)} for token ${txnData.tokenSymbol}`,
             5
           );
-          setReFetching(true)
+          setReFetching(true);
           if (txnData.method !== "approval") {
             setAmount(0);
             //setShowTwitterModal(true)
@@ -299,72 +299,69 @@ export default function PoolComponent(props) {
 
   // get contract data
 
-
   const fetchPoolDATA = async () => {
     try {
-
-    if (!methodLoaded.getPoolData) {
-      const pool = await getPoolBasicData(
-        contracts,
-        selectedPool,
-        poolData,
-        poolList[selectedPool]
-      );
-      if(pool?.token0 && pool?.token1){
-        setPoolData(pool);
-        setMethodLoaded({ ...methodLoaded, getPoolData: true });
+      if (!methodLoaded.getPoolData) {
+        const pool = await getPoolBasicData(
+          contracts,
+          selectedPool,
+          poolData,
+          poolList[selectedPool]
+        );
+        if (pool?.token0 && pool?.token1) {
+          setPoolData(pool);
+          setMethodLoaded({ ...methodLoaded, getPoolData: true });
+        }
+      } else if (methodLoaded.getPoolData && !methodLoaded.getPoolFullData) {
+        const pool = await getPoolAllData(
+          contracts,
+          poolData,
+          selectedPool,
+          user.address
+        );
+        if (pool?.token0 && pool?.token1) {
+          setMethodLoaded({ ...methodLoaded, getPoolFullData: true });
+          setPoolData(pool);
+        }
+      } else if (
+        methodLoaded.getPoolData &&
+        methodLoaded.getPoolFullData &&
+        !methodLoaded.getOraclePrice
+      ) {
+        const pool = await getOracleData(contracts, poolData);
+        if (pool?.token0 && pool?.token1) {
+          setPoolData(pool);
+          setMethodLoaded({ ...methodLoaded, getOraclePrice: true });
+        }
+      } else if (
+        methodLoaded.getPoolData &&
+        methodLoaded.getPoolFullData &&
+        methodLoaded.getOraclePrice &&
+        !methodLoaded.getPoolTokensData
+      ) {
+        const poolTokensPrice = await getTokenPrice(
+          contracts,
+          poolData,
+          selectedPool,
+          user.address
+        );
+        if (poolTokensPrice?.token0 && poolTokensPrice?.token1) {
+          setPoolData(poolTokensPrice);
+          setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
+        }
       }
- 
-    } else if (methodLoaded.getPoolData && !methodLoaded.getPoolFullData) {
-      const pool = await getPoolAllData(
-        contracts,
-        poolData,
-        selectedPool,
-        user.address
-      );
-      if(pool?.token0 && pool?.token1){
-      setMethodLoaded({ ...methodLoaded, getPoolFullData: true });
-      setPoolData(pool);
-      }
-    } else if (
-      methodLoaded.getPoolData &&
-      methodLoaded.getPoolFullData &&
-      !methodLoaded.getOraclePrice
-    ) {
-      const pool = await getOracleData(contracts, poolData);
-      if(pool?.token0 && pool?.token1){
-      setPoolData(pool);
-      setMethodLoaded({ ...methodLoaded, getOraclePrice: true });
-      }
-    } else if (
-      methodLoaded.getPoolData &&
-      methodLoaded.getPoolFullData &&
-      methodLoaded.getOraclePrice &&
-      !methodLoaded.getPoolTokensData
-    ) {
-      const poolTokensPrice = await getTokenPrice(
-        contracts,
-        poolData,
-        selectedPool,
-        user.address
-      );
-      if(poolTokensPrice?.token0 && poolTokensPrice?.token1){
-
-      setPoolData(poolTokensPrice);
-      setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
-      }
+    } catch (error) {
+      throw error;
     }
-          
-  } catch (error) {
-      throw error
-  }
-  }
-
+  };
 
   useEffect(() => {
     if (selectedToken === null) setIsPageLoading(true);
 
-    const isAllTrue = Object.values(methodLoaded).find((el) => el === false) === undefined ? true: false;
+    const isAllTrue =
+      Object.values(methodLoaded).find((el) => el === false) === undefined
+        ? true
+        : false;
 
     if (
       contracts.helperContract &&
@@ -372,51 +369,48 @@ export default function PoolComponent(props) {
       Object.values(poolList).length > 0 &&
       isAllTrue == false
     ) {
-    
       try {
-        fetchPoolDATA()
+        fetchPoolDATA();
       } catch (error) {
         console.log("Error Refetch");
-        fetchPoolDATA()
+        fetchPoolDATA();
       }
-
     }
-      console.log("FetchingDATA", methodLoaded);
-      if (
-        isAllTrue  &&
-        selectedToken !== null &&
-        selectedToken?._symbol === poolData?.token0?._symbol
-      ) {
-        setSelectedToken(poolData?.token0);
-        setCollaterralToken(poolData?.token1);
-        setReFetching(false)
-        setActiveToken(0);
-        setIsPageLoading(false);
-        setSelectedTokens({
-          token0: poolData?.token0?.symbol,
-          token1: poolData?.token1?.symbol
-        })
-      } else if (isAllTrue  && selectedToken !== null) {
-        setSelectedToken(poolData?.token1);
-        setCollaterralToken(poolData?.token0);
-        setIsPageLoading(false);
-        setReFetching(false)
-        setSelectedTokens({
-          token0: poolData?.token0?.symbol,
-          token1: poolData?.token1?.symbol
-        })
-      } else if (isAllTrue ) {
-        setSelectedToken(poolData?.token0);
-        setCollaterralToken(poolData?.token1);
-        setActiveToken(0);
-        setIsPageLoading(false);
-        setReFetching(false)
-        setSelectedTokens({
-          token0: poolData?.token0?.symbol,
-          token1: poolData?.token1?.symbol
-        })
-      }
-    
+    console.log("FetchingDATA", methodLoaded);
+    if (
+      isAllTrue &&
+      selectedToken !== null &&
+      selectedToken?._symbol === poolData?.token0?._symbol
+    ) {
+      setSelectedToken(poolData?.token0);
+      setCollaterralToken(poolData?.token1);
+      setReFetching(false);
+      setActiveToken(0);
+      setIsPageLoading(false);
+      setSelectedTokens({
+        token0: poolData?.token0?.symbol,
+        token1: poolData?.token1?.symbol,
+      });
+    } else if (isAllTrue && selectedToken !== null) {
+      setSelectedToken(poolData?.token1);
+      setCollaterralToken(poolData?.token0);
+      setIsPageLoading(false);
+      setReFetching(false);
+      setSelectedTokens({
+        token0: poolData?.token0?.symbol,
+        token1: poolData?.token1?.symbol,
+      });
+    } else if (isAllTrue) {
+      setSelectedToken(poolData?.token0);
+      setCollaterralToken(poolData?.token1);
+      setActiveToken(0);
+      setIsPageLoading(false);
+      setReFetching(false);
+      setSelectedTokens({
+        token0: poolData?.token0?.symbol,
+        token1: poolData?.token1?.symbol,
+      });
+    }
   }, [contracts, methodLoaded, user, poolList, selectedPool, poolData]);
 
   // max trigger for sending max values in redeem, lend, borrow, repay;
@@ -488,7 +482,7 @@ export default function PoolComponent(props) {
       [key]: token,
     };
     setSelectedTokens(tokens);
-    setShowSelectTokenModal(false)
+    setShowSelectTokenModal(false);
     if (tokens.token0 && tokens.token1) {
       let poolAddress;
       const poolsArray = Object.values(poolList);
@@ -501,7 +495,7 @@ export default function PoolComponent(props) {
             poolsArray[i].token1.symbol == tokens.token0)
         ) {
           poolAddress = pool.poolAddress;
-          navigate(`/pool/${pool.poolAddress}`)
+          navigate(`/pool/${pool.poolAddress}`);
           setMethodLoaded({
             getPoolData: false,
             getPoolFullData: false,
@@ -517,23 +511,22 @@ export default function PoolComponent(props) {
         }
       }
 
-      if(poolAddress == undefined){
+      if (poolAddress == undefined) {
         setSelectedTokens({
           token0: poolData?.token0?.symbol,
-          token1: poolData?.token1?.symbol
-        })
+          token1: poolData?.token1?.symbol,
+        });
       }
       console.log("poolAddressFound", poolAddress, poolData);
     }
 
     // console.log("handlePoolAndTokenSelect", tokens);
-
   };
   const handleSelectTokens = (key, symbol) => {
     // setVisible0(bool);
     const token = {
-      ...selectedToken
-    }
+      ...selectedToken,
+    };
   };
 
   const SortContent = () => {
@@ -597,21 +590,20 @@ export default function PoolComponent(props) {
       //     }
       //   });
       // setTokensWithCreatedPools(poolsWithToken0);
-      console.log("PoolArray", );
+      console.log("PoolArray");
     }
   }, [poolList, selectedTokens]);
 
-
   const handleOpenSelectTokenMoadal = (bool, token) => {
-    if(token === 'token0'){
-      setOpenToken0(true)
-      setOpenToken1(false)
-    } else if (token === 'token1'){
-      setOpenToken1(true)
-      setOpenToken0(false)
+    if (token === "token0") {
+      setOpenToken0(true);
+      setOpenToken1(false);
+    } else if (token === "token1") {
+      setOpenToken1(true);
+      setOpenToken0(false);
     }
-    setShowSelectTokenModal(bool)
-  }
+    setShowSelectTokenModal(bool);
+  };
 
   return (
     <>
@@ -654,8 +646,11 @@ export default function PoolComponent(props) {
                 <img src={poolData?.token0?.logo} onError={imgError} alt="" />
                 <h2>{poolData?.token0?._symbol}</h2>
               </div>
-              <div onClick={() => handleOpenSelectTokenMoadal(true, 'token0')} className="dropdown">
-              <FaChevronDown className="dropicon"/>
+              <div
+                onClick={() => handleOpenSelectTokenMoadal(true, "token0")}
+                className="dropdown"
+              >
+                <FaChevronDown className="dropicon" />
               </div>
             </div>
             <div>
@@ -666,8 +661,11 @@ export default function PoolComponent(props) {
                 <img src={poolData?.token1?.logo} onError={imgError} alt="" />
                 <h2>{poolData?.token1?._symbol}</h2>
               </div>
-              <div onClick={() => handleOpenSelectTokenMoadal(true, 'token1')} className="dropdown">
-                <FaChevronDown className="dropicon"/>
+              <div
+                onClick={() => handleOpenSelectTokenMoadal(true, "token1")}
+                className="dropdown"
+              >
+                <FaChevronDown className="dropicon" />
               </div>
             </div>
           </div>
@@ -697,19 +695,26 @@ export default function PoolComponent(props) {
               >
                 Redeem
               </div>
-              <Tooltip title={selectedToken?.tabs?.includes("borrow")? '': 'Oracle is not set'} defaultOpen >
-              <div
-                onClick={() => toggleOperation(borrow)}
-                className={
-                  activeOperation === borrow
-                    ? "active"
-                    : selectedToken?.tabs?.includes("borrow")
+              <Tooltip
+                title={
+                  selectedToken?.tabs?.includes("borrow")
                     ? ""
-                    : "disable_tab"
+                    : "Oracle is not set"
                 }
+                defaultOpen
               >
-                Borrow
-              </div>
+                <div
+                  onClick={() => toggleOperation(borrow)}
+                  className={
+                    activeOperation === borrow
+                      ? "active"
+                      : selectedToken?.tabs?.includes("borrow")
+                      ? ""
+                      : "disable_tab"
+                  }
+                >
+                  Borrow
+                </div>
               </Tooltip>
               <div
                 onClick={() => toggleOperation(repay)}
@@ -726,19 +731,22 @@ export default function PoolComponent(props) {
             </div>
 
             <div className="user_liquidity">
-              <p>{liquidityText[activeOperation]}</p>
-              <Tooltip title={getLiquidityAmount[activeOperation]} trigger='hover'>
-              <h1>
-                {selectedToken
-                  ? shortNumber(getLiquidityAmount[activeOperation])
-                  : 0}
-              </h1>
+              <p className="paragraph06">{liquidityText[activeOperation]}</p>
+              <Tooltip
+                title={getLiquidityAmount[activeOperation]}
+                trigger="hover"
+              >
+                <h1 className="heading02">
+                  {selectedToken
+                    ? shortNumber(getLiquidityAmount[activeOperation])
+                    : 0}
+                </h1>
               </Tooltip>
             </div>
 
             <div className="token_balance_container">
               <div className="lable">
-                <p>{activeOperation}</p>
+                <p className="paragraph05">{activeOperation}</p>
                 <div>
                   {" "}
                   <a
@@ -753,9 +761,11 @@ export default function PoolComponent(props) {
               <div className="token_balance">
                 <div>
                   <img src={selectedToken?.logo} alt="" />
-                  <p>{selectedToken?._symbol}</p>
+                  <p className="paragraph04">{selectedToken?._symbol}</p>
                 </div>
-                <p>Balance: {Number(selectedToken?.balanceFixed).toFixed(2)}</p>
+                <p className="paragraph06">
+                  Balance: {Number(selectedToken?.balanceFixed).toFixed(2)}
+                </p>
               </div>
             </div>
 
@@ -848,7 +858,7 @@ export default function PoolComponent(props) {
               <div className="analytics">
                 <div>
                   <span>{activeOperation} APY</span>
-                  <h3>
+                  <h3 className="paragraph04">
                     {activeOperation === lend
                       ? isNaN(Number(selectedToken?.lendAPY).toFixed(4))
                         ? 0
@@ -861,7 +871,7 @@ export default function PoolComponent(props) {
                 </div>
                 <div>
                   <span>Utilization rate</span>
-                  <h3>
+                  <h3 className="paragraph04">
                     {isNaN(selectedToken?.utilRate)
                       ? 0
                       : selectedToken?.utilRate}
@@ -870,7 +880,7 @@ export default function PoolComponent(props) {
                 </div>
                 <div>
                   <span>Health Factor</span>
-                  <h3>
+                  <h3 className="paragraph04">
                     {selectedToken?.healthFactorFixed > 100
                       ? 100
                       : Number(selectedToken?.healthFactorFixed).toFixed(2)}
@@ -916,7 +926,11 @@ export default function PoolComponent(props) {
             footer={null}
             closable={false}
           >
-            <TokenListMoadal openToken={{token0: openToken0, token1: openToken1}} handlePoolAndTokenSelect={handlePoolAndTokenSelect} selectedTokens={selectedTokens} />
+            <TokenListMoadal
+              openToken={{ token0: openToken0, token1: openToken1 }}
+              handlePoolAndTokenSelect={handlePoolAndTokenSelect}
+              selectedTokens={selectedTokens}
+            />
           </Modal>
         </div>
       )}

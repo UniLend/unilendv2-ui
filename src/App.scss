@@ -1,5 +1,19 @@
-@use "./core/theme/theme.scss" as *;
+// @use "./core/theme/theme.scss" as *;
+// import "/src/fonts/HELVETICANEUELTPROEX.OTF";
+@import "/src/core/theme";
 @import url("https://fonts.googleapis.com/css2?family=Public+Sans:wght@100;200;300;400;500;600;700&display=swap");
+
+@font-face {
+  // font-family: "HELVETICANEUELTPROEX";
+  // src: local("HELVETICANEUELTPROEX"),
+  //   url("/src/fonts/HELVETICANEUELTPROEX.OTF") format("truetype");
+  // font-weight: bold;
+  font-family: "HelveticaNeueLTPro";
+  // src: url("/src/fonts/HelveticaNeueLTPro-Bd.otf") format("truetype");
+  src: url("/src/fonts/HelveticaNeueLTPro-Bd.otf");
+  // src: local("HelveticaNeueLTProBd"),
+  //   url("/src/fonts/HelveticaNeueLTPro-Bd.otf") format("truetype");
+}
 
 .light,
 .body {
@@ -20,7 +34,8 @@ body {
   padding: 0px;
 }
 body {
-  font-family: "Public Sans", sans-serif !important;
+  // font-family: "Public Sans", sans-serif !important;
+  font-family: "HelveticaNeueLTPro", sans-serif !important;
   font-variant: normal;
   font-feature-settings: "aalt";
   line-height: normal;
@@ -45,7 +60,20 @@ body,
   min-height: calc(100vh - 124px);
   margin: auto;
   position: relative;
-  box-sizing: border-box;
+
+  background: var(
+    --gradient-bg,
+    radial-gradient(
+      26% 51.21% at 54.77% 50.7%,
+      #2200fe 0%,
+      rgba(34, 0, 254, 0.26) 52.63%,
+      rgba(34, 0, 254, 0) 100%
+    )
+  );
+  background-size: 1200px 800px;
+  background-repeat: no-repeat;
+  background-position: left 200px top 0px;
+  // filter: blur(61.5px);
 }
 .app {
   //  width: 80%;
