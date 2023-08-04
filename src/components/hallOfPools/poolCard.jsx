@@ -11,7 +11,7 @@ const ignoredPools = ['0xd786cA0e5901384F5f8CD6C64dcC10679354bb98','0x170128193e
 
 export default function PoolCard({pool}) {
   const { poolAddress, token0, token1, totalLiquidity, totalBorrowed  } = pool;
-  const {user} = useSelector((state)=> state )
+  const user = useSelector((state)=> state.user)
   const [poolTheme, setPoolTheme] = useState(false)
   const navigate = useNavigate();
 
