@@ -5,18 +5,6 @@ import Web3 from "web3";
 
 export const getAllEvents = async (contract, event) => {
   try {
-    // const result = await contract.getPastEvents(
-    //   event,
-    //   {
-    //     fromBlock: 0,
-    //     toBlock: 'latest',
-    //   },
-    //   function (error, events) {
-    //     if (error) {
-    //       console.log(error);
-    //     }
-    //   }
-    // );
 
     const result = await contract.queryFilter(event);
     return result.map((item) => item.args);
@@ -26,25 +14,7 @@ export const getAllEvents = async (contract, event) => {
 };
 
 export const getEventsWithFilter = async (contract, event, filter) => {
-  // const events = await contract
-  //   .getPastEvents(
-  //     event,
-  //     {
-  //       filter: filter,
-  //       fromBlock: 0,
-  //       toBlock: 'latest',
-  //     },
-  //     function (error, events) {
-  //       if (error) {
-  //         console.log("eventFilter",error);
-  //       }
-  //     }
-  //   )
 
-  // .then((events) => {
-  //   console.log("eventFilter", events);
-  //   return events;
-  // });
 
   const events = await contract.queryFilter(event);
   const filtered = events.filter(

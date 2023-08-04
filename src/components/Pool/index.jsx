@@ -15,7 +15,7 @@ import {
   handleBorrow,
   handleRepay,
 } from "../../services/pool";
-import { imgError } from "../../utils";
+import { fixFormatNumber, imgError } from "../../utils";
 import {
   shortNumber,
   getBorrowMax,
@@ -143,6 +143,8 @@ export default function PoolComponent(props) {
       hash,
     })
       .then((receipt) => {
+
+        console.log("receipt", receipt);
         if (receipt.status == 1) {
           message.success(
             `Transaction for ${txnData.method} of ${Number(
@@ -177,8 +179,6 @@ export default function PoolComponent(props) {
         }
       })
       .catch((error) => {
-        console.error("status:", error);
-        console.log({ error });
         setTimeout(function () {
           checkTxnStatus(hash, txnData);
         }, 1000);
@@ -195,6 +195,8 @@ export default function PoolComponent(props) {
   };
 
   const handleOperation = () => {
+    try {
+
     (async () => {
       setIsOperationLoading(true);
       if (contracts.coreContract) {
@@ -251,6 +253,10 @@ export default function PoolComponent(props) {
         }
       }
     })();
+          
+  } catch (error) {
+      
+  }
   };
 
   const toggleToken = (token) => {
@@ -563,6 +569,7 @@ export default function PoolComponent(props) {
     );
   };
 
+<<<<<<< HEAD
   useEffect(() => {
     const poolsArray = Object.values(poolList);
     if (poolsArray.length) {
@@ -593,6 +600,8 @@ export default function PoolComponent(props) {
       console.log("PoolArray");
     }
   }, [poolList, selectedTokens]);
+=======
+>>>>>>> netlify
 
   const handleOpenSelectTokenMoadal = (bool, token) => {
     if (token === "token0") {
@@ -604,6 +613,7 @@ export default function PoolComponent(props) {
     }
     setShowSelectTokenModal(bool);
   };
+
 
   return (
     <>
@@ -731,6 +741,7 @@ export default function PoolComponent(props) {
             </div>
 
             <div className="user_liquidity">
+<<<<<<< HEAD
               <p className="paragraph06">{liquidityText[activeOperation]}</p>
               <Tooltip
                 title={getLiquidityAmount[activeOperation]}
@@ -741,6 +752,15 @@ export default function PoolComponent(props) {
                     ? shortNumber(getLiquidityAmount[activeOperation])
                     : 0}
                 </h1>
+=======
+              <p>{liquidityText[activeOperation]}</p>
+              <Tooltip title={getLiquidityAmount[activeOperation]} trigger='hover'>
+              <h1>
+                {selectedToken
+                  ? fixFormatNumber(getLiquidityAmount[activeOperation])
+                  : 0}
+              </h1>
+>>>>>>> netlify
               </Tooltip>
             </div>
 

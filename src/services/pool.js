@@ -632,26 +632,11 @@ export const handleLend = async (
             poolAddress: poolAddress,
             chainId: '',
           }; //will hold the value of the transaction
+
+          console.log("transaction", transaction);
           checkTxnStatus(transaction?.hash, txn);
 
-      // contracts.coreContract.methods
-      //   .lend(poolData._address, Amount)
-      //   .send({ from: userAddr })
-      //   .on('transactionHash', (hash) => {
-      //     const txn = {
-      //       method: 'lend',
-      //       amount: amount,
-      //       tokenAddress: selectedToken._address,
-      //       tokenSymbol: selectedToken._symbol,
-      //       poolAddress: poolAddress,
-      //       chainId: '',
-      //     }; //will hold the value of the transaction
-      //     checkTxnStatus(hash, txn);
-      //   })
-      //   .on('error', function (error) {
-      //     checkTxnError(error);
-      //     throw error;
-      //   });
+
     } else {
       setAllowance(
         selectedToken,
@@ -666,7 +651,6 @@ export const handleLend = async (
     }
   } catch (error) {
     console.error('Lend:', error);
-    console.log({error});
     checkTxnError(error);
     throw error;
   }
