@@ -41,10 +41,19 @@ import { ethers } from "ethers";
 //const endpoint = "https://api.spacex.land/graphql/";
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const config = {
-  apiKey: alchemyId,
-  network: Network.MATIC_MUMBAI,
+ 80001: {
+    apiKey: alchemyId,
+    network: Network.MATIC_MUMBAI,
+  },
+  137:{
+    apiKey: alchemyId,
+    network: Network.MATIC_MAINNET,
+  }
+ 
 };
-const alchemy = new Alchemy(config);
+
+
+
 
 
 const graphURL = {
@@ -60,8 +69,9 @@ export default function UserDashboardComponent(props) {
   // if (chain?.id !== 80001) {
   //   navigate("/");
   // }
+
+const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
   const { address } = getAccount();
-  const queryClient = useQueryClient()
   const [userAddress, setUserAddress] = useState();
   const [verifiedAddress, setVerifiedAddress] = useState(address ||user?.address );
   const query = userDashBoardQuery0(verifiedAddress || address);
@@ -74,7 +84,7 @@ export default function UserDashboardComponent(props) {
   const [positionDataBackup, setPositionDataBackup] = useState();
   // const { data, loading, error } = useQuery(query);
   const { data, loading, error, refetch } = useQuery('userDashboard', async () => {
-    const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
+    const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
     return fetchedDATA;
     });
 

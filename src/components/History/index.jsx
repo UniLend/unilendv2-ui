@@ -14,6 +14,7 @@ import { getAccount, getNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
 import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
 import loader from '../../assets/Eclipse-loader.gif'
+import { fetchGraphQlData } from "../../utils/axios";
 import { useQuery} from "react-query";
 import { fetchGraphQlData } from "../../utils/axios";
 
@@ -26,9 +27,8 @@ const graphURL = {
  function HistoryComponent(props) {
   const { contracts, user, web3, poolList, tokenList } = props;
   const navigate = useNavigate();
+   const { chain } = getNetwork()
 
-  const { address } = getAccount();
-  const newArray = new Array(50).fill(0).map((el, i) => i + 1);
   const [txtData, setTxtData] = useState([]);
   const [graphHistory, setGraphHistory] = useState([]);
   const [graphHistoryBackup, setGraphHistoryBackup] = useState([]);
@@ -44,7 +44,7 @@ const graphURL = {
   const query = getHistoryGraphQuery(user?.address);
   const [called, setIsCalled] = useState(false)
   const [historyLoading, setHistoryLoading] = useState(false)
-
+  const networksWithGraph = [80001, 137]
  
   const { data, loading, error, refetch } = useQuery('history', async () => {
     const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
@@ -66,8 +66,8 @@ const graphURL = {
     if(!user.isConnected){
       navigate('/')
     }
-    const { chain } = getNetwork();
-    if (user?.network.id== 80001) {
+
+    if ( networksWithGraph.includes(user?.network.id )) {
       const pools = {};
       for (const key in poolList) {
         const pool = poolList[key];
@@ -84,6 +84,7 @@ const graphURL = {
           ...data.redeems,
           ...data.repays,
         ];
+        console.log('graphDATAHistory', data);
         const sorted = sortByKey(newArray, "blockTimestamp", 1);
         
         setGraphHistory(sorted);
@@ -99,6 +100,7 @@ const graphURL = {
   const handleSort = (index) => {
     const sortTo = isPolygon ? graphHistory : txtData;
     let sort = sortTo;
+    console.log("sort", sortTo);
     setSortIndex(index);
     if (index === 1) {
       sort = sortTo.sort(function (a, b) {
@@ -140,7 +142,7 @@ const graphURL = {
   };
 
   const getTransactionData = async () => {
-    if (user?.network?.id != 80001 && !called) {
+    if ( !networksWithGraph.includes(user?.network.id ) && !called) {
       try {
         // setIsPageLoading(true);
         setHistoryLoading(true)
@@ -174,9 +176,9 @@ const graphURL = {
 
   
   useEffect(() => {
-    // if(!user.isConnected){
-    //   navigate('/')
-    // }
+    if(!user.isConnected){
+      navigate('/')
+    }
     if (user.address && contracts?.coreContract?.address && !called) {
  
       getTransactionData();

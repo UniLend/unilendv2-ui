@@ -107,7 +107,7 @@ export const handleRedeem = async (
  
    
 
-      const txn = await instance.redeem(poolAddress, Math.trunc(Number(maxAmount)).toString(), userAddr)
+      const txn = await instance.redeem(poolAddress, maxAmount, userAddr)
 
       hash = txn?.hash
       // actnCont = await contracts.coreContract.methods.redeem(
@@ -268,10 +268,10 @@ export const getTokenPrice = async (
         data._allowance1,
         poolData.token1._decimals
       );
-
-      pool.token0.tabs = getTabs(pool.token0);
-      pool.token1.tabs = getTabs(pool.token1);
-     // console.log("getPoolTokensData", pool);
+      
+      pool.token0.tabs = (pool.token0.price == '0' || pool.token0.price == 'Infinity' ) ? getTabs(pool.token0).filter(v => v !== 'borrow') : getTabs(pool.token0);
+      pool.token1.tabs = (pool.token1.price ==  "Infinity" || pool.token1.price ==  "0" ) ? getTabs(pool.token1).filter(v => v !== 'borrow') : getTabs(pool.token1);
+      console.log("getPoolTokensData", pool);
       return pool;
     } catch (error) {
       throw error;
@@ -634,26 +634,11 @@ export const handleLend = async (
             poolAddress: poolAddress,
             chainId: '',
           }; //will hold the value of the transaction
+
+          console.log("transaction", transaction);
           checkTxnStatus(transaction?.hash, txn);
 
-      // contracts.coreContract.methods
-      //   .lend(poolData._address, Amount)
-      //   .send({ from: userAddr })
-      //   .on('transactionHash', (hash) => {
-      //     const txn = {
-      //       method: 'lend',
-      //       amount: amount,
-      //       tokenAddress: selectedToken._address,
-      //       tokenSymbol: selectedToken._symbol,
-      //       poolAddress: poolAddress,
-      //       chainId: '',
-      //     }; //will hold the value of the transaction
-      //     checkTxnStatus(hash, txn);
-      //   })
-      //   .on('error', function (error) {
-      //     checkTxnError(error);
-      //     throw error;
-      //   });
+
     } else {
       setAllowance(
         selectedToken,
@@ -769,14 +754,16 @@ export const handleRepay = async (
     '57896044618658097711785492504343953926634992332820282019728792003956564819967';
   let Amount = decimal2Fixed(amount, selectedToken._decimals);
   if (selectedToken._address == poolData.token0._address) {
-    Amount = Math.trunc(Number( mul(Amount, -1))).toString();
+    Amount =  mul(Amount, -1)
     Max = '-57896044618658097711785492504343953926634992332820282019728792003956564819967';
   }
   if (max) {
     Amount = Max;
+  } else {
+    Amount = Math.trunc(Number(Amount)).toString();
   }
   try {
-    if (fixed2Decimals18(selectedToken.allowance, selectedToken._decimals) >= amount) {
+    if (Number(fixed2Decimals18(selectedToken.allowance, selectedToken._decimals)) >= Number(amount)) {
 
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
      const {hash} = await instance.repay(poolAddress,Amount, userAddr)

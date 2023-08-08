@@ -16,10 +16,6 @@ const activeChainID = activeAcount?.chain?.id || 80001
 
 // console.log("activeChain", activeAcount, activeChainID, activeChainID);
 
-const graphURL = {
-  80001:  "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
-  137:"https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon"
-}
 
 
 ReactDOM.createRoot(document.getElementById("root")).render(

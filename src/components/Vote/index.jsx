@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Popover } from "antd";
 import {
   getAccount,
   getNetwork,
@@ -8,13 +9,15 @@ import {
 import { Input, Button, message } from "antd";
 import banner from "../../assets/dashboardbanner.svg";
 import Vote from "../../assets/vote.svg";
+import uftIcon from "../../assets/uft.svg";
+import { FiCopy, FiInfo } from "react-icons/fi";
 import "./styles/index.scss";
 import { shortenAddress } from "../../utils";
 import { contractAddress } from "../../core/contractData/contracts";
 import { useEffect } from "react";
 import { ethers } from "ethers";
 import { erc20Abi, uftgABI } from "../../core/contractData/abi";
-import { decimal2Fixed, fromBigNumber } from "../../helpers/contracts";
+import { decimal2Fixed, div, fromBigNumber } from "../../helpers/contracts";
 import {
   checkAllowance,
   handleUnWrap,
@@ -22,10 +25,13 @@ import {
   handleWrapAndDelegate,
   setApproval,
 } from "../../services/governance";
+import { fetchUserAddressByDomain, fetchUserDomain } from "../../utils/axios";
+import { Link } from "react-router-dom";
 
 const wrap = "wrap";
 const unWrap = "unWrap";
 const update = "update";
+const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 
 export default function VoteComponent() {
   const { address } = getAccount();
@@ -37,6 +43,10 @@ export default function VoteComponent() {
   const [delegate, setDelegate] = useState("0x000000000000000");
   const [votingPower, setVotingPower] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [domainDetail, setDomainDetail] = useState("");
+
+  const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
+  const provider = new ethers.providers.JsonRpcProvider(key);
 
   const checkTxnStatus = (hash, data) => {
     waitForTransaction({
@@ -69,6 +79,7 @@ export default function VoteComponent() {
     message.error(error?.message ? errorText : "Error: Transaction Error");
   };
 
+  //
   const getTokenBal = async () => {
     const contractsAdd = contractAddress[chain?.id || "1"];
     const provider = getProvider();
@@ -106,6 +117,38 @@ export default function VoteComponent() {
     setAllowanceValue(valueFromBigNumber);
   };
 
+  const BalancePopover = () => {
+    return (
+      <div className="balance_popover_container">
+        <div className="balance_popover_item">
+          <img src={uftIcon} alt="uftLogo" />
+          <p>
+            <span className="uft_span">UFT:</span>{" "}
+            <span>{Number(tokenBalance.uft).toFixed(2)}</span>{" "}
+          </p>
+        </div>
+        <div className="balance_popover_item">
+          <img src={uftIcon} alt="uftLogo" />
+          <p>
+            <span className="uftg_span">UFTG:</span>{" "}
+            <span>{Number(tokenBalance.uftg).toFixed(2)}</span>{" "}
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const handleDomain = async (address) => {
+    setDomainDetail("");
+    const meta = await fetchUserDomain(address);
+    const data = await provider.lookupAddress(address);
+    setDomainDetail(meta.domain ? meta.domain : data);
+  };
+
+  useEffect(() => {
+    handleDomain(delegate);
+  }, [delegate]);
+
   useEffect(() => {
     if (address) {
       setDelegate(address);
@@ -124,17 +167,34 @@ export default function VoteComponent() {
         {/* User Info */}
         <div className="user_info">
           <div>
-            <h2> {Number(tokenBalance.uft + tokenBalance.uftg).toFixed(2)}</h2>
-            <p>Total Balance</p>
-            <span>(UFT + UFTG Balance)</span>
+            <h2>{Number(tokenBalance.uft + tokenBalance.uftg).toFixed(2)}</h2>
+            <div className="total_balance">
+              <p>Total Balance</p>
+              <Popover
+                content={<BalancePopover />}
+                overlayClassName="total_balance_popover"
+                placement="rightTop"
+              >
+                <FiInfo />
+              </Popover>
+            </div>
           </div>
           <div>
             <h2>{Number(votingPower).toFixed(2)}</h2>
             <p>Voting Power</p>
-            {/* <span>(UFTG Balance)</span> */}
           </div>
           <div>
-            <h2>{shortenAddress(String(delegate))}</h2>
+            <div
+              onClick={() => {
+                navigator.clipboard.writeText(delegate);
+              }}
+              className="address_with_copy"
+            >
+              <h2>
+                {domainDetail ? domainDetail : shortenAddress(String(delegate))}
+              </h2>
+              <FiCopy />
+            </div>
             <p>Delegation address</p>
           </div>
         </div>
@@ -202,6 +262,16 @@ export default function VoteComponent() {
               votes to a third party. You can either vote on each proposal
               yourself or delegate your votes to a third party.
             </p>
+            <Button
+              onClick={() =>
+                window.open(
+                  "https://commonwealth.im/unilend-finance/discussions",
+                  "_blank"
+                )
+              }
+            >
+              Join Now
+            </Button>
           </div>
         </div>
       </div>
@@ -221,6 +291,12 @@ const WrapAndDelegate = ({
   const [amount, setAmount] = useState("");
   const [address, setAddress] = useState(userAddress);
   const [valid, setValid] = useState(true);
+  const [domainDetail, setDomainDetail] = useState({
+    value: "",
+    isAddress: false,
+  });
+  const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
+  const provider = new ethers.providers.JsonRpcProvider(key);
 
   const [buttonText, setButtonText] = useState({
     text: "Enter Amount",
@@ -237,7 +313,9 @@ const WrapAndDelegate = ({
   };
 
   useEffect(() => {
-    const isValid = ethers.utils.isAddress(address);
+    const isValid = ethers.utils.isAddress(
+      domainDetail.isAddress ? domainDetail.value : address
+    );
 
     if (decimal2Fixed(amount, 18) > Number(allowanceValue)) {
       setButtonText({
@@ -265,12 +343,13 @@ const WrapAndDelegate = ({
         disable: false,
       });
     }
-  }, [address, amount, allowanceValue, tokenBalance]);
+  }, [address, domainDetail.value, amount, allowanceValue, tokenBalance]);
 
-  const handleAddress = (e) => {
+  const handleAddress = async (e) => {
     setAddress(e.target.value);
     const isValid = ethers.utils.isAddress(e.target.value);
     setValid(isValid);
+
     // if (!isValid) {
     //   setButtonText({
     //     text: "Enter Valid Address",
@@ -289,6 +368,40 @@ const WrapAndDelegate = ({
     // }
   };
 
+  const handleDomain = async (isValid, input) => {
+    setDomainDetail({
+      value: "",
+      isAddress: false,
+    });
+
+    if (isValid) {
+      const meta = await fetchUserDomain(input);
+      const data = await provider.lookupAddress(input);
+      setDomainDetail({
+        value: meta.domain ? meta.domain : data,
+        isAddress: false,
+      });
+    } else {
+      const meta = await fetchUserAddressByDomain(input);
+      const address = await provider.resolveName(input);
+      setDomainDetail({
+        value: meta.owner ? meta.owner : address,
+        isAddress: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleDomain(valid, address);
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [address, 500]);
+
+  const copyAddress = (text) => {
+    navigator.clipboard.writeText(text);
+  };
+
   const handleWrap = async () => {
     const { chain } = getNetwork();
     const fixedValue = decimal2Fixed(amount, 18);
@@ -299,7 +412,7 @@ const WrapAndDelegate = ({
       handleWrapAndDelegate(
         contracts?.uftgToken,
         uftgABI,
-        address,
+        domainDetail.isAddress ? domainDetail.value : address,
         amount,
         checkTxnStatus,
         checkTxnError
@@ -347,6 +460,23 @@ const WrapAndDelegate = ({
           value={address}
           onChange={handleAddress}
         />
+        {!domainDetail.isAddress ? (
+          <div className="domain_data">
+            <p className="domain_value">
+              {domainDetail.value ? domainDetail.value : ""}
+            </p>
+          </div>
+        ) : (
+          <div
+            onClick={() => copyAddress(domainDetail.value)}
+            className="domain_data"
+          >
+            <p className="domain_value">
+              {domainDetail.value ? shortenAddress(domainDetail.value) : ""}
+            </p>
+            {domainDetail.value && <FiCopy />}
+          </div>
+        )}
         <Button
           loading={isLoading}
           onClick={handleWrap}
@@ -476,13 +606,39 @@ const UpdateDelegation = ({
     text: "Enter Address",
     disable: true,
   });
+  const [valid, setValid] = useState(false);
+  const [domainDetail, setDomainDetail] = useState({
+    value: "",
+    isAddress: false,
+  });
+  const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
+  const provider = new ethers.providers.JsonRpcProvider(key);
 
   const handleAddress = (e) => {
     const userAddr = e.target.value;
     const isValid = ethers.utils.isAddress(userAddr);
+    setValid(isValid);
 
     setAddress(userAddr);
-    if (!isValid || userAddr == "") {
+    // if (!isValid || userAddr == "") {
+    //   setButtonText({
+    //     text: "Enter Valid Address",
+    //     disable: true,
+    //   });
+    // } else {
+    //   setButtonText({
+    //     text: "Update Delegation",
+    //     disable: false,
+    //   });
+    // }
+  };
+
+  useEffect(() => {
+    const isValid = ethers.utils.isAddress(
+      domainDetail.isAddress ? domainDetail.value : address
+    );
+
+    if (!isValid) {
       setButtonText({
         text: "Enter Valid Address",
         disable: true,
@@ -493,6 +649,41 @@ const UpdateDelegation = ({
         disable: false,
       });
     }
+  }, [address, domainDetail.value]);
+
+  const handleDomain = async (isValid, input) => {
+    setDomainDetail({
+      value: "",
+      isAddress: false,
+    });
+
+    if (isValid) {
+      const meta = await fetchUserDomain(input);
+      const data = await provider.lookupAddress(input);
+      setDomainDetail({
+        value: meta.domain ? meta.domain : data,
+        isAddress: false,
+      });
+    } else {
+      const meta = await fetchUserAddressByDomain(input);
+      const address = await provider.resolveName(input);
+      setDomainDetail({
+        value: meta.owner ? meta.owner : address,
+        isAddress: true,
+      });
+      setValid(true);
+    }
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleDomain(valid, address);
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [address, 500]);
+
+  const copyAddress = (text) => {
+    navigator.clipboard.writeText(text);
   };
 
   const handleUpdate = () => {
@@ -502,7 +693,7 @@ const UpdateDelegation = ({
     handleUpdateDelegate(
       contracts?.uftgToken,
       uftgABI,
-      address,
+      domainDetail.isAddress ? domainDetail.value : address,
       checkTxnStatus,
       checkTxnError
     );
@@ -525,12 +716,28 @@ const UpdateDelegation = ({
           value={address}
           onChange={handleAddress}
         />
+        {!domainDetail.isAddress ? (
+          <div className="domain_data">
+            <p className="domain_value">
+              {domainDetail.value ? domainDetail.value : ""}
+            </p>
+          </div>
+        ) : (
+          <div
+            onClick={() => copyAddress(domainDetail.value)}
+            className="domain_data"
+          >
+            <p className="domain_value">
+              {domainDetail.value ? shortenAddress(domainDetail.value) : ""}
+            </p>
+            {domainDetail.value && <FiCopy />}
+          </div>
+        )}
         <Button
           loading={isLoading}
           onClick={handleUpdate}
           disabled={buttonText?.disable}
         >
-          {" "}
           {buttonText?.text}
         </Button>
       </div>
