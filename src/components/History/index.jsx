@@ -16,7 +16,6 @@ import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
 import loader from '../../assets/Eclipse-loader.gif'
 import { fetchGraphQlData } from "../../utils/axios";
 import { useQuery} from "react-query";
-import { fetchGraphQlData } from "../../utils/axios";
 
 const graphURL = {
   80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
@@ -47,7 +46,7 @@ const graphURL = {
   const networksWithGraph = [80001, 137]
  
   const { data, loading, error, refetch } = useQuery('history', async () => {
-    const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
+    const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
     return fetchedDATA;
     });
  

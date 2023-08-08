@@ -236,7 +236,6 @@ export const getActionBtn = (
       return { text: "Exceeds Redeemable Amount", disable: true };
     }
   } else if (amount && activeOperation === repay) {
-   console.log("activeOperation", fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals),  amount, Number(fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals)) < Number(amount));
     if (Number(fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals)) < Number(amount)) {
       return { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.borrowBalanceFixed)) {

@@ -144,7 +144,7 @@ export default function PoolComponent(props) {
     })
       .then((receipt) => {
 
-        console.log("receipt", receipt);
+        // console.log("receipt", receipt);
         if (receipt.status == 1) {
           message.success(
             `Transaction for ${txnData.method} of ${Number(
@@ -529,7 +529,7 @@ export default function PoolComponent(props) {
           token1: poolData?.token1?.symbol
         })
       }
-      console.log("poolAddressFound", poolAddress, poolData);
+      // console.log("poolAddressFound", poolAddress, poolData);
     }
 
     // console.log("handlePoolAndTokenSelect", tokens);
@@ -616,32 +616,7 @@ export default function PoolComponent(props) {
         <PoolSkeleton />
       ) : (
         <div className="pool_container">
-          {/* <div className="token_container">
-            <Popover
-              content={<SortContent />}
-              trigger="click"
-              overlayClassName="sort_dropDown"
-              placement="bottomLeft"
-              open={visible0}
-              onOpenChange={(bool) => setVisible0(bool)}
-            >
-              <div className={`sortBy`}>
-                <p>List</p>
-              </div>
-            </Popover>
-            <Popover
-              content={<SortContent1 />}
-              trigger="click"
-              overlayClassName="sort_dropDown"
-              placement="bottomLeft"
-              open={visible1}
-              onOpenChange={(bool) => setVisible1(bool)}
-            >
-              <div className={`sortBy`}>
-                <p>List</p>
-              </div>
-            </Popover>
-          </div> */}
+ 
           <div className="token_container">
             <div>
               <div
@@ -651,9 +626,9 @@ export default function PoolComponent(props) {
                 <img src={poolData?.token0?.logo} onError={imgError} alt="" />
                 <h2>{poolData?.token0?._symbol}</h2>
               </div>
-              <div onClick={() => handleOpenSelectTokenMoadal(true, 'token0')} className="dropdown">
+              {/* <div onClick={() => handleOpenSelectTokenMoadal(true, 'token0')} className="dropdown">
               <FaChevronDown className="dropicon"/>
-              </div>
+              </div> */}
             </div>
             <div>
               <div
@@ -663,9 +638,9 @@ export default function PoolComponent(props) {
                 <img src={poolData?.token1?.logo} onError={imgError} alt="" />
                 <h2>{poolData?.token1?._symbol}</h2>
               </div>
-              <div onClick={() => handleOpenSelectTokenMoadal(true, 'token1')} className="dropdown">
+              {/* <div onClick={() => handleOpenSelectTokenMoadal(true, 'token1')} className="dropdown">
                 <FaChevronDown className="dropicon"/>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="content">

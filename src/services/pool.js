@@ -635,7 +635,7 @@ export const handleLend = async (
             chainId: '',
           }; //will hold the value of the transaction
 
-          console.log("transaction", transaction);
+          // console.log("transaction", transaction);
           checkTxnStatus(transaction?.hash, txn);
 
 
