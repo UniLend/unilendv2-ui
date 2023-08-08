@@ -75,12 +75,13 @@ import { getTokenUSDPrice } from "./helpers/contracts";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
+const alchemyId2 = import.meta.env.VITE_ALCHEMY_ID2;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
   [mainnet, bsc, polygonMumbai, sepoliaTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
-  [ alchemyProvider({ apiKey: alchemyId }), publicProvider(), infuraProvider({ apiKey: infuraID, stallTimeout: 1_000 }),]
+  [ alchemyProvider({ apiKey: alchemyId }),alchemyProvider({ apiKey: alchemyId2 }), infuraProvider({ apiKey: infuraID, stallTimeout: 1_000  }), publicProvider()]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
@@ -125,7 +126,7 @@ const shardeumPools = [{
 function App() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient()
-  const {address, isConnected} = getAccount();
+  const {isConnected} = getAccount();
   const { chain, chains } = getNetwork();
   const {user, poolList} = useSelector((state) => state)
   const query = getPoolCreatedGraphQuery(user?.address);
@@ -133,8 +134,8 @@ function App() {
   const state = useSelector((state) => state);
   const networksWithGraph = [80001, 137]
 
- const { data, loading, error, refetch } = useQuery('pools', async () => {
- const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
+ const { data, loading, error , refetch} = useQuery('pools', async () => {
+ const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
  return fetchedDATA;
  } );
 
@@ -152,7 +153,6 @@ function App() {
       refetch()
     }
   }, [isConnected])
-//  for creating contract instances
   useEffect(() => {
     (async () => {
       try {
@@ -167,7 +167,6 @@ function App() {
           dispatch(setUser(user));
           provider = getProvider();
         } else {
-          console.log("providerwalletconnect", user, walletconnect);
            provider = new ethers.providers.JsonRpcProvider( `https://rpc.public.zkevm-test.net`);
         }
         // dispatch(setWeb3(web3));
@@ -204,7 +203,7 @@ function App() {
             throw err;
           });
       } catch (error) {
-        console.error(error.message);
+       
         dispatch(setError(error));
       }
     })();
@@ -230,7 +229,7 @@ function App() {
               "PoolCreated"
             );
           }
-          
+        
           const array = [];
           const tokenList = {};
           for (const pool of result) {
@@ -327,7 +326,7 @@ function App() {
           dispatch(setPools({ poolData, tokenList }));
         })();
       } catch (error) {
-        console.error(error);
+       
         dispatch(setError(error));
       }
     }
@@ -337,7 +336,7 @@ function App() {
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-    if ( data && networksWithGraph.includes(networkID) ) {
+    if ( data && networksWithGraph.includes(networkID) && false) {
      const allPositions = data?.positions
       const poolData = {};
       const tokenList = {};
@@ -400,7 +399,7 @@ function App() {
       
       }
 
-      console.log("activeChain", poolData, tokenList);
+    
       dispatch(setPools({ poolData, tokenList }));
     }
   }, [data , user]);

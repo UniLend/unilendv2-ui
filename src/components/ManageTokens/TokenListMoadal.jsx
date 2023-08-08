@@ -119,7 +119,6 @@ export default function TokenListMoadal({openToken, handlePoolAndTokenSelect, se
         setSelectedToken('token1')
       }
 
-      console.log("poolAddressFound",'selected',  selectedTokens);
       // cleanup event listener when component unmounts
     //   return () => window.removeEventListener('resize', handleResize);
 

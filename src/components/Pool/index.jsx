@@ -189,7 +189,7 @@ export default function PoolComponent(props) {
     setAmount(0);
     setMax(false);
     setIsOperationLoading(false);
-    console.log("Error", { error });
+
     const errorText = String(error.reason);
     message.error(error?.message ? errorText : "Error: Transaction Error");
   };
@@ -382,12 +382,12 @@ export default function PoolComponent(props) {
       try {
         fetchPoolDATA()
       } catch (error) {
-        console.log("Error Refetch");
+       
         fetchPoolDATA()
       }
 
     }
-      console.log("FetchingDATA", methodLoaded);
+
       if (
         isAllTrue  &&
         selectedToken !== null &&
@@ -576,6 +576,26 @@ export default function PoolComponent(props) {
     );
   };
 
+  // useEffect(() => {
+  //   const poolsArray = Object.values(poolList);
+  //   if (poolsArray.length) {
+  //     const filtered = poolsArray
+  //       .filter(
+  //         (pool) =>
+  //           pool.token0.symbol === selectedTokens.token0 ||
+  //           pool.token1.symbol === selectedTokens.token0
+  //       )
+  //       .map((pool) => {
+  //         if (pool.token0.symbol === selectedTokens.token0) {
+  //           return { token: pool.token1 };
+  //         } else if (pool.token1.symbol === selectedTokens.token0) {
+  //           return { token: pool.token0 };
+  //         }
+  //       });
+  //     setTokensWithCreatedPools(filtered);
+   
+  //   }
+  // }, [poolList]);
 
 
   const handleOpenSelectTokenMoadal = (bool, token) => {

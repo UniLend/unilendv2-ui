@@ -61,7 +61,7 @@ export const connectWallet = async (wallet, ChangedAccount=null) => {
           return res;
         })
         localStorage.setItem('wallet', 'metamask')
-        console.log("USerObject", data);
+     
       } catch (error) {
         const isError = (error?.message == 'Connector already connected')
         if(!isError){
@@ -101,7 +101,7 @@ export const connectWallet = async (wallet, ChangedAccount=null) => {
     saveToLocalStorage('user', obj)
     return obj;
   } catch (error) {
-    console.error("Walleterror",error.message);
+   
     throw error;
   }
 
@@ -134,7 +134,7 @@ export const changeNetwork = async (networkId) => {
         });
         return true;
       } catch (err) {
-        console.error(err);
+      
         return false;
       }
     }
@@ -151,9 +151,9 @@ export const MetaMaskEventHandler = (provider) => {
     window.location.reload();
   });
   provider.on('message', (message) => {
-    console.log(message);
+    
   });
   provider.on('disconnect', (reason) => {
-    console.log(reason);
+ 
   });
 };

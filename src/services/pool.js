@@ -105,7 +105,9 @@ export const handleRedeem = async (
       }
 
  
-      const txn = await instance.redeem(poolAddress, maxAmount, userAddr)
+   
+
+      const txn = await instance.redeem(poolAddress, Math.trunc(Number(maxAmount)).toString(), userAddr)
 
       hash = txn?.hash
       // actnCont = await contracts.coreContract.methods.redeem(
@@ -114,7 +116,7 @@ export const handleRedeem = async (
       //   userAddr
       // );
     } else {
-      const txn = await instance.redeemUnderlying(poolAddress, Amount, userAddr)
+      const txn = await instance.redeemUnderlying(poolAddress, Math.trunc(Number(Amount)).toString(), userAddr)
 
       hash = txn?.hash
       // hash = await getContractInstance(contracts.coreContract.address, coreAbi, 'redeemUnderlying', [poolAddress, Amount, userAddr])
@@ -146,7 +148,7 @@ export const handleRedeem = async (
     //     //   checkTxnError(error);
     //   });
   } catch (error) {
-    console.error('Redeem:', error);
+   
     checkTxnError(error);
     throw error;
   }
@@ -185,7 +187,7 @@ export const setAllowance = async (
       checkTxnStatus(hash, txn);
 
  } catch (error) {
-  console.error('Aproove:', error);
+
       checkTxnError(error);
       throw error;
  }
@@ -582,7 +584,7 @@ export const getPoolAllData = async (
       };
       return pool;
     } catch (error) {
-      console.error(error);
+    
       throw error;
     }
   }
@@ -621,7 +623,7 @@ export const handleLend = async (
       // })
 
 
-      const transaction = await instance.lend(poolData._address, Amount)
+      const transaction = await instance.lend(poolData._address, Math.trunc(Number(Amount)).toString())
 
 
                const txn = {
@@ -650,7 +652,8 @@ export const handleLend = async (
       );
     }
   } catch (error) {
-    console.error('Lend:', error);
+
+
     checkTxnError(error);
     throw error;
   }
@@ -682,7 +685,7 @@ export const handleBorrow = async (
     if (fixed2Decimals18(collateralToken.allowance, collateralToken._decimals) >= collateral) {
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
 
-      const transaction = await instance.borrow(poolData._address, Amount, Collateral, userAddr);
+      const transaction = await instance.borrow(poolData._address, Math.trunc(Number(Amount)).toString() , Math.trunc(Number(Collateral)).toString() , userAddr);
                 const txn = {
             method: 'borrow',
             amount: amount,
@@ -725,7 +728,7 @@ export const handleBorrow = async (
       );
     }
   } catch (error) {
-    console.error('Borrow:', error);
+
     checkTxnError(error);
     throw error;
   }
@@ -751,7 +754,7 @@ export const handleRepay = async (
     '57896044618658097711785492504343953926634992332820282019728792003956564819967';
   let Amount = decimal2Fixed(amount, selectedToken._decimals);
   if (selectedToken._address == poolData.token0._address) {
-    Amount = mul(Amount, -1);
+    Amount = Math.trunc(Number( mul(Amount, -1))).toString();
     Max = '-57896044618658097711785492504343953926634992332820282019728792003956564819967';
   }
   if (max) {
@@ -761,7 +764,7 @@ export const handleRepay = async (
     if (fixed2Decimals18(selectedToken.allowance, selectedToken._decimals) >= amount) {
 
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
-     const {hash} = await instance.repay(poolAddress, Amount, userAddr)
+     const {hash} = await instance.repay(poolAddress,Amount, userAddr)
           const txn = {
             method: 'repay',
             amount: amount,
@@ -802,7 +805,7 @@ export const handleRepay = async (
       );
     }
   } catch (error) {
-    console.error('Repay:', error);
+
     checkTxnError(error);
     throw error;
   }
