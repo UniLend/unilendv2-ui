@@ -7,15 +7,17 @@ import './styles/poolCard.scss';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import bunnytheme from '../../assets/bunnytheme.svg'
+import useWallet from '../../lib/hooks/useWallet';
 
 
  function PoolCard({pool}) {
   const { poolAddress, token0, token1, totalLiquidity, totalBorrowed  } = pool;
   const [poolTheme, setPoolTheme] = useState(false)
+  const { address, isConnected} = useWallet()
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    if(false){
+    if(address && isConnected){
       navigate(`/pool/${poolAddress}`)
     } else {
       message.info("Please Connect to the Wallet")

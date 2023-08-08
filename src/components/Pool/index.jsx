@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Slider, Button, message, Modal, Popover, Tooltip } from "antd";
 import {FaChevronDown} from 'react-icons/fa'
-import { waitForTransaction } from "@wagmi/core";
+import { waitForTransaction } from "wagmi/actions";
 import "./styles/index.scss";
 import { useNavigate, useParams } from "react-router-dom";
 import { DownOutlined } from "@ant-design/icons";
@@ -27,6 +27,8 @@ import PoolSkeleton from "../Loader/PoolSkeleton";
 import TwitterModal from "../Common/TwitterModal";
 import { tokensBYSymbol } from "../../utils/constants";
 import TokenListMoadal from "../ManageTokens/TokenListMoadal";
+import useWallet from "../../lib/hooks/useWallet";
+import { useSelector } from "react-redux";
 
 const lend = "lend";
 const borrow = "borrow";
@@ -34,7 +36,7 @@ const redeem = "redeem";
 const repay = "repay";
 
 export default function PoolComponent(props) {
-  const { contracts, user, web3, isLoading, isError, poolList } = props;
+  const { contracts, user, web3, isLoading, isError, poolList } = useSelector((state)=> state);
   const [activeToken, setActiveToken] = useState(0);
   const [selectedToken, setSelectedToken] = useState(null);
   const [collateralToken, setCollaterralToken] = useState(null);
@@ -66,7 +68,7 @@ export default function PoolComponent(props) {
   const { poolAddress } = useParams();
   const [selectedPool, setSelectedPool] = useState(poolAddress);
   const navigate = useNavigate();
-
+ const { isConnected } = useWallet()
   const liquidityText = {
     lend: "Your Liquidity",
     redeem: "Redeemable Amount",
@@ -130,7 +132,7 @@ export default function PoolComponent(props) {
   };
 
   useEffect(() => {
-    if (!user.isConnected) {
+    if (!isConnected) {
       navigate("/");
     }
     if (selectedToken && collateralToken) {
@@ -139,11 +141,13 @@ export default function PoolComponent(props) {
   }, [amount, selectLTV]);
 
   const checkTxnStatus = (hash, txnData) => {
+   
     waitForTransaction({
       hash,
     })
       .then((receipt) => {
-        if (receipt.status == 1) {
+        console.log('hash', hash, receipt);
+        if (receipt.status == "success") {
           message.success(
             `Transaction for ${txnData.method} of ${Number(
               txnData.amount
@@ -288,16 +292,7 @@ export default function PoolComponent(props) {
     }
   };
 
-  // useEffect(() => {
-  //   setMethodLoaded({
-  //     getPoolData: false,
-  //     getPoolFullData: false,
-  //     getOraclePrice: false,
-  //     getPoolTokensData: false,
-  //   })
-  // }, [user])
 
-  // get contract data
 
 
   const fetchPoolDATA = async () => {
@@ -570,36 +565,7 @@ export default function PoolComponent(props) {
     );
   };
 
-  useEffect(() => {
-    const poolsArray = Object.values(poolList);
-    if (poolsArray.length) {
-      // const poolsWithToken0 = poolsArray
-      //   .filter(
-      //     (pool) =>
-      //       pool.token0.symbol === selectedTokens.token0 ||
-      //       pool.token1.symbol === selectedTokens.token0
-      //   )
-      //   .map((pool) => {
-      //     if (pool.token0.symbol === selectedTokens.token0) {
-      //       return { token: pool.token1 };
-      //     } else if (pool.token1.symbol === selectedTokens.token0) {
-      //       return { token: pool.token0 };
-      //     }
-      //   });
-      //   const poolsWithToken1 = poolsArray
-      //   .map((pool) => {
-      //     if (pool.token0.symbol === selectedTokens.token1) {
-      //       return { token: pool.token1, pool: true };
-      //     } else if (pool.token1.symbol === selectedTokens.token1) {
-      //       return { token: pool.token0, pool: true };
-      //     } else {
-      //       return { token: pool.token0, pool: true };
-      //     }
-      //   });
-      // setTokensWithCreatedPools(poolsWithToken0);
-      console.log("PoolArray", );
-    }
-  }, [poolList, selectedTokens]);
+
 
 
   const handleOpenSelectTokenMoadal = (bool, token) => {
@@ -808,7 +774,8 @@ export default function PoolComponent(props) {
                   onChange={handleLTVSlider}
                   min={5}
                   max={Number(poolData.ltv)}
-                  tooltipVisible={false}
+                  //tooltipVisible={false}
+                   
                   className="ltv_slider"
                 />
               </div>

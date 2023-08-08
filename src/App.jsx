@@ -45,43 +45,14 @@ import { zkEVMTestNet, shardeumTestnet, sepoliaTestnet } from "./core/networks/C
 import { getTokenUSDPrice } from "./helpers/contracts";
 import { useWalletClient } from 'wagmi'
 import { getContractLib, getPastEvents } from "./lib/fun/functions";
+import { getEtherContract } from "./lib/fun/wagmi";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
-// const { chains, provider, webSocketProvider } = configureChains(
-//   [mainnet, bsc, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon],
-//   [ alchemyProvider({ apiKey: alchemyId }), publicProvider(), infuraProvider({ apiKey: infuraID }),]
-// );
 
-// export const MetaMaskconnector = new MetaMaskConnector({
-//   chains: [mainnet, polygonMumbai, sepolia, polygonZkEvmTestnet, zkEVMTestNet, zkSyncTestnet, polygon],
-// });
-
-// export const WalletConnector = new WalletConnectConnector({
-//   chains,
-//   options: {
-//     qrcode: true,
-//     version: 2,
-//     projectId: projectId,
-//   },
-// });
-
-// const client = createClient({
-//   connectors: [
-//     new InjectedConnector({ chains }),
-//   ],
-//   autoConnect: true,
-//   provider,
-//   webSocketProvider,
-// });
-
-const graphURL = {
-  80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
-  137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
-};
 
 const shardeumPools = [{
   pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
@@ -145,10 +116,10 @@ function App() {
       
         Promise.all(
           preparedData.map((item) =>
-            getContractLib({
-              address: item.address,
-              abi: item.abi
-            })
+            getEtherContract( 
+              item.address,
+              item.abi
+            )
           )
         )
           .then((res) => {
@@ -163,7 +134,7 @@ function App() {
           })
           .catch((err) => {
             // throw err;
-            console.log("errors");
+            console.log("errors", err);
           });
       } catch (error) {
         dispatch(setError(error));
@@ -195,9 +166,9 @@ function App() {
           let result;
 
           console.log("contracts", contracts.coreContract  );
-          const length = await contracts?.coreContract?.read?.poolLength()
+          // const length = await contracts?.coreContract?.read?.poolLength()
 
-          console.log('length', length);
+          // console.log('length', length);
 
        
           if(networkID == 8081){

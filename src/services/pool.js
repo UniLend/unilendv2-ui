@@ -15,6 +15,7 @@ import {
 } from '../helpers/contracts';
 import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
+import { getEtherContract } from "../lib/fun/wagmi";
 
 export const getContractInstance = async ( contractAddr, abi ) => {
 
@@ -90,7 +91,7 @@ export const handleRedeem = async (
   let hash;
   try {
 
-    const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
+    const instance = await getEtherContract(contracts.coreContract.address, coreAbi)
 
     if (max) {
       if (selectedToken.collateralBalance > '0') {
@@ -170,7 +171,7 @@ export const setAllowance = async (
     '115792089237316195423570985008687907853269984665640564039457584007913129639935';
  try {
    
-  const instance = await getContractInstance(token._address, erc20Abi)
+  const instance = await getEtherContract(token._address, erc20Abi)
 
   const { hash } = await instance.approve(contracts.coreContract.address, maxAllow);
  
@@ -612,7 +613,7 @@ export const handleLend = async (
   try {
     if (fixed2Decimals18(selectedToken.allowance, selectedToken._decimals) >= amount) {
 
-       const instance  = await getContractInstance(contracts.coreContract.address, coreAbi)
+       const instance  = await getEtherContract(contracts.coreContract.address, coreAbi)
       // const signer = await fetchSigner()
       // const instance = getContract({
       //   address: contracts.coreContract.address,
@@ -696,7 +697,7 @@ export const handleBorrow = async (
   }
   try {
     if (fixed2Decimals18(collateralToken.allowance, collateralToken._decimals) >= collateral) {
-      const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
+      const instance = await getEtherContract(contracts.coreContract.address, coreAbi)
 
       const transaction = await instance.borrow(poolData._address, Amount, Collateral, userAddr);
                 const txn = {
@@ -776,7 +777,7 @@ export const handleRepay = async (
   try {
     if (fixed2Decimals18(selectedToken.allowance, selectedToken._decimals) >= amount) {
 
-      const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
+      const instance = await getEtherContract(contracts.coreContract.address, coreAbi)
      const {hash} = await instance.repay(poolAddress, Amount, userAddr)
           const txn = {
             method: 'repay',
@@ -863,7 +864,7 @@ export const getCollateralNeeded = (
 
 export const handleCreatePool = async (contracts) => {
  try {
-  const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
+  const instance = await getEtherContract(contracts.coreContract.address, coreAbi)
   const length = await instance.poolLength()
   
   const {hash} = await instance.createPool('0x4127976420204dF0869Ca3ED1C2f62c04F6cb137','0x8C57273241C2b4f4a295ccf3D1Feb29A08225A08', {
