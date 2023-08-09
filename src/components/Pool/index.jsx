@@ -15,7 +15,7 @@ import {
   handleBorrow,
   handleRepay,
 } from "../../services/pool";
-import { imgError } from "../../utils";
+import { fixFormatNumber, imgError } from "../../utils";
 import {
   shortNumber,
   getBorrowMax,
@@ -181,8 +181,6 @@ export default function PoolComponent(props) {
         }
       })
       .catch((error) => {
-        console.error("status:", error);
-        console.log({ error });
         setTimeout(function () {
           checkTxnStatus(hash, txnData);
         }, 1000);
@@ -193,12 +191,14 @@ export default function PoolComponent(props) {
     setAmount(0);
     setMax(false);
     setIsOperationLoading(false);
-    console.log("Error", { error });
+
     const errorText = String(error.reason);
     message.error(error?.message ? errorText : "Error: Transaction Error");
   };
 
   const handleOperation = () => {
+    try {
+
     (async () => {
       setIsOperationLoading(true);
       if (contracts.coreContract) {
@@ -255,6 +255,10 @@ export default function PoolComponent(props) {
         }
       }
     })();
+          
+  } catch (error) {
+      
+  }
   };
 
   const toggleToken = (token) => {
@@ -371,12 +375,12 @@ export default function PoolComponent(props) {
       try {
         fetchPoolDATA()
       } catch (error) {
-        console.log("Error Refetch");
+       
         fetchPoolDATA()
       }
 
     }
-      console.log("FetchingDATA", methodLoaded);
+
       if (
         isAllTrue  &&
         selectedToken !== null &&
@@ -579,6 +583,7 @@ export default function PoolComponent(props) {
     setShowSelectTokenModal(bool)
   }
 
+
   return (
     <>
       {isPageLoading && selectedToken == null ? (
@@ -696,7 +701,7 @@ export default function PoolComponent(props) {
               <Tooltip title={getLiquidityAmount[activeOperation]} trigger='hover'>
               <h1>
                 {selectedToken
-                  ? shortNumber(getLiquidityAmount[activeOperation])
+                  ? fixFormatNumber(getLiquidityAmount[activeOperation])
                   : 0}
               </h1>
               </Tooltip>

@@ -84,7 +84,7 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
   const [positionDataBackup, setPositionDataBackup] = useState();
   // const { data, loading, error } = useQuery(query);
   const { data, loading, error, refetch } = useQuery('userDashboard', async () => {
-    const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
+    const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
     return fetchedDATA;
     });
 

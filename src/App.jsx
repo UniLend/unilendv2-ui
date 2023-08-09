@@ -48,16 +48,23 @@ import { getEtherContract } from "./lib/fun/wagmi";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
+const alchemyId2 = import.meta.env.VITE_ALCHEMY_ID2;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
 
 
 const shardeumPools = [{
-  pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
-  token1: '0xd146878affF8c8dd3e9EBd9177F2AE4f6d4e5979',
-  token0:'0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1'
-}]
+  pool: '0x665ACEc556dC92C2E504beFA061d5f65Cd9493e2',
+  token1: '0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1',
+  token0:'0x11f13ad374e79b466a36eb835747e431fbbe3890'
+},
+// {
+//   pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
+//   token1: '0xd146878affF8c8dd3e9EBd9177F2AE4f6d4e5979',
+//   token0:'0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1'
+// }
+]
 
 window.global = window.global ?? window;
 window.Buffer = window.Buffer ?? Buffer;
@@ -66,7 +73,7 @@ window.Buffer = window.Buffer ?? Buffer;
 function App() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient()
-  const {address, isConnected} = getAccount();
+  const {isConnected} = getAccount();
   const { chain, chains } = getNetwork();
 
   const {user, contracts } = useSelector((state) => state);
@@ -74,10 +81,10 @@ function App() {
   // const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
   const networksWithGraph = [80001, 137]
 
-//  const { data, loading, error, refetch } = useQuery('pools', async () => {
-//  const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
-//  return fetchedDATA;
-//  } );
+ const { data, loading, error, refetch } = useQuery('pools', async () => {
+ const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
+ return fetchedDATA;
+ } );
 
 
   document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`;
@@ -86,6 +93,15 @@ function App() {
 
   const isSame = user?.address != getFromLocalStorage("user")?.address;
 
+
+  useEffect(() => {
+    if(isConnected){
+
+      refetch()
+    }
+  }, [isConnected ])
+
+  
   useEffect(() => {
     (async () => {
       try {
@@ -99,6 +115,8 @@ function App() {
           const user = await connectWallet();
           dispatch(setUser(user));
           // provider = getProvider();
+        } else {
+          //  provider = new ethers.providers.JsonRpcProvider( `https://rpc.public.zkevm-test.net`);
         }
         // dispatch(setWeb3(web3));
         // const { chain: nextChain, chains } = getNetwork();
@@ -150,6 +168,7 @@ function App() {
   // }, [isConnected])
 
 
+  // for getting the pools and tokens datafor non graph networks
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
@@ -180,7 +199,7 @@ function App() {
             );
             result = result.map((item) => item.args);
           }
-          
+        
           const array = [];
           const tokenList = {};
           for (const pool of result) {
@@ -276,7 +295,7 @@ function App() {
           dispatch(setPools({ poolData, tokenList }));
         })();
       } catch (error) {
-        console.error(error);
+       
         dispatch(setError(error));
       }
     }

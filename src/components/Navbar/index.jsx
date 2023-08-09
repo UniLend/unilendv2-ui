@@ -64,7 +64,7 @@ export default function Navbar(props) {
   const dispatch = useDispatch();
   const [currentTheme, setCurrentTheme] = useState(theme);
   const { chain: networkchain } = getNetwork();
-  const availableChain = [11155111, 1442, 80001, 137, 8081];
+  const availableChain = [11155111, 1442];
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -172,10 +172,10 @@ export default function Navbar(props) {
             <img src={ethlogo} alt="Etherium" />
             <p>zkEVM</p>
           </div>
-          <div onClick={() => handleSwitchNetwork(8081)}>
+          {/* <div onClick={() => handleSwitchNetwork(8081)}>
             <img src={shardeumLogo} alt="Etherium" />
             <p>Shardeum</p>
-          </div>
+          </div> */}
         </div>
       </div>
     );
@@ -207,10 +207,10 @@ export default function Navbar(props) {
           {" "}
           Sepolia Test Network
         </p>
-        <p onClick={() => handleSwitchNetwork(80001)}> Polygon Mumbai</p>
+        {/* <p onClick={() => handleSwitchNetwork(80001)}> Polygon Mumbai</p> */}
         {/* <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p> */}
         <p onClick={() => handleSwitchNetwork(1442)}> zkEVM Testnet</p>
-        <p onClick={() => handleSwitchNetwork(8081)}> Shardeum Testnet</p>
+        {/* <p onClick={() => handleSwitchNetwork(8081)}> Shardeum Testnet</p> */}
       </div>
     );
   });

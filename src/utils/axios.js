@@ -64,10 +64,15 @@ export const fetchUserAddressByDomain = async (domain) => {
     });
 };
 
-export const fetchGraphQlData = async (endpoint, FILMS_QUERY) => {
+export const fetchGraphQlData = async (chainId, FILMS_QUERY) => {
+
+  const graphURL = {
+    80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
+    137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
+  };
   try {
     const data = await axios({
-      url: endpoint,
+      url: graphURL[chainId || 137],
       method: "POST",
       data: {
         query: FILMS_QUERY,

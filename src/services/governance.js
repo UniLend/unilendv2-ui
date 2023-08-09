@@ -35,8 +35,7 @@ export const handleWrapAndDelegate = async (
     checkTxnStatus(txs?.hash, txtData);
 
   } catch (error) {
-    console.error("Wrap:", error);
-    console.log({ error });
+
     checkTxnError(error)
   }
 };
@@ -48,7 +47,7 @@ export const checkAllowance = async (tokenAddress, abi, owner, spender) => {
     const allowance = await instance.allowance(owner, spender);
     return {allowance};
   } catch (error) {
-    console.error("Allowance:", error);
+    throw error
   }
 };
 
@@ -92,7 +91,7 @@ export const handleUnWrap = async (governanceAddress, govABI, amount, checkTxnSt
         }
         checkTxnStatus(txs?.hash, txtData);
     } catch (error) {
-        console.log("ERror:",{error});
+  
         checkTxnError(error)
     }
 };

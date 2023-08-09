@@ -15,13 +15,20 @@ import DropDown from "../Common/DropDown";
 import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
 import loader from '../../assets/Eclipse-loader.gif'
 import { useSelector } from "react-redux";
+import { useQuery} from "react-query";
+import { fetchGraphQlData } from "../../utils/axios";
+
+const graphURL = {
+  80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
+  137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
+};
+
 
  function HistoryComponent() {
   const { contracts, user, web3, poolList, tokenList } = useSelector((state) => state);
   const navigate = useNavigate();
+   const { chain } = getNetwork()
 
-  const { address } = getAccount();
-  const newArray = new Array(50).fill(0).map((el, i) => i + 1);
   const [txtData, setTxtData] = useState([]);
   const [graphHistory, setGraphHistory] = useState([]);
   const [graphHistoryBackup, setGraphHistoryBackup] = useState([]);
@@ -37,9 +44,12 @@ import { useSelector } from "react-redux";
   const query = getHistoryGraphQuery(user?.address);
   const [called, setIsCalled] = useState(false)
   const [historyLoading, setHistoryLoading] = useState(false)
-
+  const networksWithGraph = [80001, 137]
  
-  // const { data, loading, error } = useQuery(query);
+  const { data, loading, error, refetch } = useQuery('history', async () => {
+    const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
+    return fetchedDATA;
+    });
  
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -56,8 +66,8 @@ import { useSelector } from "react-redux";
     if(!user.isConnected){
       navigate('/')
     }
-    const { chain } = getNetwork();
-    if (user?.network.id== 80001) {
+
+    if ( networksWithGraph.includes(user?.network.id )) {
       const pools = {};
       for (const key in poolList) {
         const pool = poolList[key];
@@ -74,6 +84,7 @@ import { useSelector } from "react-redux";
           ...data.redeems,
           ...data.repays,
         ];
+        console.log('graphDATAHistory', data);
         const sorted = sortByKey(newArray, "blockTimestamp", 1);
         
         setGraphHistory(sorted);
@@ -89,6 +100,7 @@ import { useSelector } from "react-redux";
   const handleSort = (index) => {
     const sortTo = isPolygon ? graphHistory : txtData;
     let sort = sortTo;
+    console.log("sort", sortTo);
     setSortIndex(index);
     if (index === 1) {
       sort = sortTo.sort(function (a, b) {
@@ -130,7 +142,7 @@ import { useSelector } from "react-redux";
   };
 
   const getTransactionData = async () => {
-    if (user?.network?.id != 80001 && !called) {
+    if ( !networksWithGraph.includes(user?.network.id ) && !called) {
       try {
         // setIsPageLoading(true);
         setHistoryLoading(true)
@@ -155,7 +167,7 @@ import { useSelector } from "react-redux";
         }
         setIsPageLoading(false);
       } catch (error) {
-        console.log("Error", {error});
+      
         setIsPageLoading(false);
         setHistoryLoading(false)
       }
@@ -164,9 +176,9 @@ import { useSelector } from "react-redux";
 
   
   useEffect(() => {
-    // if(!user.isConnected){
-    //   navigate('/')
-    // }
+    if(!user.isConnected){
+      navigate('/')
+    }
     if (user.address && contracts?.coreContract?.address && !called) {
  
       getTransactionData();

@@ -12,6 +12,7 @@ import useWallet from '../../lib/hooks/useWallet';
 
  function PoolCard({pool}) {
   const { poolAddress, token0, token1, totalLiquidity, totalBorrowed  } = pool;
+  // const user = useSelector((state)=> state.user)
   const [poolTheme, setPoolTheme] = useState(false)
   const { address, isConnected} = useWallet()
   const navigate = useNavigate();

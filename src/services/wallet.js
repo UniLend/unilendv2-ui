@@ -97,7 +97,7 @@ const trigerWallet = wallet || localStorage.getItem('wallet');
     saveToLocalStorage('user', obj)
     return obj;
   } catch (error) {
-    console.error("Walleterror",error.message);
+   
     throw error;
   }
 };
@@ -129,7 +129,7 @@ export const changeNetwork = async (networkId) => {
         });
         return true;
       } catch (err) {
-        console.error(err);
+      
         return false;
       }
     }

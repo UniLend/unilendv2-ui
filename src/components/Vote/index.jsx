@@ -74,7 +74,7 @@ export default function VoteComponent() {
 
   const checkTxnError = (error) => {
     setIsLoading(false);
-    console.log("Error", { error });
+  
     const errorText = String(error.reason);
     message.error(error?.message ? errorText : "Error: Transaction Error");
   };
@@ -256,17 +256,22 @@ export default function VoteComponent() {
             <img src={Vote} alt="vote info" />
           </div>
           <div>
-            <Link
-              to="https://commonwealth.im/unilend-finance/discussions"
-              target="_blank"
-            >
-              <h2>Participate In Governance</h2>
-            </Link>
+            <h2>Participate In Governance</h2>
             <p>
               You can either vote on each proposal yourself or delegate your
               votes to a third party. You can either vote on each proposal
               yourself or delegate your votes to a third party.
             </p>
+            <Button
+              onClick={() =>
+                window.open(
+                  "https://commonwealth.im/unilend-finance/discussions",
+                  "_blank"
+                )
+              }
+            >
+              Join Now
+            </Button>
           </div>
         </div>
       </div>

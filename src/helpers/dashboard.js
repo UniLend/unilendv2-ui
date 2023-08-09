@@ -96,7 +96,7 @@ export const getChartData = (data, tokenList) => {
     }
   }
 
-  console.log("Chart", chart);
+
 
   return { lendValues, borrowValues, donutLends, donutBorrows };
 };
