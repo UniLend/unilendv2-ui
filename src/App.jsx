@@ -70,7 +70,7 @@ import {
   getTokenPrice,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
-import { zkEVMTestNet, shardeumTestnet, sepoliaTestnet } from "./core/networks/Chains";
+import { zkEVMTestNet, shardeumTestnet, sepoliaTestnet, mumbaiTestnet } from "./core/networks/Chains";
 import { getTokenUSDPrice } from "./helpers/contracts";
 
 // import ends here
@@ -80,7 +80,7 @@ const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepoliaTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
+  [mainnet, bsc, mumbaiTestnet, sepoliaTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
   [ alchemyProvider({ apiKey: alchemyId }),alchemyProvider({ apiKey: alchemyId2 }), infuraProvider({ apiKey: infuraID, stallTimeout: 1_000  }), publicProvider()]
 );
 
@@ -135,7 +135,7 @@ function App() {
   const networksWithGraph = [80001, 137]
 
  const { data, loading, error , refetch} = useQuery('pools', async () => {
- const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
+ const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
  return fetchedDATA;
  } );
 
@@ -336,7 +336,7 @@ function App() {
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-    if ( data && networksWithGraph.includes(networkID) && false) {
+    if ( data && networksWithGraph.includes(networkID) ) {
      const allPositions = data?.positions
       const poolData = {};
       const tokenList = {};

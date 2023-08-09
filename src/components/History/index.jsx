@@ -47,7 +47,7 @@ const graphURL = {
   const networksWithGraph = [80001, 137]
  
   const { data, loading, error, refetch } = useQuery('history', async () => {
-    const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
+    const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
     return fetchedDATA;
     });
  

@@ -65,3 +65,25 @@ export const sepoliaTestnet = {
   },
   testnet: true,
 } as Chain;
+
+export const mumbaiTestnet = {
+  id: 80001,
+  name: 'Polygon Mumbai',
+  network: 'Polygon Mumbai',
+  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['https://polygon-mumbai.g.alchemy.com/v2/2Uqa_uWFpqzmbVfbHrVn5euVsAJ5eHQK'],
+    },
+    public: {
+      http: ['https://polygon-mumbai.g.alchemy.com/v2/2Uqa_uWFpqzmbVfbHrVn5euVsAJ5eHQK',],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'etherscan',
+      url: 'https://mumbai.polygonscan.com/',
+    },
+  },
+  testnet: true,
+} as Chain;
