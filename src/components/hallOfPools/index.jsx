@@ -6,7 +6,6 @@ import { FaChevronDown } from "react-icons/fa";
 import "./styles/index.scss";
 import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
 import { useSelector } from "react-redux";
-import { getAllEvents } from "../../services/events";
 import { erc20Abi } from "../../core/contractData/abi";
 import { getContract, getERC20Logo } from "../../services/contracts";
 import NoPoolFound from "../NoPoolFound";

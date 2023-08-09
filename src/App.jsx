@@ -27,7 +27,6 @@ import {
 } from "./core/contractData/abi";
 import { contractAddress } from "./core/contractData/contracts";
 // import { getContract } from './services/contracts';
-import { getAllEvents } from "./services/events";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import "./App.scss";
@@ -105,7 +104,7 @@ function App() {
         // const { chain: nextChain, chains } = getNetwork();
 
         const networkID = user?.network?.id
-        const { coreAddress, helperAddress, positionAddress } = contractAddress[chain.id || '11155111'];
+        const { coreAddress, helperAddress, positionAddress } = contractAddress[chain.id || networkID ||  '11155111'];
 
           // console.log("preparedData", coreAddress);
         const preparedData = [

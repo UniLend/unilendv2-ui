@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./styles/index.scss";
 import { Popover, Pagination } from "antd";
-import { useQuery } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { FaChevronDown } from "react-icons/fa";
 import { shortenAddress, imgError } from "../../utils";
@@ -11,13 +10,14 @@ import noTxt from "../../assets/notxt.svg";
 import { fixed2Decimals, fromBigNumber } from "../../helpers/contracts";
 import HistorySkeleton from "../Loader/HistorySkeleton";
 import { getHistoryGraphQuery, sortByKey } from "../../helpers/dashboard";
-import { getAccount, getNetwork } from "@wagmi/core";
+import { getAccount, getNetwork } from "wagmi/actions";
 import DropDown from "../Common/DropDown";
 import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
 import loader from '../../assets/Eclipse-loader.gif'
+import { useSelector } from "react-redux";
 
- function HistoryComponent(props) {
-  const { contracts, user, web3, poolList, tokenList } = props;
+ function HistoryComponent() {
+  const { contracts, user, web3, poolList, tokenList } = useSelector((state) => state);
   const navigate = useNavigate();
 
   const { address } = getAccount();
@@ -39,7 +39,7 @@ import loader from '../../assets/Eclipse-loader.gif'
   const [historyLoading, setHistoryLoading] = useState(false)
 
  
-  const { data, loading, error } = useQuery(query);
+  // const { data, loading, error } = useQuery(query);
  
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -84,7 +84,7 @@ import loader from '../../assets/Eclipse-loader.gif'
     } else {
       setIsPolygon(false);
     }
-  }, [data, poolList]);
+  }, [ poolList]);
 
   const handleSort = (index) => {
     const sortTo = isPolygon ? graphHistory : txtData;

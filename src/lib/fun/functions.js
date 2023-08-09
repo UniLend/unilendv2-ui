@@ -1,6 +1,6 @@
 
 
-import { getNetwork, getContract , getAccount, getWalletClient, getPublicClient} from "wagmi/actions";
+import { getNetwork, getContract , getAccount, getWalletClient, getPublicClient, readContract} from "wagmi/actions";
 import { getEtherContract } from "./wagmi";
 
 
@@ -27,4 +27,10 @@ export const getPastEvents = async ( address, abi,  event) => {
   const events = await contractInstance.queryFilter(event);
 
   return events
+}
+
+
+export const readContractLib = async (props) => {
+  const data = await readContract(props)
+  return data
 }
