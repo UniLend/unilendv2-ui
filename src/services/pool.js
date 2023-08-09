@@ -307,7 +307,8 @@ export const getOracleData = async (contracts, poolData) => {
       const tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
       const pool = { ...poolData };
       pool.token0.price = tmpPrice;
-      pool.token1.price = (1 / tmpPrice).toString();
+      pool.token1.price =  (1 / tmpPrice).toString() === 'Infinity' ? '0': (1 / tmpPrice).toString() ;
+     
       pool.token0.collateralBalance = mul(
         mul(pool.token1.borrowBalance, pool.token1.price) / pool.ltv,
         100

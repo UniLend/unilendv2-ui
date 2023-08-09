@@ -135,7 +135,7 @@ function App() {
   const networksWithGraph = [80001, 137]
 
  const { data, loading, error , refetch} = useQuery('pools', async () => {
- const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
+ const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
  return fetchedDATA;
  } );
 
@@ -336,7 +336,9 @@ function App() {
   useEffect(() => {
     const { chain } = getNetwork();
     const networkID = user?.network?.id
-    if ( data && networksWithGraph.includes(networkID) && false) {
+
+    console.log("Graphdata", data);
+    if ( data && networksWithGraph.includes(networkID) ) {
      const allPositions = data?.positions
       const poolData = {};
       const tokenList = {};
