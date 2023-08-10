@@ -191,7 +191,7 @@ export default function Navbar(props) {
           Sepolia Test Network
         </p>
         <p onClick={() => handleSwitchNetwork(80001)}> Polygon Mumbai</p>
-        <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p>
+        {/* <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p> */}
         <p onClick={() => handleSwitchNetwork(1442)}> zkEVM Testnet</p>
         <p onClick={() => handleSwitchNetwork(8081)}> Shardeum Testnet</p>
       </div>
