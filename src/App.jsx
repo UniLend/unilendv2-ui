@@ -338,7 +338,7 @@ function App() {
     const networkID = user?.network?.id
 
     console.log("Graphdata", data);
-    if ( data && networksWithGraph.includes(networkID) ) {
+    if ( data && networksWithGraph.includes(networkID) && false) {
      const allPositions = data?.positions
       const poolData = {};
       const tokenList = {};
