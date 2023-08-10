@@ -1,7 +1,8 @@
 import React from 'react'
-import { useAccount } from 'wagmi'
+import { useAccount, useNetwork } from 'wagmi'
 
 export default function useWallet() {
     const { address, isConnecting, isDisconnected, isConnected } = useAccount()
-  return { address, isConnected }
+    const { chain, chains} = useNetwork()
+  return { address, isConnected, chain, chains }
 }

@@ -63,9 +63,14 @@ export async function getEtherContract (address: any, abi: any) {
   const signer = await getEthersSigner()
 
   const contract = new ethers.Contract(address, abi , signer)
-
-  console.log('signer', contract);
+  console.log("contract", contract);
   
 return contract;
 
+}
+
+
+export const getEtherContractWithProvider = (address: any, abi: any, provider: any) => {
+  const contract = new ethers.Contract(address, abi , provider)
+return contract;
 }

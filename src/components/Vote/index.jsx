@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { Popover } from "antd";
 import {
-  getAccount,
   getNetwork,
-  getProvider,
   waitForTransaction,
-} from "@wagmi/core";
+} from "wagmi/actions";
 import { Input, Button, message } from "antd";
 import banner from "../../assets/dashboardbanner.svg";
 import Vote from "../../assets/vote.svg";
@@ -27,6 +25,8 @@ import {
 } from "../../services/governance";
 import { fetchUserAddressByDomain, fetchUserDomain } from "../../utils/axios";
 import { Link } from "react-router-dom";
+import useWallet from "../../lib/hooks/useWallet";
+import { getEtherContract } from "../../lib/fun/wagmi";
 
 const wrap = "wrap";
 const unWrap = "unWrap";
@@ -34,8 +34,8 @@ const update = "update";
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 
 export default function VoteComponent() {
-  const { address } = getAccount();
-  const { chain } = getNetwork();
+
+  const { address, chain } = useWallet()
   const [userAddress, setUserAddress] = useState(address);
   const [tokenBalance, setTokenBalance] = useState({ uft: "", uftg: "" });
   const [activeTab, setActiveTab] = useState(wrap);
@@ -52,7 +52,8 @@ export default function VoteComponent() {
     waitForTransaction({
       hash,
     }).then((receipt) => {
-      if (receipt.status == 1) {
+
+      if (receipt.status == "success") {
         if (data?.fn == "approve") {
           setTimeout(() => {
             handleAllowance();
@@ -64,17 +65,22 @@ export default function VoteComponent() {
             handleAllowance();
             message.success(`${data.message}`);
             setIsLoading(false);
-          }, 2000);
+          }, 3000);
         }
       } else {
-        alert("Error Checked");
+        setTimeout(() => {
+          checkTxnStatus(hash, data)
+        }, 1000);
       }
-    });
+    }).catch(()=> {
+      setTimeout(() => {
+        checkTxnStatus(hash, data)
+      }, 1000);
+    })
   };
 
   const checkTxnError = (error) => {
     setIsLoading(false);
-  
     const errorText = String(error.reason);
     message.error(error?.message ? errorText : "Error: Transaction Error");
   };
@@ -82,12 +88,11 @@ export default function VoteComponent() {
   //
   const getTokenBal = async () => {
     const contractsAdd = contractAddress[chain?.id || "1"];
-    const provider = getProvider();
-    const UFT = new ethers.Contract(contractsAdd?.uftToken, erc20Abi, provider);
-    const UFTG = new ethers.Contract(
+    // const provider = getProvider();
+    const UFT = await getEtherContract(contractsAdd.uftToken, erc20Abi)
+    const UFTG = await getEtherContract(
       contractsAdd?.uftgToken,
-      uftgABI,
-      provider
+      uftgABI
     );
     const delegatesAddress = await UFTG.delegates(address);
     const isValid = ethers.utils.isAddress(delegatesAddress);
@@ -112,8 +117,10 @@ export default function VoteComponent() {
       address,
       contractsAdd?.uftgToken
     );
-    const valueFromBigNumber = fromBigNumber(allowance);
 
+ 
+    const valueFromBigNumber = fromBigNumber(allowance);
+    console.log("allowance", valueFromBigNumber);
     setAllowanceValue(valueFromBigNumber);
   };
 
@@ -289,6 +296,7 @@ const WrapAndDelegate = ({
   checkTxnError,
 }) => {
   const [amount, setAmount] = useState("");
+  const { chain } = useWallet()
   const [address, setAddress] = useState(userAddress);
   const [valid, setValid] = useState(true);
   const [domainDetail, setDomainDetail] = useState({
@@ -392,9 +400,12 @@ const WrapAndDelegate = ({
   };
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
+    let timeoutId;
+    if(address){
+     timeoutId = setTimeout(() => {
       handleDomain(valid, address);
     }, 500);
+  }
     return () => clearTimeout(timeoutId);
   }, [address, 500]);
 
@@ -403,7 +414,6 @@ const WrapAndDelegate = ({
   };
 
   const handleWrap = async () => {
-    const { chain } = getNetwork();
     const fixedValue = decimal2Fixed(amount, 18);
     const contracts = contractAddress[chain?.id || "1"];
 
@@ -497,6 +507,7 @@ const UnWrap = ({
   checkTxnError,
 }) => {
   const [amount, setAmount] = useState("");
+  const { chain } = useWallet()
   const [buttonText, setButtonText] = useState({
     text: "Enter Amount",
     disable: true,
@@ -525,7 +536,6 @@ const UnWrap = ({
   };
 
   const handleUnWrapOperation = async () => {
-    const { chain } = getNetwork();
     const contracts = contractAddress[chain?.id || "1"];
     setIsLoading(true);
     handleUnWrap(
@@ -602,6 +612,7 @@ const UpdateDelegation = ({
   checkTxnError,
 }) => {
   const [address, setAddress] = useState("");
+  const { chain } = useWallet()
   const [buttonText, setButtonText] = useState({
     text: "Enter Address",
     disable: true,
@@ -687,7 +698,6 @@ const UpdateDelegation = ({
   };
 
   const handleUpdate = () => {
-    const { chain } = getNetwork();
     const contracts = contractAddress[chain?.id || "1"];
     setIsLoading(true);
     handleUpdateDelegate(

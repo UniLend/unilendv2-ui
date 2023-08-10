@@ -30,15 +30,24 @@ import {
   walletConnectWallet,
   metaMaskWallet,
 } from "@rainbow-me/rainbowkit/wallets";
+import { alchemyProvider } from 'wagmi/providers/alchemy'
 
-import { sepoliaTestnet, zkEVMTestNet } from "./core/networks/Chains";
+
+// import ends here
+const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
+const alchemyId2 = import.meta.env.VITE_ALCHEMY_ID2;
+const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
+const infuraID = import.meta.env.VITE_INFURA_ID;
+
+import { sepoliaTestnet, zkEVMTestNet, mumbaiTestnet } from "./core/networks/Chains";
+
 
 const { chains, publicClient } = configureChains(
-  [sepoliaTestnet, zkEVMTestNet],
-  [publicProvider()]
+  [sepoliaTestnet, zkEVMTestNet, mumbaiTestnet],
+  [publicProvider(),alchemyProvider({ apiKey: alchemyId })]
 );
-const walletConnectProjectID = "45c3755af7419aaf09eb64929022acdd";
-// const { connectors } = getDefaultWallets({
+// const walletConnectProjectID = "45c3755af7419aaf09eb64929022acdd";
+// const { wallets } = getDefaultWallets({
 //   appName: "RainbowKit demo",
 //   projectId: "45c3755af7419aaf09eb64929022acdd",
 //   chains,

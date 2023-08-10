@@ -1,24 +1,18 @@
 import { useEffect } from "react";
-import Web3 from "web3";
 import { useDispatch, useSelector } from "react-redux";
 //import { useQuery } from "@apollo/client";
-import { useQuery, useQueryClient} from "react-query";
+import { useQuery } from "react-query";
 import "antd/dist/antd.css";
-import { getNetwork, getContract , getAccount, fetchToken} from "wagmi/actions";
-import { Buffer } from 'buffer';
-
-
+import { Buffer } from "buffer";
 import {
-  setTheme,
   setUser,
-  setWeb3,
   setContracts,
   setLoading,
   setPools,
   setError,
 } from "./store/Action";
 import MainRoutes from "./routes";
-import { connectWallet, defProv } from "./services/wallet";
+import { connectWallet } from "./services/wallet";
 import {
   coreAbi,
   helperAbi,
@@ -32,76 +26,57 @@ import Footer from "./components/Footer";
 import "./App.scss";
 import { getFromLocalStorage, getTokenLogo } from "./utils";
 import { fetchCoinLogo, fetchGraphQlData } from "./utils/axios";
-import { useState } from "react";
 import {
   checkOpenPosition,
   fixedToShort,
   getPoolCreatedGraphQuery,
-  getTokenPrice,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
-import { zkEVMTestNet, shardeumTestnet, sepoliaTestnet } from "./core/networks/Chains";
+import { fetchTokenLib, getPastEvents } from "./lib/fun/functions";
+import {
+  getEtherContract,
+  getEtherContractWithProvider,
+} from "./lib/fun/wagmi";
+import useWallet from "./lib/hooks/useWallet";
+import { ethers } from "ethers";
 import { getTokenUSDPrice } from "./helpers/contracts";
-import { useWalletClient } from 'wagmi'
-import { getContractLib, getPastEvents } from "./lib/fun/functions";
-import { getEtherContract } from "./lib/fun/wagmi";
 
-// import ends here
-const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
-const alchemyId2 = import.meta.env.VITE_ALCHEMY_ID2;
-const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
-const infuraID = import.meta.env.VITE_INFURA_ID
-
-
-
-const shardeumPools = [{
-  pool: '0x665ACEc556dC92C2E504beFA061d5f65Cd9493e2',
-  token1: '0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1',
-  token0:'0x11f13ad374e79b466a36eb835747e431fbbe3890'
-},
-// {
-//   pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
-//   token1: '0xd146878affF8c8dd3e9EBd9177F2AE4f6d4e5979',
-//   token0:'0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1'
-// }
-]
+const shardeumPools = [
+  {
+    pool: "0x665ACEc556dC92C2E504beFA061d5f65Cd9493e2",
+    token1: "0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1",
+    token0: "0x11f13ad374e79b466a36eb835747e431fbbe3890",
+  },
+  // {
+  //   pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
+  //   token1: '0xd146878affF8c8dd3e9EBd9177F2AE4f6d4e5979',
+  //   token0:'0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1'
+  // }
+];
 
 window.global = window.global ?? window;
 window.Buffer = window.Buffer ?? Buffer;
 
-
 function App() {
   const dispatch = useDispatch();
-  const queryClient = useQueryClient()
-  const {isConnected} = getAccount();
-  const { chain, chains } = getNetwork();
+  const { address, isConnected, chain } = useWallet();
+  const contracts = useSelector((state) => state.contracts);
+  const query = getPoolCreatedGraphQuery(address);
+  const networksWithGraph = [80001, 137];
 
-  const {user, contracts } = useSelector((state) => state);
-  const query = getPoolCreatedGraphQuery(user?.address);
-  // const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
-  const networksWithGraph = [80001, 137]
-
- const { data, loading, error, refetch } = useQuery('pools', async () => {
- const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
- return fetchedDATA;
- } );
-
+  const { data, loading, error, refetch } = useQuery("pools", async () => {
+    const fetchedDATA = await fetchGraphQlData(chain?.id || 137, query);
+    return fetchedDATA;
+  });
 
   document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`;
 
-  // setting contract state to store from here
-
-  const isSame = user?.address != getFromLocalStorage("user")?.address;
-
-
   useEffect(() => {
-    if(isConnected){
-
-      refetch()
+    if (isConnected) {
+      refetch();
     }
-  }, [isConnected ])
+  }, [isConnected]);
 
-  
   useEffect(() => {
     (async () => {
       try {
@@ -109,97 +84,85 @@ function App() {
         const walletconnect = JSON.parse(
           localStorage.getItem("wagmi.connected")
         );
-        // const account = getAccount();
-        // let provider = etherProvider;
-        if (walletconnect && user?.isConnected ) {
-          const user = await connectWallet();
-          dispatch(setUser(user));
-          // provider = getProvider();
-        } else {
-          //  provider = new ethers.providers.JsonRpcProvider( `https://rpc.public.zkevm-test.net`);
-        }
-        // dispatch(setWeb3(web3));
-        // const { chain: nextChain, chains } = getNetwork();
+        const { coreAddress, helperAddress, positionAddress } =
+          contractAddress[chain?.id || "1441"];
 
-        const networkID = user?.network?.id
-        const { coreAddress, helperAddress, positionAddress } = contractAddress[chain.id || networkID ||  '11155111'];
-
-          // console.log("preparedData", coreAddress);
         const preparedData = [
           { abi: coreAbi, address: coreAddress },
           { abi: helperAbi, address: helperAddress },
           { abi: positionAbi, address: positionAddress },
         ];
-      
-        Promise.all(
-          preparedData.map((item) =>
-            getEtherContract( 
-              item.address,
-              item.abi
-            )
+        console.log("preparedData", preparedData, chain, walletconnect , isConnected );
+        if (walletconnect && isConnected) {
+          const user = await connectWallet();
+          dispatch(setUser(user));
+          Promise.all(
+            preparedData.map((item) => getEtherContract(item.address, item.abi))
           )
-        )
-          .then((res) => {
-            const payload = {
-              coreContract: res[0],
-              helperContract: res[1],
-              positionContract: res[2],
-            };
+            .then((res) => {
+              const payload = {
+                coreContract: res[0],
+                helperContract: res[1],
+                positionContract: res[2],
+              };
 
-            dispatch(setContracts(payload));
+              dispatch(setContracts(payload));
+            })
+            .catch((err) => {
+               console.log("ContractError", err);
+              // throw err;
+            });
+        } else {
+          // const provider = new ethers.providers.JsonRpcProvider(
+          //   "https://rpc.public.zkevm-test.net"
+          // );
+          // Promise.all(
+          //   preparedData.map((item) =>
+          //     getEtherContractWithProvider(item.address, item.abi, provider)
+          //   )
+          // )
+          //   .then((res) => {
+          //     const payload = {
+          //       coreContract: res[0],
+          //       helperContract: res[1],
+          //       positionContract: res[2],
+          //     };
 
-          })
-          .catch((err) => {
-            // throw err;
-            console.log("errors", err);
-          });
+          //     dispatch(setContracts(payload));
+          //   })
+          //   .catch((err) => {
+          //     throw err;
+          //   });
+        }
       } catch (error) {
+        console.log("ContractError", err);
         dispatch(setError(error));
       }
     })();
-  }, [isSame, getFromLocalStorage("ethEvent")]);
+  }, [address, isConnected]);
 
-
-  // useEffect(() => {
-  //   if(isConnected){
-
-  //     refetch()
-  //   }
-  // }, [isConnected])
-
+  useEffect(() => {
+    if (isConnected) {
+      refetch();
+    }
+  }, [isConnected]);
 
   // for getting the pools and tokens datafor non graph networks
   useEffect(() => {
-    const { chain } = getNetwork();
-    const networkID = user?.network?.id
-
-
-
-    if (contracts.coreContract && !networksWithGraph.includes(networkID) ) {
+    const networkID = chain?.id;
+    if (contracts.coreContract && !networksWithGraph.includes(networkID)) {
       try {
         (async () => {
-        
           const poolData = {};
-          const account = getAccount();
           let result;
 
-          console.log("contracts", contracts.coreContract  );
-          // const length = await contracts?.coreContract?.read?.poolLength()
-
-          // console.log('length', length);
-
-       
-          if(networkID == 8081){
-            result = shardeumPools
+          if (networkID == 8081) {
+            result = shardeumPools;
           } else {
-            result = await getPastEvents(
-              contracts.coreContract.address,
-              coreAbi,
-              "PoolCreated"
-            );
+            result = await getPastEvents(contracts.coreContract, "PoolCreated");
             result = result.map((item) => item.args);
           }
-        
+
           const array = [];
           const tokenList = {};
           for (const pool of result) {
@@ -208,24 +171,26 @@ function App() {
           const poolTokens = [...new Set(array)];
 
           //if wallet not connected
-          if (!account.isConnected) {
-          //   const web3 = defProv();
-          //   const ERC20contracts = await Promise.all(
-          //     poolTokens.map((addr) => new web3.eth.Contract(erc20Abi, addr))
-          //   );
+          if (!isConnected) {
+            // const provider = new ethers.providers.JsonRpcProvider(
+            //   "https://rpc.public.zkevm-test.net"
+            // );
+            // const ERC20contracts = await Promise.all(
+            //   poolTokens.map(
+            //     (addr) => new ethers.Contract(addr, erc20Abi, provider)
+            //   )
+            // );
 
-          //   const Symbols = await Promise.all(
-          //     ERC20contracts.map((contract, i) =>
-          //       contract.methods.symbol().call()
-          //     )
-          //   );
-          //   Symbols.forEach(
-          //     (symbol, i) => (tokenList[poolTokens[i]] = { symbol })
-          //   );
+            // const Symbols = await Promise.all(
+            //   ERC20contracts.map((contract, i) => contract.symbol())
+            // );
+            // Symbols.forEach(
+            //   (symbol, i) => (tokenList[poolTokens[i]] = { symbol })
+            // );
 
-          //   const logos = await Promise.all(
-          //     Symbols.map((sym, i) => fetchCoinLogo(sym))
-          //   );
+            // const logos = await Promise.all(
+            //   Symbols.map((sym, i) => fetchCoinLogo(sym))
+            // );
 
             // logos.forEach(
             //   (logo, i) =>
@@ -236,7 +201,7 @@ function App() {
             // );
             // const reverseResult = result.reverse();
             // for (const poolElement of reverseResult) {
-            //   if(hidePools.includes(poolElement.pool)){
+            //   if (hidePools.includes(poolElement.pool)) {
             //     continue;
             //   }
             //   poolData[poolElement.pool] = {
@@ -254,7 +219,9 @@ function App() {
             // }
           } else {
             const ercTokens = await Promise.all(
-              poolTokens.map((contract, i) => fetchToken({ address: contract }))
+              poolTokens.map((contract, i) =>
+                fetchTokenLib({ address: contract })
+              )
             );
             ercTokens.forEach(
               (token, i) =>
@@ -274,7 +241,7 @@ function App() {
 
             const reverseResult = result.reverse();
             for (const poolElement of reverseResult) {
-              if(hidePools.includes(poolElement.pool)){
+              if (hidePools.includes(poolElement.pool)) {
                 continue;
               }
               poolData[poolElement.pool] = {
@@ -295,87 +262,80 @@ function App() {
           dispatch(setPools({ poolData, tokenList }));
         })();
       } catch (error) {
-       
         dispatch(setError(error));
       }
     }
   }, [contracts]);
 
+  useEffect(() => {
+    const networkID = chain?.id;
+    if (data && networksWithGraph.includes(networkID) && contracts.coreContract ) {
+      const allPositions = data?.positions;
+      const poolData = {};
+      const tokenList = {};
+      const poolsData = Array.isArray(data.pools) && data.pools;
 
-  // useEffect(() => {
-  //   const { chain } = getNetwork();
-  //   const networkID = user?.network?.id
-  //   if ( data && networksWithGraph.includes(networkID) ) {
-  //    const allPositions = data?.positions
-  //     const poolData = {};
-  //     const tokenList = {};
-  //   const poolsData = Array.isArray(data.pools) && data.pools
+      for (const pool of poolsData) {
+        if (hidePools.includes(pool?.pool)) {
+          continue;
+        }
+        const li =
+          fixedToShort(pool.liquidity0) * Number(pool.token0.priceUSD) +
+          fixedToShort(pool.liquidity1) * Number(pool.token1.priceUSD);
+        const openPosiions = allPositions.filter(
+          (el) => el?.pool?.pool == pool.pool
+        );
+        const poolInfo = {
+          ...pool,
+          poolAddress: pool?.pool,
+          hide: hidePools.includes(pool?.pool),
 
-  //     for(const pool of poolsData){
-  //       if(hidePools.includes(pool?.pool)){
-  //         continue;
-  //       }
-  //      const li = 
-  //      fixedToShort(pool.liquidity0) *
-  //       Number(pool.token0.priceUSD) +
-  //       fixedToShort(pool.liquidity1) *
-  //       Number(pool.token1.priceUSD) 
-  //      const openPosiions = allPositions.filter(
-  //         (el) => el?.pool?.pool == pool.pool
-  //       );
-  //       const poolInfo = {
-  //         ...pool,
-  //         poolAddress: pool?.pool,
-  //         hide: hidePools.includes(pool?.pool),
+          totalLiquidity:
+            fixedToShort(pool.liquidity0) *
+              getTokenUSDPrice(pool.token0.priceUSD) +
+            fixedToShort(pool.liquidity1) *
+              getTokenUSDPrice(pool.token1.priceUSD),
 
-  //         totalLiquidity:
-  //           fixedToShort(pool.liquidity0) *
-  //           getTokenUSDPrice(pool.token0.priceUSD) +
-  //            fixedToShort(pool.liquidity1) *
-  //            getTokenUSDPrice(pool.token1.priceUSD) ,
+          totalBorrowed:
+            fixedToShort(pool.totalBorrow0) *
+              getTokenUSDPrice(pool.token0.priceUSD) +
+            fixedToShort(pool.totalBorrow1) *
+              getTokenUSDPrice(pool.token1.priceUSD),
 
-  //         totalBorrowed:
-  //         fixedToShort(pool.totalBorrow0) *
-  //         getTokenUSDPrice(pool.token0.priceUSD) +
-  //          fixedToShort(pool.totalBorrow1) *
-  //          getTokenUSDPrice(pool.token1.priceUSD) ,
-
-  //          openPosition: openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
-  //         token0:{
-  //           ...pool.token0,
-  //           address: pool?.token0?.id,
-  //           logo: getTokenLogo(pool.token0.symbol),
-  //         },
-  //         token1:{
-  //           ...pool.token1,
-  //           address: pool?.token1?.id,
-  //           logo: getTokenLogo(pool.token1.symbol),
-  //         }
-  //       }
-  //       tokenList[String(pool.token0.id).toUpperCase()] = {
-  //         ...pool.token0,
-  //         address: pool?.token0?.id,
-  //         logo: getTokenLogo(pool.token0.symbol),
-  //         pricePerToken: pool.token0.priceUSD
-  //       };
-  //       tokenList[String(pool.token1.id).toUpperCase()] = {
-  //         ...pool.token1,
-  //         address: pool?.token1?.id,
-  //         logo: getTokenLogo(pool.token1.symbol),
-  //         pricePerToken: pool.token1.priceUSD
-  //       };
-  //       poolData[pool?.pool] = poolInfo;
-      
-  //     }
-
-  //     console.log("activeChain", poolData, tokenList);
-  //     dispatch(setPools({ poolData, tokenList }));
-  //   }
-  // }, [data , user]);
+          openPosition:
+            openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
+          token0: {
+            ...pool.token0,
+            address: pool?.token0?.id,
+            logo: getTokenLogo(pool.token0.symbol),
+          },
+          token1: {
+            ...pool.token1,
+            address: pool?.token1?.id,
+            logo: getTokenLogo(pool.token1.symbol),
+          },
+        };
+        tokenList[String(pool.token0.id).toUpperCase()] = {
+          ...pool.token0,
+          address: pool?.token0?.id,
+          logo: getTokenLogo(pool.token0.symbol),
+          pricePerToken: pool.token0.priceUSD,
+        };
+        tokenList[String(pool.token1.id).toUpperCase()] = {
+          ...pool.token1,
+          address: pool?.token1?.id,
+          logo: getTokenLogo(pool.token1.symbol),
+          pricePerToken: pool.token1.priceUSD,
+        };
+        poolData[pool?.pool] = poolInfo;
+      }
+      dispatch(setPools({ poolData, tokenList }));
+    }
+  }, [data, contracts]);
 
   return (
     <>
-      <Navbar  />
+      <Navbar />
       <div className="app_container">
         <div className="app">
           <MainRoutes />
