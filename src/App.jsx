@@ -84,15 +84,15 @@ function App() {
         const walletconnect = JSON.parse(
           localStorage.getItem("wagmi.connected")
         );
-        const { coreAddress, helperAddress, positionAddress } =
-          contractAddress[chain?.id || "1441"];
+  
+        const { coreAddress, helperAddress, positionAddress } = contractAddress[ chain?.id || 1442]
 
         const preparedData = [
           { abi: coreAbi, address: coreAddress },
           { abi: helperAbi, address: helperAddress },
           { abi: positionAbi, address: positionAddress },
         ];
-        console.log("preparedData", preparedData, chain, walletconnect , isConnected );
+
         if (walletconnect && isConnected) {
           const user = await connectWallet();
           dispatch(setUser(user));
@@ -113,26 +113,26 @@ function App() {
               // throw err;
             });
         } else {
-          // const provider = new ethers.providers.JsonRpcProvider(
-          //   "https://rpc.public.zkevm-test.net"
-          // );
-          // Promise.all(
-          //   preparedData.map((item) =>
-          //     getEtherContractWithProvider(item.address, item.abi, provider)
-          //   )
-          // )
-          //   .then((res) => {
-          //     const payload = {
-          //       coreContract: res[0],
-          //       helperContract: res[1],
-          //       positionContract: res[2],
-          //     };
+          const provider = new ethers.providers.JsonRpcProvider(
+            "https://rpc.public.zkevm-test.net"
+          );
+          Promise.all(
+            preparedData.map((item) =>
+              getEtherContractWithProvider(item.address, item.abi, provider)
+            )
+          )
+            .then((res) => {
+              const payload = {
+                coreContract: res[0],
+                helperContract: res[1],
+                positionContract: res[2],
+              };
 
-          //     dispatch(setContracts(payload));
-          //   })
-          //   .catch((err) => {
-          //     throw err;
-          //   });
+              dispatch(setContracts(payload));
+            })
+            .catch((err) => {
+              throw err;
+            });
         }
       } catch (error) {
         console.log("ContractError", error);
@@ -172,51 +172,51 @@ function App() {
 
           //if wallet not connected
           if (!isConnected) {
-            // const provider = new ethers.providers.JsonRpcProvider(
-            //   "https://rpc.public.zkevm-test.net"
-            // );
-            // const ERC20contracts = await Promise.all(
-            //   poolTokens.map(
-            //     (addr) => new ethers.Contract(addr, erc20Abi, provider)
-            //   )
-            // );
+            const provider = new ethers.providers.JsonRpcProvider(
+              "https://rpc.public.zkevm-test.net"
+            );
+            const ERC20contracts = await Promise.all(
+              poolTokens.map(
+                (addr) => new ethers.Contract(addr, erc20Abi, provider)
+              )
+            );
 
-            // const Symbols = await Promise.all(
-            //   ERC20contracts.map((contract, i) => contract.symbol())
-            // );
-            // Symbols.forEach(
-            //   (symbol, i) => (tokenList[poolTokens[i]] = { symbol })
-            // );
+            const Symbols = await Promise.all(
+              ERC20contracts.map((contract, i) => contract.symbol())
+            );
+            Symbols.forEach(
+              (symbol, i) => (tokenList[poolTokens[i]] = { symbol })
+            );
 
-            // const logos = await Promise.all(
-            //   Symbols.map((sym, i) => fetchCoinLogo(sym))
-            // );
+            const logos = await Promise.all(
+              Symbols.map((sym, i) => fetchCoinLogo(sym))
+            );
 
-            // logos.forEach(
-            //   (logo, i) =>
-            //     (tokenList[poolTokens[i]] = {
-            //       ...tokenList[poolTokens[i]],
-            //       logo,
-            //     })
-            // );
-            // const reverseResult = result.reverse();
-            // for (const poolElement of reverseResult) {
-            //   if (hidePools.includes(poolElement.pool)) {
-            //     continue;
-            //   }
-            //   poolData[poolElement.pool] = {
-            //     poolAddress: poolElement.pool,
-            //     hide: hidePools.includes(poolElement.pool),
-            //     token0: {
-            //       ...tokenList[poolElement.token0],
-            //       address: poolElement.token0,
-            //     },
-            //     token1: {
-            //       ...tokenList[poolElement.token1],
-            //       address: poolElement.token1,
-            //     },
-            //   };
-            // }
+            logos.forEach(
+              (logo, i) =>
+                (tokenList[poolTokens[i]] = {
+                  ...tokenList[poolTokens[i]],
+                  logo,
+                })
+            );
+            const reverseResult = result.reverse();
+            for (const poolElement of reverseResult) {
+              if (hidePools.includes(poolElement.pool)) {
+                continue;
+              }
+              poolData[poolElement.pool] = {
+                poolAddress: poolElement.pool,
+                hide: hidePools.includes(poolElement.pool),
+                token0: {
+                  ...tokenList[poolElement.token0],
+                  address: poolElement.token0,
+                },
+                token1: {
+                  ...tokenList[poolElement.token1],
+                  address: poolElement.token1,
+                },
+              };
+            }
           } else {
             const ercTokens = await Promise.all(
               poolTokens.map((contract, i) =>
