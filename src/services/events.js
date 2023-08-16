@@ -1,6 +1,5 @@
 import { poolAbi, positionAbi, coreAbi } from "../core/contractData/abi";
 import { fromBigNumber, getAllContracts } from "../helpers/contracts";
-import { readContract } from "wagmi/actions";
 import { getEtherContract } from "../lib/fun/wagmi";
 import { getPastEvents, readContractLib } from "../lib/fun/functions";
 

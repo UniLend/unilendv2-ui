@@ -15,16 +15,12 @@ import {
 import { connectWallet, handleDisconnect } from "../../services/wallet";
 
 import logo from "../../assets/logo.svg";
-import hamberger from "../../assets/hamburger.svg";
 import gitbook from "../../assets/gitbook.svg";
 import faq from "../../assets/faq.svg";
 import copyIcon from "../../assets/copyIcon.svg";
 import doc from "../../assets/document.svg";
 import career from "../../assets/career.svg";
-import eth from "../../assets/eth.svg";
 import ethlogo from "../../assets/ethlogo.png";
-import shardeumLogo from "../../assets/shardeumLogo.png";
-import polygon from "../../assets/polygon.svg";
 import sun from "../../assets/sun.svg";
 import moon from "../../assets/moon.svg";
 import metamaskicon from "../../assets/metamaskicon.svg";
@@ -34,22 +30,18 @@ import "./styles/index.scss";
 import Sider from "antd/lib/layout/Sider";
 import { useDispatch, useSelector } from "react-redux";
 import { setTheme, setUser } from "../../store/Action";
-import { changeNetwork } from "../../services/wallet";
 import { fetchUserDomain } from "../../utils/axios";
-import { getNetwork, switchNetwork , connect} from "wagmi/actions";
-import { useAccount, useConnect } from 'wagmi'
-import DropDown from "../Common/DropDown";
 import {
   useConnectModal,
-  useAccountModal,
-  useChainModal,
   ConnectButton
 } from '@rainbow-me/rainbowkit';
 import { ChangeNetwork } from "../../core/networks/networks";
+import useWalletHook from "../../lib/hooks/useWallet";
+import { switchNetworkLib } from "../../lib/fun/functions";
 
-export default function Navbar(props) {
-  const { user, theme } = useSelector((state) => state);
-  const { connect, connectors, error, isLoading, pendingConnector } = useConnect()
+export default function Navbar() {
+  const user = useSelector((state) => state.user);
+  const theme = useSelector((state) => state.theme);
   const { openConnectModal } = useConnectModal();
   const pathname = window.location.pathname;
   const [wrongNetworkModal, setWrongNetworkModal] = useState(false);
@@ -63,7 +55,7 @@ export default function Navbar(props) {
   const [isPolygon, setIsPolygon] = useState(false);
   const dispatch = useDispatch();
   const [currentTheme, setCurrentTheme] = useState(theme);
-  const { chain: networkchain } = getNetwork();
+  const { chain, isConnected } = useWalletHook();
   const availableChain = [11155111, 1442];
 
   const handleVisibleChange = (newVisible) => {
@@ -110,7 +102,6 @@ export default function Navbar(props) {
   }, []);
 
   useEffect(() => {
-    const { chain } = getNetwork();
 
     if (user?.network?.id == undefined && user?.network?.id) {
       const wallet = localStorage.getItem("wallet");
@@ -183,7 +174,7 @@ export default function Navbar(props) {
 
   const handleSwitchNetwork = async (id) => {
     try {
-      const network = await switchNetwork({
+      const network = await switchNetworkLib({
         chainId: id,
       });
     } catch (error) {
@@ -207,7 +198,7 @@ export default function Navbar(props) {
           {" "}
           Sepolia Test Network
         </p>
-        {/* <p onClick={() => handleSwitchNetwork(80001)}> Polygon Mumbai</p> */}
+        <p onClick={() => handleSwitchNetwork(80001)}> Polygon Mumbai</p>
         {/* <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p> */}
         <p onClick={() => handleSwitchNetwork(1442)}> zkEVM Testnet</p>
         {/* <p onClick={() => handleSwitchNetwork(8081)}> Shardeum Testnet</p> */}
@@ -336,7 +327,7 @@ export default function Navbar(props) {
         </div>
       </div>
       <div className="last_container">
-        {/* { true ? (
+        { isConnected && currentUser?.balance ? (
           <>
             <div className="wallet_connection">
               <Popover
@@ -353,7 +344,7 @@ export default function Navbar(props) {
                 </div>
               </Popover>
               <div>
-                <p>{currentUser.balance}ETH</p>
+                <p>{currentUser?.balance} {currentUser?.symbol}</p>
                 <Popover
                   content={<PopoverContent />}
                   trigger="click"
@@ -363,7 +354,7 @@ export default function Navbar(props) {
                   onOpenChange={handleVisibleChange}
                 >
                   <div className="address">
-                    <p>{currentUser.domain}</p>
+                    <p>{currentUser?.domain}</p>
                   </div>
                 </Popover>
               </div>
@@ -379,8 +370,8 @@ export default function Navbar(props) {
               Connect Wallet
             </Button>
           </div>
-        )} */}
-        <ConnectButton/>
+        )}
+        {/* <ConnectButton/> */}
         <div className="hamberger">
           <Popover
             overlayClassName="hamburger_popover"

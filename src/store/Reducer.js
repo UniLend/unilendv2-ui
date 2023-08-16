@@ -3,6 +3,7 @@ import { SET_CONTRACTS, SET_ERROR, SET_LOADING, SET_POOLS, SET_THEME, SET_USER, 
 const user = {
   address: '0x',
   balance: null,
+  symbol: {},
   network: {
     id: null,
     name: null

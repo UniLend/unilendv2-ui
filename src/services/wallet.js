@@ -52,37 +52,9 @@ export const handleDisconnect = async () => {
 };
 
 export const connectWallet = async (wallet, ChangedAccount = null) => {
-  
-const trigerWallet = wallet || localStorage.getItem('wallet');
+
    try {
-  //   if(trigerWallet == 'metamask'){
-  //     try {
-  //       const data = await connect({
-  //         connector: MetaMaskconnector,
-  //       }).then((res) => {
-  //         return res;
-  //       })
-  //       localStorage.setItem('wallet', 'metamask')
-  //       console.log("USerObject", data);
-  //     } catch (error) {
-  //       const isError = (error?.message == 'Connector already connected')
-  //       if(!isError){
-  //         const data = await connect({
-  //           connector: WalletConnector,
-  //         }).then((res) => {
-  //           return res;
-  //         })
-  //         localStorage.setItem('wallet', 'walletConnect')
-  //       }
-  //     }
-  //   } else if (trigerWallet == 'walletConnect'){
-  //     const data = await connect({
-  //       connector: WalletConnector,
-  //     }).then((res) => {
-  //       return res;
-  //     })
-  //     localStorage.setItem('wallet', 'walletConnect')
-  //   }
+
     const user = getAccount()
     const { chain, chains } = getNetwork()
     const chainId = chain.id
@@ -91,9 +63,10 @@ const trigerWallet = wallet || localStorage.getItem('wallet');
       address: account,
     })
     // const balance = fromWei(web3, bal).slice(0, 6);
+    console.log("bal", bal);
     const networkByWeb3 = chain.name.toUpperCase()
     const Currentnetwork = networks[chainId] ? networks[chainId].chainName: networkByWeb3
-    const obj = { address: account, balance: Number(bal?.formatted ).toFixed(4), network: {id: chainId, name: Currentnetwork} , isConnected: true}
+    const obj = { address: account, balance: Number(bal?.formatted ).toFixed(4), symbol: bal?.symbol ,network: {id: chainId, name: Currentnetwork} , isConnected: true}
     saveToLocalStorage('user', obj)
     return obj;
   } catch (error) {

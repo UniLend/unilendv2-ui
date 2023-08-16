@@ -1,5 +1,4 @@
 import { coreAbi, erc20Abi, helperAbi } from "../core/contractData/abi";
-import { getContract, readContract, fetchSigner, getProvider } from "@wagmi/core";
 import {
   add,
   decimal2Fixed,
@@ -14,58 +13,15 @@ import {
   fixed2Decimals18
 } from '../helpers/contracts';
 import BigNumber from "bignumber.js";
-import { ethers } from "ethers";
+
 import { getEtherContract } from "../lib/fun/wagmi";
 
-export const getContractInstance = async ( contractAddr, abi ) => {
-
-  try {
-    const signer = await fetchSigner()
-    const instance = getContract({
-      address: contractAddr,
-      abi: abi,
-      signerOrProvider: signer
-    })
-
-  //  const hash = await instance.[fnName](...args)
-  // const config = await prepareWriteContract({
-  //   address: contractAddr,
-  //   abi: abi,
-  //   functionName: fnName,
-  //   args: args,
-  //   overrides:{
-  //     gasLimit: 210000
-  //   }
-  // })
-  // const { hash } = await writeContract(config)
-  return instance;
-} catch (error) {
-    throw error
-}
-}
-
-/*
-@dev 
-read data from contract function here;
-*/
-
-const handleRead = async (address, abi, fnName, args) => {
-  const contract = await readContract({
-     address: address,
-     abi: abi,
-     functionName: fnName,
-     args: args
-   })
-   return contract;
- }
 
 
 /*
 @dev 
 redeem function here;
 */
-
-
 
 export const handleRedeem = async (
   amount,
@@ -428,7 +384,7 @@ export const getPoolAllData = async (
         fromBigNumber(data._totalBorrow1)
       );
       
-     
+  
       const pool = {
         ...poolData,
         token0: {
@@ -583,6 +539,7 @@ export const getPoolAllData = async (
           ),
         },
       };
+      console.log('getPoolFullData', pool);
       return pool;
     } catch (error) {
     

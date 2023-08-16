@@ -10,13 +10,14 @@ import PoolListSkeleton from "../Loader/PoolListSkeleton";
 import NoPoolFound from "../NoPoolFound";
 
 export default function HeroComponent(props) {
-  const {poolList, isLoadingPoolData, theme} = useSelector((state) => state);
+  const  theme = useSelector((state) => state.theme);
+  const poolList = useSelector((state) => state.poolList);
+  const  isLoadingPoolData = useSelector((state) => state.isLoadingPoolData);
   const [token1, setToken1] = useState({});
   const [token2, setToken2] = useState({});
   const [pools, setPools] = useState({});
   const [filteredPools, setFilteredPools] = useState([]);
   const [poolBackup, setPoolBackup] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
 
 
   useEffect(() => {

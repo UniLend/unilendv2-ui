@@ -31,12 +31,13 @@ import {
   userDashBoardQuery,
   userDashBoardQuery0,
 } from "../../helpers/dashboard";
-import { getAccount, getNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
 import { imgError } from "../../utils";
 import { fetchGraphQlData, fetchTokenPriceInUSD } from "../../utils/axios";
 import empty from "../../assets/searchEmpty.json";
 import { ethers } from "ethers";
+import { useSelector } from "react-redux";
+import useWalletHook from "../../lib/hooks/useWallet";
 
 //const endpoint = "https://api.spacex.land/graphql/";
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -63,15 +64,14 @@ const graphURL = {
 
 
 export default function UserDashboardComponent(props) {
-  const { contracts, user, web3, isError, poolList, tokenList } = props;
-  const { chain } = getNetwork();
+  const { contracts, user, web3, isError, poolList, tokenList } = useSelector((state) => state);
+  const { chain , address} = useWalletHook();
   const navigate = useNavigate();
   // if (chain?.id !== 80001) {
   //   navigate("/");
   // }
 
 const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
-  const { address } = getAccount();
   const [userAddress, setUserAddress] = useState();
   const [verifiedAddress, setVerifiedAddress] = useState(address ||user?.address );
   const query = userDashBoardQuery0(verifiedAddress || address);
@@ -227,19 +227,20 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
   ];
 
   useEffect(() => {
-    setUserAddress(user.address);
-    handleSearchAddress(user.address);
-  }, [user]);
+    setUserAddress(address);
+    handleSearchAddress(address);
+  }, [address]);
 
   useEffect(() => {
+  
     if (data && contracts) {
    
-
+   
       (async () => {
         setPositionLoading(true);
-        const position = await getPositionData(data, contracts);
+       const position = await getPositionData(data, contracts);
       
-
+      
         if (position) {
           setPositionData(position);
           setPositionDataBackup(position);
@@ -286,7 +287,7 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
 
     alchemy.core.getTokenBalances(`${address}`).then(async (bal) => {
       // const tokenPrices = await fetchTokenPriceInUSD()
-      const tokens = await getTokensFromUserWallet(bal, tokenList);
+       const tokens = await getTokensFromUserWallet(bal, tokenList);
       setWalletTokens(tokens);
       setWalletTokenLoading(false);
     });
@@ -297,12 +298,11 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
   };
 
   useEffect(() => {
-    const account = getAccount();
     refetch()
     if (verifiedAddress) {
-      getUserTokens(verifiedAddress || account.address);
+      getUserTokens(verifiedAddress || address);
     } else if (userAddress == "" || verifiedAddress == "") {
-      getUserTokens(account.address);
+      getUserTokens(address);
     }
   }, [verifiedAddress, userAddress, user]);
 

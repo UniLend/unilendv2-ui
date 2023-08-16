@@ -1,6 +1,6 @@
 
 
-import { getNetwork, getContract , getAccount, getWalletClient, getPublicClient, readContract, fetchToken} from "wagmi/actions";
+import { getNetwork, getContract , getAccount, getWalletClient, getPublicClient, readContract, fetchToken, switchNetwork, waitForTransaction} from "wagmi/actions";
 import { getEtherContract } from "./wagmi";
 
 
@@ -38,4 +38,15 @@ export const fetchTokenLib = async (props) =>  {
    const token = await fetchToken(props)
 
    return token
+}
+
+export const switchNetworkLib = async (props) => {
+   const data = await switchNetwork(props)
+
+   return data;
+}
+
+export const waitForTransactionLib = async (props)=> {
+  const txHash = await waitForTransaction(props);
+  return txHash
 }

@@ -1,9 +1,5 @@
 import React, { useState } from "react";
 import { Popover } from "antd";
-import {
-  getNetwork,
-  waitForTransaction,
-} from "wagmi/actions";
 import { Input, Button, message } from "antd";
 import banner from "../../assets/dashboardbanner.svg";
 import Vote from "../../assets/vote.svg";
@@ -25,8 +21,9 @@ import {
 } from "../../services/governance";
 import { fetchUserAddressByDomain, fetchUserDomain } from "../../utils/axios";
 import { Link } from "react-router-dom";
-import useWallet from "../../lib/hooks/useWallet";
 import { getEtherContract } from "../../lib/fun/wagmi";
+import useWalletHook from "../../lib/hooks/useWallet";
+import { waitForTransactionLib } from "../../lib/fun/functions";
 
 const wrap = "wrap";
 const unWrap = "unWrap";
@@ -35,7 +32,7 @@ const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 
 export default function VoteComponent() {
 
-  const { address, chain } = useWallet()
+  const { address, chain } = useWalletHook()
   const [userAddress, setUserAddress] = useState(address);
   const [tokenBalance, setTokenBalance] = useState({ uft: "", uftg: "" });
   const [activeTab, setActiveTab] = useState(wrap);
@@ -49,7 +46,7 @@ export default function VoteComponent() {
   const provider = new ethers.providers.JsonRpcProvider(key);
 
   const checkTxnStatus = (hash, data) => {
-    waitForTransaction({
+    waitForTransactionLib({
       hash,
     }).then((receipt) => {
 
@@ -296,7 +293,7 @@ const WrapAndDelegate = ({
   checkTxnError,
 }) => {
   const [amount, setAmount] = useState("");
-  const { chain } = useWallet()
+  const { chain } = useWalletHook()
   const [address, setAddress] = useState(userAddress);
   const [valid, setValid] = useState(true);
   const [domainDetail, setDomainDetail] = useState({
@@ -507,7 +504,7 @@ const UnWrap = ({
   checkTxnError,
 }) => {
   const [amount, setAmount] = useState("");
-  const { chain } = useWallet()
+  const { chain } = useWalletHook()
   const [buttonText, setButtonText] = useState({
     text: "Enter Amount",
     disable: true,
@@ -612,7 +609,7 @@ const UpdateDelegation = ({
   checkTxnError,
 }) => {
   const [address, setAddress] = useState("");
-  const { chain } = useWallet()
+  const { chain } = useWalletHook()
   const [buttonText, setButtonText] = useState({
     text: "Enter Address",
     disable: true,

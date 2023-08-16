@@ -11,12 +11,12 @@ import {
 import { LockOutlined } from '@ant-design/icons'
 import './styles/index.scss';
 import { useSelector } from 'react-redux';
-import { getNetwork } from 'wagmi/actions';
+import useWalletHook from '../../lib/hooks/useWallet';
 
 export default function Footer() {
   const [isPolygon, setIsPolygon] = useState(false)
   const pathname = window.location.pathname;
-  const {chain} = getNetwork()
+  const {chain} = useWalletHook()
 
   useEffect(() => {
  

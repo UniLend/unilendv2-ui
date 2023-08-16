@@ -7,7 +7,6 @@ import "./styles/index.scss";
 import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
 import { useSelector } from "react-redux";
 import { erc20Abi } from "../../core/contractData/abi";
-import { getContract, getERC20Logo } from "../../services/contracts";
 import NoPoolFound from "../NoPoolFound";
 import { fetchCoinLogo } from "../../utils/axios";
 import PoolListSkeleton from "../Loader/PoolListSkeleton";
@@ -17,14 +16,14 @@ import DropDown from "../Common/DropDown";
 import { sortByKey } from "../../helpers/dashboard";
 import { handleCreatePool } from "../../services/pool";
 
-export default function HallOfPoolsComponent(props) {
-  const {poolList, isLoadingPoolData,} = useSelector((state) => state);
+export default function HallOfPoolsComponent() {
+  const poolList = useSelector((state) => state.poolList);
+  const  isLoadingPoolData = useSelector((state) => state.isLoadingPoolData);
   const [token1, setToken1] = useState({});
   const [token2, setToken2] = useState({});
   const [pools, setPools] = useState([]);
   const [myPoolTab, setMyPoolTab] = useState(false);
   const [poolBackup, setPoolBackup] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (Object.values(poolList).length > 0) {

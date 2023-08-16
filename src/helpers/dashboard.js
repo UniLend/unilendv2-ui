@@ -1,9 +1,8 @@
 import { getTokenLogo } from "../utils";
-// import { gql } from "@apollo/client";
-import { fetchBalance, getContract, getProvider } from "@wagmi/core";
 import { erc20Abi } from "../core/contractData/abi";
 import { add, decimal2Fixed, div, fixed2Decimals, fromBigNumber, greaterThan, mul, toAPY } from "./contracts";
 import { ethers } from "ethers";
+import { getEtherContract } from "../lib/fun/wagmi";
 
 export const findTokenPrice = (list, address) => {
   const price = list[String(address).toUpperCase()]
@@ -184,6 +183,8 @@ export const getPositionData = async (data, contracts) => {
   const lendArray = [];
   const borrowArray = [];
 
+
+
   const allPositionAPoolddrs = Array.isArray(position) && position.map(function(pool){
     return {owner: pool.owner, ...pool.pool}
   })
@@ -214,6 +215,8 @@ export const getPositionData = async (data, contracts) => {
 
 
   var counter = 0
+
+
   
   for (const object of position) {
     const positionPoolAddress = object.pool.pool;
@@ -392,271 +395,6 @@ export const getPositionData = async (data, contracts) => {
       LendObj.interestEarned = fixedToShort(fromBigNumber(realTimePoolData._interest1));
       lendArray.push(LendObj);
     }
-   
-    // if (object.borrowBalance0 > 0 && object.borrowBalance1 == 0) {
-    //   const BorrowObj = {};
-
-    //   BorrowObj.borrowBalance = fixedToShort(
-    //     fromBigNumber(realTimePoolData._borrowBalance0)
-    //   );
-    //   BorrowObj.LendBalance = fixedToShort(fromBigNumber(realTimePoolData._lendBalance1));
-    //   BorrowObj.tokenSymbol = object.pool.token0.symbol;
-    //   BorrowObj.token = object.pool.token0;
-    //   BorrowObj.pool = object.pool;
-    //   BorrowObj.apy = toAPY(
-    //     fixed2Decimals(realTimePoolData._interest0, 18)
-    //   )//object.pool.borrowApy0;
-    //   BorrowObj.healthFactor = greaterThan(
-    //     fixed2Decimals(realTimePoolData._healthFactor0, 18),
-    //     100
-    //   )
-    //     ? "100"
-    //     : Number(fixed2Decimals(realTimePoolData._healthFactor0, 18)).toFixed(2);
-    //   BorrowObj.currentLTV = calculateCurrentLTV(fixedToShort(
-    //     fromBigNumber(realTimePoolData._borrowBalance0)
-    //   ), fixedToShort(
-    //     fromBigNumber(realTimePoolData._lendBalance1)
-    //   ), price1);
-    //   BorrowObj.poolInfo = {
-    //     token0Symbol: object.pool.token0.symbol,
-    //     token0Logo: getTokenLogo(object.pool.token0.symbol),
-    //     token1Symbol: object.pool.token1.symbol,
-    //     token1Logo: getTokenLogo(object.pool.token1.symbol),
-    //   };
-    //   borrowArray.push(BorrowObj);
-
-    //   const LendObj = {};
-
-    //   LendObj.LendBalance = fixedToShort(fromBigNumber(realTimePoolData._lendBalance1));
-    //   LendObj.tokenSymbol = object.pool.token1.symbol;
-    //   LendObj.pool = object.pool;
-    //   LendObj.token = object.pool.token1;
-    //   LendObj.apy = div(
-    //     toAPY(fixed2Decimals(realTimePoolData._interest1, 18)),
-    //     div(totLiqFull1, fromBigNumber(realTimePoolData._totalBorrow1))
-    //   );
-    //   LendObj.currentLTV = calculateCurrentLTV(fixedToShort(
-    //     fromBigNumber(realTimePoolData._borrowBalance0)
-    //   ), fixedToShort(
-    //     fromBigNumber(realTimePoolData._lendBalance1)
-    //   ), price1);
-    //   LendObj.healthFactor = greaterThan(
-    //     fixed2Decimals(realTimePoolData._healthFactor1, 18),
-    //     100
-    //   )
-    //     ? "100"
-    //     : Number(fixed2Decimals(realTimePoolData._healthFactor1, 18)).toFixed(
-    //         2
-    //       );
-     
-    //   LendObj.poolInfo = {
-    //     token0Symbol: object.pool.token0.symbol,
-    //     token0Logo: getTokenLogo(object.pool.token0.symbol),
-    //     token1Symbol: object.pool.token1.symbol,
-    //     token1Logo: getTokenLogo(object.pool.token1.symbol),
-    //   };
-    //   LendObj.interestEarned = fixedToShort(fromBigNumber(realTimePoolData._interest1));
-    //   lendArray.push(LendObj);
-
-    // } else if (object.borrowBalance1 > 0 && object.borrowBalance0 == 0) {
-    //   const BorrowObj = {};
-
-    //   BorrowObj.borrowBalance = fixedToShort(
-    //     fromBigNumber(realTimePoolData._borrowBalance1)
-    //   );
-    //   BorrowObj.LendBalance = fixedToShort(fromBigNumber(realTimePoolData._lendBalance0));
-    //   BorrowObj.tokenSymbol = object.pool.token1.symbol;
-    //   BorrowObj.token = object.pool.token1;
-    //   BorrowObj.pool = object.pool;
-    //   BorrowObj.poolInfo = {
-    //     token0Symbol: object.pool.token0.symbol,
-    //     token0Logo: getTokenLogo(object.pool.token0.symbol),
-    //     token1Symbol: object.pool.token1.symbol,
-    //     token1Logo: getTokenLogo(object.pool.token1.symbol),
-    //   };
-    //   BorrowObj.apy = toAPY(
-    //     fixed2Decimals(realTimePoolData._interest1, 18)
-    //   );
-    //   BorrowObj.healthFactor = greaterThan(
-    //     fixed2Decimals(realTimePoolData._healthFactor1, 18),
-    //     100
-    //   )
-    //     ? "100"
-    //     : Number(fixed2Decimals(realTimePoolData._healthFactor1, 18)).toFixed(2);
-    //   BorrowObj.currentLTV = calculateCurrentLTV(fixedToShort(
-    //     fromBigNumber(realTimePoolData._borrowBalance1)
-    //   ), fixedToShort(
-    //     fromBigNumber(realTimePoolData._lendBalance0)
-    //   ), price0);
-    //   borrowArray.push(BorrowObj);
-
-    //   const LendObj = {};
-
-    //   LendObj.LendBalance = fixedToShort(fromBigNumber(realTimePoolData._lendBalance0));
-    //   LendObj.tokenSymbol = object.pool.token0.symbol;
-    //   LendObj.pool = object.pool;
-    //   LendObj.token = object.pool.token0;
-    //   LendObj.apy = div(
-    //     toAPY(fixed2Decimals(realTimePoolData._interest0, 18)),
-    //     div(totLiqFull0, fromBigNumber(realTimePoolData._totalBorrow0))
-    //   );
-    //   LendObj.currentLTV = calculateCurrentLTV(fixedToShort(
-    //     fromBigNumber(realTimePoolData._borrowBalance1)
-    //   ), fixedToShort(
-    //     fromBigNumber(realTimePoolData._lendBalance0)
-    //   ), price0);
-    //   LendObj.healthFactor = greaterThan(
-    //     fixed2Decimals(realTimePoolData._healthFactor0, 18),
-    //     100
-    //   )
-    //     ? "100"
-    //     : Number(fixed2Decimals(realTimePoolData._healthFactor0, 18)).toFixed(
-    //         2
-    //       );
-      
-    //   LendObj.interestEarned = fixedToShort(fromBigNumber(realTimePoolData._interest0));
-    //   LendObj.poolInfo = {
-    //     token0Symbol: object.pool.token0.symbol,
-    //     token0Logo: getTokenLogo(object.pool.token0.symbol),
-    //     token1Symbol: object.pool.token1.symbol,
-    //     token1Logo: getTokenLogo(object.pool.token1.symbol),
-    //   };
-    //   lendArray.push(LendObj);
-    // } else if (fromBigNumber(realTimePoolData._lendBalance0) > 0 && fromBigNumber(realTimePoolData._lendBalance1) == 0) {
-    //   const LendObj = {};
-
-    //   LendObj.LendBalance = fixedToShort(fromBigNumber(realTimePoolData._lendBalance0));
-    //   LendObj.tokenSymbol = object.pool.token0.symbol;
-    //   LendObj.token = object.pool.token0;
-    //   LendObj.pool = object.pool;
-    //   LendObj.apy = div(
-    //     toAPY(fixed2Decimals(realTimePoolData._interest0, 18)),
-    //     div(totLiqFull0, fromBigNumber(realTimePoolData._totalBorrow0))
-    //   );
-    //   LendObj.currentLTV = calculateCurrentLTV(fixedToShort(
-    //     fromBigNumber(realTimePoolData._borrowBalance1)
-    //   ), fixedToShort(
-    //     fromBigNumber(realTimePoolData._lendBalance0)
-    //   ), price0);
-    //   LendObj.healthFactor = greaterThan(
-    //     fixed2Decimals(realTimePoolData._healthFactor0, 18),
-    //     100
-    //   )
-    //     ? "100"
-    //     : Number(fixed2Decimals(realTimePoolData._healthFactor0, 18)).toFixed(
-    //         2
-    //       );
-     
-    //   LendObj.interestEarned = fixedToShort(fromBigNumber(realTimePoolData._interest0));
-    //   LendObj.poolInfo = {
-    //     token0Symbol: object.pool.token0.symbol,
-    //     token0Logo: getTokenLogo(object.pool.token0.symbol),
-    //     token1Symbol: object.pool.token1.symbol,
-    //     token1Logo: getTokenLogo(object.pool.token1.symbol),
-    //   };
-    //   lendArray.push(LendObj);
-    // } else if (fromBigNumber(realTimePoolData._lendBalance1) > 0 && fromBigNumber(realTimePoolData._lendBalance0) == 0) {
-    //   const LendObj = {};
-
-    //   LendObj.LendBalance = fixedToShort(fromBigNumber(realTimePoolData._lendBalance1));
-    //   LendObj.tokenSymbol = object.pool.token1.symbol;
-    //   LendObj.pool = object.pool;
-    //   LendObj.token = object.pool.token1;
-    //   LendObj.apy = div(
-    //     toAPY(fixed2Decimals(realTimePoolData._interest1, 18)),
-    //     div(totLiqFull1, fromBigNumber(realTimePoolData._totalBorrow1))
-    //   );
-    //   LendObj.currentLTV = calculateCurrentLTV(fixedToShort(
-    //     fromBigNumber(realTimePoolData._borrowBalance0)
-    //   ), fixedToShort(
-    //     fromBigNumber(realTimePoolData._lendBalance1)
-    //   ), price1);
-    //   LendObj.healthFactor = greaterThan(
-    //     fixed2Decimals(realTimePoolData._healthFactor1, 18),
-    //     100
-    //   )
-    //     ? "100"
-    //     : Number(fixed2Decimals(realTimePoolData._healthFactor1, 18)).toFixed(
-    //         2
-    //       );
-    
-    //   LendObj.poolInfo = {
-    //     token0Symbol: object.pool.token0.symbol,
-    //     token0Logo: getTokenLogo(object.pool.token0.symbol),
-    //     token1Symbol: object.pool.token1.symbol,
-    //     token1Logo: getTokenLogo(object.pool.token1.symbol),
-    //   };
-    //   LendObj.interestEarned = fixedToShort(fromBigNumber(realTimePoolData._interest1));
-    //   lendArray.push(LendObj);
-    // } else if (fromBigNumber(realTimePoolData._lendBalance1) > 0 && fromBigNumber(realTimePoolData._lendBalance0) > 0) {
-    //   const LendObj1 = {};
-
-    //   LendObj1.LendBalance = fixedToShort(fromBigNumber(realTimePoolData._lendBalance0));
-    //   LendObj1.tokenSymbol = object.pool.token0.symbol;
-    //   LendObj1.pool = object.pool;
-    //   LendObj1.token = object.pool.token0;
-    //   LendObj1.apy = div(
-    //     toAPY(fixed2Decimals(realTimePoolData._interest0, 18)),
-    //     div(totLiqFull0, fromBigNumber(realTimePoolData._totalBorrow0))
-    //   );
-    //   LendObj1.currentLTV = calculateCurrentLTV(fixedToShort(
-    //     fromBigNumber(realTimePoolData._borrowBalance1)
-    //   ), fixedToShort(
-    //     fromBigNumber(realTimePoolData._lendBalance0)
-    //   ), price0);
-    //   LendObj1.healthFactor = greaterThan(
-    //     fixed2Decimals(realTimePoolData._healthFactor0, 18),
-    //     100
-    //   )
-    //     ? "100"
-    //     : Number(fixed2Decimals(realTimePoolData._healthFactor0, 18)).toFixed(
-    //         2
-    //       );
-    //   LendObj1.poolInfo = {
-    //     token0Symbol: object.pool.token0.symbol,
-    //     token0Logo: getTokenLogo(object.pool.token0.symbol),
-    //     token1Symbol: object.pool.token1.symbol,
-    //     token1Logo: getTokenLogo(object.pool.token1.symbol),
-    //   };
-     
-    //   LendObj1.interestEarned = fixedToShort(fromBigNumber(realTimePoolData._interest0));
-    //   lendArray.push(LendObj1);
-
-    //   const LendObj2 = {};
-
-    //   LendObj2.LendBalance = fixedToShort(fromBigNumber(realTimePoolData._lendBalance1));
-    //   LendObj2.tokenSymbol = object.pool.token1.symbol;
-    //   LendObj2.pool = object.pool;
-    //   LendObj2.token = object.pool.token1;
-    //   LendObj2.apy = div(
-    //     toAPY(fixed2Decimals(realTimePoolData._interest1, 18)),
-    //     div(totLiqFull1, fromBigNumber(realTimePoolData._totalBorrow1))
-    //   );
-    //   LendObj2.currentLTV = calculateCurrentLTV(fixedToShort(
-    //     fromBigNumber(realTimePoolData._borrowBalance0)
-    //   ), fixedToShort(
-    //     fromBigNumber(realTimePoolData._lendBalance1)
-    //   ), price1);
-
-
-    //   LendObj2.healthFactor = greaterThan(
-    //     fixed2Decimals(realTimePoolData._healthFactor1, 18),
-    //     100
-    //   )
-    //     ? "100"
-    //     : Number(fixed2Decimals(realTimePoolData._healthFactor1, 18)).toFixed(
-    //         2
-    //       );
-      
-    //   LendObj2.poolInfo = {
-    //     token0Symbol: object.pool.token0.symbol,
-    //     token0Logo: getTokenLogo(object.pool.token0.symbol),
-    //     token1Symbol: object.pool.token1.symbol,
-    //     token1Logo: getTokenLogo(object.pool.token1.symbol),
-    //   };
-    //   LendObj2.interestEarned = fixedToShort(fromBigNumber(realTimePoolData._interest1));
-    //   lendArray.push(LendObj2);
-    // }
   }
 
   return { borrowArray, lendArray };
@@ -702,11 +440,13 @@ export const getTokensFromUserWallet = async (data, usdlist, tokenList) => {
   const tokensArray = data?.tokenBalances.map((token) => token.contractAddress);
 
   const tokensObject = [];
-  const provider = getProvider();
-  for (const tokenAddress of tokensArray) {
-    const contract = new ethers.Contract(tokenAddress, erc20Abi, provider);
 
-    //  const symbol = await contract.symbol()
+  // const provider = getProvider();
+  for (const tokenAddress of tokensArray) {
+    const contract = await getEtherContract(tokenAddress, erc20Abi) 
+    
+    // const symbol = await contract.symbol()
+   
     //  const name = await contract.name()
     //  const balance = await contract.balanceOf(data?.address)
     // console.log("Contract", contract, symbol, name, balance);

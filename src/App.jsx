@@ -37,9 +37,9 @@ import {
   getEtherContract,
   getEtherContractWithProvider,
 } from "./lib/fun/wagmi";
-import useWallet from "./lib/hooks/useWallet";
 import { ethers } from "ethers";
 import { getTokenUSDPrice } from "./helpers/contracts";
+import useWalletHook from "./lib/hooks/useWallet";
 
 const shardeumPools = [
   {
@@ -53,13 +53,13 @@ const shardeumPools = [
   //   token0:'0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1'
   // }
 ];
-
+//"@wagmi/core": "^0.9.7",
 window.global = window.global ?? window;
 window.Buffer = window.Buffer ?? Buffer;
 
 function App() {
   const dispatch = useDispatch();
-  const { address, isConnected, chain } = useWallet();
+  const { address, isConnected, chain } = useWalletHook();
   const contracts = useSelector((state) => state.contracts);
   const query = getPoolCreatedGraphQuery(address);
   const networksWithGraph = [80001, 137];
@@ -135,7 +135,7 @@ function App() {
           //   });
         }
       } catch (error) {
-        console.log("ContractError", err);
+        console.log("ContractError", error);
         dispatch(setError(error));
       }
     })();

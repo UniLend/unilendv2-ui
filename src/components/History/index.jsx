@@ -10,24 +10,19 @@ import noTxt from "../../assets/notxt.svg";
 import { fixed2Decimals, fromBigNumber } from "../../helpers/contracts";
 import HistorySkeleton from "../Loader/HistorySkeleton";
 import { getHistoryGraphQuery, sortByKey } from "../../helpers/dashboard";
-import { getAccount, getNetwork } from "wagmi/actions";
 import DropDown from "../Common/DropDown";
 import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
 import loader from '../../assets/Eclipse-loader.gif'
 import { useSelector } from "react-redux";
 import { useQuery} from "react-query";
 import { fetchGraphQlData } from "../../utils/axios";
-
-const graphURL = {
-  80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
-  137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
-};
+import useWalletHook from "../../lib/hooks/useWallet";
 
 
  function HistoryComponent() {
   const { contracts, user, web3, poolList, tokenList } = useSelector((state) => state);
   const navigate = useNavigate();
-   const { chain } = getNetwork()
+   const { chain } = useWalletHook()
 
   const [txtData, setTxtData] = useState([]);
   const [graphHistory, setGraphHistory] = useState([]);
@@ -67,7 +62,7 @@ const graphURL = {
       navigate('/')
     }
 
-    if ( networksWithGraph.includes(user?.network.id )) {
+    if ( data && networksWithGraph.includes(user?.network.id )) {
       const pools = {};
       for (const key in poolList) {
         const pool = poolList[key];
@@ -95,7 +90,7 @@ const graphURL = {
     } else {
       setIsPolygon(false);
     }
-  }, [ poolList]);
+  }, [ data, poolList]);
 
   const handleSort = (index) => {
     const sortTo = isPolygon ? graphHistory : txtData;

@@ -7,14 +7,14 @@ import './styles/poolCard.scss';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import bunnytheme from '../../assets/bunnytheme.svg'
-import useWallet from '../../lib/hooks/useWallet';
+import useWalletHook from '../../lib/hooks/useWallet';
 
 
  function PoolCard({pool}) {
   const { poolAddress, token0, token1, totalLiquidity, totalBorrowed  } = pool;
   // const user = useSelector((state)=> state.user)
   const [poolTheme, setPoolTheme] = useState(false)
-  const { address, isConnected} = useWallet()
+  const { address, isConnected} = useWalletHook()
   const navigate = useNavigate();
 
   const handleNavigate = () => {

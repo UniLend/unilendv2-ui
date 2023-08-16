@@ -1,5 +1,4 @@
-
-import { Chain } from "@wagmi/core"
+import { Chain  } from '@rainbow-me/rainbowkit'
 export const zkEVMTestNet = {
     id: 1442,
     name: 'zkEVM Testnet',
@@ -70,7 +69,7 @@ export const mumbaiTestnet = {
   id: 80001,
   name: 'Polygon Mumbai',
   network: 'Polygon Mumbai',
-  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+  nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
   rpcUrls: {
     default: {
       http: ['https://polygon-mumbai.g.alchemy.com/v2/2Uqa_uWFpqzmbVfbHrVn5euVsAJ5eHQK'],
