@@ -61,6 +61,7 @@ function App() {
   const dispatch = useDispatch();
   const { address, isConnected, chain } = useWalletHook();
   const contracts = useSelector((state) => state.contracts);
+  const user = useSelector((state) => state.user);
   const query = getPoolCreatedGraphQuery(address);
   const networksWithGraph = [80001, 137];
 
@@ -84,8 +85,8 @@ function App() {
         const walletconnect = JSON.parse(
           localStorage.getItem("wagmi.connected")
         );
-  
-        const { coreAddress, helperAddress, positionAddress } = contractAddress[ chain?.id || 1442]
+
+        const { coreAddress, helperAddress, positionAddress } = contractAddress[chain?.id || user?.network?.id || 1442]
 
         const preparedData = [
           { abi: coreAbi, address: coreAddress },

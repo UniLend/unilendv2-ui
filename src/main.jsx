@@ -29,6 +29,23 @@ import {
   rainbowWallet,
   walletConnectWallet,
   metaMaskWallet,
+  coinbaseWallet,
+  argentWallet,
+  bitskiWallet,
+  braveWallet,
+  dawnWallet,
+  imTokenWallet,
+  ledgerWallet,
+  mewWallet,
+  okxWallet,
+  omniWallet,
+  phantomWallet,
+  rabbyWallet,
+  safeWallet,
+  tahoWallet,
+  trustWallet,
+  xdefiWallet,
+  zerionWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 
@@ -43,20 +60,18 @@ import { sepoliaTestnet, zkEVMTestNet, mumbaiTestnet } from "./core/networks/Cha
 
 
 const { chains, publicClient } = configureChains(
-  [sepoliaTestnet, zkEVMTestNet, mumbaiTestnet],
+  [sepoliaTestnet, zkEVMTestNet, mumbaiTestnet, polygon],
   [publicProvider(),alchemyProvider({ apiKey: alchemyId })]
 );
-// const walletConnectProjectID = "45c3755af7419aaf09eb64929022acdd";
-// const { wallets } = getDefaultWallets({
-//   appName: "RainbowKit demo",
-//   projectId: "45c3755af7419aaf09eb64929022acdd",
-//   chains,
-// });
 
 const connectors = connectorsForWallets([
   {
     groupName: "Recommended",
-    wallets: [injectedWallet({ chains })],
+    wallets: [,
+      injectedWallet({ chains }),
+      coinbaseWallet({ appName:'UnilendV2', chains}),
+      walletConnectWallet({chains, projectId}),
+    ],
   },
 ]);
 
@@ -76,7 +91,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <Suspense fallback={<Ring />}>
       <Provider store={store}>
         <WagmiConfig config={wagmiConfig}>
-          <RainbowKitProvider chains={chains}>
+          <RainbowKitProvider chains={chains} modalSize="compact">
             <BrowserRouter>
               <AppWrapper />
             </BrowserRouter>

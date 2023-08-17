@@ -182,7 +182,7 @@ export default function Navbar() {
       await ChangeNetwork(id);
     }
 
-    const connector = localStorage.getItem("wallet");
+    const connector = localStorage.getItem("wagmi.wallet");
     if (connector == "walletConnect") {
       setTimeout(() => {
         window.location.reload();
@@ -327,7 +327,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="last_container">
-        { isConnected && currentUser?.balance ? (
+        {/* { isConnected && currentUser?.balance ? (
           <>
             <div className="wallet_connection">
               <Popover
@@ -365,13 +365,13 @@ export default function Navbar() {
             <Button
               icon={<WalletFilled />}
               size="large"
-              onClick={handleOpenWalletModal}
+              onClick={openConnectModal}
             >
               Connect Wallet
             </Button>
           </div>
-        )}
-        {/* <ConnectButton/> */}
+        )} */}
+        <ConnectButton/>
         <div className="hamberger">
           <Popover
             overlayClassName="hamburger_popover"
