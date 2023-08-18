@@ -150,7 +150,11 @@ export default function VoteComponent() {
   };
 
   useEffect(() => {
-    handleDomain(delegate);
+    const isValid = ethers.utils.isAddress(delegate);
+if(isValid){
+
+  handleDomain(delegate);
+}
   }, [delegate]);
 
   useEffect(() => {

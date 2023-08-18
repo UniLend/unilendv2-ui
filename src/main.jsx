@@ -56,11 +56,11 @@ const alchemyId2 = import.meta.env.VITE_ALCHEMY_ID2;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID;
 
-import { sepoliaTestnet, zkEVMTestNet, mumbaiTestnet } from "./core/networks/Chains";
+import { sepoliaTestnet, zkEVMTestNet, mumbaiTestnet, shardeumTestnet } from "./core/networks/Chains";
 
 
 const { chains, publicClient } = configureChains(
-  [sepoliaTestnet, zkEVMTestNet, mumbaiTestnet, polygon],
+  [sepoliaTestnet, zkEVMTestNet, mumbaiTestnet, polygon, shardeumTestnet],
   [publicProvider(),alchemyProvider({ apiKey: alchemyId })]
 );
 

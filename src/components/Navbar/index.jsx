@@ -85,6 +85,9 @@ export default function Navbar() {
   useEffect(() => {
     if (window.ethereum) {
       window.ethereum.on("chainChanged", async (chainId) => {
+        console.log(
+          'chainChanged', chainId
+        );
         const user = await connectWallet();
         handleDomain(user);
         dispatch(setUser(user));
@@ -199,9 +202,9 @@ export default function Navbar() {
           Sepolia Test Network
         </p>
         <p onClick={() => handleSwitchNetwork(80001)}> Polygon Mumbai</p>
-        {/* <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p> */}
+        <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p>
         <p onClick={() => handleSwitchNetwork(1442)}> zkEVM Testnet</p>
-        {/* <p onClick={() => handleSwitchNetwork(8081)}> Shardeum Testnet</p> */}
+        <p onClick={() => handleSwitchNetwork(8081)}> Shardeum Testnet</p>
       </div>
     );
   });
@@ -327,7 +330,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="last_container">
-        {/* { isConnected && currentUser?.balance ? (
+        { isConnected && currentUser?.balance ? (
           <>
             <div className="wallet_connection">
               <Popover
@@ -370,8 +373,8 @@ export default function Navbar() {
               Connect Wallet
             </Button>
           </div>
-        )} */}
-        <ConnectButton/>
+        )}
+        {/* <ConnectButton/> */}
         <div className="hamberger">
           <Popover
             overlayClassName="hamburger_popover"

@@ -28,10 +28,6 @@ export function getEthersProvider({ chainId }: { chainId?: number } = {}) {
 }
 
 
-
-
-
-
 export function walletClientToSigner(walletClient: WalletClient) {
   const { account, chain, transport } = walletClient
 

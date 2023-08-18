@@ -1,51 +1,17 @@
-import Web3 from "web3";
-import {
-  getAccount,
-  getNetwork,
-  disconnect,
-fetchBalance
-} from "wagmi/actions";
+
 // local imports
 import { providerOptions } from "../constants/wallet";
 import { fromWei, removeFromLocalStorage, saveToLocalStorage } from "../utils";
 import { networks } from "../core/networks/networks";
+import { getAccountLib, getNetworkLib, fetchBalanceLib, disconnectLib } from "../lib/fun/functions";
+import { getEthersProvider } from "../lib/fun/wagmi";
 // import { MetaMaskconnector, WalletConnector } from '../App';
 
 const API = import.meta.env.VITE_INFURA_ID;
 
-// export const getProvider = async () => {
-//  try {
-//   const provider = await web3Modal.connect();
-//   // Subscribe to events
-//   MetaMaskEventHandler(provider)
-//   return provider;
-//  } catch (error) {
-//   throw error;
-//  }
-
-// };
-
-export const defProv = () => {
-  const provider = new Web3.providers.HttpProvider(
-    'https://rpc.public.zkevm-test.net')
-
-  const web3 = new Web3(provider);
-  web3.default = true;
-  return web3;
-};
-
-export const getweb3Instance = async () => {
-  try {
-    // const provider = getProvider();
-    // const web3 = new Web3(provider);
-    // return web3;
-  } catch (error) {
-    return defProv();
-  }
-};
 
 export const handleDisconnect = async () => {
-  await disconnect();
+  await disconnectLib();
   removeFromLocalStorage("user");
   localStorage.removeItem("walletconnect");
   window.location.reload();
@@ -55,15 +21,14 @@ export const connectWallet = async (wallet, ChangedAccount = null) => {
 
    try {
 
-    const user = getAccount()
-    const { chain, chains } = getNetwork()
+    const user = getAccountLib()
+    const { chain, chains } = getNetworkLib()
     const chainId = chain.id
     const account = ChangedAccount || user.address;
-    const bal =  await fetchBalance({
+    const bal =  await fetchBalanceLib({
       address: account,
     })
     // const balance = fromWei(web3, bal).slice(0, 6);
-    console.log("bal", bal);
     const networkByWeb3 = chain.name.toUpperCase()
     const Currentnetwork = networks[chainId] ? networks[chainId].chainName: networkByWeb3
     const obj = { address: account, balance: Number(bal?.formatted ).toFixed(4), symbol: bal?.symbol ,network: {id: chainId, name: Currentnetwork} , isConnected: true}
@@ -76,7 +41,7 @@ export const connectWallet = async (wallet, ChangedAccount = null) => {
 };
 
 export const changeNetwork = async (networkId) => {
-  const provider = getProvider();
+  const provider = getEthersProvider();
   try {
     if (!provider) throw new Error("No Crypto Wallet Found");
     const account = await provider.request({

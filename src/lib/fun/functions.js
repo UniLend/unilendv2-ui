@@ -1,9 +1,34 @@
 
 
-import { getNetwork, getContract , getAccount, getWalletClient, getPublicClient, readContract, fetchToken, switchNetwork, waitForTransaction} from "wagmi/actions";
+import { getContract ,   getAccount,
+  getNetwork,
+  disconnect,
+ fetchBalance , getWalletClient, getPublicClient, readContract, fetchToken, switchNetwork, waitForTransaction} from "wagmi/actions";
+import { changeNetwork } from "../../services/wallet";
 import { getEtherContract } from "./wagmi";
 
+export const getNetworkLib =  (props) => {
+  const network =  getNetwork(props);
+  return network
+}
+export const fetchBalanceLib = async (props) =>{
+const bal = await fetchBalance(props)
+return bal;
+}
 
+export const getAccountLib =  (props) => {
+  const account=  getAccount(props);
+  return account
+}
+
+export const disconnectLib = async(props)=>{
+  try{
+    disconnect(props)
+  } catch (err){
+    throw err
+  }
+
+}
 
 
 export const getContractLib = async({address, abi}) => {
@@ -41,9 +66,13 @@ export const fetchTokenLib = async (props) =>  {
 }
 
 export const switchNetworkLib = async (props) => {
-   const data = await switchNetwork(props)
-
-   return data;
+  try {
+    const data = await switchNetwork(props)
+    return data;
+  } catch (error) {
+    throw error
+  } 
+ 
 }
 
 export const waitForTransactionLib = async (props)=> {
