@@ -143,7 +143,6 @@ export default function PoolComponent(props) {
       hash,
     })
       .then((receipt) => {
-
         console.log("receipt", receipt);
         if (receipt.status == 1) {
           message.success(
@@ -196,67 +195,63 @@ export default function PoolComponent(props) {
 
   const handleOperation = () => {
     try {
-
-    (async () => {
-      setIsOperationLoading(true);
-      if (contracts.coreContract) {
-        if (activeOperation === lend) {
-          handleLend(
-            amount,
-            selectedToken,
-            poolData,
-            contracts,
-            user.address,
-            selectedPool,
-            web3,
-            checkTxnStatus,
-            checkTxnError
-          );
-        } else if (activeOperation === redeem) {
-          handleRedeem(
-            amount,
-            selectedToken,
-            max,
-            poolData,
-            selectedPool,
-            user.address,
-            contracts,
-            checkTxnStatus,
-            checkTxnError
-          );
-        } else if (activeOperation === borrow) {
-          handleBorrow(
-            selectedToken,
-            user.address,
-            collateralToken,
-            poolData,
-            contracts,
-            colleteral,
-            amount,
-            web3,
-            checkTxnStatus,
-            checkTxnError
-          );
-        } else if (activeOperation === repay) {
-          handleRepay(
-            amount,
-            selectedToken,
-            poolData,
-            max,
-            contracts,
-            selectedPool,
-            user.address,
-            web3,
-            checkTxnStatus,
-            checkTxnError
-          );
+      (async () => {
+        setIsOperationLoading(true);
+        if (contracts.coreContract) {
+          if (activeOperation === lend) {
+            handleLend(
+              amount,
+              selectedToken,
+              poolData,
+              contracts,
+              user.address,
+              selectedPool,
+              web3,
+              checkTxnStatus,
+              checkTxnError
+            );
+          } else if (activeOperation === redeem) {
+            handleRedeem(
+              amount,
+              selectedToken,
+              max,
+              poolData,
+              selectedPool,
+              user.address,
+              contracts,
+              checkTxnStatus,
+              checkTxnError
+            );
+          } else if (activeOperation === borrow) {
+            handleBorrow(
+              selectedToken,
+              user.address,
+              collateralToken,
+              poolData,
+              contracts,
+              colleteral,
+              amount,
+              web3,
+              checkTxnStatus,
+              checkTxnError
+            );
+          } else if (activeOperation === repay) {
+            handleRepay(
+              amount,
+              selectedToken,
+              poolData,
+              max,
+              contracts,
+              selectedPool,
+              user.address,
+              web3,
+              checkTxnStatus,
+              checkTxnError
+            );
+          }
         }
-      }
-    })();
-          
-  } catch (error) {
-      
-  }
+      })();
+    } catch (error) {}
   };
 
   const toggleToken = (token) => {
@@ -569,40 +564,6 @@ export default function PoolComponent(props) {
     );
   };
 
-<<<<<<< HEAD
-  useEffect(() => {
-    const poolsArray = Object.values(poolList);
-    if (poolsArray.length) {
-      // const poolsWithToken0 = poolsArray
-      //   .filter(
-      //     (pool) =>
-      //       pool.token0.symbol === selectedTokens.token0 ||
-      //       pool.token1.symbol === selectedTokens.token0
-      //   )
-      //   .map((pool) => {
-      //     if (pool.token0.symbol === selectedTokens.token0) {
-      //       return { token: pool.token1 };
-      //     } else if (pool.token1.symbol === selectedTokens.token0) {
-      //       return { token: pool.token0 };
-      //     }
-      //   });
-      //   const poolsWithToken1 = poolsArray
-      //   .map((pool) => {
-      //     if (pool.token0.symbol === selectedTokens.token1) {
-      //       return { token: pool.token1, pool: true };
-      //     } else if (pool.token1.symbol === selectedTokens.token1) {
-      //       return { token: pool.token0, pool: true };
-      //     } else {
-      //       return { token: pool.token0, pool: true };
-      //     }
-      //   });
-      // setTokensWithCreatedPools(poolsWithToken0);
-      console.log("PoolArray");
-    }
-  }, [poolList, selectedTokens]);
-=======
->>>>>>> netlify
-
   const handleOpenSelectTokenMoadal = (bool, token) => {
     if (token === "token0") {
       setOpenToken0(true);
@@ -613,7 +574,6 @@ export default function PoolComponent(props) {
     }
     setShowSelectTokenModal(bool);
   };
-
 
   return (
     <>
@@ -741,7 +701,6 @@ export default function PoolComponent(props) {
             </div>
 
             <div className="user_liquidity">
-<<<<<<< HEAD
               <p className="paragraph06">{liquidityText[activeOperation]}</p>
               <Tooltip
                 title={getLiquidityAmount[activeOperation]}
@@ -752,15 +711,6 @@ export default function PoolComponent(props) {
                     ? shortNumber(getLiquidityAmount[activeOperation])
                     : 0}
                 </h1>
-=======
-              <p>{liquidityText[activeOperation]}</p>
-              <Tooltip title={getLiquidityAmount[activeOperation]} trigger='hover'>
-              <h1>
-                {selectedToken
-                  ? fixFormatNumber(getLiquidityAmount[activeOperation])
-                  : 0}
-              </h1>
->>>>>>> netlify
               </Tooltip>
             </div>
 
