@@ -2,8 +2,8 @@
 .poolcard {
   width: 300px;
   height: 272px;
-  background-color: var(--low-dark-bg);
-  // border: 1px solid var(--button-border);
+  // background-color: var(--main);
+  background-color: rgba(154, 139, 250, 0.2);
   border-radius: 12px;
   box-shadow: var(--box-shadow);
   @include padding(28px 0);
@@ -12,6 +12,7 @@
   &:hover {
     transform: scale(1.05);
   }
+
   .pool_icons {
     @include padding-bottom(24px);
     border-bottom: 0.35px solid var(--pure-black);

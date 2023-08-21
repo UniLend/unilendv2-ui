@@ -17,7 +17,7 @@ import { Input, Button, Pagination } from "antd";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DonutChart from "../Common/DonutChart";
-import { useQuery, useQueryClient} from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import {
   getAverage,
   getBorrowedPowerUsed,
@@ -41,26 +41,20 @@ import { ethers } from "ethers";
 //const endpoint = "https://api.spacex.land/graphql/";
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const config = {
- 80001: {
+  80001: {
     apiKey: alchemyId,
     network: Network.MATIC_MUMBAI,
   },
-  137:{
+  137: {
     apiKey: alchemyId,
     network: Network.MATIC_MAINNET,
-  }
- 
+  },
 };
-
-
-
-
 
 const graphURL = {
   80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
   137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
 };
-
 
 export default function UserDashboardComponent(props) {
   const { contracts, user, web3, isError, poolList, tokenList } = props;
@@ -70,10 +64,12 @@ export default function UserDashboardComponent(props) {
   //   navigate("/");
   // }
 
-const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
+  const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
   const { address } = getAccount();
   const [userAddress, setUserAddress] = useState();
-  const [verifiedAddress, setVerifiedAddress] = useState(address ||user?.address );
+  const [verifiedAddress, setVerifiedAddress] = useState(
+    address || user?.address
+  );
   const query = userDashBoardQuery0(verifiedAddress || address);
   const [lendingVisible, setLendingVisible] = useState(false);
   const [borrowingVisible, setBorrowingVisible] = useState(false);
@@ -83,10 +79,16 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
   const [positionData, setPositionData] = useState({});
   const [positionDataBackup, setPositionDataBackup] = useState();
   // const { data, loading, error } = useQuery(query);
-  const { data, loading, error, refetch } = useQuery('userDashboard', async () => {
-    const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
-    return fetchedDATA;
-    });
+  const { data, loading, error, refetch } = useQuery(
+    "userDashboard",
+    async () => {
+      const fetchedDATA = await fetchGraphQlData(
+        chain?.id || user?.network?.id || 137,
+        query
+      );
+      return fetchedDATA;
+    }
+  );
 
   const [headerAnalytics, setHeaderAnalytics] = useState({
     healthFactor: 0,
@@ -99,9 +101,9 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
   const [positionLoading, setPositionLoading] = useState(true);
   const [walletCurrentPage, setWalletCurrentPage] = useState(1);
   const [positionCurrentPage, setPositionCurrentPage] = useState({
-    lending:1,
-    borrowing: 1
-  })
+    lending: 1,
+    borrowing: 1,
+  });
 
   const handleLendingVisibleChange = (visible) => {
     setLendingVisible(visible);
@@ -233,12 +235,9 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
 
   useEffect(() => {
     if (data && contracts) {
-   
-
       (async () => {
         setPositionLoading(true);
         const position = await getPositionData(data, contracts);
-      
 
         if (position) {
           setPositionData(position);
@@ -298,7 +297,7 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
 
   useEffect(() => {
     const account = getAccount();
-    refetch()
+    refetch();
     if (verifiedAddress) {
       getUserTokens(verifiedAddress || account.address);
     } else if (userAddress == "" || verifiedAddress == "") {
@@ -308,19 +307,15 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
 
   return (
     <div className="user_dashboard_component">
-      <div className="dashboardbanner">
+      {/* <div className="dashboardbanner">
         <img src={banner} alt="" />
-      </div>
+      </div> */}
       <div className="user_portfolio">
         <img src={userIcon} alt="icon" className="usericon" />
         <div className="user_tittle">
           <h1>User Overview</h1>
           <Input
-            addonBefore={
-            
-                <FaSearch className="search_icon" />
-              
-            }
+            addonBefore={<FaSearch className="search_icon" />}
             className={`search_address ${
               userAddress
                 ? verifiedAddress
@@ -546,7 +541,7 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
               <Pagination
                 current={walletCurrentPage}
                 onChange={(el) => setWalletCurrentPage(el)}
-                pageSize={7}
+                pageSize={4}
                 size="small"
                 total={walletTokens.length}
                 showSizeChanger={false}
@@ -583,6 +578,7 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
               <div>
                 <div className="action_container">
                   <div className="input_container">
+                    <FaSearch />
                     <input
                       onChange={handleOpenPosition}
                       type="text"
@@ -609,60 +605,68 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
                 </div>
                 <div className="tbody">
                   {positionData?.lendArray?.length > 0 && !positionLoading
-                    ? positionData?.lendArray.slice((positionCurrentPage.lending - 1) * 5, positionCurrentPage.lending * 5)
-                    .map((pool, i) => {
-                        return (
-                          <div key={i} className="tbody_row">
-                            <span
-                              onClick={() => navigateToPool(pool?.pool?.pool)}
-                            >
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token0Logo}
-                                alt="uft"
-                              />
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token1Logo}
-                                alt="uft"
-                              />
-                              <p className="hide_for_mobile">
-                                {" "}
-                                {pool.poolInfo.token0Symbol} /{" "}
-                                {pool.poolInfo.token1Symbol}{" "}
-                              </p>
-                            </span>
-                            <span>{pool?.tokenSymbol}</span>
-                            <span>{Number(pool?.LendBalance).toFixed(2)}</span>
-                            <span>{Number(pool?.apy).toFixed(2)}%</span>
-                            <span>{pool.pool.maxLTV}%</span>
-                            <span>
-                              {Number(pool?.interestEarned).toFixed(8)}
-                            </span>
-                            <span>
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token0Logo}
-                                alt="uft"
-                              />
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token1Logo}
-                                alt="uft"
-                              />
-                            </span>
-                            <span>
-                              {pool?.tokenSymbol} <br />{" "}
-                              {Number(pool?.LendBalance).toFixed(2)}{" "}
-                            </span>
-                            <span>
-                              {Number(pool?.apy).toFixed(2)}% <br />{" "}
-                              {Number(pool?.interestEarned).toFixed(6)}{" "}
-                            </span>
-                            <span>{pool.pool.maxLTV}%</span>
-                          </div>
-                        );
-                      })
+                    ? positionData?.lendArray
+                        .slice(
+                          (positionCurrentPage.lending - 1) * 5,
+                          positionCurrentPage.lending * 5
+                        )
+                        .map((pool, i) => {
+                          return (
+                            <div key={i} className="tbody_row">
+                              <span
+                                onClick={() => navigateToPool(pool?.pool?.pool)}
+                              >
+                                <div>
+                                  <img
+                                    onError={imgError}
+                                    src={pool.poolInfo.token0Logo}
+                                    alt="uft"
+                                  />
+                                  <img
+                                    onError={imgError}
+                                    src={pool.poolInfo.token1Logo}
+                                    alt="uft"
+                                  />
+                                </div>
+                                <p className="hide_for_mobile">
+                                  {" "}
+                                  {pool.poolInfo.token0Symbol} /{" "}
+                                  {pool.poolInfo.token1Symbol}{" "}
+                                </p>
+                              </span>
+                              <span>{pool?.tokenSymbol}</span>
+                              <span>
+                                {Number(pool?.LendBalance).toFixed(2)}
+                              </span>
+                              <span>{Number(pool?.apy).toFixed(2)}%</span>
+                              <span>{pool.pool.maxLTV}%</span>
+                              <span>
+                                {Number(pool?.interestEarned).toFixed(8)}
+                              </span>
+                              <span>
+                                <img
+                                  onError={imgError}
+                                  src={pool.poolInfo.token0Logo}
+                                  alt="uft"
+                                />
+                                <img
+                                  onError={imgError}
+                                  src={pool.poolInfo.token1Logo}
+                                  alt="uft"
+                                />
+                              </span>
+                              <span>
+                                {pool?.tokenSymbol} <br />{" "}
+                                {Number(pool?.LendBalance).toFixed(2)}{" "}
+                              </span>
+                              <span>
+                                {Number(pool?.apy).toFixed(2)}% <br />{" "}
+                                {Number(pool?.interestEarned).toFixed(6)}{" "}
+                              </span>
+                              <span>{pool.pool.maxLTV}%</span>
+                            </div>
+                          );
+                        })
                     : !positionLoading && (
                         <Lottie
                           options={defaultOptionsLotti}
@@ -680,25 +684,30 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
                       );
                     })}
                 </div>
-              {
-                positionData?.lendArray?.length > 0 && !positionLoading &&
-               <div className="pagination">
-                  <Pagination
-                    current={positionCurrentPage.lending}
-                    onChange={(el) => setPositionCurrentPage({...positionCurrentPage, lending: el})}
-                    pageSize={5}
-                    size="small"
-                    total={positionData?.lendArray?.length}
-                    showSizeChanger={false}
-                    hideOnSinglePage={true}
-                  />
-                </div>
-            }
+                {positionData?.lendArray?.length > 0 && !positionLoading && (
+                  <div className="pagination">
+                    <Pagination
+                      current={positionCurrentPage.lending}
+                      onChange={(el) =>
+                        setPositionCurrentPage({
+                          ...positionCurrentPage,
+                          lending: el,
+                        })
+                      }
+                      pageSize={5}
+                      size="small"
+                      total={positionData?.lendArray?.length}
+                      showSizeChanger={false}
+                      hideOnSinglePage={true}
+                    />
+                  </div>
+                )}
               </div>
             ) : (
               <div>
                 <div className="action_container">
                   <div className="input_container">
+                    <FaSearch />
                     <input
                       onChange={handleOpenPosition}
                       type="text"
@@ -725,60 +734,70 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
                 </div>
                 <div className="tbody">
                   {positionData?.borrowArray?.length > 0 && !positionLoading
-                    ? positionData?.borrowArray.slice((positionCurrentPage.borrowing - 1) * 5, positionCurrentPage.borrowing * 5)
-                    .map((pool, i) => {
-                        return (
-                          <div key={i} className="tbody_row">
-                            <span
-                              onClick={() => navigateToPool(pool?.pool?.pool)}
-                            >
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token0Logo}
-                                alt="uft"
-                              />
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token1Logo}
-                                alt="uft"
-                              />
-                              <p className="hide_for_mobile">
-                                {" "}
-                                {pool.poolInfo.token0Symbol} /{" "}
-                                {pool.poolInfo.token1Symbol}
-                              </p>
-                            </span>
-                            <span>{pool?.tokenSymbol}</span>
-                            <span>
-                              {Number(pool?.borrowBalance).toFixed(2)}
-                            </span>
-                            <span>{Number(pool?.apy).toFixed(3)}%</span>
-                            <span>{Number(pool?.currentLTV).toFixed(2)}%</span>
-                            <span>{Number(pool?.healthFactor)}</span>
-                            <span>
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token0Logo}
-                                alt="uft"
-                              />
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token1Logo}
-                                alt="uft"
-                              />
-                            </span>
-                            <span>
-                              {pool?.tokenSymbol} <br />{" "}
-                              {Number(pool?.borrowBalance).toFixed(2)}{" "}
-                            </span>
-                            <span>
-                              {Number(pool?.apy).toFixed(3)}% <br />{" "}
-                              {Number(pool?.healthFactor)}
-                            </span>
-                            <span>{Number(pool?.currentLTV).toFixed(2)}%</span>
-                          </div>
-                        );
-                      })
+                    ? positionData?.borrowArray
+                        .slice(
+                          (positionCurrentPage.borrowing - 1) * 5,
+                          positionCurrentPage.borrowing * 5
+                        )
+                        .map((pool, i) => {
+                          return (
+                            <div key={i} className="tbody_row">
+                              <span
+                                onClick={() => navigateToPool(pool?.pool?.pool)}
+                              >
+                                <div>
+                                  <img
+                                    onError={imgError}
+                                    src={pool.poolInfo.token0Logo}
+                                    alt="uft"
+                                  />
+                                  <img
+                                    onError={imgError}
+                                    src={pool.poolInfo.token1Logo}
+                                    alt="uft"
+                                  />
+                                </div>
+                                <p className="hide_for_mobile">
+                                  {" "}
+                                  {pool.poolInfo.token0Symbol} /{" "}
+                                  {pool.poolInfo.token1Symbol}
+                                </p>
+                              </span>
+                              <span>{pool?.tokenSymbol}</span>
+                              <span>
+                                {Number(pool?.borrowBalance).toFixed(2)}
+                              </span>
+                              <span>{Number(pool?.apy).toFixed(3)}%</span>
+                              <span>
+                                {Number(pool?.currentLTV).toFixed(2)}%
+                              </span>
+                              <span>{Number(pool?.healthFactor)}</span>
+                              <span>
+                                <img
+                                  onError={imgError}
+                                  src={pool.poolInfo.token0Logo}
+                                  alt="uft"
+                                />
+                                <img
+                                  onError={imgError}
+                                  src={pool.poolInfo.token1Logo}
+                                  alt="uft"
+                                />
+                              </span>
+                              <span>
+                                {pool?.tokenSymbol} <br />{" "}
+                                {Number(pool?.borrowBalance).toFixed(2)}{" "}
+                              </span>
+                              <span>
+                                {Number(pool?.apy).toFixed(3)}% <br />{" "}
+                                {Number(pool?.healthFactor)}
+                              </span>
+                              <span>
+                                {Number(pool?.currentLTV).toFixed(2)}%
+                              </span>
+                            </div>
+                          );
+                        })
                     : !positionLoading && (
                         <Lottie
                           options={defaultOptionsLotti}
@@ -796,20 +815,24 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
                       );
                     })}
                 </div>
-                {
-                positionData?.borrowArray?.length > 0 && !positionLoading &&
-               <div className="pagination">
-                  <Pagination
-                    current={positionCurrentPage.borrowing}
-                    onChange={(el) => setPositionCurrentPage({...positionCurrentPage, borrowing: el})}
-                    pageSize={5}
-                    size="small"
-                    total={positionData?.borrowArray?.length}
-                    showSizeChanger={false}
-                    hideOnSinglePage={true}
-                  />
-                </div>
-            }
+                {positionData?.borrowArray?.length > 0 && !positionLoading && (
+                  <div className="pagination">
+                    <Pagination
+                      current={positionCurrentPage.borrowing}
+                      onChange={(el) =>
+                        setPositionCurrentPage({
+                          ...positionCurrentPage,
+                          borrowing: el,
+                        })
+                      }
+                      pageSize={5}
+                      size="small"
+                      total={positionData?.borrowArray?.length}
+                      showSizeChanger={false}
+                      hideOnSinglePage={true}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>

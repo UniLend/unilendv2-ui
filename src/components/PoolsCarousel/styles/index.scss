@@ -7,10 +7,11 @@
     .title_sort_container {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       width: 88%;
       @include margin(10px auto);
       h2 {
-        @include margin(10);
+        @include margin(0);
         color: var(--pure-black);
         @include font-size($font-size-xlg);
       }

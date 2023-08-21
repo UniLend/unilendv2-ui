@@ -81,8 +81,6 @@ export default function HeroComponent(props) {
     } else {
       setFilteredPools([]);
     }
-
-  
   }, [token1, token2]);
 
   const handleTokens = (token, selectedToken) => {
@@ -101,7 +99,8 @@ export default function HeroComponent(props) {
   return (
     <div className="hallofpools_container">
       <div className="banner">
-       { state.theme == 'dark' ? <img src={darkbanner} alt="v2-banner" /> : <img src={banner} alt="v2-banner" /> } 
+        {/* { state.theme == 'dark' ? <img src={darkbanner} alt="v2-banner" /> : <img src={banner} alt="v2-banner" /> }  */}
+        <img src={banner} alt="v2-banner" />
       </div>
 
       <ManageToken
@@ -125,7 +124,7 @@ export default function HeroComponent(props) {
         </div>
       ) : token1.symbol || token2.symbol ? (
         <div className="no_pool_container">
-          <NoPoolFound token1={token1} token2={token2}/>
+          <NoPoolFound token1={token1} token2={token2} />
         </div>
       ) : (
         <PoolCarousel pools={pools} isLoading={!isLoadingPoolData} />
