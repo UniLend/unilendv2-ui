@@ -30,13 +30,11 @@ export default function HallOfPoolsComponent() {
       const toArray = Object.values(poolList).filter(
         (pool) => pool.hide == false
       );
-   
+
       setPools(toArray);
       setPoolBackup(toArray);
     }
-  
   }, [poolList]);
-
 
   const handleSort = (key, order) => {
     const sorted = sortByKey(pools, key, order);
@@ -69,7 +67,6 @@ export default function HallOfPoolsComponent() {
 
   useEffect(() => {
     if (token1?.symbol && !token2?.symbol) {
-    
       const filtered =
         Array.isArray(poolBackup) &&
         poolBackup.filter(
@@ -98,44 +95,49 @@ export default function HallOfPoolsComponent() {
     } else if (token1?.symbol && token2?.symbol) {
       const filtered =
         Array.isArray(poolBackup) &&
-        poolBackup.filter(
-          (pool) =>
-            String(pool?.token0.symbol)
-              .toUpperCase()
-              .includes(String(token1.symbol)) ||
-            String(pool?.token1.symbol)
-              .toUpperCase()
-              .includes(String(token1.symbol))
-        ).filter(
-          (pool) =>
-            String(pool?.token0.symbol)
-              .toUpperCase()
-              .includes(String(token2.symbol)) ||
-            String(pool?.token1.symbol)
-              .toUpperCase()
-              .includes(String(token2.symbol))
-        );
-        setPools(filtered)
+        poolBackup
+          .filter(
+            (pool) =>
+              String(pool?.token0.symbol)
+                .toUpperCase()
+                .includes(String(token1.symbol)) ||
+              String(pool?.token1.symbol)
+                .toUpperCase()
+                .includes(String(token1.symbol))
+          )
+          .filter(
+            (pool) =>
+              String(pool?.token0.symbol)
+                .toUpperCase()
+                .includes(String(token2.symbol)) ||
+              String(pool?.token1.symbol)
+                .toUpperCase()
+                .includes(String(token2.symbol))
+          );
+      setPools(filtered);
     } else {
-      setPools(poolBackup)
+      setPools(poolBackup);
     }
   }, [token1, token2, poolBackup]);
 
   const createPool = () => {
-    handleCreatePool()
+    handleCreatePool();
   };
 
   return (
     <div className="hallofpools_container">
-      <div className="analytics_container">
+      {/* <div className="analytics_container">
         <div className="analytics"></div>
-        <div className="managepool_container">
-          <ManageToken
-            handleTokens={handleTokens}
-            tokens={{ token1, token2 }}
-            pools={pools}
-          />
-        </div>
+      </div> */}
+      <div className="banner">
+        <img src={banner} alt="v2-banner" />
+      </div>
+      <div className="managepool_container">
+        <ManageToken
+          handleTokens={handleTokens}
+          tokens={{ token1, token2 }}
+          pools={pools}
+        />
       </div>
 
       <div className="pool_filter_container">
@@ -167,7 +169,11 @@ export default function HallOfPoolsComponent() {
       ) : isLoadingPoolData ? (
         <PoolListSkeleton />
       ) : (
-        <NoPoolFound token1={token1} token2={token2} createPool={handleCreatePool} />
+        <NoPoolFound
+          token1={token1}
+          token2={token2}
+          createPool={handleCreatePool}
+        />
       )}
       {/* <PoolCarousel pools={pools} isLoading={!isLoadingPoolData}/> */}
 

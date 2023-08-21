@@ -1,96 +1,88 @@
-@use '../../../core/theme/constants.scss' as *;
-.pool_carousel_container{
+@import "/src/core/theme";
+.pool_carousel_container {
   width: 90%;
- margin: auto;
+  margin: auto;
 
-    .carousel_row{
-
-        .title_sort_container{
-            display: flex;
-            justify-content: space-between;
-            width: 88%;
-            margin: 10px auto;
-            h2{
-                margin: 10px;
-                color: var(--dark-gray);
-                font-size: 20px;
-                font-weight: 700;
-            }
-            // .sortBy{
-            //     display: flex;
-            //     width: 120px;
-            //     cursor: pointer;
-            //     background-color: var(--light-blue);
-            //     border-radius: 5px;
-            //     color: var(--light-gray);
-            //     font-weight: 700;
-            //     place-items: center center;
-            //     justify-content: space-between;
-            //     padding: 12px;
-            //     p{
-            //         margin: 0px 0px;
-            //     }
-            // }
-        }
-
-        .forwardBtnProps{
-            width: 30px;
-            height: 30px;
-            align-self: center;
-            background-color: var(--light-blue);
-            border: 1px solid var(--border-gray);
-            border-radius: 7px;
-            color: var(--sharp-blue);
-            cursor: pointer;
-            &:disabled{
-              cursor: not-allowed;
-            }
-            // margin: 20px;
-        }
-        .backwardBtnProps{
-            width: 30px;
-            height: 30px;
-            align-self: center;
-            background-color: var(--light-blue);
-            border: 1px solid var(--border-gray);
-            border-radius: 7px;
-            color: var(--sharp-blue);
-            cursor: pointer;
-            &:disabled{
-                cursor: not-allowed;
-                
-            }
-            // margin: 20px;
-        }
-        .containerProps{
-            width: 100% !important ;
-            justify-content: space-between ;
-            flex-flow: nowrap !important;
-            //    @media ($mobile) {
-            //     width: 115% !important;
-            //     margin-left: -20px;
-            //    }
-        }
-.innerclass{
-    max-width: 90% !important;
-}
+  .carousel_row {
+    .title_sort_container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 88%;
+      @include margin(10px auto);
+      h2 {
+        @include margin(0);
+        color: var(--pure-black);
+        @include font-size($font-size-xlg);
+      }
+      // .sortBy{
+      //     display: flex;
+      //     width: 120px;
+      //     cursor: pointer;
+      //     background-color: var(--light-blue);
+      //     border-radius: 5px;
+      //     color: var(--light-gray);
+      //     font-weight: 700;
+      //     place-items: center center;
+      //     justify-content: space-between;
+      //     padding: 12px;
+      //     p{
+      //         margin: 0px 0px;
+      //     }
+      // }
     }
+
+    .forwardBtnProps {
+      width: 30px;
+      height: 30px;
+      align-self: center;
+      background-color: var(--main);
+      border: none;
+      border-radius: 8px;
+      color: var(--pure-black);
+      cursor: pointer;
+      &:disabled {
+        cursor: not-allowed;
+      }
+    }
+    .backwardBtnProps {
+      width: 30px;
+      height: 30px;
+      align-self: center;
+      background-color: var(--main);
+      border: none;
+      border-radius: 8px;
+      color: var(--pure-black);
+      cursor: pointer;
+      &:disabled {
+        cursor: not-allowed;
+      }
+    }
+    .containerProps {
+      width: 100% !important ;
+      justify-content: space-between;
+      flex-flow: nowrap !important;
+      //    @media ($mobile) {
+      //     width: 115% !important;
+      //     margin-left: -20px;
+      //    }
+    }
+    .innerclass {
+      max-width: 90% !important;
+    }
+  }
 }
 
-.poolcard_div{
-    padding: 10px 20px;
+.poolcard_div {
+  @include padding(10px 20px);
+  @media ($mobile) {
+    @include padding(10px);
+  }
+  .poolcard,
+  .skeleton_card {
+    min-width: 300px;
     @media ($mobile) {
-        padding: 10px;
-       }
-       .poolcard, .skeleton_card{
-           min-width: 350px;
-          @media ($tablet) {
-           min-width: 300px;
-          }
-          @media ($mobile) {
-           min-width: 280px;
-          }
-       }
+      min-width: 280px;
+    }
+  }
 }
-
-

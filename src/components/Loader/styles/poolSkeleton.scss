@@ -1,55 +1,56 @@
+@import "/src/core/theme";
+.pool_skeleton_container {
+  width: 100%;
+  max-width: 450px;
+  @include padding(116px 0 0);
+  @include margin(0 auto 116px);
+  height: max-content;
+  .token_header {
+    background-color: var(--pure-white);
+    border-radius: 80px;
+    @include margin(10px 10px 48px);
+    display: flex;
+    gap: 10px;
+    @include padding(8px);
+    justify-content: space-between;
+    box-shadow: var(--box-shadow);
+    div {
+      width: 184px;
+      background-color: gray;
+      height: 50px;
+      border-radius: 102px;
+    }
+  }
 
-.pool_skeleton_container{
-    width: 100%;
-    max-width: 450px;
-    margin: 50px auto;
-    margin-bottom: 100px;
-    height: max-content;
-    .token_header{
-        background-color: var(--pure-white);
-        border-radius: 12px;
-        margin: 10px;
-        display: flex;
-        gap: 10px;
-        padding: 15px 30px;
-        justify-content: space-between;
-        box-shadow: var(--box-shadow);
-        div{
-            width: 165px;
-            background-color: gray;
-            height: 50px;
-            border-radius: 10px;
-        }
+  .content_container {
+    background-color: var(--pure-white);
+    height: 450px;
+    margin: 10px;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    @include padding(12px);
+    .tabs {
+      width: 70%;
+      border-radius: 12px;
+      margin: 0px auto;
+      height: 35px;
     }
 
-    .content_container{
-        background-color: var(--pure-white);
-        height: 450px;
-        margin: 10px;
-        border-radius: 12px;
-        box-shadow: var(--box-shadow);
-        padding: 15px;
-        .tabs{
-            width: 70%;
-            border-radius: 12px;
-            margin: 0px auto;
-            height: 35px;
-        }
-
-        .input, .button{
-            width: 100%;
-            height: 50px;
-            border-radius: 12px;
-            margin-top: 150px;
-        }
-        .info {
-            width: 100%;
-            height: 100px;
-            border-radius: 12px;
-            margin-top: 20px;
-        }
-        .button{
-            margin: 20px 0px;
-        }
+    .input,
+    .button {
+      width: 100%;
+      height: 50px;
+      border-radius: 12px;
+      margin-top: 150px;
     }
+    .info {
+      width: 100%;
+      height: 100px;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+    .button {
+      margin: 20px 0px;
+    }
+  }
 }

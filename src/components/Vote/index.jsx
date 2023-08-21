@@ -167,17 +167,19 @@ if(isValid){
 
   return (
     <div className="vote_container">
-      <div className="vote_banner">
+      {/* <div className="vote_banner">
         <img src={banner} alt="banner" />
-      </div>
+      </div> */}
 
       <div className="vote_content">
         {/* User Info */}
         <div className="user_info">
           <div>
-            <h2>{Number(tokenBalance.uft + tokenBalance.uftg).toFixed(2)}</h2>
+            <h2 className="heading05">
+              {Number(tokenBalance.uft + tokenBalance.uftg).toFixed(2)}
+            </h2>
             <div className="total_balance">
-              <p>Total Balance</p>
+              <p className="paragraph03">Total Balance</p>
               <Popover
                 content={<BalancePopover />}
                 overlayClassName="total_balance_popover"
@@ -188,8 +190,8 @@ if(isValid){
             </div>
           </div>
           <div>
-            <h2>{Number(votingPower).toFixed(2)}</h2>
-            <p>Voting Power</p>
+            <h2 className="heading05">{Number(votingPower).toFixed(2)}</h2>
+            <p className="paragraph03">Voting Power</p>
           </div>
           <div>
             <div
@@ -198,12 +200,12 @@ if(isValid){
               }}
               className="address_with_copy"
             >
-              <h2>
+              <h2 className="heading05">
                 {domainDetail ? domainDetail : shortenAddress(String(delegate))}
               </h2>
               <FiCopy />
             </div>
-            <p>Delegation address</p>
+            <p className="paragraph03">Delegation address</p>
           </div>
         </div>
         {/* Operation Section */}
@@ -264,8 +266,8 @@ if(isValid){
             <img src={Vote} alt="vote info" />
           </div>
           <div>
-            <h2>Participate In Governance</h2>
-            <p>
+            <h2 className="heading04">Participate In Governance</h2>
+            <p className="paragraph06">
               You can either vote on each proposal yourself or delegate your
               votes to a third party. You can either vote on each proposal
               yourself or delegate your votes to a third party.
@@ -443,8 +445,8 @@ const WrapAndDelegate = ({
   return (
     <div className="operation_content_container">
       <div className="info">
-        <h2>Wrap And Delegate</h2>
-        <p>
+        <h2 className="heading03">Wrap And Delegate</h2>
+        <p className="paragraph06">
           You can either vote on each proposal yourself or delegate your votes
           to a third party. You can either vote on each proposal yourself or
           delegate your votes to a third party.
@@ -482,7 +484,7 @@ const WrapAndDelegate = ({
             onClick={() => copyAddress(domainDetail.value)}
             className="domain_data"
           >
-            <p className="domain_value">
+            <p className="domain_value paragraph05">
               {domainDetail.value ? shortenAddress(domainDetail.value) : ""}
             </p>
             {domainDetail.value && <FiCopy />}
@@ -570,8 +572,8 @@ const UnWrap = ({
   return (
     <div className="operation_content_container">
       <div className="info">
-        <h2>Unwrap</h2>
-        <p>
+        <h2 className="heading03">Unwrap</h2>
+        <p className="paragraph06">
           You can either vote on each proposal yourself or delegate your votes
           to a third party. You can either vote on each proposal yourself or
           delegate your votes to a third party.
@@ -713,8 +715,8 @@ const UpdateDelegation = ({
   return (
     <div className="operation_content_container">
       <div className="info">
-        <h2>Update Delegation</h2>
-        <p>
+        <h2 className="heading03">Update Delegation</h2>
+        <p className="paragraph06">
           You can either vote on each proposal yourself or delegate your votes
           to a third party. You can either vote on each proposal yourself or
           delegate your votes to a third party.

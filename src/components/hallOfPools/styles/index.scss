@@ -1,102 +1,104 @@
-@use '../../../core/theme/constants.scss' as *;
-.banner{
+// @use "../../../core/theme/constants.scss" as *;
+@import "/src/core/theme";
+.banner {
   width: 80%;
   margin: 50px auto;
-    img{
-        width: 100%;
-        max-height: 300px;
-        object-fit: cover;
-        object-position: 0% 100%;
-    }
+  img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    object-position: 0% 100%;
+  }
 }
 
-.analytics_container{
- background-color: var(--sharp-blue);
- height: 255px;
- position: relative;
- margin-bottom: 50px;
- .managepool_container{
-    position: relative;
-    top: 220px;
-    .manage_token_component{
-        box-shadow: none;
-        border: 1px solid var(--border-gray);
-    }
- }
+// .analytics_container {
+//   background-color: var(--main);
+//   height: 255px;
+//   position: relative;
+//   margin-bottom: 50px;
 
- @media ($tablet){
-    margin-bottom: 100px;
- }
- @media ($mobile){
-    margin-bottom: 100px;
- }
+//   @media ($tablet) {
+//     margin-bottom: 100px;
+//   }
+//   @media ($mobile) {
+//     margin-bottom: 100px;
+//   }
+// }
+
+.managepool_container {
+  position: relative;
+  //   top: 220px;
+  .manage_token_component {
+    box-shadow: none;
+    border: 1px solid var(--border-gray);
+  }
 }
 
-.pool_filter_container{
-    display: flex;
-    width: 80%;
-    margin: auto;
-    justify-content: space-between;
+.pool_filter_container {
+  display: flex;
+  width: 80%;
+  margin: auto;
+  justify-content: space-between;
 
-    .pool_tans{
-        .pool_btn{
-            margin: 10px;
-            background-color: var(--pure-white);
-            color: var(--sharp-blue);
-            border: 1px solid var(--border-gray);
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: 700;
-            height: 35px;
-        }
-        .active_btn{
-            background-color: var(--sharp-blue);
-            color: var(--pure-white);
-        }
+  .pool_tans {
+    .pool_btn {
+      margin: 10px;
+      background-color: var(--main);
+      color: var(--pure-black);
+      border: 1px solid var(--button-border);
+      border-radius: 12px;
+      @include font-size($font-size-sm);
+      height: 35px;
     }
+    .active_btn {
+      background-color: var(--main);
+      color: var(--pure-black);
+    }
+  }
 
-    // .sortBy{
-    //     display: flex;
-    //     margin: 10px;
-    //     width: 100px;
-    //     cursor: pointer;
-    //     background-color: var(--sharp-blue);
-    //     border-radius: 5px;
-    //     color: var(--pure-white);
-    //     font-weight: 700;
-    //     place-items: center center;
-    //     justify-content: space-between;
-    //     padding: 10px;
-    //     height: 32px;
-    //     p{
-    //         margin: 0px 0px;
-    //         font-size: 12px;
-    //     }
-    // }
+  // .sortBy{
+  //     display: flex;
+  //     margin: 10px;
+  //     width: 100px;
+  //     cursor: pointer;
+  //     background-color: var(--sharp-blue);
+  //     border-radius: 5px;
+  //     color: var(--pure-white);
+  //     font-weight: 700;
+  //     place-items: center center;
+  //     justify-content: space-between;
+  //     padding: 10px;
+  //     height: 32px;
+  //     p{
+  //         margin: 0px 0px;
+  //         font-size: 12px;
+  //     }
+  // }
 }
 
-.poolcard_container{
-    width: 80%;
-    margin: auto;
-    margin-bottom: 100px;
-    display: grid;
-    grid-template-columns: repeat(3, calc(100%/3) );
-    justify-content: space-between;
- 
-    .poolcard{
+.poolcard_container {
+  width: 80%;
+  margin: auto;
+  margin-bottom: 100px;
+  display: grid;
+  row-gap: 24px;
+  grid-template-columns: repeat(3, calc(100% / 3));
+  justify-content: space-between;
 
-        margin: 10px;
-    }
+  .poolcard {
+    margin: 10px;
+  }
 
-    @media (1520px < width){
-        grid-template-columns: repeat(4, calc(100%/4) );
-    }
+  @media (1520px < width) {
+    grid-template-columns: repeat(4, calc(100% / 4));
+  }
 
-    @media ($tablet) {
-        grid-template-columns: repeat(2, calc(100%/2));
-    }
+  @media ($tablet) {
+    row-gap: 12px;
+    grid-template-columns: repeat(2, calc(100% / 2));
+  }
 
-    @media ($mobile){
-        grid-template-columns: repeat(1, 100%);
-    }
+  @media ($mobile) {
+    grid-template-columns: repeat(1, 100%);
+  }
 }

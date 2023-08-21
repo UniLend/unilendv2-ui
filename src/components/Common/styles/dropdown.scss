@@ -1,65 +1,72 @@
+@import "/src/core/theme";
 .sort_dropDown {
-    .ant-popover-arrow {
-      display: none;
-    }
-    .ant-popover-inner-content {
-      padding: 5px;
+  .ant-popover-arrow {
+    display: none;
+  }
+  .ant-popover-inner-content {
+    @include padding(5px);
+    border-radius: 5px;
+    background-color: var(--pure-white);
+  }
+  .ant-popover-inner {
+    border-radius: 5px;
+    background-color: var(--pure-white);
+  }
+  .sort_popover {
+    width: max-content;
+    min-width: 120px;
+    p {
+      width: 100%;
+      @include font-size($font-size-sm);
+      line-height: 10px;
+      @include padding(10px);
+      color: var(--light-gray);
+      @include margin(5px 0px);
       border-radius: 5px;
-      background-color: var(--pure-white);
-    }
-    .ant-popover-inner {
-      border-radius: 5px;
-      background-color: var(--pure-white);
-    }
-    .sort_popover {
-      width: max-content;
-      min-width: 120px;
-      p {
-        width: 100%;
-        font-weight: 400;
-        font-size: 13px;
-        line-height: 10px;
-        padding: 10px;
-        color: var(--light-gray);
-        margin: 5px 0px;
-        border-radius: 5px;
-        cursor: pointer;
-        display: flex;
-        span{
-            &:first-child{
-                width: 25px;
-                display: flex;
-                justify-content:left;
-            }
-            &:last-child{
-                width: max-content;
-                text-align: left;
-            }
+      cursor: pointer;
+      display: flex;
+      span {
+        &:first-child {
+          width: 25px;
+          display: flex;
+          justify-content: left;
         }
-        &:hover {
-          background-color: var(--mid-blue);
+        &:last-child {
+          width: max-content;
+          text-align: left;
         }
       }
-      .activeSort {
+      &:hover {
         background-color: var(--mid-blue);
       }
     }
+    .activeSort {
+      background-color: var(--mid-blue);
+    }
+  }
+}
+
+.sortBy {
+  display: flex;
+  width: 152px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 16px;
+  border: 1px solid var(--light-gray);
+  color: var(--pure-black);
+  place-items: center center;
+  justify-content: center;
+  gap: 24px;
+  @include padding(12px);
+  // @include margin-top(10px);
+
+  p {
+    margin: 0px 0px;
   }
 
-  .sortBy{
-    display: flex;
+  @media ($mobile) {
     width: 100px;
-    cursor: pointer;
-    background-color: var(--sharp-blue);
-    border-radius: 5px;
-    color: var(--pure-white);
-    font-weight: 700;
-    place-items: center center;
-    justify-content: space-between;
-    padding: 12px;
-    height: 35px;
-    margin-top: 10px;
-    p{
-        margin: 0px 0px;
-    }
+    height: 36px;
+    gap: 8px;
+  }
 }

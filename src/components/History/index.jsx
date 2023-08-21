@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import "./styles/index.scss";
 import { Popover, Pagination } from "antd";
 import { useNavigate } from "react-router-dom";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaSearch } from "react-icons/fa";
 import { shortenAddress, imgError } from "../../utils";
 import { allTransaction } from "../../services/events";
 import txIcon from "../../assets/tx.svg";
@@ -37,29 +37,32 @@ import useWalletHook from "../../lib/hooks/useWallet";
   const [search, setSearch] = useState("");
   const [poolsData, setPoolsData] = useState({});
   const query = getHistoryGraphQuery(user?.address);
-  const [called, setIsCalled] = useState(false)
-  const [historyLoading, setHistoryLoading] = useState(false)
-  const networksWithGraph = [80001, 137]
- 
-  const { data, loading, error, refetch } = useQuery('history', async () => {
-    const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
+  const [called, setIsCalled] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const networksWithGraph = [80001, 137];
+
+  const { data, loading, error, refetch } = useQuery("history", async () => {
+    const fetchedDATA = await fetchGraphQlData(
+      chain?.id || user?.network?.id || 137,
+      query
+    );
     return fetchedDATA;
-    });
- 
+  });
+
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
   };
 
   const getDateByTimeStamp = (timeStamp) => {
-    const dateInstance = new Date(timeStamp * 1000)
-  const time = dateInstance.toLocaleTimeString()
-  const date = dateInstance.toLocaleDateString()
+    const dateInstance = new Date(timeStamp * 1000);
+    const time = dateInstance.toLocaleTimeString();
+    const date = dateInstance.toLocaleDateString();
     return `${date} : ${time}`;
-  }
+  };
 
   useEffect(() => {
-    if(!user.isConnected){
-      navigate('/')
+    if (!user.isConnected) {
+      navigate("/");
     }
 
     if ( data && networksWithGraph.includes(user?.network.id )) {
@@ -79,13 +82,13 @@ import useWalletHook from "../../lib/hooks/useWallet";
           ...data.redeems,
           ...data.repays,
         ];
-        console.log('graphDATAHistory', data);
+        console.log("graphDATAHistory", data);
         const sorted = sortByKey(newArray, "blockTimestamp", 1);
-        
+
         setGraphHistory(sorted);
         setGraphHistoryBackup(sorted);
         setIsPageLoading(false);
-        setHistoryLoading(false)
+        setHistoryLoading(false);
       }
     } else {
       setIsPolygon(false);
@@ -121,15 +124,15 @@ import useWalletHook from "../../lib/hooks/useWallet";
     setSearch(value);
     if (isPolygon) {
       let searched = graphHistoryBackup.filter(
-        (txt) => 
+        (txt) =>
           String(txt.pool).toUpperCase().includes(value) ||
           String(txt.tokenSymbol).toUpperCase().includes(value) ||
           String(txt.__typename).toUpperCase().includes(value)
       );
-      if(value == ''){
-        searched = graphHistoryBackup
+      if (value == "") {
+        searched = graphHistoryBackup;
       }
-      setGraphHistory(searched)
+      setGraphHistory(searched);
     } else {
       const newData = txtDataBackup.filter((data) => String(data));
       //setTxtData(newData);
@@ -137,10 +140,10 @@ import useWalletHook from "../../lib/hooks/useWallet";
   };
 
   const getTransactionData = async () => {
-    if ( !networksWithGraph.includes(user?.network.id ) && !called) {
+    if (!networksWithGraph.includes(user?.network.id) && !called) {
       try {
         // setIsPageLoading(true);
-        setHistoryLoading(true)
+        setHistoryLoading(true);
         const txtArray = await allTransaction(
           contracts.coreContract,
           contracts.positionContract,
@@ -158,48 +161,45 @@ import useWalletHook from "../../lib/hooks/useWallet";
           });
           setTxtData(sort);
           setTxtDataBackup(sort);
-          setHistoryLoading(false)
+          setHistoryLoading(false);
         }
         setIsPageLoading(false);
       } catch (error) {
       
         setIsPageLoading(false);
-        setHistoryLoading(false)
+        setHistoryLoading(false);
       }
     }
   };
 
-  
   useEffect(() => {
-    if(!user.isConnected){
-      navigate('/')
+    if (!user.isConnected) {
+      navigate("/");
     }
     if (user.address && contracts?.coreContract?.address && !called) {
- 
       getTransactionData();
-      setIsCalled(true)
+      setIsCalled(true);
     }
   }, [contracts, user, web3]);
 
   const dropdownlist = [
- {
-  text: 'Transaction',
-  fun: () => handleSort(1),
-  icon: <ImArrowUp2 />
- },
- {
-  text: 'Transaction',
-  fun: () => handleSort(2),
-  icon: <ImArrowDown2 />
- }
-  ]
-
-
+    {
+      text: "Transaction",
+      fun: () => handleSort(1),
+      icon: <ImArrowUp2 />,
+    },
+    {
+      text: "Transaction",
+      fun: () => handleSort(2),
+      icon: <ImArrowDown2 />,
+    },
+  ];
 
   return (
     <div className="history_table_container">
       <div className="action_container">
         <div className="input_container">
+          <FaSearch />
           <input
             type="text"
             placeholder="Search Txt/Token/Type"
@@ -207,13 +207,14 @@ import useWalletHook from "../../lib/hooks/useWallet";
             onChange={handleSearch}
           />
         </div>
-       { !historyLoading?  <DropDown list={dropdownlist}/>:
-        <div className="gif_loader">
-          
-        <span>Loading</span>
-        <img src={loader} alt="" />
-        </div>
-   }
+        {!historyLoading ? (
+          <DropDown list={dropdownlist} />
+        ) : (
+          <div className="gif_loader">
+            <span>Loading</span>
+            <img src={loader} alt="" />
+          </div>
+        )}
       </div>
       <div className="table_header">
         <div>
@@ -249,35 +250,32 @@ import useWalletHook from "../../lib/hooks/useWallet";
                     <div>
                       <img
                         src={
-                          poolsData[String(txt.pool.pool).toUpperCase()].token0.logo
+                          poolsData[String(txt.pool.pool).toUpperCase()].token0
+                            .logo
                         }
                         onError={imgError}
                         alt="token_icon"
                       />
                       <img
                         src={
-                          poolsData[String(txt.pool.pool).toUpperCase()].token1.logo
+                          poolsData[String(txt.pool.pool).toUpperCase()].token1
+                            .logo
                         }
                         onError={imgError}
                         alt="token_icon"
                       />
                     </div>
                     <a href={`pool/${txt.pool.pool}`}>
-                    <p className="hide_for_mobile hide_for_tab">
-                   
-                      {txt.pool.token0.symbol +
-                        "/" +
-                        txt.pool.token1.symbol}
-                    </p>
+                      <p className="hide_for_mobile hide_for_tab">
+                        {txt.pool.token0.symbol + "/" + txt.pool.token1.symbol}
+                      </p>
                     </a>
                   </div>
                   <div>
-                    <p>{txt.token.symbol }</p>
+                    <p>{txt.token.symbol}</p>
                   </div>
                   <div>
-                    <p>
-                        {txt?.__typename}
-                    </p>
+                    <p>{txt?.__typename}</p>
                   </div>
                   <div>
                     <p>
@@ -286,14 +284,13 @@ import useWalletHook from "../../lib/hooks/useWallet";
                     </p>
                   </div>
                   <div className="hide_for_mobile">
-                    <p className="success">{getDateByTimeStamp(txt?.blockTimestamp)}</p>
+                    <p className="success">
+                      {getDateByTimeStamp(txt?.blockTimestamp)}
+                    </p>
                   </div>
                   <div className="hide_for_mobile">
                     <p>
-                      <a
-                        href="#"
-                        target="_blank"
-                      >
+                      <a href="#" target="_blank">
                         {shortenAddress(txt?.id)}
                       </a>
                     </p>
@@ -323,7 +320,7 @@ import useWalletHook from "../../lib/hooks/useWallet";
                   <div>
                     <div>
                       <img
-                        src={poolList[ txt.address]?.token0?.logo}
+                        src={poolList[txt.address]?.token0?.logo}
                         onError={imgError}
                         alt={poolList[txt.address]?.token0?.symbol}
                       />
@@ -334,7 +331,9 @@ import useWalletHook from "../../lib/hooks/useWallet";
                       />
                     </div>
                     <p className="hide_for_mobile hide_for_tab">
-                      {poolList[txt.address]?.token0?.symbol + "/" + poolList[txt.address]?.token1?.symbol}
+                      {poolList[txt.address]?.token0?.symbol +
+                        "/" +
+                        poolList[txt.address]?.token1?.symbol}
                     </p>
                   </div>
                   <div>
@@ -395,4 +394,4 @@ import useWalletHook from "../../lib/hooks/useWallet";
   );
 }
 
-export default HistoryComponent
+export default HistoryComponent;

@@ -1,51 +1,64 @@
-@use './core/theme/theme.scss' as *;
-@import url('https://fonts.googleapis.com/css2?family=Public+Sans:wght@100;200;300;400;500;600;700&display=swap');
+// @use "./core/theme/theme.scss" as *;
+// import "/src/fonts/HELVETICANEUELTPROEX.OTF";
+@import "/src/core/theme";
 
-.light, .body{
- @each $name, $color in $light {
-   --#{$name}: #{$color};
- }
+@font-face {
+  font-family: "Helvetica Neue LT Pro";
+  src: url("/src/fonts/HELVETICANEUELTPROEX.OTF") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
 }
 
+.light,
+.body {
+  @each $name, $color in $light {
+    --#{$name}: #{$color};
+  }
+}
 
-
-.dark{
+.dark {
   @each $name, $color in $dark {
     --#{$name}: #{$color};
   }
 }
 
-html,body{
+html,
+body {
   margin: 0px;
   padding: 0px;
 }
-body{
-  font-family: 'Public Sans', sans-serif !important;
+body {
+  font-family: "Helvetica Neue LT Pro" !important;
   font-variant: normal;
-  font-feature-settings: "aalt";
   line-height: normal;
-  background: var(--bg-color)
+  background-color: var(--bg-color);
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: max-content;
   min-height: 100vh;
- overflow-x: hidden;
- -webkit-user-select: none; /* Safari */
+  overflow-x: hidden;
+  -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
 }
-.app_container{
+.app_container {
   width: 100%;
   max-width: 1920px;
-  min-height: 90vh;
+  min-height: calc(100vh - 124px);
   margin: auto;
   position: relative;
+  background: url("/src/assets/blue-bg.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
-.app{
-//  width: 80%;
- margin: auto;
-margin-bottom: 100px;
+.app {
+  margin: auto;
+  margin-bottom: 116px;
 }
 
 /* width */
@@ -71,15 +84,18 @@ margin-bottom: 100px;
 }
 
 // skeleton loading animation
-.skeleton{
-  background: linear-gradient(90deg, var(--border-gray) 20px, rgb(250 250 250 / 90%) 60px, var(--border-gray) 80px);
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--border-gray) 20px,
+    rgb(250 250 250 / 90%) 60px,
+    var(--border-gray) 80px
+  );
   background-size: 250%;
   background-position: 100% 0;
   width: 100%;
   animation: shimmer 3s infinite;
 }
-
-
 
 // .sort_dropDown {
 //   // position: absolute;
@@ -135,13 +151,13 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
 @keyframes shimmer {
-  to{
-      background-color: #ffff;
-      background-position: -100%;
+  to {
+    background-color: #ffff;
+    background-position: -100%;
   }
 }

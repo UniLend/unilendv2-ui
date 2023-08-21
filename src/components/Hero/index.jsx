@@ -82,8 +82,6 @@ export default function HeroComponent(props) {
     } else {
       setFilteredPools([]);
     }
-
-  
   }, [token1, token2]);
 
   const handleTokens = (token, selectedToken) => {
@@ -126,7 +124,7 @@ export default function HeroComponent(props) {
         </div>
       ) : token1.symbol || token2.symbol ? (
         <div className="no_pool_container">
-          <NoPoolFound token1={token1} token2={token2}/>
+          <NoPoolFound token1={token1} token2={token2} />
         </div>
       ) : (
         <PoolCarousel pools={pools} isLoading={!isLoadingPoolData} />

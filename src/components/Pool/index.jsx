@@ -156,7 +156,6 @@ export default function PoolComponent(props) {
             5
           );
           setReFetching(true);
-          console.log(txnData);
           if (txnData.method !== "approval") {
             setAmount(0);
             //setShowTwitterModal(true)
@@ -724,7 +723,7 @@ export default function PoolComponent(props) {
 
             <div className="token_balance_container">
               <div className="lable">
-                <p>{activeOperation}</p>
+                <p className="paragraph05">{activeOperation}</p>
                 <div>
                   {" "}
                   <a
@@ -739,9 +738,11 @@ export default function PoolComponent(props) {
               <div className="token_balance">
                 <div>
                   <img src={selectedToken?.logo} alt="" />
-                  <p>{selectedToken?._symbol}</p>
+                  <p className="paragraph04">{selectedToken?._symbol}</p>
                 </div>
-                <p>Balance: {Number(selectedToken?.balanceFixed).toFixed(2)}</p>
+                <p className="paragraph06">
+                  Balance: {Number(selectedToken?.balanceFixed).toFixed(2)}
+                </p>
               </div>
             </div>
 
@@ -835,7 +836,7 @@ export default function PoolComponent(props) {
               <div className="analytics">
                 <div>
                   <span>{activeOperation} APY</span>
-                  <h3>
+                  <h3 className="paragraph04">
                     {activeOperation === lend
                       ? isNaN(Number(selectedToken?.lendAPY).toFixed(4))
                         ? 0
@@ -848,7 +849,7 @@ export default function PoolComponent(props) {
                 </div>
                 <div>
                   <span>Utilization rate</span>
-                  <h3>
+                  <h3 className="paragraph04">
                     {isNaN(selectedToken?.utilRate)
                       ? 0
                       : selectedToken?.utilRate}
@@ -857,7 +858,7 @@ export default function PoolComponent(props) {
                 </div>
                 <div>
                   <span>Health Factor</span>
-                  <h3>
+                  <h3 className="paragraph04">
                     {selectedToken?.healthFactorFixed > 100
                       ? 100
                       : Number(selectedToken?.healthFactorFixed).toFixed(2)}
