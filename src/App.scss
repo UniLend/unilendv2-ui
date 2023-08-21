@@ -1,18 +1,13 @@
 // @use "./core/theme/theme.scss" as *;
 // import "/src/fonts/HELVETICANEUELTPROEX.OTF";
 @import "/src/core/theme";
-@import url("https://fonts.googleapis.com/css2?family=Public+Sans:wght@100;200;300;400;500;600;700&display=swap");
 
 @font-face {
-  // font-family: "HELVETICANEUELTPROEX";
-  // src: local("HELVETICANEUELTPROEX"),
-  //   url("/src/fonts/HELVETICANEUELTPROEX.OTF") format("truetype");
-  // font-weight: bold;
-  font-family: "HelveticaNeueLTPro";
-  // src: url("/src/fonts/HelveticaNeueLTPro-Bd.otf") format("truetype");
-  src: url("/src/fonts/HelveticaNeueLTPro-Bd.otf");
-  // src: local("HelveticaNeueLTProBd"),
-  //   url("/src/fonts/HelveticaNeueLTPro-Bd.otf") format("truetype");
+  font-family: "Helvetica Neue LT Pro";
+  src: url("/src/fonts/HELVETICANEUELTPROEX.OTF") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
 }
 
 .light,
@@ -34,12 +29,9 @@ body {
   padding: 0px;
 }
 body {
-  // font-family: "Public Sans", sans-serif !important;
-  font-family: "HelveticaNeueLTPro", sans-serif !important;
+  font-family: "Helvetica Neue LT Pro" !important;
   font-variant: normal;
-  font-feature-settings: "aalt";
   line-height: normal;
-  // background: var(--bg-color);
   background-color: var(--bg-color);
 }
 
@@ -56,29 +48,17 @@ body,
 .app_container {
   width: 100%;
   max-width: 1920px;
-  // min-height: 90vh;
   min-height: calc(100vh - 124px);
   margin: auto;
   position: relative;
-
-  background: var(
-    --gradient-bg,
-    radial-gradient(
-      26% 51.21% at 54.77% 50.7%,
-      #2200fe 0%,
-      rgba(34, 0, 254, 0.26) 52.63%,
-      rgba(34, 0, 254, 0) 100%
-    )
-  );
-  background-size: 1200px 800px;
+  background: url("/src/assets/blue-bg.svg");
+  background-position: center;
   background-repeat: no-repeat;
-  background-position: left 200px top 0px;
-  // filter: blur(61.5px);
+  background-size: cover;
 }
 .app {
-  //  width: 80%;
   margin: auto;
-  margin-bottom: 100px;
+  margin-bottom: 116px;
 }
 
 /* width */

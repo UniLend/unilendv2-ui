@@ -26,7 +26,7 @@ $light: (
   //     #5700fe 0%,
   //     rgba(87, 0, 254, 0.261849) 52.63%,
   //     rgba(87, 0, 254, 0) 100%
-  //   ),,,,,,,,,,,,,,,,,,,,,
+  //   ),,,,,,,,,,,,,,,,,,,,,,,,,,
 );
 
 $dark: (
@@ -38,13 +38,14 @@ $dark: (
   //using for disabled button
   low-gray: #aab0c3,
   dark-gray: #c3c7d5,
-  light-green: #1ed130,
   light-teal: #00add2,
+
+  light-green: #1ed130,
   light-red: #db2438,
-  box-shadow: none,
+  box-shadow: 0px 0px 0px 0.8459715843200684px #1c1523,
   pure-black: #ffffff,
   pure-white: #000000,
-  light-grey: #99959c,
+  light-gray: #99959c,
   main: #4b2eff,
   main-light: #9a8bfa,
   dark-button: #070032,
@@ -58,7 +59,7 @@ $dark: (
 //low-gray: #1F2127,
 // $white: #ffffff;
 // $black: #000000;
-// $grey-u: #99959c;
+// $gray-u: #99959c;
 
 // $main: #4b2eff;
 // $main-light: #9a8bfa;
