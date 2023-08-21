@@ -180,8 +180,10 @@ export default function Navbar() {
       const network = await switchNetworkLib({
         chainId: id,
       });
+      console.log('network', network);
+      window.location.reload();
     } catch (error) {
-      // console.log("switchError", {error});
+       console.log("switchError", {error});
       await ChangeNetwork(id);
     }
 

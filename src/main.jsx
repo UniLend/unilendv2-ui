@@ -21,8 +21,6 @@ import {
   polygonZkEvm,
 } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
-import App1 from "./app1";
-
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import {
   injectedWallet,
