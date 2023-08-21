@@ -8,10 +8,10 @@
       display: flex;
       justify-content: space-between;
       width: 88%;
-      margin: 10px auto;
+      @include margin(10px auto);
       h2 {
-        margin: 10px;
-        color: var(--dark-gray);
+        @include margin(10);
+        color: var(--pure-black);
         @include font-size($font-size-xlg);
       }
       // .sortBy{
