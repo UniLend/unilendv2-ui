@@ -1,9 +1,9 @@
+@import "/src/core/theme";
 .manage_token_container {
   display: flex;
   width: 80%;
   justify-content: center;
   margin-top: 50px;
-  
   margin: auto;
   margin-bottom: 20px;
   @media only screen and (max-width: 768px) {
@@ -23,24 +23,22 @@
 .manage_token_component {
   width: 40%;
   height: 100%;
-  background-color: var(--pure-white);
-  // box-shadow: 0px 3.38681px 3.38681px rgba(0, 0, 0, 0.1);
+  background-color: var(--dark-bg);
   box-shadow: var(--box-shadow);
   min-width: 650px;
-  border-radius: 10px;
+  border-radius: 80px;
   display: flex;
-  gap: 10px;
-  padding: 10px 20px;
+  gap: 20px;
+  align-items: center;
+  @include padding(10px 20px);
   color: var(--dark-gray);
   .section {
-    width: 40%;
+    width: 38%;
     overflow: hidden;
     height: 100%;
     display: flex;
     align-items: center;
-    // box-shadow: var(--box-shadow);
-    border: 1px solid var(--light-blue);
-    border-radius: 4px;
+
     &:last-child {
       width: 20%;
       box-shadow: none;
@@ -50,35 +48,32 @@
       }
     }
     h3 {
-      width: 78%;
+      width: fit-content;
       border: 0px;
       text-align: center;
-      margin: 0px 10px;
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--dark-gray);
+      @include margin(0px 16px 0 12px);
+      @include font-size($font-size-md);
+      color: var(--pure-black);
       cursor: pointer;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       @media only screen and (max-width: 768px) {
-        font-size: 14px;
+        @include font-size($font-size-sm);
       }
     }
     h5 {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--sharp-blue);
+      @include font-size($font-size-md);
+      color: var(--pure-black);
       text-align: center;
-      margin: 13px 0px;
+      @include margin(13px 0);
       width: 100%;
       cursor: pointer;
-      // margin-top: 8px;
       &:hover {
-        color: #496294;
+        color: var(--main-light);
       }
       @media only screen and (max-width: 768px) {
-        font-size: 14px;
+        @include font-size($font-size-sm);
         margin-top: 8px;
       }
     }
@@ -95,7 +90,12 @@
   .selector {
     display: flex;
     color: var(--dark-gray);
-    height: 45px;
+    height: 60px;
+    border: 1px solid var(--button-border);
+    background-color: var(--main);
+    border-radius: 100px;
+    align-items: center;
+    justify-content: center;
     .token_div {
       display: flex;
       width: 85%;
@@ -131,13 +131,10 @@
     padding: 10px 10px;
   }
 
-
   @media only screen and (max-width: 600px) {
     width: 100%;
     height: auto;
   }
-
-
 }
 
 .select_token_modal {
@@ -214,26 +211,27 @@
       font-weight: 600;
     }
   }
-  &:hover{
+  &:hover {
     background: var(--light-blue);
   }
 }
 
-.active_apiToken{
+.active_apiToken {
   background-color: var(--sharp-blue) !important;
   color: var(--pure-white);
- div{
-  h3, span{
-    color: var(--pure-white);
+  div {
+    h3,
+    span {
+      color: var(--pure-white);
+    }
   }
- } 
 }
 .apitokenlist {
   justify-content: space-between;
   background-color: var(--light-blue);
   .token_info {
     display: flex;
-    img{
+    img {
       border-radius: 50%;
     }
     div {
