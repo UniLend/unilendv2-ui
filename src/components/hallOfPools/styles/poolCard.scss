@@ -1,84 +1,76 @@
+@import "/src/core/theme";
 .poolcard {
-  height: 200px;
-  background-color: var(--pure-white);
-  border-radius: 15px;
+  width: 300px;
+  height: 272px;
+  background-color: var(--low-dark-bg);
+  // border: 1px solid var(--button-border);
+  border-radius: 12px;
   box-shadow: var(--box-shadow);
+  @include padding(28px 0);
   cursor: pointer;
   transition: all 0.5s;
   &:hover {
     transform: scale(1.05);
   }
   .pool_icons {
-    border-bottom: 1px solid var(--border-gray);
+    @include padding-bottom(24px);
+    border-bottom: 0.35px solid var(--pure-black);
     height: 100px;
     width: 100%;
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+
     div {
-      height: 100%;
-      width: 50%;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      &:first-child {
-        border-right: 1px solid var(--border-gray);
-      }
 
       img {
-        width: 35px;
-        height: 35px;
-        margin: 20px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
-      }
-      h5 {
-        font-weight: 700;
-        font-size: 14.7387px;
-        margin: 0;
-        color: var(--pure-black);
+
+        &:first-child {
+          margin-left: 12px;
+        }
+        &:last-child {
+          margin-left: -12px;
+        }
       }
     }
   }
   .pool_data {
-    display: flex;
-    height: 35%;
+    border-bottom: 0.35px solid var(--pure-black);
+    @include padding(20px 0);
+
     div {
-      width: 50%;
-      border-bottom: 1px solid var(--border-gray);
+      display: flex;
+      width: 76%;
+      margin: auto;
+      align-items: center;
+      justify-content: space-between;
+
       &:first-child {
-        border-right: 1px solid var(--border-gray);
+        @include margin-bottom(16px);
       }
-      p,
+
       h5 {
-        margin: 10px;
-        text-align: center;
-      }
-      p {
-        font-size: 11px;
-        font-weight: 600;
-        color: var(--light-gray);
-        margin-top: 15px;
-      }
-      h5 {
-        font-size: 18px;
-        font-weight: 700;
-        color: var(--sharp-blue);
-        overflow: hidden;
         text-overflow: ellipsis;
       }
     }
   }
   .pool_footer {
     text-align: center;
-    font-size: 11px;
+    @include font-size($font-size-xsm);
     display: flex;
     align-items: center;
     justify-content: center;
     p {
-      color: var(--light-gray);
-      margin: 10px;
+      @include margin(20px 0 0);
     }
   }
-  .footer_img{
+  .footer_img {
     display: none;
   }
 }
