@@ -736,6 +736,7 @@ export const getHistoryGraphQuery = (address) => {
   const query = `
   {
     borrows(where: {sender: "${address}"}) {
+      __typename
       amount
       blockNumber
       blockTimestamp
@@ -762,6 +763,7 @@ export const getHistoryGraphQuery = (address) => {
       positionId
     }
     lends(where: {sender: "${address}"}) {
+      __typename
       amount
       blockNumber
       blockTimestamp
@@ -787,6 +789,7 @@ export const getHistoryGraphQuery = (address) => {
       }
     }
     redeems(where: {sender: "${address}"}) {
+      __typename
       amount
       blockNumber
       blockTimestamp
@@ -812,6 +815,7 @@ export const getHistoryGraphQuery = (address) => {
       }
     }
     repays(where: {sender: "${address}"}) {
+      __typename
       amount
       blockNumber
       blockTimestamp
