@@ -77,7 +77,7 @@ export const handleRedeem = async (
   checkTxnStatus,
   checkTxnError
 ) => {
-  let Amount = decimal2Fixed(amount, selectedToken._decimals);
+  let Amount = decimal2Fixed('1000000.34567876543456787654345678765434567876543456787654345676543', selectedToken._decimals);
   let maxAmount = selectedToken.lendShare;
   if(Number(selectedToken.lendShare) > Number(selectedToken.liquidity)){
     maxAmount = selectedToken.liquidity;
@@ -85,6 +85,7 @@ export const handleRedeem = async (
   if (selectedToken._address == poolData.token0._address) {
     Amount = mul(Amount, -1);
     maxAmount = mul(maxAmount, -1);
+    console.log("redeembug", Amount);
   }
   let actnCont;
   let hash;
@@ -116,7 +117,7 @@ export const handleRedeem = async (
       //   userAddr
       // );
     } else {
-      const txn = await instance.redeemUnderlying(poolAddress, Math.trunc(Number(Amount)).toString(), userAddr)
+      const txn = await instance.redeemUnderlying(poolAddress, Amount, userAddr)
 
       hash = txn?.hash
       // hash = await getContractInstance(contracts.coreContract.address, coreAbi, 'redeemUnderlying', [poolAddress, Amount, userAddr])
@@ -624,7 +625,7 @@ export const handleLend = async (
       // })
 
 
-      const transaction = await instance.lend(poolData._address, Math.trunc(Number(Amount)).toString())
+      const transaction = await instance.lend(poolData._address, Amount)
 
 
                const txn = {
@@ -686,7 +687,7 @@ export const handleBorrow = async (
     if (fixed2Decimals18(collateralToken.allowance, collateralToken._decimals) >= collateral) {
       const instance = await getContractInstance(contracts.coreContract.address, coreAbi)
 
-      const transaction = await instance.borrow(poolData._address, Math.trunc(Number(Amount)).toString() , Math.trunc(Number(Collateral)).toString() , userAddr);
+      const transaction = await instance.borrow(poolData._address, Amount , Collateral , userAddr);
                 const txn = {
             method: 'borrow',
             amount: amount,
@@ -760,9 +761,10 @@ export const handleRepay = async (
   }
   if (max) {
     Amount = Max;
-  } else {
-    Amount = Math.trunc(Number(Amount)).toString();
-  }
+  } 
+  // else {
+  //   Amount = Math.trunc(Number(Amount)).toString();
+  // }
   try {
     if (Number(fixed2Decimals18(selectedToken.allowance, selectedToken._decimals)) >= Number(amount)) {
 
