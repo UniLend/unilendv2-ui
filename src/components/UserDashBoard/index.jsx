@@ -545,7 +545,7 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
               <Pagination
                 current={walletCurrentPage}
                 onChange={(el) => setWalletCurrentPage(el)}
-                pageSize={4}
+                pageSize={7}
                 size="small"
                 total={walletTokens.length}
                 showSizeChanger={false}
