@@ -321,6 +321,7 @@
         .thead,
         .tbody_row {
           display: flex;
+
           span {
             width: 30%;
             font-size: $font-size-sm;
@@ -353,7 +354,7 @@
         }
         .tbody {
           @include padding(24px 40px);
-          height: 252px;
+          height: 400px;
           // overflow: hidden;
           .tbody_row {
             @include margin(24px 0);

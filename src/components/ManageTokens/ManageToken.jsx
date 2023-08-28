@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Switch, Modal } from "antd";
 import viewExplorer from "../../assets/viewExplorerIcon.svg";
-import { FaChevronDown } from 'react-icons/fa'
+import { FaChevronDown, FaSearch } from "react-icons/fa";
 import deleteIcon from "../../assets/deleteicon.svg";
 import downoutline from "../../assets/downoutline.svg";
-import BSC from "../../assets/bsc.svg"
+import BSC from "../../assets/bsc.svg";
 import { fetchCoinGeckoTokens } from "../../utils/axios";
 //import Modal from "../Modal";
 import "./ManageToken.scss";
 
-const ManageToken = ({handleTokens, tokens, pools}) => {
+const ManageToken = ({ handleTokens, tokens, pools }) => {
   const [isOpenTokenList, setIsOpenTokenList] = React.useState(false);
   const [isOpenMangeToken, setIsOpenMangeToken] = React.useState(false);
   const [currentToken, setCurrentToken] = React.useState("");
@@ -40,10 +40,10 @@ const ManageToken = ({handleTokens, tokens, pools}) => {
   };
 
   const clearTokens = () => {
-    setToken1("")
-    setToken2("")
-    handleTokens({}, 'clear')
-  }
+    setToken1("");
+    setToken2("");
+    handleTokens({}, "clear");
+  };
 
   const handleCloseModals = () => {
     setIsOpenTokenList(false);
@@ -76,7 +76,6 @@ const ManageToken = ({handleTokens, tokens, pools}) => {
         setToken2(token);
         handleTokens(token, "token2");
       }
-     
     };
 
     return (
@@ -93,7 +92,11 @@ const ManageToken = ({handleTokens, tokens, pools}) => {
           </div>
         )}
         {render === "apiTokenList" && (
-          <div className={`token-card apitokenlist ${fetchFrom.coinGecko && 'active_apiToken'}`}>
+          <div
+            className={`token-card apitokenlist ${
+              fetchFrom.coinGecko && "active_apiToken"
+            }`}
+          >
             <div className="token_info">
               <img src={token.logoURI} alt="" />
               <div>
@@ -178,14 +181,17 @@ const ManageToken = ({handleTokens, tokens, pools}) => {
     return (
       <div className="select_token_modal">
         <div className="search_token">
-          <h3>Select Token {currentToken}</h3>
-          <input
-            autoFocus
-            type="text"
-            placeholder="Search Tokens"
-            value={serachTokenFromList}
-            onChange={handleSearchToken}
-          />
+          <h3 className="paragraph02">Select Token {currentToken}</h3>
+          <div className="input_container">
+            <FaSearch />
+            <input
+              autoFocus
+              type="text"
+              placeholder="Search Tokens"
+              value={serachTokenFromList}
+              onChange={handleSearchToken}
+            />
+          </div>
         </div>
         <div ref={container} className="token_list">
           {isFetching && <h2>Fetching...</h2>}
@@ -235,6 +241,7 @@ const ManageToken = ({handleTokens, tokens, pools}) => {
         </div>
         {active == "customTokens" && (
           <div className="search_token">
+            <FaSearch />
             <input type="text" placeholder="Search Tokens" />
           </div>
         )}
@@ -267,7 +274,7 @@ const ManageToken = ({handleTokens, tokens, pools}) => {
             ) : (
               <h3>Select Tokens</h3>
             )}
-           <FaChevronDown/>
+            <FaChevronDown />
             {/* <img src={downoutline} alt="" /> */}
           </div>
           <div onClick={() => handleToken("2")} className="selector section">
@@ -279,14 +286,17 @@ const ManageToken = ({handleTokens, tokens, pools}) => {
             ) : (
               <h3>Select Tokens</h3>
             )}
-            <FaChevronDown/>
+            <FaChevronDown />
             {/* <img src={downoutline} alt="" /> */}
           </div>
           <div className="section">
-            {
-              (tokens.token1?.symbol || tokens.token2?.symbol) || pools.length === 0 ?  <h5 onClick={clearTokens}> Clear Tokens</h5>:  <h5 onClick={() => setIsOpenMangeToken(true)}> Manage Tokens</h5>
-            }
-           
+            {tokens.token1?.symbol ||
+            tokens.token2?.symbol ||
+            pools.length === 0 ? (
+              <h5 onClick={clearTokens}> Clear Tokens</h5>
+            ) : (
+              <h5 onClick={() => setIsOpenMangeToken(true)}> Manage Tokens</h5>
+            )}
           </div>
         </div>
       </div>

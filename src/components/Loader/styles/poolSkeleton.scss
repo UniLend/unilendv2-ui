@@ -8,7 +8,7 @@
   .token_header {
     background-color: var(--pure-white);
     border-radius: 80px;
-    @include margin(10px 10px 48px);
+    @include margin(10px 10px 32px);
     display: flex;
     gap: 10px;
     @include padding(8px);

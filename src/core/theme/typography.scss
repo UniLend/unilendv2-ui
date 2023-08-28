@@ -80,9 +80,9 @@ $primaryText: var(--pure-black);
 .paragraph01 {
   color: $primaryText;
   text-align: left;
-  letter-spacing: unset;
-  margin: unset;
-  font-style: normal;
+  // letter-spacing: unset;
+  // margin: unset;
+  // font-style: normal;
   font-weight: $font-weight-regular; //400
   @include font-size($font-size-xxlg); // 22px
   line-height: $line-height-sm;
