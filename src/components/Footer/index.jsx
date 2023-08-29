@@ -75,7 +75,7 @@ export default function Footer() {
             </div>
       </div>
     </footer>
-    <nav className='footer_nav'>
+    {/* <nav className='footer_nav'>
         <a href="/pools"
         className={`${pathname === '/pools' ? 'active' : ''}`}
         >
@@ -116,7 +116,7 @@ export default function Footer() {
         >
           History
         </a>
-      </nav>
+      </nav> */}
     </>
   );
 }

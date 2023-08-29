@@ -40,7 +40,7 @@ export default function VoteComponent() {
   const [tokenBalance, setTokenBalance] = useState({ uft: "", uftg: "" });
   const [activeTab, setActiveTab] = useState(wrap);
   const [allowanceValue, setAllowanceValue] = useState("");
-  const [delegate, setDelegate] = useState("0x000000000000000");
+  const [delegate, setDelegate] = useState("");
   const [votingPower, setVotingPower] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [domainDetail, setDomainDetail] = useState("");
@@ -113,7 +113,6 @@ export default function VoteComponent() {
       contractsAdd?.uftgToken
     );
     const valueFromBigNumber = fromBigNumber(allowance);
-
     setAllowanceValue(valueFromBigNumber);
   };
 
@@ -146,7 +145,10 @@ export default function VoteComponent() {
   };
 
   useEffect(() => {
-    handleDomain(delegate);
+    if(delegate !== ''){
+      handleDomain(delegate);
+    }
+  
   }, [delegate]);
 
   useEffect(() => {
@@ -191,7 +193,7 @@ export default function VoteComponent() {
               className="address_with_copy"
             >
               <h2>
-                {domainDetail ? domainDetail : shortenAddress(String(delegate))}
+                {domainDetail ? domainDetail : shortenAddress(String(delegate) || '0x0000000000000000000000000')}
               </h2>
               <FiCopy />
             </div>
@@ -289,6 +291,7 @@ const WrapAndDelegate = ({
   checkTxnError,
 }) => {
   const [amount, setAmount] = useState("");
+  const { isConnected } = getAccount();
   const [address, setAddress] = useState(userAddress);
   const [valid, setValid] = useState(true);
   const [domainDetail, setDomainDetail] = useState({
@@ -316,7 +319,12 @@ const WrapAndDelegate = ({
     const isValid = ethers.utils.isAddress(
       domainDetail.isAddress ? domainDetail.value : address
     );
-
+    if (!isConnected && !address) {
+      setButtonText({
+        text: "Please Connect to Wallet",
+        disable: true,
+      });
+    } else
     if (decimal2Fixed(amount, 18) > Number(allowanceValue)) {
       setButtonText({
         text: "Approve",
@@ -392,9 +400,13 @@ const WrapAndDelegate = ({
   };
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      handleDomain(valid, address);
-    }, 500);
+let timeoutId;
+    if(address){
+       timeoutId = setTimeout(() => {
+        handleDomain(valid, address);
+      }, 500);
+    }
+ 
     return () => clearTimeout(timeoutId);
   }, [address, 500]);
 
@@ -403,30 +415,37 @@ const WrapAndDelegate = ({
   };
 
   const handleWrap = async () => {
+   
     const { chain } = getNetwork();
     const fixedValue = decimal2Fixed(amount, 18);
     const contracts = contractAddress[chain?.id || "1"];
 
-    if (Number(allowanceValue) >= Number(fixedValue)) {
-      setIsLoading(true);
-      handleWrapAndDelegate(
-        contracts?.uftgToken,
-        uftgABI,
-        domainDetail.isAddress ? domainDetail.value : address,
-        amount,
-        checkTxnStatus,
-        checkTxnError
-      );
-    } else {
-      setIsLoading(true);
-      setApproval(
-        contracts?.uftToken,
-        erc20Abi,
-        contracts?.uftgToken,
-        checkTxnStatus,
-        checkTxnError
-      );
+    try {
+      if (Number(allowanceValue) >= Number(fixedValue)) {
+        setIsLoading(true);
+       await handleWrapAndDelegate(
+          contracts?.uftgToken,
+          uftgABI,
+          domainDetail.isAddress ? domainDetail.value : address,
+          amount,
+          checkTxnStatus,
+          checkTxnError
+        );
+      } else {
+        setIsLoading(true);
+       await setApproval(
+          contracts?.uftToken,
+          erc20Abi,
+          contracts?.uftgToken,
+          checkTxnStatus,
+          checkTxnError
+        );
+      }
+
+    } catch (error) {
+      
     }
+
   };
 
   return (
@@ -497,6 +516,7 @@ const UnWrap = ({
   checkTxnError,
 }) => {
   const [amount, setAmount] = useState("");
+  const { isConnected , address} = getAccount();
   const [buttonText, setButtonText] = useState({
     text: "Enter Amount",
     disable: true,
@@ -505,27 +525,33 @@ const UnWrap = ({
   const handleAmount = (e) => {
     const value = e.target.value;
     setAmount(value);
-
-    if (value > tokenBalance?.uftg) {
-      setButtonText({
-        text: "Low Balance",
-        disable: true,
-      });
-    } else if (!(value > 0)) {
-      setButtonText({
-        text: "Enter Amount",
-        disable: true,
-      });
-    } else {
-      setButtonText({
-        text: "Unwrap",
-        disable: false,
-      });
-    }
+    // if (!isConnected && !address) {
+    //   setButtonText({
+    //     text: "Please Connect to Wallet",
+    //     disable: true,
+    //   });
+    // } else
+    // if (value > tokenBalance?.uftg) {
+    //   setButtonText({
+    //     text: "Low Balance",
+    //     disable: true,
+    //   });
+    // } else if (!(value > 0)) {
+    //   setButtonText({
+    //     text: "Enter Amount",
+    //     disable: true,
+    //   });
+    // } else {
+    //   setButtonText({
+    //     text: "Unwrap",
+    //     disable: false,
+    //   });
+    // }
   };
 
   const handleUnWrapOperation = async () => {
     const { chain } = getNetwork();
+
     const contracts = contractAddress[chain?.id || "1"];
     setIsLoading(true);
     handleUnWrap(
@@ -538,6 +564,12 @@ const UnWrap = ({
   };
 
   useEffect(() => {
+    if (!isConnected && !address) {
+      setButtonText({
+        text: "Please Connect to Wallet",
+        disable: true,
+      });
+    } else
     if (amount > tokenBalance?.uftg) {
       setButtonText({
         text: "Low Balance",
@@ -602,6 +634,7 @@ const UpdateDelegation = ({
   checkTxnError,
 }) => {
   const [address, setAddress] = useState("");
+  const { isConnected } = getAccount();
   const [buttonText, setButtonText] = useState({
     text: "Enter Address",
     disable: true,
@@ -637,7 +670,12 @@ const UpdateDelegation = ({
     const isValid = ethers.utils.isAddress(
       domainDetail.isAddress ? domainDetail.value : address
     );
-
+    if (!isConnected && !address) {
+      setButtonText({
+        text: "Please Connect to Wallet",
+        disable: true,
+      });
+    } else
     if (!isValid) {
       setButtonText({
         text: "Enter Valid Address",

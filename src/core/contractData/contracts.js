@@ -58,10 +58,10 @@ export const contractAddress = {
   },
   '1':{
     uftToken : '0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1',
-    uftgToken: '0x43EAbB2706deC026C844161D5Bdb1773161D3D7c',
-    timeLock:'0x596DEb3c6B99970b18DDa0F567e9d39DD70B1caa',
-    delegate: '0x96AA92388db80469A242514068A6B83ebEe22861',
-    delegator: '0x2e93bc7dEA58B0F577a3c9DDbd29ca5939d74145'
+    uftgToken: '0xcc0fA3eABaEB7b4a7B852159a7c2C6B6b1a0a876',
+    timeLock:'0x6604779cE1F38FB95d73CE212B1B9FA12aDbE361',
+    delegate: '0x0AD63e93e51a134d381A2593f92ed38F553d63Ae',
+    delegator: '0x3EE1d55AcBbBB1Af7B871E4Df6B47888669a5e60'
   },
   '1422': {
     helperAddress: '0xAe7a2D9C86fc387432Cd619379ee1c96Aa5E6a0a',

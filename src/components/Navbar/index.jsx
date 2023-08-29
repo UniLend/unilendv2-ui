@@ -55,7 +55,7 @@ export default function Navbar(props) {
   const dispatch = useDispatch();
   const [currentTheme, setCurrentTheme] = useState(theme);
   const { chain: networkchain } = getNetwork();
-  const availableChain = [11155111, 1442, 80001, 137, 8081];
+  const availableChain = [1, 80001];
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -143,22 +143,22 @@ export default function Navbar(props) {
       <div className="walletModel">
         <h1>Network Not Supported</h1>
         <p>
-          UniLend V2 is in Testnet Phase. <br /> Please Connect to the Below
-          Networks.
+          UniLend V2 Governance is on Ethereum Mainnet only. Please Switch
+          Network.
         </p>
         <div className="networks">
-          <div onClick={() => handleSwitchNetwork(11155111)}>
+          <div onClick={() => handleSwitchNetwork(1)}>
             <img src={ethlogo} alt="Etherium" />
-            <p>Sepolia</p>
+            <p>Ethereum Mainnet</p>
           </div>
-          <div onClick={() => handleSwitchNetwork(1442)}>
+          {/* <div onClick={() => handleSwitchNetwork(1442)}>
             <img src={ethlogo} alt="Etherium" />
             <p>zkEVM</p>
           </div>
           <div onClick={() => handleSwitchNetwork(8081)}>
             <img src={shardeumLogo} alt="Etherium" />
             <p>Shardeum</p>
-          </div>
+          </div> */}
         </div>
       </div>
     );
@@ -238,7 +238,7 @@ export default function Navbar(props) {
             <img src={copyIcon} alt="copyicon" />
             <p> {copied ? "Copied" : "Copy address"}</p>
           </div>
-          <a
+          {/* <a
             href={`https://sepolia.etherscan.io/address/${user.address}`}
             target="_blank"
           >
@@ -246,7 +246,7 @@ export default function Navbar(props) {
               <img src={viewExplorer} alt="viewExplorericon" />
               <p>TXN History</p>
             </div>
-          </a>
+          </a> */}
         </div>
       </div>
     );
@@ -261,7 +261,7 @@ export default function Navbar(props) {
             <img src={logo} alt="unilend_logo" />
           </a>
         </div>
-        <div className="nav_routes">
+        {/* <div className="nav_routes">
           <nav>
             <a
               href="/pools"
@@ -316,13 +316,13 @@ export default function Navbar(props) {
               Faucet
             </a>
           </nav>
-        </div>
+        </div> */}
       </div>
       <div className="last_container">
         {user?.isConnected ? (
           <>
             <div className="wallet_connection">
-              <Popover
+              {/* <Popover
                 content={<SortContent />}
                 trigger="click"
                 overlayClassName="sort_dropDown"
@@ -334,7 +334,7 @@ export default function Navbar(props) {
                   <p>{currentUser?.network?.name}</p>
                   <FaChevronDown />
                 </div>
-              </Popover>
+              </Popover> */}
               <div>
                 <p>{currentUser.balance}ETH</p>
                 <Popover

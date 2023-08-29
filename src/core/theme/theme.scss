@@ -12,7 +12,12 @@ $light: (
  light-teal: #00ADD2,
  light-red: #DB2438,
  box-shadow: '-1px -1px 3px #ECECEC, 1px 1px 1.3px #DCDCDC',
- bg-color: radial-gradient(50.67% 95.96% at 49.97% 50%, #E2EDFC 0.09%, #D8E7FC 0.1%, #EAF2FD 40.8%, #FFFFFF 100%)
+ bg-color: radial-gradient(50.67% 95.96% at 49.97% 50%, #E2EDFC 0.09%, #D8E7FC 0.1%, #EAF2FD 40.8%, #FFFFFF 100%),
+ transaperent: linear-gradient(
+    142deg,
+    rgba(255, 255, 255, 0.65) 0%,
+    rgba(224, 233, 255, 0.51) 100%
+  )
 );
 
 $dark:(
@@ -29,7 +34,12 @@ $dark:(
  light-teal: #00ADD2,
  light-red: #DB2438,
  box-shadow: none,
- bg-color: #2B3555
+ bg-color: #2B3555,
+ transaperent: linear-gradient(
+    142deg,
+    rgba(70, 66, 66, 0.814) 0%,
+    rgba(33, 32, 32, 0.269) 100%
+  )
 );
 
 //low-gray: #1F2127,

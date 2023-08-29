@@ -72,6 +72,7 @@ import {
 import { hidePools } from "./utils/constants";
 import { zkEVMTestNet, shardeumTestnet, sepoliaTestnet, mumbaiTestnet } from "./core/networks/Chains";
 import { getTokenUSDPrice } from "./helpers/contracts";
+import Vote from "./pages/vote";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -80,7 +81,7 @@ const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, mumbaiTestnet, sepoliaTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
+  [mainnet, mumbaiTestnet],
   [ alchemyProvider({ apiKey: alchemyId }),alchemyProvider({ apiKey: alchemyId2 }), infuraProvider({ apiKey: infuraID, stallTimeout: 1_000  }), publicProvider()]
 );
 
@@ -210,206 +211,206 @@ function App() {
   }, [user?.address]);
 
   // for getting the pools and tokens datafor non graph networks
-  useEffect(() => {
-    const { chain } = getNetwork();
-    const networkID = user?.network?.id
-    if (state.contracts.coreContract && !networksWithGraph.includes(networkID) ) {
-      try {
-        (async () => {
+  // useEffect(() => {
+  //   const { chain } = getNetwork();
+  //   const networkID = user?.network?.id
+  //   if (state.contracts.coreContract && !networksWithGraph.includes(networkID) ) {
+  //     try {
+  //       (async () => {
         
-          const poolData = {};
-          const account = getAccount();
-          let result;
+  //         const poolData = {};
+  //         const account = getAccount();
+  //         let result;
 
-          if(networkID == 8081){
-            result = shardeumPools
-          } else {
-            result = await getAllEvents(
-              state.contracts.coreContract,
-              "PoolCreated"
-            );
-          }
+  //         if(networkID == 8081){
+  //           result = shardeumPools
+  //         } else {
+  //           result = await getAllEvents(
+  //             state.contracts.coreContract,
+  //             "PoolCreated"
+  //           );
+  //         }
         
-          const array = [];
-          const tokenList = {};
-          for (const pool of result) {
-            array.push(pool.token0, pool.token1);
-          }
-          const poolTokens = [...new Set(array)];
+  //         const array = [];
+  //         const tokenList = {};
+  //         for (const pool of result) {
+  //           array.push(pool.token0, pool.token1);
+  //         }
+  //         const poolTokens = [...new Set(array)];
 
-          //if wallet not connected
-          if (!account.isConnected) {
-            const web3 = defProv();
-            const ERC20contracts = await Promise.all(
-              poolTokens.map((addr) => new web3.eth.Contract(erc20Abi, addr))
-            );
+  //         //if wallet not connected
+  //         if (!account.isConnected) {
+  //           const web3 = defProv();
+  //           const ERC20contracts = await Promise.all(
+  //             poolTokens.map((addr) => new web3.eth.Contract(erc20Abi, addr))
+  //           );
 
-            const Symbols = await Promise.all(
-              ERC20contracts.map((contract, i) =>
-                contract.methods.symbol().call()
-              )
-            );
-            Symbols.forEach(
-              (symbol, i) => (tokenList[poolTokens[i]] = { symbol })
-            );
+  //           const Symbols = await Promise.all(
+  //             ERC20contracts.map((contract, i) =>
+  //               contract.methods.symbol().call()
+  //             )
+  //           );
+  //           Symbols.forEach(
+  //             (symbol, i) => (tokenList[poolTokens[i]] = { symbol })
+  //           );
 
-            const logos = await Promise.all(
-              Symbols.map((sym, i) => fetchCoinLogo(sym))
-            );
+  //           const logos = await Promise.all(
+  //             Symbols.map((sym, i) => fetchCoinLogo(sym))
+  //           );
 
-            logos.forEach(
-              (logo, i) =>
-                (tokenList[poolTokens[i]] = {
-                  ...tokenList[poolTokens[i]],
-                  logo,
-                })
-            );
-            const reverseResult = result.reverse();
-            for (const poolElement of reverseResult) {
-              if(hidePools.includes(poolElement.pool)){
-                continue;
-              }
-              poolData[poolElement.pool] = {
-                poolAddress: poolElement.pool,
-                hide: hidePools.includes(poolElement.pool),
-                token0: {
-                  ...tokenList[poolElement.token0],
-                  address: poolElement.token0,
-                },
-                token1: {
-                  ...tokenList[poolElement.token1],
-                  address: poolElement.token1,
-                },
-              };
-            }
-          } else {
+  //           logos.forEach(
+  //             (logo, i) =>
+  //               (tokenList[poolTokens[i]] = {
+  //                 ...tokenList[poolTokens[i]],
+  //                 logo,
+  //               })
+  //           );
+  //           const reverseResult = result.reverse();
+  //           for (const poolElement of reverseResult) {
+  //             if(hidePools.includes(poolElement.pool)){
+  //               continue;
+  //             }
+  //             poolData[poolElement.pool] = {
+  //               poolAddress: poolElement.pool,
+  //               hide: hidePools.includes(poolElement.pool),
+  //               token0: {
+  //                 ...tokenList[poolElement.token0],
+  //                 address: poolElement.token0,
+  //               },
+  //               token1: {
+  //                 ...tokenList[poolElement.token1],
+  //                 address: poolElement.token1,
+  //               },
+  //             };
+  //           }
+  //         } else {
          
-            const ercTokens = await Promise.all(
-              poolTokens.map((contract, i) => fetchToken({ address: contract }))
-            );
-            ercTokens.forEach(
-              (token, i) =>
-                (tokenList[poolTokens[i]] = { symbol: token.symbol })
-            );
-            const logos = await Promise.all(
-              ercTokens.map((token, i) => fetchCoinLogo(token.symbol))
-            );
+  //           const ercTokens = await Promise.all(
+  //             poolTokens.map((contract, i) => fetchToken({ address: contract }))
+  //           );
+  //           ercTokens.forEach(
+  //             (token, i) =>
+  //               (tokenList[poolTokens[i]] = { symbol: token.symbol })
+  //           );
+  //           const logos = await Promise.all(
+  //             ercTokens.map((token, i) => fetchCoinLogo(token.symbol))
+  //           );
 
-            logos.forEach(
-              (logo, i) =>
-                (tokenList[poolTokens[i]] = {
-                  ...tokenList[poolTokens[i]],
-                  logo,
-                })
-            );
+  //           logos.forEach(
+  //             (logo, i) =>
+  //               (tokenList[poolTokens[i]] = {
+  //                 ...tokenList[poolTokens[i]],
+  //                 logo,
+  //               })
+  //           );
 
-            const reverseResult = result.reverse();
-            for (const poolElement of reverseResult) {
-              if(hidePools.includes(poolElement.pool)){
-                continue;
-              }
-              poolData[poolElement.pool] = {
-                poolAddress: poolElement.pool,
-                hide: hidePools.includes(poolElement.pool),
-                token0: {
-                  ...tokenList[poolElement.token0],
-                  address: poolElement.token0,
-                },
-                token1: {
-                  ...tokenList[poolElement.token1],
-                  address: poolElement.token1,
-                },
-              };
-            }
-          }
+  //           const reverseResult = result.reverse();
+  //           for (const poolElement of reverseResult) {
+  //             if(hidePools.includes(poolElement.pool)){
+  //               continue;
+  //             }
+  //             poolData[poolElement.pool] = {
+  //               poolAddress: poolElement.pool,
+  //               hide: hidePools.includes(poolElement.pool),
+  //               token0: {
+  //                 ...tokenList[poolElement.token0],
+  //                 address: poolElement.token0,
+  //               },
+  //               token1: {
+  //                 ...tokenList[poolElement.token1],
+  //                 address: poolElement.token1,
+  //               },
+  //             };
+  //           }
+  //         }
 
-          dispatch(setPools({ poolData, tokenList }));
-        })();
-      } catch (error) {
+  //         dispatch(setPools({ poolData, tokenList }));
+  //       })();
+  //     } catch (error) {
        
-        dispatch(setError(error));
-      }
-    }
-  }, [state.contracts, chain?.id, user]);
+  //       dispatch(setError(error));
+  //     }
+  //   }
+  // }, [state.contracts, chain?.id, user]);
 
 // get pools details from graph
-  useEffect(() => {
-    const { chain } = getNetwork();
-    const networkID = user?.network?.id
-    if ( data && networksWithGraph.includes(networkID) ) {
-     const allPositions = data?.positions
-      const poolData = {};
-      const tokenList = {};
-    const poolsData = Array.isArray(data.pools) && data.pools
+  // useEffect(() => {
+  //   const { chain } = getNetwork();
+  //   const networkID = user?.network?.id
+  //   if ( data && networksWithGraph.includes(networkID) ) {
+  //    const allPositions = data?.positions
+  //     const poolData = {};
+  //     const tokenList = {};
+  //   const poolsData = Array.isArray(data.pools) && data.pools
 
-      for(const pool of poolsData){
-        if(hidePools.includes(pool?.pool)){
-          continue;
-        }
-       const li = 
-       fixedToShort(pool.liquidity0) *
-        Number(pool.token0.priceUSD) +
-        fixedToShort(pool.liquidity1) *
-        Number(pool.token1.priceUSD) 
-       const openPosiions = allPositions.filter(
-          (el) => el?.pool?.pool == pool.pool
-        );
-        const poolInfo = {
-          ...pool,
-          poolAddress: pool?.pool,
-          hide: hidePools.includes(pool?.pool),
+  //     for(const pool of poolsData){
+  //       if(hidePools.includes(pool?.pool)){
+  //         continue;
+  //       }
+  //      const li = 
+  //      fixedToShort(pool.liquidity0) *
+  //       Number(pool.token0.priceUSD) +
+  //       fixedToShort(pool.liquidity1) *
+  //       Number(pool.token1.priceUSD) 
+  //      const openPosiions = allPositions.filter(
+  //         (el) => el?.pool?.pool == pool.pool
+  //       );
+  //       const poolInfo = {
+  //         ...pool,
+  //         poolAddress: pool?.pool,
+  //         hide: hidePools.includes(pool?.pool),
 
-          totalLiquidity:
-            fixedToShort(pool.liquidity0) *
-            getTokenUSDPrice(pool.token0.priceUSD) +
-             fixedToShort(pool.liquidity1) *
-             getTokenUSDPrice(pool.token1.priceUSD) ,
+  //         totalLiquidity:
+  //           fixedToShort(pool.liquidity0) *
+  //           getTokenUSDPrice(pool.token0.priceUSD) +
+  //            fixedToShort(pool.liquidity1) *
+  //            getTokenUSDPrice(pool.token1.priceUSD) ,
 
-          totalBorrowed:
-          fixedToShort(pool.totalBorrow0) *
-          getTokenUSDPrice(pool.token0.priceUSD) +
-           fixedToShort(pool.totalBorrow1) *
-           getTokenUSDPrice(pool.token1.priceUSD) ,
+  //         totalBorrowed:
+  //         fixedToShort(pool.totalBorrow0) *
+  //         getTokenUSDPrice(pool.token0.priceUSD) +
+  //          fixedToShort(pool.totalBorrow1) *
+  //          getTokenUSDPrice(pool.token1.priceUSD) ,
 
-           openPosition: openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
-          token0:{
-            ...pool.token0,
-            address: pool?.token0?.id,
-            logo: getTokenLogo(pool.token0.symbol),
-          },
-          token1:{
-            ...pool.token1,
-            address: pool?.token1?.id,
-            logo: getTokenLogo(pool.token1.symbol),
-          }
-        }
-        tokenList[String(pool.token0.id).toUpperCase()] = {
-          ...pool.token0,
-          address: pool?.token0?.id,
-          logo: getTokenLogo(pool.token0.symbol),
-          pricePerToken: pool.token0.priceUSD
-        };
-        tokenList[String(pool.token1.id).toUpperCase()] = {
-          ...pool.token1,
-          address: pool?.token1?.id,
-          logo: getTokenLogo(pool.token1.symbol),
-          pricePerToken: pool.token1.priceUSD
-        };
-        poolData[pool?.pool] = poolInfo;
+  //          openPosition: openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
+  //         token0:{
+  //           ...pool.token0,
+  //           address: pool?.token0?.id,
+  //           logo: getTokenLogo(pool.token0.symbol),
+  //         },
+  //         token1:{
+  //           ...pool.token1,
+  //           address: pool?.token1?.id,
+  //           logo: getTokenLogo(pool.token1.symbol),
+  //         }
+  //       }
+  //       tokenList[String(pool.token0.id).toUpperCase()] = {
+  //         ...pool.token0,
+  //         address: pool?.token0?.id,
+  //         logo: getTokenLogo(pool.token0.symbol),
+  //         pricePerToken: pool.token0.priceUSD
+  //       };
+  //       tokenList[String(pool.token1.id).toUpperCase()] = {
+  //         ...pool.token1,
+  //         address: pool?.token1?.id,
+  //         logo: getTokenLogo(pool.token1.symbol),
+  //         pricePerToken: pool.token1.priceUSD
+  //       };
+  //       poolData[pool?.pool] = poolInfo;
       
-      }
+  //     }
 
     
-      dispatch(setPools({ poolData, tokenList }));
-    }
-  }, [data , user]);
+  //     dispatch(setPools({ poolData, tokenList }));
+  //   }
+  // }, [data , user]);
 
   return (
     <>
       <Navbar {...state} />
       <div className="app_container">
         <div className="app">
-          <MainRoutes {...state} />
+         <Vote/>
         </div>
       </div>
       <Footer />

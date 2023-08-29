@@ -83,10 +83,10 @@
         }
       }
       @media ($tablet) {
-        height: 100px;
+         height: 100px;
 
         div {
-          padding: 15px 0px;
+          padding: 30px 0px;
           h2 {
             font-size: 20px;
           }
@@ -458,11 +458,7 @@
   .ant-popover-inner {
     border-radius: 16px;
 
-    background: linear-gradient(
-      142deg,
-      rgba(255, 255, 255, 0.65) 0%,
-      rgba(224, 233, 255, 0.51) 100%
-    );
+    background: var(--transaperent);
     box-shadow: 11.36966609954834px 12.317137718200684px 18.949443817138672px -0.9474721550941467px
       rgba(0, 0, 0, 0.11);
     backdrop-filter: blur(12.790874481201172px);
