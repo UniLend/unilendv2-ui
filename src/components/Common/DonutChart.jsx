@@ -1,25 +1,49 @@
 import React, { useState, useEffect, memo } from "react";
 import ReactDOM from "react-dom";
-import { Pie } from "@ant-design/plots";
+import { Pie, G2 } from "@ant-design/plots";
 
 const DonutChart = memo(function DonutChartMemo({ data }) {
   const [pieData, setPieData] = useState([]);
+  const G = G2.getEngine("canvas");
+
+  // const firstFive = data.slice(0, 5);
+  // const othersValue = data.slice(5).reduce((acc, curr) => acc + curr.value, 0);
+  // const others = { key: "Others", value: othersValue };
+
+  // // Combine the first five and "others" into a new array
+  // const result = [...firstFive, others];
+
+  // show first 5 data and remaining are in others;
+  const selectedData = (data) => {
+    if (data.length > 5) {
+      const firstFive = data.slice(0, 5);
+      const othersValue = data
+        .slice(5)
+        .reduce((acc, curr) => acc + curr.value, 0);
+      const others = { key: "Others", value: othersValue };
+      return [...firstFive, others];
+    } else {
+      return data;
+    }
+  };
+  // setPieData(selectedData(data));
 
   const config = {
     appendPadding: 20,
+    // data: selectedData(data),
     data,
     angleField: "value",
     colorField: "type",
     radius: 1,
     innerRadius: 0.4,
-    legend: {
-      itemName: {
-        style: {
-          fontSize: 12,
-          fontWeight: 700,
-        },
-      },
-    },
+    // legend: {
+    //   itemName: {
+    //     style: {
+    //       fontSize: 12,
+    //       fontWeight: 700,
+    //     },
+    //   },
+    // },
     meta: {
       value: {
         formatter: (v) => `${v} %`,
@@ -34,14 +58,45 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
     //     fontSize: 10,
     //   },
     // },
+    legend: false,
     label: {
       type: "spider",
       labelHeight: 40,
-      content: "{value}%",
-      // offset: "0%",
-      style: {
-        //   textAlign: "center",
-        fontSize: "40px",
+      formatter: (data, mappingData) => {
+        const group = new G.Group({});
+        group.addShape({
+          type: "circle",
+          attrs: {
+            x: 0,
+            y: 0,
+            width: 10,
+            height: 10,
+            r: 3,
+            fill: mappingData.color,
+          },
+        });
+        group.addShape({
+          type: "text",
+          attrs: {
+            x: 10,
+            y: 6,
+            text: `${data.type}`,
+            fill: mappingData.color,
+            // fontSize: "40px",
+          },
+        });
+        group.addShape({
+          type: "text",
+          attrs: {
+            x: 6,
+            y: 20,
+            text: `${data.value}%`,
+            fill: "#fff",
+            // fontWeight: 600,
+            // fontSize: "20px",
+          },
+        });
+        return group;
       },
     },
     theme: {
@@ -66,18 +121,18 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
         type: "element-active",
       },
     ],
-    statistic: {
-      title: false,
-      content: {
-        style: {
-          whiteSpace: "pre-wrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          fontWeight: 800,
-        },
-        content: "",
-      },
-    },
+    // statistic: {
+    //   title: false,
+    //   content: {
+    //     style: {
+    //       whiteSpace: "pre-wrap",
+    //       overflow: "hidden",
+    //       textOverflow: "ellipsis",
+    //       fontWeight: 800,
+    //     },
+    //     content: "",
+    //   },
+    // },
   };
   return <Pie {...config} />;
 });

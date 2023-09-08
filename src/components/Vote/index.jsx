@@ -31,8 +31,7 @@ const update = "update";
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 
 export default function VoteComponent() {
-
-  const { address, chain } = useWalletHook()
+  const { address, chain } = useWalletHook();
   const [userAddress, setUserAddress] = useState(address);
   const [tokenBalance, setTokenBalance] = useState({ uft: "", uftg: "" });
   const [activeTab, setActiveTab] = useState(wrap);
@@ -48,32 +47,33 @@ export default function VoteComponent() {
   const checkTxnStatus = (hash, data) => {
     waitForTransactionLib({
       hash,
-    }).then((receipt) => {
-
-      if (receipt.status == "success") {
-        if (data?.fn == "approve") {
-          setTimeout(() => {
-            handleAllowance();
-            message.success(`${data.message}`);
-            setIsLoading(false);
-          }, 6000);
+    })
+      .then((receipt) => {
+        if (receipt.status == "success") {
+          if (data?.fn == "approve") {
+            setTimeout(() => {
+              handleAllowance();
+              message.success(`${data.message}`);
+              setIsLoading(false);
+            }, 6000);
+          } else {
+            setTimeout(() => {
+              handleAllowance();
+              message.success(`${data.message}`);
+              setIsLoading(false);
+            }, 3000);
+          }
         } else {
           setTimeout(() => {
-            handleAllowance();
-            message.success(`${data.message}`);
-            setIsLoading(false);
-          }, 3000);
+            checkTxnStatus(hash, data);
+          }, 1000);
         }
-      } else {
+      })
+      .catch(() => {
         setTimeout(() => {
-          checkTxnStatus(hash, data)
+          checkTxnStatus(hash, data);
         }, 1000);
-      }
-    }).catch(()=> {
-      setTimeout(() => {
-        checkTxnStatus(hash, data)
-      }, 1000);
-    })
+      });
   };
 
   const checkTxnError = (error) => {
@@ -86,11 +86,8 @@ export default function VoteComponent() {
   const getTokenBal = async () => {
     const contractsAdd = contractAddress[chain?.id || "1"];
     // const provider = getProvider();
-    const UFT = await getEtherContract(contractsAdd.uftToken, erc20Abi)
-    const UFTG = await getEtherContract(
-      contractsAdd?.uftgToken,
-      uftgABI
-    );
+    const UFT = await getEtherContract(contractsAdd.uftToken, erc20Abi);
+    const UFTG = await getEtherContract(contractsAdd?.uftgToken, uftgABI);
     const delegatesAddress = await UFTG.delegates(address);
     const isValid = ethers.utils.isAddress(delegatesAddress);
 
@@ -115,7 +112,6 @@ export default function VoteComponent() {
       contractsAdd?.uftgToken
     );
 
- 
     const valueFromBigNumber = fromBigNumber(allowance);
     console.log("allowance", valueFromBigNumber);
     setAllowanceValue(valueFromBigNumber);
@@ -151,10 +147,9 @@ export default function VoteComponent() {
 
   useEffect(() => {
     const isValid = ethers.utils.isAddress(delegate);
-if(isValid){
-
-  handleDomain(delegate);
-}
+    if (isValid) {
+      handleDomain(delegate);
+    }
   }, [delegate]);
 
   useEffect(() => {
@@ -203,7 +198,15 @@ if(isValid){
               <h2 className="heading05">
                 {domainDetail ? domainDetail : shortenAddress(String(delegate))}
               </h2>
-              <FiCopy />
+              {/* <FiCopy /> */}
+              <Popover
+                content={"copied"}
+                overlayClassName="copy_popover"
+                placement="top"
+                trigger="click"
+              >
+                <FiCopy />
+              </Popover>
             </div>
             <p className="paragraph03">Delegation address</p>
           </div>
@@ -299,7 +302,7 @@ const WrapAndDelegate = ({
   checkTxnError,
 }) => {
   const [amount, setAmount] = useState("");
-  const { chain } = useWalletHook()
+  const { chain } = useWalletHook();
   const [address, setAddress] = useState(userAddress);
   const [valid, setValid] = useState(true);
   const [domainDetail, setDomainDetail] = useState({
@@ -404,11 +407,11 @@ const WrapAndDelegate = ({
 
   useEffect(() => {
     let timeoutId;
-    if(address){
-     timeoutId = setTimeout(() => {
-      handleDomain(valid, address);
-    }, 500);
-  }
+    if (address) {
+      timeoutId = setTimeout(() => {
+        handleDomain(valid, address);
+      }, 500);
+    }
     return () => clearTimeout(timeoutId);
   }, [address, 500]);
 
@@ -487,7 +490,14 @@ const WrapAndDelegate = ({
             <p className="domain_value paragraph05">
               {domainDetail.value ? shortenAddress(domainDetail.value) : ""}
             </p>
-            {domainDetail.value && <FiCopy />}
+            <Popover
+              content={"copied"}
+              overlayClassName="copy_popover"
+              placement="right"
+              trigger="click"
+            >
+              {domainDetail.value && <FiCopy />}
+            </Popover>
           </div>
         )}
         <Button
@@ -510,7 +520,7 @@ const UnWrap = ({
   checkTxnError,
 }) => {
   const [amount, setAmount] = useState("");
-  const { chain } = useWalletHook()
+  const { chain } = useWalletHook();
   const [buttonText, setButtonText] = useState({
     text: "Enter Amount",
     disable: true,
@@ -615,7 +625,7 @@ const UpdateDelegation = ({
   checkTxnError,
 }) => {
   const [address, setAddress] = useState("");
-  const { chain } = useWalletHook()
+  const { chain } = useWalletHook();
   const [buttonText, setButtonText] = useState({
     text: "Enter Address",
     disable: true,
@@ -625,8 +635,17 @@ const UpdateDelegation = ({
     value: "",
     isAddress: false,
   });
+  const [popoverVisible, setPopoverVisible] = useState(false);
   const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
   const provider = new ethers.providers.JsonRpcProvider(key);
+
+  const handleCopyClick = () => {
+    setPopoverVisible(true);
+  };
+
+  const handleClosePopover = () => {
+    setPopoverVisible(false);
+  };
 
   const handleAddress = (e) => {
     const userAddr = e.target.value;
@@ -743,7 +762,14 @@ const UpdateDelegation = ({
             <p className="domain_value">
               {domainDetail.value ? shortenAddress(domainDetail.value) : ""}
             </p>
-            {domainDetail.value && <FiCopy />}
+            <Popover
+              content={"copied"}
+              overlayClassName="copy_popover"
+              placement="right"
+              trigger="click"
+            >
+              {domainDetail.value && <FiCopy />}
+            </Popover>
           </div>
         )}
         <Button

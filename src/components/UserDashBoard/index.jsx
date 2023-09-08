@@ -31,6 +31,7 @@ import {
   userDashBoardQuery,
   userDashBoardQuery0,
 } from "../../helpers/dashboard";
+import { getAccount, getNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
 import { imgError } from "../../utils";
 import { fetchGraphQlData, fetchTokenPriceInUSD } from "../../utils/axios";
@@ -58,16 +59,16 @@ const graphURL = {
 };
 
 export default function UserDashboardComponent(props) {
-  const contracts  = useSelector((state) => state.contracts);
-  const  user = useSelector((state) => state.user);
+  const contracts = useSelector((state) => state.contracts);
+  const user = useSelector((state) => state.user);
   const tokenList = useSelector((state) => state.tokenList);
-  const { chain , address} = useWalletHook();
+  const { chain, address } = useWalletHook();
   const navigate = useNavigate();
   // if (chain?.id !== 80001) {
   //   navigate("/");
   // }
 
-const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
+  const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
   const [userAddress, setUserAddress] = useState();
   const [verifiedAddress, setVerifiedAddress] = useState(
     address || user?.address
@@ -236,14 +237,11 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
   }, [address]);
 
   useEffect(() => {
-  
     if (data && contracts) {
-   
       (async () => {
         setPositionLoading(true);
-       const position = await getPositionData(data, contracts);
-      
-      
+        const position = await getPositionData(data, contracts);
+
         if (position) {
           setPositionData(position);
           setPositionDataBackup(position);
@@ -290,7 +288,7 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
 
     alchemy.core.getTokenBalances(`${address}`).then(async (bal) => {
       // const tokenPrices = await fetchTokenPriceInUSD()
-       const tokens = await getTokensFromUserWallet(bal, tokenList);
+      const tokens = await getTokensFromUserWallet(bal, tokenList);
       setWalletTokens(tokens);
       setWalletTokenLoading(false);
     });
@@ -301,7 +299,7 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
   };
 
   useEffect(() => {
-    refetch()
+    refetch();
     if (verifiedAddress) {
       getUserTokens(verifiedAddress || address);
     } else if (userAddress == "" || verifiedAddress == "") {
@@ -545,7 +543,7 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
               <Pagination
                 current={walletCurrentPage}
                 onChange={(el) => setWalletCurrentPage(el)}
-                pageSize={7}
+                pageSize={4}
                 size="small"
                 total={walletTokens.length}
                 showSizeChanger={false}
@@ -660,14 +658,20 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
                                 />
                               </span>
                               <span>
-                                {pool?.tokenSymbol} <br />{" "}
-                                {Number(pool?.LendBalance).toFixed(2)}{" "}
+                                <strong>{pool?.tokenSymbol}</strong>
+                                <br /> {Number(pool?.LendBalance).toFixed(
+                                  2
+                                )}{" "}
                               </span>
                               <span>
-                                {Number(pool?.apy).toFixed(2)}% <br />{" "}
-                                {Number(pool?.interestEarned).toFixed(6)}{" "}
+                                <strong>{Number(pool?.apy).toFixed(2)}%</strong>
+                                <br /> {Number(pool?.interestEarned).toFixed(
+                                  6
+                                )}{" "}
                               </span>
-                              <span>{pool.pool.maxLTV}%</span>
+                              <span>
+                                <strong>{pool.pool.maxLTV}%</strong>
+                              </span>
                             </div>
                           );
                         })
@@ -789,15 +793,17 @@ const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
                                 />
                               </span>
                               <span>
-                                {pool?.tokenSymbol} <br />{" "}
+                                <strong>{pool?.tokenSymbol}</strong> <br />{" "}
                                 {Number(pool?.borrowBalance).toFixed(2)}{" "}
                               </span>
                               <span>
-                                {Number(pool?.apy).toFixed(3)}% <br />{" "}
-                                {Number(pool?.healthFactor)}
+                                <strong>{Number(pool?.apy).toFixed(3)}%</strong>
+                                <br /> {Number(pool?.healthFactor)}
                               </span>
                               <span>
-                                {Number(pool?.currentLTV).toFixed(2)}%
+                                <strong>
+                                  {Number(pool?.currentLTV).toFixed(2)}%
+                                </strong>
                               </span>
                             </div>
                           );

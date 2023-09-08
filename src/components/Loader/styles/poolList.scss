@@ -8,13 +8,13 @@
   grid-template-columns: repeat(3, calc(100% / 3));
   justify-content: space-between;
   .skeleton_card {
-    width: 300px;
-    height: 272px;
+    width: 272px;
+    height: 308px;
     border-radius: 12px;
     box-shadow: var(--box-shadow) !important;
     background-color: white;
     background-color: var(--low-dark-bg);
-    margin-bottom: 48px;
+    margin-bottom: 24px;
     @include padding(28px 0);
     cursor: pointer;
     transition: all 0.5s;
@@ -35,8 +35,8 @@
         display: flex;
 
         div {
-          width: 40px;
-          height: 40px;
+          width: 56px;
+          height: 56px;
           border-radius: 50%;
 
           &:first-child {
@@ -68,7 +68,7 @@
 
     .pool_data {
       border-bottom: 0.35px solid var(--pure-black);
-      @include padding(20px 0);
+      @include padding(24px 0);
       .div1 {
         display: flex;
         width: 76%;
@@ -92,6 +92,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      @include margin(24px 0 0);
       div {
         width: 30%;
         height: 16px;

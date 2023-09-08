@@ -65,8 +65,16 @@
   }
 
   @media ($mobile) {
-    width: 100px;
-    height: 36px;
+    width: 80px;
+    height: 33px;
     gap: 8px;
+    padding: 4px 8px;
+    p {
+      @include font-size($font-size-xxsm);
+    }
+    svg {
+      width: 8px;
+      height: 8px;
+    }
   }
 }

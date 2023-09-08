@@ -130,7 +130,7 @@
         text-overflow: ellipsis;
         white-space: noWrap;
         font-size: 11px;
-        font-weight: 600;
+        // font-weight: 600;
         // color: var(--light-gray);
         color: var(--pure-black);
       }
@@ -150,7 +150,7 @@
         white-space: nowrap;
         p {
           margin: 0px;
-          color: var(--pure-black);
+          color: var(--always-white);
         }
       }
     }

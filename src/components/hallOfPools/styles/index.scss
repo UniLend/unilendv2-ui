@@ -29,8 +29,7 @@
   position: relative;
   //   top: 220px;
   .manage_token_component {
-    box-shadow: none;
-    border: 1px solid var(--border-gray);
+    box-shadow: var(--box-shadow);
   }
 }
 
@@ -82,12 +81,14 @@
   margin-bottom: 100px;
   display: grid;
   row-gap: 24px;
+  // column-gap: 24px;
   grid-template-columns: repeat(3, calc(100% / 3));
-  justify-content: space-between;
+  // justify-content: space-between;
+  justify-items: center;
 
-  .poolcard {
-    margin: 10px;
-  }
+  // .poolcard {
+  //   margin: 10px;
+  // }
 
   @media (1520px < width) {
     grid-template-columns: repeat(4, calc(100% / 4));
@@ -95,10 +96,13 @@
 
   @media ($tablet) {
     row-gap: 12px;
+    // column-gap: 12px;
     grid-template-columns: repeat(2, calc(100% / 2));
   }
 
   @media ($mobile) {
-    grid-template-columns: repeat(1, 100%);
+    row-gap: 12px;
+    // column-gap: 12px;
+    grid-template-columns: repeat(1, calc(100% / 1));
   }
 }

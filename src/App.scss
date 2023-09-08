@@ -29,6 +29,10 @@
   }
 }
 
+.light {
+  background-color: var(--bg-color);
+}
+
 html,
 body {
   margin: 0px;
@@ -62,10 +66,18 @@ body,
   min-height: calc(100vh - 124px);
   margin: auto;
   position: relative;
-  background: url("/src/assets/blue-bg.svg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  // background: url("/src/assets/blue-bg.svg");
+  // background-position: center;
+  // background-repeat: no-repeat;
+  // background-size: cover;
+}
+.dark {
+  .app_container {
+    background: url("/src/assets/blue-bg.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
 }
 .app {
   margin: auto;
@@ -96,11 +108,17 @@ body,
 
 // skeleton loading animation
 .skeleton {
+  // background: linear-gradient(
+  //   90deg,
+  //   var(--border-gray) 20px,
+  //   rgb(250 250 250 / 90%) 60px,
+  //   var(--border-gray) 80px
+  // );
   background: linear-gradient(
     90deg,
-    var(--border-gray) 20px,
-    rgb(250 250 250 / 90%) 60px,
-    var(--border-gray) 80px
+    var(--main-light) 20px,
+    rgba(52, 11, 237, 0.9) 60px,
+    var(--main-light) 80px
   );
   background-size: 250%;
   background-position: 100% 0;

@@ -208,7 +208,8 @@
               width: 100%;
               background: var(--low-dark-bg);
               color: var(--pure-black);
-              padding: 4px 52px 4px 12px;
+              @include padding(4px 52px 4px 12px);
+              @include margin-bottom(30px);
               border-radius: 12px;
             }
             .max_btn {
@@ -238,7 +239,7 @@
               color: var(--light-green);
               margin: 0;
               height: 14px;
-              margin: 4px 0 4px 22px;
+              @include margin(0 0 6px 22px);
             }
             svg {
               width: 16px;
@@ -332,6 +333,9 @@
           .action {
             .domain_data {
               width: fit-content;
+              .domain_value {
+                @include margin(0 0 4px 12px);
+              }
             }
             input,
             button {
@@ -376,7 +380,7 @@
           margin-top: 24px;
           min-width: fit-content;
           width: 186px;
-          color: var(--pure-black);
+          color: var(--always-white);
           border: none;
           border-radius: 16px;
           padding: 5px 10px;
@@ -545,6 +549,46 @@
           }
         }
       }
+    }
+  }
+}
+
+.copy_popover {
+  .ant-popover-content {
+    width: fit-content;
+    // height: 24px;
+    border: none;
+    outline: none;
+    box-shadow: none;
+
+    .ant-popover-arrow {
+      border: none;
+      box-shadow: none;
+
+      width: 20px;
+      height: 20px;
+
+      .ant-popover-arrow-content {
+        --antd-arrow-background-color: var(--dark-button);
+        border: none;
+        outline: none;
+        box-shadow: none;
+      }
+    }
+
+    .ant-popover-inner {
+      background-color: var(--dark-button);
+      box-shadow: var(--box-shadow);
+    }
+
+    .ant-popover-inner-content {
+      @include padding(2px 4px 2px);
+      height: 24px;
+      border: none;
+      outline: none;
+      box-shadow: none;
+      color: var(--main-light);
+      // background-color: var(--low-dark-bg);
     }
   }
 }

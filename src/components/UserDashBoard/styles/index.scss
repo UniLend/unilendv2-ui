@@ -143,7 +143,7 @@
               width: 35px;
               height: 35px;
               background: var(--main);
-              color: var(--pure-black);
+              color: var(--always-white);
               display: grid;
               place-items: center;
               font-size: 25px;
@@ -237,7 +237,7 @@
               place-items: center;
               & > div {
                 height: 100% !important;
-                width: 80% !important;
+                width: 100% !important;
                 @media ($mobile) {
                   height: 200px !important;
                 }
@@ -296,6 +296,8 @@
         margin: 30px 0px;
         span {
           display: flex;
+          align-items: center;
+
           gap: 10px;
           h2 {
             margin: 0;
@@ -350,7 +352,7 @@
           margin-bottom: 10px;
         }
         .row_skeleton {
-          padding: 25px 0px !important;
+          padding: 16px 0px !important;
         }
         .tbody {
           @include padding(24px 40px);
@@ -367,8 +369,8 @@
                 color: var(--pure-black);
               }
               img {
-                width: 28px;
-                height: 28px;
+                width: 30px;
+                height: 30px;
                 border-radius: 50%;
               }
             }
@@ -393,9 +395,23 @@
         .wallet_table {
           .thead,
           .tbody_row {
+            display: flex;
+            gap: 16px;
             span {
               &:first-child {
                 width: 60%;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                img {
+                  width: 24px;
+                  height: 24px;
+                }
+              }
+              &:nth-child(3) {
+                display: flex;
+                justify-content: center;
+                align-items: center;
               }
               &:nth-child(2),
               &:nth-child(4) {
@@ -419,27 +435,50 @@
         min-height: 650px;
         @media ($mobile) {
           padding: 15px;
+          @include padding(36px 15px);
         }
         .toggle_tabs {
-          @include margin-left(40px);
+          @include margin-left(50px);
+          @include margin-bottom(50px);
+          width: 328px;
+          height: 52px;
+          background-color: var(--low-dark-bg);
+          border-radius: 16px;
+          @include padding(6px);
+          display: flex;
           .tab_btn {
             margin: 0px;
-            margin-right: 30px;
-            margin-bottom: 30px;
-            width: 120px;
+            width: 158px;
+            height: 40px;
             background: transparent;
             color: var(--pure-black);
-            border: 2px solid var(--button-border);
+            border: none;
             border-radius: 16px;
           }
           .active_tab {
             background: var(--main);
-            color: var(--pure-black);
-            border: none;
+            color: var(--always-white);
+            border: 2px solid var(--button-border);
           }
           @media ($mobile) {
+            width: 176px;
+            height: 32px;
+            border-radius: 8px;
+            @include padding(4px);
+            @include margin-left(14px);
             .tab_btn {
-              margin-right: 15px;
+              width: 88px;
+              height: 24px;
+              border-radius: 8px;
+              @include font-size($font-size-xsm);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              // margin-right: 15px;
+            }
+
+            .active_tab {
+              border: 1px solid var(--button-border);
             }
           }
         }
@@ -457,7 +496,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0px 20px;
+            @include margin(0 10px);
             width: 30%;
             background-color: var(--dark-bg);
             border: 0.35px solid var(--light-gray);
@@ -471,7 +510,7 @@
             }
 
             input {
-              padding: 12px;
+              @include padding(12px);
               width: 100%;
               outline: none;
               background-color: transparent;
@@ -486,8 +525,16 @@
               }
             }
             @media ($mobile) {
-              width: 150px;
+              width: 164px;
+              height: 36px;
               margin: 0;
+              svg {
+                @include margin(0 0 0 16px);
+              }
+              input {
+                @include padding(4px 8px);
+                @include font-size($font-size-xxsm);
+              }
             }
           }
 
@@ -516,6 +563,10 @@
           // .anticon {
           //   color: var(--light-gray);
           // }
+
+          @media ($mobile) {
+            @include padding(0 8px 0 14px);
+          }
         }
 
         .thead,
@@ -588,16 +639,20 @@
           justify-content: space-between;
           padding: 0 40px;
           border-bottom: 1px solid var(--light-gray);
+
+          @media ($mobile) {
+            @include padding(0 4px);
+          }
         }
         .tbody {
           @include margin(10px 0px);
           @include padding(0 40px);
           overflow: hidden;
-          height: 400px;
+          height: 440px;
           .tbody_row {
             span {
               display: flex;
-              font-size: $font-size-md;
+              @include font-size($font-size-sm);
               color: var(--pure-black);
 
               &:first-child {
@@ -612,7 +667,7 @@
               }
               p {
                 margin: 5px;
-                font-size: $font-size-sm;
+                @include font-size($font-size-sm);
                 color: var(--pure-black);
                 transition: all 0.2s ease-in-out;
               }
@@ -622,6 +677,29 @@
                 border-radius: 50%;
                 &:last-child {
                   margin-left: -10px;
+                }
+              }
+            }
+          }
+
+          @media ($mobile) {
+            @include padding(0 4px);
+
+            .tbody_row {
+              span {
+                display: contents;
+                align-items: center;
+                @include font-size($font-size-xsm);
+                img {
+                  width: 24px;
+                  height: 24px;
+                  border-radius: 50%;
+                  &:last-child {
+                    margin-left: -8px;
+                  }
+                }
+                strong {
+                  @include font-size($font-size-sm);
                 }
               }
             }
@@ -713,7 +791,10 @@
   outline: none;
   border: none;
   a {
-    color: var(--pure-black) !important;
+    color: var(--always-white) !important;
+    &:hover {
+      color: var(--always-white) !important;
+    }
   }
 }
 
@@ -726,9 +807,6 @@
   }
   &:hover {
     color: var(--light-gray) !important;
-    a {
-      color: var(--light-gray) !important;
-    }
   }
 }
 

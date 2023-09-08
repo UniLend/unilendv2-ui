@@ -39,7 +39,7 @@
       background-color: var(--main);
       border: none;
       border-radius: 8px;
-      color: var(--pure-black);
+      color: var(--always-white);
       cursor: pointer;
       &:disabled {
         cursor: not-allowed;
@@ -52,7 +52,7 @@
       background-color: var(--main);
       border: none;
       border-radius: 8px;
-      color: var(--pure-black);
+      color: var(--always-white);
       cursor: pointer;
       &:disabled {
         cursor: not-allowed;
@@ -78,11 +78,11 @@
   @media ($mobile) {
     @include padding(10px);
   }
-  .poolcard,
-  .skeleton_card {
-    min-width: 300px;
-    @media ($mobile) {
-      min-width: 280px;
-    }
-  }
+  // .poolcard,
+  // .skeleton_card {
+  //   // min-width: 300px;
+  //   @media ($mobile) {
+  //     min-width: 280px;
+  //   }
+  // }
 }

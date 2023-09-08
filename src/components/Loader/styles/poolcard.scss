@@ -1,7 +1,7 @@
 @import "/src/core/theme";
 .skeleton_card {
-  width: 300px;
-  height: 272px;
+  width: 272px;
+  height: 308px;
   border-radius: 12px;
   box-shadow: var(--box-shadow) !important;
   background-color: white;
@@ -26,8 +26,8 @@
       display: flex;
 
       div {
-        width: 40px;
-        height: 40px;
+        width: 56px;
+        height: 56px;
         border-radius: 50%;
 
         &:first-child {
@@ -41,7 +41,7 @@
   }
   .pool_data {
     border-bottom: 0.35px solid var(--pure-black);
-    @include padding(20px 0);
+    @include padding(24px 0);
     .div1 {
       display: flex;
       width: 76%;
@@ -65,10 +65,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    @include margin(24px 0 0);
     div {
       width: 30%;
       height: 16px;
       margin: 10px;
     }
+  }
+
+  @media ($mobile) {
+    width: calc(100vw - 120px);
   }
 }

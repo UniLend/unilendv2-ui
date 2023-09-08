@@ -18,7 +18,7 @@ import { handleCreatePool } from "../../services/pool";
 
 export default function HallOfPoolsComponent() {
   const poolList = useSelector((state) => state.poolList);
-  const  isLoadingPoolData = useSelector((state) => state.isLoadingPoolData);
+  const isLoadingPoolData = useSelector((state) => state.isLoadingPoolData);
   const [token1, setToken1] = useState({});
   const [token2, setToken2] = useState({});
   const [pools, setPools] = useState([]);

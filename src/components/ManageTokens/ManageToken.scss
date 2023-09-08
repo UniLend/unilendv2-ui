@@ -7,6 +7,7 @@
   margin: auto;
   margin-bottom: 20px;
   @media only screen and (max-width: 768px) {
+    // width: 60%;
     height: auto;
   }
 }
@@ -30,7 +31,7 @@
   display: flex;
   gap: 20px;
   align-items: center;
-  @include padding(10px 20px);
+  @include padding(10px);
   color: var(--dark-gray);
   .section {
     width: 38%;
@@ -53,13 +54,18 @@
       text-align: center;
       @include margin(0px 16px 0 12px);
       @include font-size($font-size-md);
-      color: var(--pure-black);
+      color: var(--always-white);
       cursor: pointer;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       @media only screen and (max-width: 768px) {
         @include font-size($font-size-sm);
+      }
+
+      @media only screen and (max-width: 600px) {
+        @include margin(0px 8px 0 4px);
+        @include font-size($font-size-xsm);
       }
     }
     h5 {
@@ -75,6 +81,10 @@
       @media only screen and (max-width: 768px) {
         @include font-size($font-size-sm);
         margin-top: 8px;
+      }
+
+      @media only screen and (max-width: 600px) {
+        @include font-size($font-size-xsm);
       }
     }
 
@@ -96,6 +106,7 @@
     border-radius: 100px;
     align-items: center;
     justify-content: center;
+    width: 232px;
     .token_div {
       display: flex;
       width: 85%;
@@ -111,28 +122,42 @@
       }
       h3 {
         text-align: left;
-        margin: 5px;
+        @include margin(5px);
       }
       @media only screen and (max-width: 768px) {
         padding-left: 10px;
       }
     }
-    @media only screen and (max-width: 768px) {
+
+    @media only screen and (max-width: 992px) {
+      width: 34%;
+    }
+
+    // @media only screen and (max-width: 768px) {
+    //   justify-content: center;
+    //   height: 48px;
+    //   width: 176px;
+    // }
+
+    @media only screen and (max-width: 600px) {
       justify-content: center;
+      height: 32px;
+      width: 120px;
     }
   }
 
-  @media only screen and (max-width: 768px) {
+  @media only screen and (max-width: 992px) {
     width: 100%;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     min-width: auto;
-    padding: 10px 10px;
   }
 
-  @media only screen and (max-width: 600px) {
+  @media only screen and (max-width: 768px) {
     width: 100%;
+    border-radius: 16px;
+    @include padding(24px 10px 0);
     height: auto;
   }
 }

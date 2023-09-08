@@ -2,31 +2,47 @@ $light: (
   sharp-blue: #0045ff,
   mid-blue: #dbeaff,
   light-blue: #e6eef9,
-  light-gray: #808080,
-  border-gray: #f3f3f3,
+  // light-gray: #808080,
+  // border-gray: #f3f3f3,
   low-gray: #c4c4c4,
   dark-gray: #3b3b3b,
-  pure-black: black,
-  pure-white: #ffffff,
-  light-green: #1ed130,
+  // pure-black: black,
+  // pure-white: #ffffff,
+  // box-shadow: "-1px -1px 3px #ECECEC, 1px 1px 1.3px #DCDCDC",
   light-teal: #00add2,
+
+  light-green: #1ed130,
   light-red: #db2438,
-  box-shadow: "-1px -1px 3px #ECECEC, 1px 1px 1.3px #DCDCDC",
-  bg-color:
-    radial-gradient(
-      50.67% 95.96% at 49.97% 50%,
-      #e2edfc 0.09%,
-      #d8e7fc 0.1%,
-      #eaf2fd 40.8%,
-      #ffffff 100%
-    )
-    // bg-color:
+  box-shadow: 0px 0px 8px 1px #c5bcff,
+  pure-black: #141414,
+  pure-white: #ffffff,
+  always-white: #ffffff,
+  light-gray: #99959c,
+  main: #4b2eff,
+  main-light: #9a8bfa,
+  dark-button: #d5ceff,
+  tran-button: #161423,
+  //161423 check it
+  button-border: #dfdaff,
+  bg-color: #eeecff,
+  //EEECFF check it
+  dark-bg: #f3f1ff,
+  low-dark-bg: #eae8f6,
+  // bg-color:
+  //   radial-gradient(
+  //     50.67% 95.96% at 49.97% 50%,
+  //     #e2edfc 0.09%,
+  //     #d8e7fc 0.1%,
+  //     #eaf2fd 40.8%,
+  //     #ffffff 100%
+  //   )
+  // bg-color:
   //   radial-gradient(
   //     51.2% 25.96% at 54.77% 50.7%,
   //     #5700fe 0%,
   //     rgba(87, 0, 254, 0.261849) 52.63%,
   //     rgba(87, 0, 254, 0) 100%
-  //   ),,,,,,,,,,,,,,,,,,,,,,,,,,,
+  //   ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 );
 
 $dark: (
@@ -43,17 +59,29 @@ $dark: (
   light-green: #1ed130,
   light-red: #db2438,
   box-shadow: 0px 0px 0px 0.85px #1c1523,
+  always-white: #ffffff,
   pure-black: #ffffff,
-  pure-white: #000000,
+  //141414
+  pure-white: #141414,
+  //#fff
   light-gray: #99959c,
+  //99959c
   main: #4b2eff,
+  //4b2eff
   main-light: #9a8bfa,
+  //9a8bfa
   dark-button: #070032,
-  tran-button: #171423,
+  // #D5CEFF;
+  tran-button: #161423,
+  //161423 check it
   button-border: #140095,
-  bg-color: #130f1b,
+  //DFDAFF
+  bg-color: #110f1b,
+  //EEECFF check it
   dark-bg: #0f0e19,
+  // F3F1FF
   low-dark-bg: #161423,
+  //EAE8F6
 );
 
 //low-gray: #1F2127,

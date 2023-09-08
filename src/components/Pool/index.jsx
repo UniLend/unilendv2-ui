@@ -167,7 +167,6 @@ export default function PoolComponent(props) {
                 getPoolTokensData: false,
               });
             }, 8000);
-        
           } else {
             setTimeout(() => {
               setMethodLoaded({
@@ -177,7 +176,6 @@ export default function PoolComponent(props) {
                 getPoolTokensData: false,
               });
             }, 5000);
-    
           }
 
           setMax(false);
@@ -412,14 +410,7 @@ export default function PoolComponent(props) {
         token1: poolData?.token1?.symbol,
       });
     }
-  }, [
-    contracts,
-    methodLoaded,
-    user,
-    poolList,
-    selectedPool,
-    poolData
-  ]);
+  }, [contracts, methodLoaded, user, poolList, selectedPool, poolData]);
 
   // max trigger for sending max values in redeem, lend, borrow, repay;
   const maxTrigger = () => {
@@ -708,12 +699,12 @@ export default function PoolComponent(props) {
             </div>
 
             <div className="user_liquidity">
-              <p>{liquidityText[activeOperation]}</p>
+              <p className="paragraph06">{liquidityText[activeOperation]}</p>
               <Tooltip
                 title={getLiquidityAmount[activeOperation]}
                 trigger="hover"
               >
-                <h1>
+                <h1 className="heading02">
                   {selectedToken
                     ? fixFormatNumber(getLiquidityAmount[activeOperation])
                     : 0}
