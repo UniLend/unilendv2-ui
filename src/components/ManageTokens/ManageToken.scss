@@ -31,7 +31,7 @@
   display: flex;
   gap: 20px;
   align-items: center;
-  @include padding(10px);
+  padding: 10px;
   color: var(--dark-gray);
   .section {
     width: 38%;
@@ -52,39 +52,39 @@
       width: fit-content;
       border: 0px;
       text-align: center;
-      @include margin(0px 16px 0 12px);
-      @include font-size($font-size-md);
+      margin: 0px 16px 0 12px;
+      font-size: $font-size-md;
       color: var(--always-white);
       cursor: pointer;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       @media only screen and (max-width: 768px) {
-        @include font-size($font-size-sm);
+        font-size: $font-size-sm;
       }
 
       @media only screen and (max-width: 600px) {
-        @include margin(0px 8px 0 4px);
-        @include font-size($font-size-xsm);
+        margin: 0px 8px 0 4px;
+        font-size: $font-size-xsm;
       }
     }
     h5 {
-      @include font-size($font-size-md);
+      font-size: $font-size-md;
       color: var(--pure-black);
       text-align: center;
-      @include margin(13px 0);
+      margin: 13px 0;
       width: 100%;
       cursor: pointer;
       &:hover {
         color: var(--main-light);
       }
       @media only screen and (max-width: 768px) {
-        @include font-size($font-size-sm);
+        font-size: $font-size-sm;
         margin-top: 8px;
       }
 
       @media only screen and (max-width: 600px) {
-        @include font-size($font-size-xsm);
+        font-size: $font-size-xsm;
       }
     }
 
@@ -122,7 +122,7 @@
       }
       h3 {
         text-align: left;
-        @include margin(5px);
+        margin: 5px;
       }
       @media only screen and (max-width: 768px) {
         padding-left: 10px;
@@ -157,7 +157,7 @@
   @media only screen and (max-width: 768px) {
     width: 100%;
     border-radius: 16px;
-    @include padding(24px 10px 0);
+    padding: 24px 10px 0;
     height: auto;
   }
 }
@@ -166,10 +166,10 @@
   // overflow: hidden;
   height: 550px;
   .search_token {
-    @include padding(30px 30px 10px);
+    padding: 30px 30px 10px;
   }
   h3 {
-    @include margin-bottom(20px);
+    margin-bottom: 20px;
     display: flex;
   }
   .input_container {
@@ -178,13 +178,13 @@
     background: var(--low-dark-bg);
     width: 100%;
     border-radius: 12px;
-    @include padding(12px 12px 12px 24px);
+    padding: 12px 12px 12px 24px;
 
     input {
       border: none;
       padding: 0;
       color: var(--pure-black);
-      @include font-size($font-size-md);
+      font-size: $font-size-md;
       outline: none;
       background: transparent;
       &::placeholder {
@@ -196,7 +196,7 @@
       color: var(--light-gray);
       width: 18px;
       height: 18px;
-      @include margin(0 20px 0 0);
+      margin: 0 20px 0 0;
     }
   }
   .token_list {
@@ -222,7 +222,7 @@
   img {
     width: 36px;
     height: 36px;
-    @include margin(10px 15px);
+    margin: 10px 15px;
     border-radius: 50%;
   }
   div {
@@ -230,9 +230,9 @@
       letter-spacing: 0.04em;
       text-transform: uppercase;
       color: var(--pure-black);
-      @include font-size($font-size-lg);
+      font-size: $font-size-lg;
       font-weight: $font-weight-medium;
-      @include margin(8px 0 -8px);
+      margin: 8px 0 -8px;
     }
     span {
       font-size: $font-size-xsm;
@@ -267,9 +267,9 @@
     div {
       h3 {
         color: var(--pure-black);
-        @include margin(8px 0 0);
+        margin: 8px 0 0;
         font-weight: $font-weight-medium;
-        @include font-size($font-size-lg);
+        font-size: $font-size-lg;
         line-height: $line-height-sm;
         text-transform: capitalize;
       }
@@ -278,7 +278,7 @@
   .radio_Button {
     display: flex;
     align-items: center;
-    @include margin(0 10px);
+    margin: 0 10px;
     .switch {
       background-color: var(--light-green);
       span,
@@ -347,15 +347,15 @@
     border-radius: 50px;
     padding: 0x;
     margin: auto;
-    @include margin-bottom(24px);
-    @include padding(4px);
+    margin-bottom: 24px;
+    padding: 4px;
     background-color: var(--low-dark-bg);
 
     h3 {
       width: 50%;
       text-align: center;
-      @include margin(5px);
-      @include padding(5px);
+      margin: 5px;
+      padding: 5px;
       border-radius: 50px;
       color: var(--pure-black);
       cursor: pointer;
@@ -378,7 +378,7 @@
     width: 86%;
     margin: auto;
     border-radius: 12px;
-    @include padding(12px 12px 12px 24px);
+    padding: 12px 12px 12px 24px;
     input {
       width: 100%;
       padding: 0px;
@@ -394,7 +394,7 @@
       color: var(--light-gray);
       width: 18px;
       height: 18px;
-      @include margin(0 16px 0 0);
+      margin: 0 16px 0 0;
     }
   }
   .api_token_list,
@@ -410,7 +410,7 @@
     }
     .custom_token_title {
       color: var(--pure-black);
-      @include font-size($font-size-lg);
+      font-size: $font-size-lg;
       margin-top: 30px;
     }
   }

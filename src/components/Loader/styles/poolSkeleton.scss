@@ -2,16 +2,16 @@
 .pool_skeleton_container {
   width: 100%;
   max-width: 450px;
-  @include padding(116px 0 0);
-  @include margin(0 auto 116px);
+  padding: 116px 0 0;
+  margin: 0 auto 116px;
   height: max-content;
   .token_header {
     background-color: var(--pure-white);
     border-radius: 80px;
-    @include margin(10px 10px 32px);
+    margin: 10px 10px 32px;
     display: flex;
     gap: 10px;
-    @include padding(8px);
+    padding: 8px;
     justify-content: space-between;
     box-shadow: var(--box-shadow);
     div {
@@ -28,7 +28,7 @@
     margin: 10px;
     border-radius: 12px;
     box-shadow: var(--box-shadow);
-    @include padding(12px);
+    padding: 12px;
     .tabs {
       width: 70%;
       border-radius: 12px;

@@ -4,7 +4,7 @@
   width: 80%;
   // min-height: 860px;
   height: fit-content;
-  @include margin(116px auto);
+  margin: 116px auto;
   border-radius: 16px;
   box-shadow: var(--box-shadow);
   background-color: var(--dark-bg);
@@ -42,7 +42,7 @@
         color: var(--light-gray);
         width: 18px;
         height: 18px;
-        @include margin(0 0 0 32px);
+        margin: 0 0 0 32px;
       }
 
       input {
@@ -65,11 +65,11 @@
         height: 36px;
         margin: 0;
         svg {
-          @include margin(0 0 0 16px);
+          margin: 0 0 0 16px;
         }
         input {
-          @include padding(4px 8px);
-          @include font-size($font-size-xxsm);
+          padding: 4px 8px;
+          font-size: $font-size-xxsm;
         }
       }
     }
@@ -94,19 +94,19 @@
       cursor: no-drop;
     }
     @media ($mobile) {
-      @include padding(0 8px);
+      padding: 0 8px;
     }
   }
 
   .table_header {
     display: flex;
     justify-content: space-between;
-    @include padding(0 40px);
+    padding: 0 40px;
     border-bottom: 1px solid var(--light-gray);
 
     div {
       width: 12%;
-      @include padding(20px 10px);
+      padding: 20px 10px;
       &:first-child {
         width: 25%;
       }
@@ -115,18 +115,18 @@
         width: 20%;
       }
       p {
-        @include font-size($font-size-sm);
+        font-size: $font-size-sm;
         color: var(--light-gray);
         margin: 0;
       }
     }
 
     @media ($mobile) {
-      @include padding(0 10px);
+      padding: 0 10px;
       div {
-        @include padding(20px 8px);
+        padding: 20px 8px;
         p {
-          @include font-size($font-size-xsm);
+          font-size: $font-size-xsm;
         }
       }
     }
@@ -149,7 +149,7 @@
           div {
             display: flex;
             padding: 0px;
-            @include margin(0px 10px 0 0);
+            margin: 0 10px 0 0;
             img {
               width: 30px;
               height: 30px;
@@ -174,13 +174,13 @@
         }
 
         p {
-          @include font-size($font-size-sm);
+          font-size: $font-size-sm;
           color: var(--pure-black);
           margin: 8px 0px;
         }
       }
       @media ($mobile) {
-        @include padding(0 10px);
+        padding: 0 10px;
 
         div {
           &:first-child {
@@ -198,7 +198,7 @@
             }
           }
           p {
-            @include font-size($font-size-xsm);
+            font-size: $font-size-xsm;
           }
         }
       }
@@ -225,13 +225,10 @@
   .pagination {
     display: grid;
     place-items: center center;
-    @include padding(20px 0 0);
+    padding: 20px 0 0;
 
     .ant-pagination-item {
       color: var(--pure-black);
-      // a {
-      //   @include margin(0 20px 0 0);
-      // }
     }
 
     .ant-pagination-item-active {
@@ -270,7 +267,7 @@
       display: flex;
       place-items: center center;
       p {
-        @include font-size($font-size-sm);
+        font-size: $font-size-sm;
         color: var(--pure-black);
         margin: 0;
       }

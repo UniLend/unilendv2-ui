@@ -46,7 +46,7 @@
       color: var(--pure-black);
       border: 1px solid var(--button-border);
       border-radius: 12px;
-      @include font-size($font-size-sm);
+      font-size: $font-size-sm;
       height: 35px;
     }
     .active_btn {
