@@ -96,6 +96,10 @@
       width: 45%;
       height: auto;
     }
+
+    svg {
+      color: var(--always-white);
+    }
   }
   .selector {
     display: flex;
