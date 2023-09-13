@@ -27,6 +27,7 @@ import {
   getPoolCreatedGraphQuery,
   getPositionData,
   getTokensFromUserWallet,
+  getUserData,
   sortByKey,
   userDashBoardQuery,
   userDashBoardQuery0,
@@ -236,51 +237,30 @@ export default function UserDashboardComponent(props) {
     handleSearchAddress(address);
   }, [address]);
 
-  useEffect(() => {
-    if (data && contracts) {
-      (async () => {
-        setPositionLoading(true);
-        const position = await getPositionData(data, contracts);
+  const getDashBoardData = async () => {
+    try {
+      setPositionLoading(true);
+      const { position, pieChart, analytics } = await getUserData(
+        chain?.id,
+        query,
+        contracts
+      );
 
-        if (position) {
-          setPositionData(position);
-          setPositionDataBackup(position);
-          const pieChart = getPieChartValues(position); //getChartData(data, tokenList);
-
-          setPieChartInputs(pieChart);
-          const analytics = {};
-          if (position?.borrowArray.length > 0) {
-            const borrowAPY = getAverage(
-              position.borrowArray,
-              "apy",
-              "borrowBalance"
-            );
-            analytics.borrowAPY = borrowAPY;
-          }
-          if (position?.lendArray.length > 0) {
-            const earned = position.lendArray
-              .map((el) => el.interestEarned)
-              .reduce((ac, el) => ac + el);
-            analytics.interestEarned = earned;
-            const lendAPY = getAverage(
-              position.lendArray,
-              "apy",
-              "LendBalance"
-            );
-            analytics.lendAPY = lendAPY;
-            const powerUsed = getBorrowedPowerUsed(position.lendArray);
-            analytics.powerUsed = powerUsed;
-          }
-          if (data?.positions) {
-            const HF = getNetHealthFactor(data.positions);
-            analytics.healthFactor = isNaN(HF) ? 0 : HF;
-          }
-          setHeaderAnalytics(analytics);
-        }
-        setPositionLoading(false);
-      })();
+      setPositionData(position);
+      setPositionDataBackup(position);
+      setPieChartInputs(pieChart);
+      setHeaderAnalytics(analytics);
+      setPositionLoading(false);
+    } catch (error) {
+      console.log('getDashboard error', error)
     }
-  }, [data, tokenList, contracts]);
+  };
+
+  useEffect(() => {
+    if (contracts) {
+      getDashBoardData();
+    }
+  }, [ contracts]);
 
   const getUserTokens = async (address) => {
     setWalletTokenLoading(true);
@@ -543,7 +523,7 @@ export default function UserDashboardComponent(props) {
               <Pagination
                 current={walletCurrentPage}
                 onChange={(el) => setWalletCurrentPage(el)}
-                pageSize={4}
+                pageSize={7}
                 size="small"
                 total={walletTokens.length}
                 showSizeChanger={false}

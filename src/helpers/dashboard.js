@@ -3,6 +3,7 @@ import { erc20Abi } from "../core/contractData/abi";
 import { add, decimal2Fixed, div, fixed2Decimals, fromBigNumber, greaterThan, mul, toAPY } from "./contracts";
 import { ethers } from "ethers";
 import { getEtherContract } from "../lib/fun/wagmi";
+import { fetchGraphQlData } from "../utils/axios";
 
 export const findTokenPrice = (list, address) => {
   const price = list[String(address).toUpperCase()]
@@ -175,6 +176,48 @@ const calculateCurrentLTV = (borrow0, lend1, price1) => {
       : 0;
 
   return (prevLTV.toFixed(4) * 100).toFixed(2);
+}
+
+export const getUserData = async (chainId, query, contracts) => {
+
+  const fetchedDATA = await fetchGraphQlData(
+    chainId || 137,
+    query
+  );
+
+  console.log(fetchedDATA);
+  const position = await getPositionData(fetchedDATA, contracts);
+
+  const pieChart = getPieChartValues(position); //getChartData(data, tokenList);
+
+  const analytics = {};
+  if (position?.borrowArray.length > 0) {
+    const borrowAPY = getAverage(
+      position.borrowArray,
+      "apy",
+      "borrowBalance"
+    );
+    analytics.borrowAPY = borrowAPY;
+  }
+  if (position?.lendArray.length > 0) {
+    const earned = position.lendArray
+      .map((el) => el.interestEarned)
+      .reduce((ac, el) => ac + el);
+    analytics.interestEarned = earned;
+    const lendAPY = getAverage(
+      position.lendArray,
+      "apy",
+      "LendBalance"
+    );
+    analytics.lendAPY = lendAPY;
+    const powerUsed = getBorrowedPowerUsed(position.lendArray);
+    analytics.powerUsed = powerUsed;
+  }
+  if (fetchedDATA?.positions) {
+    const HF = getNetHealthFactor(fetchedDATA.positions);
+    analytics.healthFactor = isNaN(HF) ? 0 : HF;
+  }
+  return { position, pieChart, analytics }
 }
 
 export const getPositionData = async (data, contracts) => {
