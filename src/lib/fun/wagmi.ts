@@ -48,18 +48,19 @@ export function walletClientToSigner(walletClient: WalletClient) {
 /** Action to convert a viem Wallet Client to an ethers.js Signer. */
 export async function getEthersSigner({ chainId }: { chainId?: number } = {}) {
   const { chain } = getNetwork()
-  const walletClient = await getWalletClient({ chainId: chain?.id })
+
+  const walletClient = await getWalletClient({ chainId: chainId || chain?.id  })
   if (!walletClient) return undefined
   return walletClientToSigner(walletClient)
 }
 
 
-export async function getEtherContract (address: any, abi: any) {
+export async function getEtherContract (address: any, abi: any, chainId?: number) {
 
-  const signer = await getEthersSigner()
+  const signer = await getEthersSigner({chainId})
 
   const contract = new ethers.Contract(address, abi , signer)
-  // console.log("contract", contract);
+
   
 return contract;
 

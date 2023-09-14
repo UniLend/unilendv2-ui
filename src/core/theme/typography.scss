@@ -7,12 +7,8 @@ $primaryText: var(--pure-black);
   margin: unset;
   font-style: normal;
   font-weight: $font-weight-regular; //400
-  @include font-size($font-size-lg-5); // 48px
+  font-size: $font-size-lg-5; // 48px
   line-height: $line-height-sm;
-
-  //   $(mobile){
-
-  //   }
 }
 
 .heading02 {
@@ -22,12 +18,8 @@ $primaryText: var(--pure-black);
   margin: unset;
   font-style: normal;
   font-weight: $font-weight-regular; //400
-  @include font-size($font-size-lg-4); // 40px
+  font-size: $font-size-lg-4; //40px
   line-height: $line-height-sm;
-
-  //   $(mobile){
-
-  //   }
 }
 
 .heading03 {
@@ -37,12 +29,8 @@ $primaryText: var(--pure-black);
   margin: unset;
   font-style: normal;
   font-weight: $font-weight-regular; //400
-  @include font-size($font-size-lg-3); // 36px
+  font-size: $font-size-lg-3; //36px
   line-height: $line-height-sm;
-
-  //   $(mobile){
-
-  //   }
 }
 
 .heading04 {
@@ -52,12 +40,8 @@ $primaryText: var(--pure-black);
   margin: unset;
   font-style: normal;
   font-weight: $font-weight-regular; //400
-  @include font-size($font-size-lg-2); // 32px
+  font-size: $font-size-lg-2; // 32px
   line-height: $line-height-sm;
-
-  //   $(mobile){
-
-  //   }
 }
 
 .heading05 {
@@ -67,12 +51,8 @@ $primaryText: var(--pure-black);
   margin: unset;
   font-style: normal;
   font-weight: $font-weight-regular; //400
-  @include font-size($font-size-lg-1); // 28px
+  font-size: $font-size-lg-1; // 28px
   line-height: $line-height-sm;
-
-  //   $(mobile){
-
-  //   }
 }
 
 .paragraph01 {
@@ -82,12 +62,8 @@ $primaryText: var(--pure-black);
   margin: unset;
   font-style: normal;
   font-weight: $font-weight-regular; //400
-  @include font-size($font-size-xxlg); // 22px
+  font-size: $font-size-xxlg; // 22px
   line-height: $line-height-sm;
-
-  //   $(mobile){
-
-  //   }
 }
 
 .paragraph02 {
@@ -97,12 +73,8 @@ $primaryText: var(--pure-black);
   margin: unset;
   font-style: normal;
   font-weight: $font-weight-regular; //400
-  @include font-size($font-size-xlg); // 20px
+  font-size: $font-size-xlg; // 20px
   line-height: $line-height-sm;
-
-  //   $(mobile){
-
-  //   }
 }
 
 .paragraph03 {
@@ -112,12 +84,8 @@ $primaryText: var(--pure-black);
   margin: unset;
   font-style: normal;
   font-weight: $font-weight-regular; //400
-  @include font-size($font-size-lg); // 18px
+  font-size: $font-size-lg; // 18px
   line-height: $line-height-sm;
-
-  //   $(mobile){
-
-  //   }
 }
 
 .paragraph04 {
@@ -127,12 +95,8 @@ $primaryText: var(--pure-black);
   margin: unset;
   font-style: normal;
   font-weight: $font-weight-regular; //400
-  @include font-size($font-size-md); // 16px
+  font-size: $font-size-md; //16px
   line-height: $line-height-sm;
-
-  //   $(mobile){
-
-  //   }
 }
 
 .paragraph05 {
@@ -142,12 +106,8 @@ $primaryText: var(--pure-black);
   margin: unset;
   font-style: normal;
   font-weight: $font-weight-regular; //400
-  @include font-size($font-size-sm); // 14px
+  font-size: $font-size-sm; //14px
   line-height: $line-height-sm;
-
-  //   $(mobile){
-
-  //   }
 }
 
 .paragraph06 {
@@ -157,12 +117,8 @@ $primaryText: var(--pure-black);
   margin: unset;
   font-style: normal;
   font-weight: $font-weight-regular; //400
-  @include font-size($font-size-xsm); // 12px
+  font-size: $font-size-xsm; //12px
   line-height: $line-height-sm;
-
-  //   $(mobile){
-
-  //   }
 }
 
 .primary-btn {

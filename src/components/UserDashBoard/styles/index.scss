@@ -18,7 +18,7 @@
     // top: -170px;
     width: 80%;
     margin: auto;
-    @include margin(116px auto);
+    margin: 116px auto;
     @media ($mobile) {
       width: 90%;
     }
@@ -26,17 +26,15 @@
       width: 90px;
       height: 90px;
       border-radius: 50%;
-      @include margin-bottom(32px);
+      margin-bottom: 32px;
     }
     .user_tittle {
       display: flex;
       justify-content: space-between;
-      @include margin-bottom(72px);
-      // margin-bottom: 30px;
+      margin-bottom: 72px;
       h1 {
         color: var(--pure-black);
-        @include font-size($font-size-lg-5);
-        // font-weight: 700;
+        font-size: $font-size-lg-5;
         margin: 0;
       }
 
@@ -160,15 +158,14 @@
                 padding: 0;
               }
               p {
-                @include font-size($font-size-xxsm);
+                font-size: $font-size-xxsm;
                 color: var(--light-gray);
                 margin-top: 2px;
               }
               h5 {
-                @include font-size($font-size-sm);
+                font-size: $font-size-sm;
                 color: var(--main);
                 margin-top: 5px;
-                // font-weight: 700;
               }
             }
           }
@@ -313,12 +310,11 @@
       }
       .wallet_table {
         width: 100%;
-        // height: 300px;
         overflow: hidden;
         background-color: var(--dark-bg);
         box-shadow: var(--box-shadow);
         border-radius: 16px;
-        @include padding(40px 0);
+        padding: 40px 0;
 
         .thead,
         .tbody_row {
@@ -328,7 +324,6 @@
             width: 30%;
             font-size: $font-size-sm;
             color: var(--light-gray);
-            // @include padding(20px 10px);
             &:first-child {
               width: 50%;
             }
@@ -344,7 +339,7 @@
           border-bottom: 1px solid var(--light-gray);
 
           span {
-            @include padding(20px 10px);
+            padding: 20px 10px;
           }
         }
 
@@ -355,11 +350,10 @@
           padding: 16px 0px !important;
         }
         .tbody {
-          @include padding(24px 40px);
+          padding: 24px 40px;
           height: 400px;
-          // overflow: hidden;
           .tbody_row {
-            @include margin(24px 0);
+            margin: 24px 0;
             span {
               display: flex;
               color: var(--pure-black);
@@ -431,20 +425,20 @@
         background-color: var(--dark-bg);
         box-shadow: var(--box-shadow);
         border-radius: 16px;
-        @include padding(40px 0);
+        padding: 40px 0;
         min-height: 650px;
         @media ($mobile) {
           padding: 15px;
-          @include padding(36px 15px);
+          padding: 36px 15px;
         }
         .toggle_tabs {
-          @include margin-left(50px);
-          @include margin-bottom(50px);
+          margin-left: 50px;
+          margin-bottom: 50px;
           width: 328px;
           height: 52px;
           background-color: var(--low-dark-bg);
           border-radius: 16px;
-          @include padding(6px);
+          padding: 6px;
           display: flex;
           .tab_btn {
             margin: 0px;
@@ -464,17 +458,16 @@
             width: 176px;
             height: 32px;
             border-radius: 8px;
-            @include padding(4px);
-            @include margin-left(14px);
+            padding: 4px;
+            margin-left: 14px;
             .tab_btn {
               width: 88px;
               height: 24px;
               border-radius: 8px;
-              @include font-size($font-size-xsm);
+              font-size: $font-size-xsm;
               display: flex;
               align-items: center;
               justify-content: center;
-              // margin-right: 15px;
             }
 
             .active_tab {
@@ -486,7 +479,7 @@
         .action_container {
           height: 50px;
           width: 100%;
-          @include padding(0 40px);
+          padding: 0 40px;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -496,7 +489,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            @include margin(0 10px);
+            margin: 0 10px;
             width: 30%;
             background-color: var(--dark-bg);
             border: 0.35px solid var(--light-gray);
@@ -506,11 +499,11 @@
               color: var(--light-gray);
               width: 18px;
               height: 18px;
-              @include margin(0 0 0 32px);
+              margin: 0 0 0 32px;
             }
 
             input {
-              @include padding(12px);
+              padding: 12px;
               width: 100%;
               outline: none;
               background-color: transparent;
@@ -529,11 +522,11 @@
               height: 36px;
               margin: 0;
               svg {
-                @include margin(0 0 0 16px);
+                margin: 0 0 0 16px;
               }
               input {
-                @include padding(4px 8px);
-                @include font-size($font-size-xxsm);
+                padding: 4px 8px;
+                font-size: $font-size-xxsm;
               }
             }
           }
@@ -565,7 +558,7 @@
           // }
 
           @media ($mobile) {
-            @include padding(0 8px 0 14px);
+            padding: 0 8px 0 14px;
           }
         }
 
@@ -577,7 +570,7 @@
             width: 30%;
             font-size: $font-size-sm;
             color: var(--light-gray);
-            @include padding(20px 10px);
+            padding: 20px 10px;
             &:first-child {
               width: 60%;
             }
@@ -641,18 +634,18 @@
           border-bottom: 1px solid var(--light-gray);
 
           @media ($mobile) {
-            @include padding(0 4px);
+            padding: 0 4px;
           }
         }
         .tbody {
-          @include margin(10px 0px);
-          @include padding(0 40px);
+          margin: 10px 0;
+          padding: 0 40px;
           overflow: hidden;
           height: 440px;
           .tbody_row {
             span {
               display: flex;
-              @include font-size($font-size-sm);
+              font-size: $font-size-sm;
               color: var(--pure-black);
 
               &:first-child {
@@ -667,7 +660,7 @@
               }
               p {
                 margin: 5px;
-                @include font-size($font-size-sm);
+                font-size: $font-size-sm;
                 color: var(--pure-black);
                 transition: all 0.2s ease-in-out;
               }
@@ -683,13 +676,13 @@
           }
 
           @media ($mobile) {
-            @include padding(0 4px);
+            padding: 0 4px;
 
             .tbody_row {
               span {
                 display: contents;
                 align-items: center;
-                @include font-size($font-size-xsm);
+                font-size: $font-size-xsm;
                 img {
                   width: 24px;
                   height: 24px;
@@ -699,7 +692,7 @@
                   }
                 }
                 strong {
-                  @include font-size($font-size-sm);
+                  font-size: $font-size-sm;
                 }
               }
             }
@@ -782,11 +775,10 @@
 .pagination {
   display: grid;
   place-items: center center;
-  @include padding(20px 0 0);
+  padding: 20px 0 0;
 }
 
 .ant-pagination-item-active {
-  // border-color: ;
   background-color: var(--main);
   outline: none;
   border: none;

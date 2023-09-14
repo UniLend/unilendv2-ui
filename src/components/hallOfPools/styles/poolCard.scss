@@ -6,7 +6,7 @@
   background-color: rgba(154, 139, 250, 0.2);
   border-radius: 12px;
   box-shadow: var(--box-shadow);
-  @include padding(28px 0);
+  padding: 28px 0;
   cursor: pointer;
   transition: all 0.5s;
   &:hover {
@@ -14,7 +14,7 @@
   }
 
   .pool_icons {
-    @include padding-bottom(24px);
+    padding-bottom: 24px;
     border-bottom: 0.35px solid var(--pure-black);
     width: 100%;
     display: flex;
@@ -42,7 +42,7 @@
   }
   .pool_data {
     border-bottom: 0.35px solid var(--pure-black);
-    @include padding(24px 0);
+    padding: 24px 0;
 
     div {
       display: flex;
@@ -52,7 +52,7 @@
       justify-content: space-between;
 
       &:first-child {
-        @include margin-bottom(16px);
+        margin-bottom: 16px;
       }
 
       h5 {
@@ -62,12 +62,12 @@
   }
   .pool_footer {
     text-align: center;
-    @include font-size($font-size-xsm);
+    font-size: $font-size-xsm;
     display: flex;
     align-items: center;
     justify-content: center;
     p {
-      @include margin(24px 0 0);
+      margin: 24px 0 0;
     }
   }
   .footer_img {
@@ -77,56 +77,6 @@
   @media ($mobile) {
     width: calc(100vw - 120px);
   }
-
-  // @media ($mobile) {
-  //   width: 142px;
-  //   height: 170px;
-  //   border-radius: 8px;
-  //   @include padding(16px 0);
-
-  //   .pool_icons {
-  //     @include padding-bottom(12px);
-  //     gap: 8px;
-
-  //     .paragraph01 {
-  //       @include font-size($font-size-sm);
-  //     }
-
-  //     div {
-  //       img {
-  //         width: 24px;
-  //         height: 24px;
-
-  //         &:first-child {
-  //           margin-left: 6px;
-  //         }
-  //         &:last-child {
-  //           margin-left: -6px;
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   .pool_data {
-  //     @include padding(12px 0);
-
-  //     .paragraph06 {
-  //       @include font-size($font-size-xxsm);
-  //     }
-
-  //     div {
-  //       &:first-child {
-  //         @include margin-bottom(8px);
-  //       }
-  //     }
-  //   }
-
-  //   .pool_footer {
-  //     p {
-  //       @include margin(12px 0 0);
-  //     }
-  //   }
-  // }
 }
 .pool_theme {
   position: relative;

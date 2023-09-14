@@ -1,9 +1,23 @@
 import { getTokenLogo } from "../utils";
-import { erc20Abi } from "../core/contractData/abi";
+import { coreAbi, erc20Abi, helperAbi, positionAbi } from "../core/contractData/abi";
 import { add, decimal2Fixed, div, fixed2Decimals, fromBigNumber, greaterThan, mul, toAPY } from "./contracts";
 import { ethers } from "ethers";
 import { getEtherContract } from "../lib/fun/wagmi";
 import { fetchGraphQlData } from "../utils/axios";
+import { contractAddress } from "../core/contractData/contracts";
+import { Alchemy, Network } from "alchemy-sdk";
+
+const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
+const config = {
+  80001: {
+    apiKey: alchemyId,
+    network: Network.MATIC_MUMBAI,
+  },
+  137: {
+    apiKey: alchemyId,
+    network: Network.MATIC_MAINNET,
+  },
+};
 
 export const findTokenPrice = (list, address) => {
   const price = list[String(address).toUpperCase()]
@@ -178,15 +192,15 @@ const calculateCurrentLTV = (borrow0, lend1, price1) => {
   return (prevLTV.toFixed(4) * 100).toFixed(2);
 }
 
-export const getUserData = async (chainId, query, contracts) => {
+export const getUserData = async (chainId, query) => {
 
   const fetchedDATA = await fetchGraphQlData(
     chainId || 137,
     query
   );
 
-  console.log(fetchedDATA);
-  const position = await getPositionData(fetchedDATA, contracts);
+console.log(fetchedDATA);
+  const position = await getPositionData(fetchedDATA, chainId);
 
   const pieChart = getPieChartValues(position); //getChartData(data, tokenList);
 
@@ -220,32 +234,51 @@ export const getUserData = async (chainId, query, contracts) => {
   return { position, pieChart, analytics }
 }
 
-export const getPositionData = async (data, contracts) => {
+export const getUserTokens = async (address, chainId) => {
+
+  const alchemy = new Alchemy(config[chainId]);
+ const userTokens = await  alchemy.core.getTokenBalances(`${address}`);
+  const tokens = await getTokensFromUserWallet(userTokens);
+  return tokens
+};
+
+export const getPositionData = async (data, chainId) => {
   const position = data["positions"];
  
   const lendArray = [];
   const borrowArray = [];
+
+  const {  coreAddress, helperAddress, positionAddress } = contractAddress[chainId];
+
+  const preparedData = [
+    { abi: helperAbi, address: helperAddress },
+    { abi: coreAbi, address: coreAddress },
+  ];
+
+ const [helperContract,coreContract] = await Promise.all(
+    preparedData.map((item) => getEtherContract(item.address, item.abi, chainId))
+  )
 
 
 
   const allPositionAPoolddrs = Array.isArray(position) && position.map(function(pool){
     return {owner: pool.owner, ...pool.pool}
   })
-
+  console.log('contractsEthers', helperContract, helperAddress );
   const arrayPromise = allPositionAPoolddrs.map(function(pool) {
     let promises =
     [
-        contracts.helperContract.getPoolFullData(
-          contracts.positionContract.address,
+        helperContract.getPoolFullData(
+          positionAddress,
           pool.pool,
           pool.owner
         ),
-        contracts.coreContract.getOraclePrice(
+        coreContract.getOraclePrice(
           pool.token0.id,
           pool.token1.id,
             decimal2Fixed(1, 18)
          ),
-         contracts.helperContract.getPoolData(pool.pool)
+         helperContract.getPoolData(pool.pool)
         ]
 
         return promises
@@ -479,7 +512,7 @@ export const getNetHealthFactor = (positions) => {
   return (value / counter).toFixed(2);
 };
 
-export const getTokensFromUserWallet = async (data, usdlist, tokenList) => {
+export const getTokensFromUserWallet = async (data) => {
   const tokensArray = data?.tokenBalances.map((token) => token.contractAddress);
 
   const tokensObject = [];
