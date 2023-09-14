@@ -4,7 +4,7 @@
   width: 80%;
   // min-height: 860px;
   height: fit-content;
-  margin: 116px auto;
+  margin: 48px auto; //update
   border-radius: 16px;
   box-shadow: var(--box-shadow);
   background-color: var(--dark-bg);
@@ -255,7 +255,7 @@
 @media ($mobile) {
   .history_table_container {
     width: 90%;
-    padding: 5px;
+    padding: 32px 5px;
   }
 
   .table_header,

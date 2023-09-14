@@ -31,10 +31,7 @@ import Sider from "antd/lib/layout/Sider";
 import { useDispatch, useSelector } from "react-redux";
 import { setTheme, setUser } from "../../store/Action";
 import { fetchUserDomain } from "../../utils/axios";
-import {
-  useConnectModal,
-  ConnectButton
-} from '@rainbow-me/rainbowkit';
+import { useConnectModal, ConnectButton } from "@rainbow-me/rainbowkit";
 import { ChangeNetwork } from "../../core/networks/networks";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { switchNetworkLib } from "../../lib/fun/functions";
@@ -71,7 +68,7 @@ export default function Navbar() {
 
   const handleOpenWalletModal = () => {
     // setIsWalletModalVisible(true);
-    openConnectModal()
+    openConnectModal();
   };
 
   const handleOpenSwitchNetwork = (visible) => {
@@ -85,9 +82,7 @@ export default function Navbar() {
   useEffect(() => {
     if (window.ethereum) {
       window.ethereum.on("chainChanged", async (chainId) => {
-        console.log(
-          'chainChanged', chainId
-        );
+        console.log("chainChanged", chainId);
         const user = await connectWallet();
         handleDomain(user);
         dispatch(setUser(user));
@@ -105,7 +100,6 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-
     if (user?.network?.id == undefined && user?.network?.id) {
       const wallet = localStorage.getItem("wallet");
       handleConnect(wallet);
@@ -126,17 +120,12 @@ export default function Navbar() {
 
   const handleConnect = async (action, recursion) => {
     try {
-      
- 
-    setIsWalletModalVisible(false);
-    const user = await connectWallet(action);
-    //window.location.reload()
-    handleDomain(user);
-    dispatch(setUser(user));
-
-  } catch (error) {
-      
-  }
+      setIsWalletModalVisible(false);
+      const user = await connectWallet(action);
+      //window.location.reload()
+      handleDomain(user);
+      dispatch(setUser(user));
+    } catch (error) {}
   };
 
   const handleDomain = async (user) => {
@@ -180,10 +169,10 @@ export default function Navbar() {
       const network = await switchNetworkLib({
         chainId: id,
       });
-      console.log('network', network);
+      console.log("network", network);
       window.location.reload();
     } catch (error) {
-       console.log("switchError", {error});
+      console.log("switchError", { error });
       await ChangeNetwork(id);
     }
 
@@ -204,7 +193,7 @@ export default function Navbar() {
           Sepolia Test Network
         </p>
         <p onClick={() => handleSwitchNetwork(80001)}> Polygon Mumbai</p>
-        <p onClick={() => handleSwitchNetwork(137)} > Polygon Mainnet</p>
+        <p onClick={() => handleSwitchNetwork(137)}> Polygon Mainnet</p>
         <p onClick={() => handleSwitchNetwork(1442)}> zkEVM Testnet</p>
         <p onClick={() => handleSwitchNetwork(8081)}> Shardeum Testnet</p>
       </div>
@@ -332,7 +321,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="last_container">
-        { isConnected && currentUser?.balance ? (
+        {isConnected && currentUser?.balance ? (
           <>
             <div className="wallet_connection">
               <Popover
@@ -349,7 +338,9 @@ export default function Navbar() {
                 </div>
               </Popover>
               <div>
-                <p>{currentUser?.balance} {currentUser?.symbol}</p>
+                <p>
+                  {currentUser?.balance} {currentUser?.symbol}
+                </p>
                 <Popover
                   content={<PopoverContent />}
                   trigger="click"
@@ -428,7 +419,29 @@ const HamburgerContent = () => {
         <a href="https://unilend.gitbook.io/unilend-finance/" target="_blank">
           GitBook
         </a>
-        <img src={gitbook} alt="" />
+        {/* <img src={gitbook} alt="" /> */}
+        <svg
+          width="10"
+          height="11"
+          viewBox="0 0 10 11"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M1.53711 9.2006C1.53711 8.72957 1.65406 8.27782 1.86223 7.94475C2.0704 7.61168 2.35274 7.42456 2.64714 7.42456H8.64128"
+            stroke="#7AA7FF"
+            stroke-width="1.18403"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M2.64714 1.2085H8.64128V10.0887H2.64714C2.35274 10.0887 2.0704 9.97176 1.86223 9.76359C1.65406 9.55541 1.53711 9.27308 1.53711 8.97868V2.31852C1.53711 2.02412 1.65406 1.74179 1.86223 1.53362C2.0704 1.32544 2.35274 1.2085 2.64714 1.2085V1.2085Z"
+            stroke="#7AA7FF"
+            stroke-width="1.18403"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
       </div>
       <div>
         <a
@@ -437,13 +450,78 @@ const HamburgerContent = () => {
         >
           Documentation
         </a>
-        <img src={doc} alt="" />
+        {/* <img src={doc} alt="" /> */}
+        <svg
+          width="9"
+          height="11"
+          viewBox="0 0 9 11"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M4.97721 1.44092H1.42513C1.18961 1.44092 0.963741 1.53448 0.797205 1.70101C0.630668 1.86755 0.537109 2.09342 0.537109 2.32894V9.43311C0.537109 9.66862 0.630668 9.89449 0.797205 10.061C0.963741 10.2276 1.18961 10.3211 1.42513 10.3211H6.75326C6.98877 10.3211 7.21464 10.2276 7.38118 10.061C7.54772 9.89449 7.64128 9.66862 7.64128 9.43311V4.10498L4.97721 1.44092Z"
+            stroke="#7AA7FF"
+            stroke-width="0.888021"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M4.97656 1.44092V4.10498H7.64062"
+            stroke="#7AA7FF"
+            stroke-width="0.888021"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M5.86458 6.32495H2.3125"
+            stroke="#7AA7FF"
+            stroke-width="0.888021"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M5.86458 8.10107H2.3125"
+            stroke="#7AA7FF"
+            stroke-width="0.888021"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M3.20052 4.54907H2.75651H2.3125"
+            stroke="#7AA7FF"
+            stroke-width="0.888021"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
       </div>
       <div>
         <a href="https://twitter.com/UniLend_Finance" target="_blank">
           Career
         </a>
-        <img src={career} alt="" />
+        {/* <img src={career} alt="" /> */}
+        <svg
+          width="12"
+          height="10"
+          viewBox="0 0 12 10"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M9.88047 2.56812H2.30269C1.77955 2.56812 1.35547 2.9922 1.35547 3.51534V8.25145C1.35547 8.77459 1.77955 9.19867 2.30269 9.19867H9.88047C10.4036 9.19867 10.8277 8.77459 10.8277 8.25145V3.51534C10.8277 2.9922 10.4036 2.56812 9.88047 2.56812Z"
+            stroke="#7AA7FF"
+            stroke-width="0.947222"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M7.98615 9.19858V1.62081C7.98615 1.36959 7.88636 1.12866 7.70872 0.951019C7.53108 0.77338 7.29015 0.673584 7.03893 0.673584H5.14449C4.89327 0.673584 4.65234 0.77338 4.4747 0.951019C4.29706 1.12866 4.19727 1.36959 4.19727 1.62081V9.19858"
+            stroke="#7AA7FF"
+            stroke-width="0.947222"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
       </div>
       <div>
         <a
@@ -452,7 +530,36 @@ const HamburgerContent = () => {
         >
           FAQ
         </a>
-        <img src={faq} alt="" />
+        {/* <img src={faq} alt="" /> */}
+        <svg
+          width="12"
+          height="11"
+          viewBox="0 0 12 11"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6.09158 10.1944C8.70726 10.1944 10.8277 8.07396 10.8277 5.45828C10.8277 2.8426 8.70726 0.722168 6.09158 0.722168C3.4759 0.722168 1.35547 2.8426 1.35547 5.45828C1.35547 8.07396 3.4759 10.1944 6.09158 10.1944Z"
+            stroke="#7AA7FF"
+            stroke-width="0.947222"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M4.9082 4.03967C5.01955 3.72314 5.23933 3.45624 5.52861 3.28622C5.8179 3.11621 6.15801 3.05406 6.48873 3.11079C6.81944 3.16751 7.11941 3.33945 7.3355 3.59615C7.55159 3.85285 7.66986 4.17774 7.66936 4.51329C7.66936 5.46051 6.24852 5.93412 6.24852 5.93412"
+            stroke="#7AA7FF"
+            stroke-width="0.947222"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M6.28516 7.82837H6.28916"
+            stroke="#7AA7FF"
+            stroke-width="0.947222"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
       </div>
     </div>
   );

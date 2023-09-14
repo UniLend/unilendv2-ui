@@ -11,48 +11,61 @@
   }
 }
 
-// .analytics_container {
-//   background-color: var(--main);
-//   height: 255px;
-//   position: relative;
-//   margin-bottom: 50px;
+.analytics_container {
+  background-color: var(--main);
+  height: 255px;
+  position: relative;
+  margin-bottom: 50px;
 
-//   @media ($tablet) {
-//     margin-bottom: 100px;
-//   }
-//   @media ($mobile) {
-//     margin-bottom: 100px;
-//   }
-// }
+  @media ($tablet) {
+    margin-bottom: 100px;
+  }
+  @media ($mobile) {
+    margin-bottom: 100px;
+  }
+}
 
 .managepool_container {
   position: relative;
-  //   top: 220px;
+  top: 220px;
   .manage_token_component {
     box-shadow: var(--box-shadow);
   }
 }
 
 .pool_filter_container {
+  box-sizing: border-box;
   display: flex;
   width: 80%;
-  margin: auto;
+  margin: 0 auto 48px;
+  padding-top: 48px;
   justify-content: space-between;
 
   .pool_tans {
     .pool_btn {
       margin: 10px;
       background-color: var(--main);
-      color: var(--pure-black);
+      color: var(--always-white);
       border: 1px solid var(--button-border);
       border-radius: 12px;
       font-size: $font-size-sm;
       height: 35px;
+      margin: 0;
     }
     .active_btn {
       background-color: var(--main);
-      color: var(--pure-black);
+      color: var(--always-white);
     }
+  }
+
+  @media ($tablet) {
+    margin: 0 auto 48px;
+    padding-top: 0;
+  }
+
+  @media ($mobile) {
+    margin: 0 auto 24px;
+    padding-top: 0;
   }
 
   // .sortBy{
@@ -79,30 +92,37 @@
   width: 80%;
   margin: auto;
   margin-bottom: 100px;
+
+  // display: flex;
+  // justify-content: space-between;
+  // flex-wrap: wrap;
   display: grid;
-  row-gap: 24px;
+  row-gap: 36px;
   // column-gap: 24px;
-  grid-template-columns: repeat(3, calc(100% / 3));
+  grid-template-columns: repeat(5, calc(100% / 5));
   // justify-content: space-between;
   justify-items: center;
 
-  // .poolcard {
-  //   margin: 10px;
+  //@media only screen and (max-width: 600px)
+  // @media only screen and (min-width: 1800px) {
+  //   grid-template-columns: repeat(5, calc(100% / 5));
   // }
 
-  @media (1520px < width) {
+  @media only screen and (max-width: 1800px) {
     grid-template-columns: repeat(4, calc(100% / 4));
   }
 
-  @media ($tablet) {
-    row-gap: 12px;
-    // column-gap: 12px;
+  @media only screen and (max-width: 1480px) {
+    grid-template-columns: repeat(3, calc(100% / 3));
+  }
+
+  @media only screen and (max-width: 1080px) {
+    // row-gap: 12px;
     grid-template-columns: repeat(2, calc(100% / 2));
   }
 
   @media ($mobile) {
-    row-gap: 12px;
-    // column-gap: 12px;
+    // row-gap: 12px;
     grid-template-columns: repeat(1, calc(100% / 1));
   }
 }

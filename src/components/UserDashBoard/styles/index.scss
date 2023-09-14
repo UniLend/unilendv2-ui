@@ -128,44 +128,44 @@
         display: flex;
         justify-content: space-between;
         .analytics_tabs {
-          display: flex;
           display: grid;
           grid-template-columns: repeat(4, 25%);
+          column-gap: 4px;
           width: 65%;
-          // justify-content: space-between;
-          // flex-wrap: wrap;
+          align-items: center;
           .analytic_box {
             display: flex;
+            min-width: 120px;
+            width: fit-content;
             .icon_box {
-              min-width: 35px;
-              width: 35px;
-              height: 35px;
+              min-width: 45px;
+              width: 45px;
+              height: 45px;
               background: var(--main);
               color: var(--always-white);
               display: grid;
               place-items: center;
               font-size: 25px;
-              margin: 10px;
+              margin: 10px 14px 10px 10px;
               border-radius: 5px;
             }
             .values {
-              margin: 10px 5px;
-              min-width: 60px;
-              width: 60px;
+              margin: 10px 0px;
+              min-width: 76px;
+              width: fit-content;
               p,
               h5 {
                 margin: 0;
                 padding: 0;
               }
               p {
-                font-size: $font-size-xxsm;
+                font-size: $font-size-xsm;
                 color: var(--light-gray);
-                margin-top: 2px;
+                margin-top: 4px;
               }
               h5 {
-                font-size: $font-size-sm;
-                color: var(--main);
-                margin-top: 5px;
+                font-size: $font-size-md;
+                color: var(--pure-black);
               }
             }
           }
@@ -175,6 +175,17 @@
               width: 80px;
               h5 {
                 color: var(--light-green);
+              }
+            }
+          }
+
+          @media only screen and (max-width: 1200px) {
+            .analytic_box {
+              .icon_box {
+                margin: 10px 10px 10px 10px;
+              }
+              .values {
+                min-width: 88px;
               }
             }
           }
