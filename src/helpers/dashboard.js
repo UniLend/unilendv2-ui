@@ -2,7 +2,7 @@ import { getTokenLogo } from "../utils";
 import { coreAbi, erc20Abi, helperAbi, positionAbi } from "../core/contractData/abi";
 import { add, decimal2Fixed, div, fixed2Decimals, fromBigNumber, greaterThan, mul, toAPY } from "./contracts";
 import { ethers } from "ethers";
-import { getEtherContract } from "../lib/fun/wagmi";
+import { getEtherContract, getEtherContractWithProvider, getEthersProvider } from "../lib/fun/wagmi";
 import { fetchGraphQlData } from "../utils/axios";
 import { contractAddress } from "../core/contractData/contracts";
 import { Alchemy, Network } from "alchemy-sdk";
@@ -255,8 +255,10 @@ export const getPositionData = async (data, chainId) => {
     { abi: coreAbi, address: coreAddress },
   ];
 
+  const provider =  getEthersProvider({chainId})
+
  const [helperContract,coreContract] = await Promise.all(
-    preparedData.map((item) => getEtherContract(item.address, item.abi, chainId))
+    preparedData.map((item) => getEtherContractWithProvider(item.address, item.abi, provider))
   )
 
 

@@ -254,9 +254,10 @@ export default function UserDashboardComponent(props) {
       setPositionLoading(false);
       const ValidAddress = verifiedAddress ||  address
 
+      console.log(ValidAddress, chainId);
        const tokens = await getUserTokens(ValidAddress, chainId);
       
-       setWalletTokens(tokens);
+      setWalletTokens(tokens);
       // if (verifiedAddress) {
       //  const tokens = await getUserTokens(verifiedAddress || address, chainId);
       //  console.log(tokens);
@@ -267,7 +268,7 @@ export default function UserDashboardComponent(props) {
       //   setWalletTokens(tokens);
       // }
       setWalletTokenLoading(false)
-      console.log(chainId, position, pieChart, analytics, tokens);
+      // console.log(chainId, position, pieChart, analytics, tokens);
       return position, pieChart, analytics, tokens
     } catch (error) {
       console.log('getDashboard error', error)
@@ -276,8 +277,8 @@ export default function UserDashboardComponent(props) {
 
   useEffect(() => {
     if (address) {
-      getDashBoardData(80001);
-      // getDashBoardData(137);
+      //getDashBoardData(80001);
+       getDashBoardData(137);
     }
 
 
