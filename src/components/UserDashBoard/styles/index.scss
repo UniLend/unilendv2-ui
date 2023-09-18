@@ -362,9 +362,9 @@
         }
         .tbody {
           padding: 24px 40px;
+          min-height: 342px;
           height: fit-content;
           .tbody_row {
-            // margin: 24px 0;
             span {
               display: flex;
               color: var(--pure-black);
@@ -783,6 +783,9 @@
   }
   .hide_for_monitor {
     display: block !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
