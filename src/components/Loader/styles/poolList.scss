@@ -5,12 +5,14 @@
   margin: auto;
   margin-bottom: 100px;
   display: grid;
+  row-gap: 36px;
   grid-template-columns: repeat(3, calc(100% / 3));
-  justify-content: space-between;
+  justify-content: center;
   .skeleton_card {
     width: 272px;
     height: 308px;
     border-radius: 12px;
+    margin: auto;
     box-shadow: var(--box-shadow) !important;
     background-color: white;
     background-color: var(--low-dark-bg);

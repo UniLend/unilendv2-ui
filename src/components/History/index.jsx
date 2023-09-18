@@ -11,18 +11,19 @@ import { fixed2Decimals, fromBigNumber } from "../../helpers/contracts";
 import HistorySkeleton from "../Loader/HistorySkeleton";
 import { getHistoryGraphQuery, sortByKey } from "../../helpers/dashboard";
 import DropDown from "../Common/DropDown";
-import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
-import loader from '../../assets/Eclipse-loader.gif'
+import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
+import loader from "../../assets/Eclipse-loader.gif";
 import { useSelector } from "react-redux";
-import { useQuery} from "react-query";
+import { useQuery } from "react-query";
 import { fetchGraphQlData } from "../../utils/axios";
 import useWalletHook from "../../lib/hooks/useWallet";
 
-
- function HistoryComponent() {
-  const { contracts, user, web3, poolList, tokenList } = useSelector((state) => state);
+function HistoryComponent() {
+  const { contracts, user, web3, poolList, tokenList } = useSelector(
+    (state) => state
+  );
   const navigate = useNavigate();
-   const { chain } = useWalletHook()
+  const { chain } = useWalletHook();
 
   const [txtData, setTxtData] = useState([]);
   const [graphHistory, setGraphHistory] = useState([]);
@@ -65,7 +66,7 @@ import useWalletHook from "../../lib/hooks/useWallet";
       navigate("/");
     }
 
-    if ( data && networksWithGraph.includes(user?.network.id )) {
+    if (data && networksWithGraph.includes(user?.network.id)) {
       const pools = {};
       for (const key in poolList) {
         const pool = poolList[key];
@@ -93,7 +94,7 @@ import useWalletHook from "../../lib/hooks/useWallet";
     } else {
       setIsPolygon(false);
     }
-  }, [ data, poolList]);
+  }, [data, poolList]);
 
   const handleSort = (index) => {
     const sortTo = isPolygon ? graphHistory : txtData;
@@ -165,7 +166,6 @@ import useWalletHook from "../../lib/hooks/useWallet";
         }
         setIsPageLoading(false);
       } catch (error) {
-      
         setIsPageLoading(false);
         setHistoryLoading(false);
       }

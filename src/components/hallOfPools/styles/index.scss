@@ -92,21 +92,10 @@
   width: 80%;
   margin: auto;
   margin-bottom: 100px;
-
-  // display: flex;
-  // justify-content: space-between;
-  // flex-wrap: wrap;
   display: grid;
   row-gap: 36px;
-  // column-gap: 24px;
   grid-template-columns: repeat(5, calc(100% / 5));
-  // justify-content: space-between;
   justify-items: center;
-
-  //@media only screen and (max-width: 600px)
-  // @media only screen and (min-width: 1800px) {
-  //   grid-template-columns: repeat(5, calc(100% / 5));
-  // }
 
   @media only screen and (max-width: 1800px) {
     grid-template-columns: repeat(4, calc(100% / 4));
@@ -117,12 +106,10 @@
   }
 
   @media only screen and (max-width: 1080px) {
-    // row-gap: 12px;
     grid-template-columns: repeat(2, calc(100% / 2));
   }
 
   @media ($mobile) {
-    // row-gap: 12px;
     grid-template-columns: repeat(1, calc(100% / 1));
   }
 }

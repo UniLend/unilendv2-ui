@@ -238,7 +238,7 @@
 
           & > div {
             // border: 1px solid red;
-            padding: 15px;
+            padding: 15px 0;
             &:first-child {
               height: 80%;
               display: grid;
@@ -362,9 +362,9 @@
         }
         .tbody {
           padding: 24px 40px;
-          height: 400px;
+          height: fit-content;
           .tbody_row {
-            margin: 24px 0;
+            // margin: 24px 0;
             span {
               display: flex;
               color: var(--pure-black);
@@ -761,6 +761,22 @@
 .hide_for_monitor {
   display: none !important;
 }
+
+.hide_for_mobile {
+  width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media only screen and (max-width: 1200px) {
+    width: 240px;
+  }
+
+  @media ($tablet) {
+    width: 150px;
+  }
+}
+
 @media ($mobile) {
   .hide_for_mobile {
     display: none !important;

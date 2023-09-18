@@ -342,6 +342,7 @@ export default function UserDashboardComponent(props) {
                 <div className="values">
                   <p>Net Worth</p>
                   <h5>
+                    ${" "}
                     {checkNaN(
                       Number(
                         pieChartInputs?.lendValues?.total -
@@ -510,7 +511,6 @@ export default function UserDashboardComponent(props) {
                               alt="uft"
                             />
                             <p className="hide_for_mobile">
-                              {" "}
                               {token?.name} / {token?.symbol}
                             </p>
                             <p className="hide_for_monitor">{token?.symbol}</p>

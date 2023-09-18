@@ -36,7 +36,7 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
     // data,
     angleField: "value",
     colorField: "type",
-    radius: 0.9,
+    radius: 0.8,
     innerRadius: 0.4,
     // legend: {
     //   itemName: {
