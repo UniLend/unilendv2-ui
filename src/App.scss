@@ -16,14 +16,14 @@
   vertical-align: text-bottom;
 }
 
-.light,
-.body {
+.light {
   @each $name, $color in $light {
     --#{$name}: #{$color};
   }
 }
 
-.dark {
+.dark,
+.body {
   @each $name, $color in $dark {
     --#{$name}: #{$color};
   }
