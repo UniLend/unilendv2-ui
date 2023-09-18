@@ -4,7 +4,9 @@ import { Pie, G2 } from "@ant-design/plots";
 
 const DonutChart = memo(function DonutChartMemo({ data }) {
   const [pieData, setPieData] = useState([]);
+  // const [theme] = useState(sessionStorage.getItem("unilendV2Theme"));
   const G = G2.getEngine("canvas");
+  // console.log("THEME", theme);
 
   // const firstFive = data.slice(0, 5);
   // const othersValue = data.slice(5).reduce((acc, curr) => acc + curr.value, 0);
@@ -30,11 +32,11 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
 
   const config = {
     appendPadding: 20,
-    // data: selectedData(data),
-    data,
+    data: selectedData(data),
+    // data,
     angleField: "value",
     colorField: "type",
-    radius: 1,
+    radius: 0.9,
     innerRadius: 0.4,
     // legend: {
     //   itemName: {
@@ -91,9 +93,9 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
             x: 6,
             y: 20,
             text: `${data.value}%`,
-            fill: "#fff",
-            // fontWeight: 600,
-            // fontSize: "20px",
+            // fill: "#fff",
+            // fill: `${theme === "dark" ? "#fff" : "#0045FF"}`,
+            fill: "#99959c",
           },
         });
         return group;
@@ -121,18 +123,18 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
         type: "element-active",
       },
     ],
-    // statistic: {
-    //   title: false,
-    //   content: {
-    //     style: {
-    //       whiteSpace: "pre-wrap",
-    //       overflow: "hidden",
-    //       textOverflow: "ellipsis",
-    //       fontWeight: 800,
-    //     },
-    //     content: "",
-    //   },
-    // },
+    statistic: {
+      title: false,
+      content: {
+        style: {
+          whiteSpace: "pre-wrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          fontWeight: 800,
+        },
+        content: "",
+      },
+    },
   };
   return <Pie {...config} />;
 });

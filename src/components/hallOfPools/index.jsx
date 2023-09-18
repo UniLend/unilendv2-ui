@@ -126,18 +126,18 @@ export default function HallOfPoolsComponent() {
 
   return (
     <div className="hallofpools_container">
-      {/* <div className="analytics_container">
-        <div className="analytics"></div>
-      </div> */}
-      <div className="banner">
+      {/* <div className="banner">
         <img src={banner} alt="v2-banner" />
-      </div>
-      <div className="managepool_container">
-        <ManageToken
-          handleTokens={handleTokens}
-          tokens={{ token1, token2 }}
-          pools={pools}
-        />
+      </div> */}
+      <div className="analytics_container">
+        <div className="analytics"></div>
+        <div className="managepool_container">
+          <ManageToken
+            handleTokens={handleTokens}
+            tokens={{ token1, token2 }}
+            pools={pools}
+          />
+        </div>
       </div>
 
       <div className="pool_filter_container">

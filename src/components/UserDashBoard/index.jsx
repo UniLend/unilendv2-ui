@@ -339,8 +339,7 @@ export default function UserDashboardComponent(props) {
             <div className="analytics_tabs">
               <div className="analytic_box">
                 <div className="icon_box">
-                  {" "}
-                  <GiReceiveMoney />{" "}
+                  <GiReceiveMoney />
                 </div>
                 <div className="values">
                   <p>Net Worth</p>
@@ -356,8 +355,7 @@ export default function UserDashboardComponent(props) {
               </div>
               <div className="analytic_box">
                 <div className="icon_box">
-                  {" "}
-                  <VscGraph />{" "}
+                  <VscGraph />
                 </div>
                 <div className="values">
                   <p>Lend APY</p>
@@ -368,8 +366,7 @@ export default function UserDashboardComponent(props) {
               </div>
               <div className="analytic_box">
                 <div className="icon_box">
-                  {" "}
-                  <FiPercent />{" "}
+                  <FiPercent />
                 </div>
                 <div className="values">
                   <p>Borrow APY</p>
@@ -419,6 +416,7 @@ export default function UserDashboardComponent(props) {
                 <div>
                   <p>Total Lend</p>
                   <h5>
+                    ${" "}
                     {checkNaN(
                       Number(pieChartInputs?.lendValues?.total).toFixed(4)
                     ) || 0}
@@ -433,7 +431,7 @@ export default function UserDashboardComponent(props) {
                   {" "}
                   <p> Interest Earned </p>
                   <h5>
-                    {Number(headerAnalytics.interestEarned || 0).toFixed(8)}
+                    $ {Number(headerAnalytics.interestEarned || 0).toFixed(8)}
                   </h5>
                 </div>
               </div>
@@ -461,6 +459,7 @@ export default function UserDashboardComponent(props) {
                 <div>
                   <p>Total Borrow</p>
                   <h5>
+                    ${" "}
                     {checkNaN(
                       Number(pieChartInputs?.borrowValues?.total).toFixed(4)
                     ) || 0}

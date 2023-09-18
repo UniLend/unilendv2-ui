@@ -16,11 +16,13 @@
     overflow: hidden;
 
     .user_info {
-      width: 100%;
+      width: 98%;
+      margin: 8px auto 0;
       background: var(--dark-bg);
       height: 150px;
       border-radius: 16px;
       display: flex;
+      box-shadow: var(--box-shadow);
 
       div:nth-child(1) {
         cursor: pointer;
@@ -67,7 +69,8 @@
           display: flex;
           flex-direction: row;
           padding: 0;
-          gap: 4px;
+          gap: 6px;
+          max-height: 34px;
 
           svg {
             width: 20px;
@@ -97,16 +100,19 @@
               height: 15px;
             }
           }
-        }
-
-        .address_with_copy {
-          svg {
-            width: 15px;
-            height: 15px;
+          .address_with_copy {
+            gap: 4px;
+            max-height: 24px;
+            svg {
+              width: 15px;
+              height: 15px;
+            }
           }
         }
       }
       @media ($mobile) {
+        width: 96%;
+        margin: 8px auto 0;
         height: 70px;
         box-shadow: var(--box-shadow);
         div {
@@ -129,6 +135,7 @@
           }
 
           .address_with_copy {
+            max-height: 14px;
             svg {
               width: 12px;
               height: 12px;
@@ -209,12 +216,12 @@
               background: var(--low-dark-bg);
               color: var(--pure-black);
               padding: 4px 52px 4px 12px;
-              margin-bottom: 30px;
+              margin-bottom: 20px;
               border-radius: 12px;
             }
             .max_btn {
               position: absolute;
-              right: -12px;
+              right: -6px;
               top: 5px;
               width: 52px;
               height: 30px;
@@ -232,18 +239,20 @@
           }
           .domain_data {
             display: flex;
+            height: 12px;
             gap: 8px;
             align-items: center;
             .domain_value {
               width: fit-content;
               color: var(--light-green);
+              font-size: $font-size-xsm;
               margin: 0;
               height: 14px;
-              margin: 0 0 6px 22px;
+              margin: 0 0 2px 22px;
             }
             svg {
-              width: 16px;
-              height: 16px;
+              width: 12px;
+              height: 12px;
               cursor: pointer;
               color: var(--light-green);
             }
@@ -298,7 +307,7 @@
         }
       }
       @media ($mobile) {
-        width: 100%;
+        width: 96%;
         padding: 15px;
         min-width: 0px;
         min-height: 410px;
@@ -324,6 +333,7 @@
             text-align: center;
             h2 {
               font-size: $font-size-xlg !important;
+              text-align: center;
             }
             p {
               width: 90% !important;
@@ -397,7 +407,7 @@
         }
       }
       @media ($mobile) {
-        width: 100%;
+        width: 96%;
         flex-direction: column;
         min-height: max-content;
         padding: 10px;

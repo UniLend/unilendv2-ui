@@ -198,9 +198,8 @@ export default function VoteComponent() {
               <h2 className="heading05">
                 {domainDetail ? domainDetail : shortenAddress(String(delegate))}
               </h2>
-              {/* <FiCopy /> */}
               <Popover
-                content={"copied"}
+                content="copied"
                 overlayClassName="copy_popover"
                 placement="top"
                 trigger="click"
