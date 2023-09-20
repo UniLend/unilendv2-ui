@@ -27,6 +27,8 @@ import {
   getPoolCreatedGraphQuery,
   getPositionData,
   getTokensFromUserWallet,
+  getUserData,
+  getUserTokens,
   sortByKey,
   userDashBoardQuery,
   userDashBoardQuery0,
@@ -68,7 +70,7 @@ export default function UserDashboardComponent(props) {
   //   navigate("/");
   // }
 
-  const alchemy = new Alchemy(config[chain?.id || user?.network?.id || 137]);
+
   const [userAddress, setUserAddress] = useState();
   const [verifiedAddress, setVerifiedAddress] = useState(
     address || user?.address
@@ -236,76 +238,76 @@ export default function UserDashboardComponent(props) {
     handleSearchAddress(address);
   }, [address]);
 
-  useEffect(() => {
-    if (data && contracts) {
-      (async () => {
-        setPositionLoading(true);
-        const position = await getPositionData(data, contracts);
+  const getDashBoardData = async (chainId) => {
+    try {
+      setPositionLoading(true);
+      setWalletTokenLoading(true)
+      const { position, pieChart, analytics } = await getUserData(
+        chainId,
+        query,
+      );
 
-        if (position) {
-          setPositionData(position);
-          setPositionDataBackup(position);
-          const pieChart = getPieChartValues(position); //getChartData(data, tokenList);
+      setPositionData(position);
+      setPositionDataBackup(position);
+      setPieChartInputs(pieChart);
+      setHeaderAnalytics(analytics);
+      setPositionLoading(false);
+      const ValidAddress = verifiedAddress ||  address
 
-          setPieChartInputs(pieChart);
-          const analytics = {};
-          if (position?.borrowArray.length > 0) {
-            const borrowAPY = getAverage(
-              position.borrowArray,
-              "apy",
-              "borrowBalance"
-            );
-            analytics.borrowAPY = borrowAPY;
-          }
-          if (position?.lendArray.length > 0) {
-            const earned = position.lendArray
-              .map((el) => el.interestEarned)
-              .reduce((ac, el) => ac + el);
-            analytics.interestEarned = earned;
-            const lendAPY = getAverage(
-              position.lendArray,
-              "apy",
-              "LendBalance"
-            );
-            analytics.lendAPY = lendAPY;
-            const powerUsed = getBorrowedPowerUsed(position.lendArray);
-            analytics.powerUsed = powerUsed;
-          }
-          if (data?.positions) {
-            const HF = getNetHealthFactor(data.positions);
-            analytics.healthFactor = isNaN(HF) ? 0 : HF;
-          }
-          setHeaderAnalytics(analytics);
-        }
-        setPositionLoading(false);
-      })();
-    }
-  }, [data, tokenList, contracts]);
-
-  const getUserTokens = async (address) => {
-    setWalletTokenLoading(true);
-    setWalletTokens([]);
-
-    alchemy.core.getTokenBalances(`${address}`).then(async (bal) => {
-      // const tokenPrices = await fetchTokenPriceInUSD()
-      const tokens = await getTokensFromUserWallet(bal, tokenList);
+      console.log(ValidAddress, chainId);
+       const tokens = await getUserTokens(ValidAddress, chainId);
+      
       setWalletTokens(tokens);
-      setWalletTokenLoading(false);
-    });
+      // if (verifiedAddress) {
+      //  const tokens = await getUserTokens(verifiedAddress || address, chainId);
+      //  console.log(tokens);
+      //  setWalletTokens(tokens);
+       
+      // } else if (userAddress == "" || verifiedAddress == "") {
+      //   const tokens = await getUserTokens(address, chain?.id || user?.network?.id || 137);
+      //   setWalletTokens(tokens);
+      // }
+      setWalletTokenLoading(false)
+      // console.log(chainId, position, pieChart, analytics, tokens);
+      return position, pieChart, analytics, tokens
+    } catch (error) {
+      console.log('getDashboard error', error)
+    }
   };
+
+  useEffect(() => {
+    if (address) {
+      getDashBoardData(80001);
+      //getDashBoardData(137);
+    }
+
+
+  }, [query]);
+
+  // const getUserTokens = async (address, chainId) => {
+  //   setWalletTokenLoading(true);
+  //   setWalletTokens([]);
+  //   const alchemy = new Alchemy(config[chainId]);
+  //   alchemy.core.getTokenBalances(`${address}`).then(async (bal) => {
+  //     // const tokenPrices = await fetchTokenPriceInUSD()
+  //     const tokens = await getTokensFromUserWallet(bal, tokenList);
+  //     setWalletTokens(tokens);
+  //     setWalletTokenLoading(false);
+  //   });
+  // };
 
   const checkNaN = (value) => {
     return isNaN(value) ? 0 : value;
   };
 
-  useEffect(() => {
-    refetch();
-    if (verifiedAddress) {
-      getUserTokens(verifiedAddress || address);
-    } else if (userAddress == "" || verifiedAddress == "") {
-      getUserTokens(address);
-    }
-  }, [verifiedAddress, userAddress, user]);
+  // useEffect(() => {
+  //   refetch();
+  //   if (verifiedAddress) {
+  //     getUserTokens(verifiedAddress || address, chain?.id || user?.network?.id || 137);
+  //   } else if (userAddress == "" || verifiedAddress == "") {
+  //     getUserTokens(address, chain?.id || user?.network?.id || 137);
+  //   }
+  // }, [verifiedAddress, userAddress, user]);
 
   return (
     <div className="user_dashboard_component">
