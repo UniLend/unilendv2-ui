@@ -523,11 +523,7 @@ export const getTokensFromUserWallet = async (data) => {
   for (const tokenAddress of tokensArray) {
     const contract = await getEtherContract(tokenAddress, erc20Abi) 
     
-    // const symbol = await contract.symbol()
    
-    //  const name = await contract.name()
-    //  const balance = await contract.balanceOf(data?.address)
-    // console.log("Contract", contract, symbol, name, balance);
     const res = await Promise.all([
       contract.symbol(),
       contract.name(),
