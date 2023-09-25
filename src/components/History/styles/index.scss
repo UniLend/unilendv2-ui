@@ -1,5 +1,14 @@
 @import "/src/core/theme";
 
+.dark {
+  .app_container {
+    background: url("/src/assets/blue-bg.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
+
 .history_table_container {
   width: 80%;
   // min-height: 860px;

@@ -1,9 +1,21 @@
 @import "/src/core/theme";
+
+.dark {
+  .app_container {
+    .pool_carousel_container {
+      // background: url("/src/assets/large-bg.svg");
+      // background-color: red;
+      // background-position: center;
+      // background-repeat: no-repeat;
+    }
+  }
+}
 .pool_carousel_container {
   width: 90%;
   margin: auto;
 
   .carousel_row {
+    padding-bottom: 48px;
     .title_sort_container {
       display: flex;
       justify-content: space-between;

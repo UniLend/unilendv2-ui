@@ -1,4 +1,15 @@
 @import "/src/core/theme";
+
+.dark {
+  .app_container {
+    background: unset;
+    background: url("/src/assets/blue-bg.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
+
 .vote_container {
   width: 100%;
   overflow: hidden;
@@ -10,7 +21,7 @@
   // }
   .vote_content {
     width: 80%;
-    margin: 116px auto;
+    margin: 48px auto;
     min-height: 500px;
     position: relative;
     overflow: hidden;

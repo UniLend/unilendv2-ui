@@ -28,21 +28,7 @@ $light: (
   //EEECFF check it
   dark-bg: #f3f1ff,
   low-dark-bg: #eae8f6,
-  // bg-color:
-  //   radial-gradient(
-  //     50.67% 95.96% at 49.97% 50%,
-  //     #e2edfc 0.09%,
-  //     #d8e7fc 0.1%,
-  //     #eaf2fd 40.8%,
-  //     #ffffff 100%
-  //   )
-  // bg-color:
-  //   radial-gradient(
-  //     51.2% 25.96% at 54.77% 50.7%,
-  //     #5700fe 0%,
-  //     rgba(87, 0, 254, 0.261849) 52.63%,
-  //     rgba(87, 0, 254, 0) 100%
-  //   ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+  pool-card-bg: rgba(154, 139, 250, 0.1),
 );
 
 $dark: (
@@ -67,25 +53,9 @@ $dark: (
   main-light: #9a8bfa,
   dark-button: #070032,
   tran-button: #161423,
-  //161423 check it
   button-border: #140095,
   bg-color: #110f1b,
   dark-bg: #0f0e19,
   low-dark-bg: #161423,
+  pool-card-bg: rgba(154, 139, 250, 0.1),
 );
-
-//low-gray: #1F2127,
-// $white: #ffffff;
-// $black: #000000;
-// $gray-u: #99959c;
-
-// $main: #4b2eff;
-// $main-light: #9a8bfa;
-
-// $button-border: #140095;
-// $dark-button: #070032;
-// $tran-button: #171423;
-
-// $bg: #130f1b;
-// $dark-bg: #0f0e19;
-// $low-dark-bg: #161423;

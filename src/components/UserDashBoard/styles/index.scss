@@ -1,8 +1,20 @@
-// @use "../../../core/theme/constants.scss" as *;
 @import "/src/core/theme";
+
+.dark {
+  .app_container {
+    background: unset;
+    .user_dashboard_component {
+      background: url("/src/assets/large-bg.svg");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  }
+}
+
 .user_dashboard_component {
   width: 100%;
-  margin-bottom: 100px;
+  padding-bottom: 48px;
   // .dashboardbanner {
   //   background-color: var(--sharp-blue);
   //   max-height: 292px;
@@ -18,7 +30,7 @@
     // top: -170px;
     width: 80%;
     margin: auto;
-    margin: 116px auto;
+    margin: 116px auto 0;
     @media ($mobile) {
       width: 90%;
     }
