@@ -27,6 +27,7 @@ footer,
     margin: 0px;
     text-align: center;
     font-weight: 600;
+    font-size: $font-size-md;
     color: var(--pure-black);
   }
 }
@@ -37,6 +38,7 @@ footer,
     margin: 0px 10px;
     color: var(--pure-black);
     font-weight: 600;
+    font-size: $font-size-md;
     &:hover {
       color: var(--main-light);
     }
@@ -74,7 +76,7 @@ footer,
       color: var(--pure-black);
       padding: 5px;
       border-radius: 5px;
-      font-size: 15px;
+      font-size: $font-size-md;
       font-weight: 600;
       display: flex;
       &:hover {
@@ -104,7 +106,7 @@ footer,
     a {
       padding: 5px;
       border-radius: 5px;
-      font-size: 15px;
+      font-size: $font-size-xsm;
       font-weight: 600;
       display: flex;
     }
@@ -117,6 +119,9 @@ footer,
     }
     .active {
       color: var(--main-light);
+    }
+    svg {
+      margin-top: 3px;
     }
   }
 }

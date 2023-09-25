@@ -1,4 +1,3 @@
-// @use "../../../core/theme/constants.scss" as *;
 @import "/src/core/theme";
 
 .nav_container {
@@ -43,16 +42,14 @@
         color: var(--pure-black);
         padding: 5px;
         border-radius: 5px;
-        font-size: 14px;
+        font-size: $font-size-md;
         font-weight: 600;
         display: flex;
         &:hover {
-          //   background-color: var(--light-blue);
           color: var(--main-light);
         }
       }
       .active {
-        // background-color: var(--light-blue);
         color: var(--main-light);
       }
       .disable_route {
@@ -60,6 +57,14 @@
         &:hover {
           background-color: transparent;
           cursor: not-allowed;
+        }
+      }
+    }
+
+    @media ($mobile) {
+      nav {
+        a {
+          font-size: $font-size-xsm;
         }
       }
     }
@@ -90,9 +95,12 @@
       background-color: var(--main);
       border-radius: 5px;
       height: 40px;
-      font-size: 13px;
-      font-weight: 700;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-semi-bold;
       border: 0px;
+    }
+    @media ($mobile) {
+      font-size: $font-size-xsm;
     }
   }
   .wallet_connection {
@@ -116,7 +124,6 @@
       padding: 0px 5px;
       overflow: hidden;
       text-overflow: ellipsis;
-      //   background-color: var(--mid-blue);
       background-color: var(--low-dark-bg);
       border-radius: 5px;
       display: flex;
@@ -127,20 +134,16 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: noWrap;
-        font-size: 11px;
-        // font-weight: 600;
-        // color: var(--light-gray);
+        font-size: $font-size-md;
         color: var(--pure-black);
       }
       div {
         margin: 5px;
         padding: 10px;
         height: 25px;
-        // background-color: var(--pure-white);
         background-color: var(--main);
         border-radius: 5px;
-        font-size: 12px;
-        // color: var(--light-gray);
+        font-size: $font-size-md;
         color: var(--pure-black);
         max-width: 120px;
         overflow: hidden;
@@ -151,13 +154,19 @@
           color: var(--always-white);
         }
       }
+
+      @media ($mobile) {
+        p,
+        div {
+          font-size: $font-size-xsm;
+        }
+      }
     }
   }
 
   .hamberger {
     display: none;
-    // color: var(--main); // update
-    font-size: 20px;
+    font-size: $font-size-xlg;
   }
 
   @media ($tablet) {
@@ -218,7 +227,7 @@
       background-color: var(--light-blue);
     }
     a {
-      font-size: 12px;
+      font-size: $font-size-xsm;
       color: var(--pure-black);
       font-weight: $font-weight-semi-bold;
     }
@@ -251,7 +260,6 @@
   .ant-popover-inner {
     width: 140px;
     height: 150px;
-    // background-color: var(--pure-white);
     background-color: var(--low-dark-bg);
     border-radius: 10px;
     padding: 0px;
@@ -265,14 +273,9 @@
   }
 }
 
-// .ant-popover-content {
-//   background-color: var(--low-dark-bg);
-// }
-
 .popover-content {
   width: 248px;
   border-radius: 10px;
-  //   background: var(--pure-white);
   background-color: var(--low-dark-bg);
   .disconnect {
     display: flex;
@@ -285,7 +288,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: "nowrap";
-      //   color: var(--dark-gray);
       color: var(--pure-black);
     }
     div {
@@ -321,7 +323,7 @@
       cursor: pointer;
       p {
         font-weight: 700;
-        font-size: 10px;
+        font-size: $font-size-xsm;
         margin: 10px;
         color: var(--pure-black);
       }
@@ -369,7 +371,7 @@
   p {
     font-style: normal;
     font-weight: 700;
-    font-size: 18px;
+    font-size: $font-size-lg;
     line-height: 21px;
     text-align: center;
     color: var(--dark-gray);
@@ -489,13 +491,10 @@
   border-radius: 5px;
   height: 35px;
   width: max-content;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: $font-size-sm;
+  font-weight: 600;
   border: 0px;
   &:hover {
-    // background-color: var(--dark-button);
-    // color: var(--main-light);
-    // border: 1px solid var(--button-border);
     color: var(--always-white);
     background-color: var(--main);
     opacity: 0.9;
