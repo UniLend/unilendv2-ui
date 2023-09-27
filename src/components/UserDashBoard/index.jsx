@@ -43,14 +43,15 @@ import { useSelector } from "react-redux";
 import useWalletHook from "../../lib/hooks/useWallet";
 
 //const endpoint = "https://api.spacex.land/graphql/";
-const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
+const mumbai = import.meta.env.VITE_ALCHEMY_Mumbai;
+const polygon = import.meta.env.VITE_ALCHEMY_Mumbai;
 const config = {
   80001: {
-    apiKey: alchemyId,
+    apiKey: mumbai,
     network: Network.MATIC_MUMBAI,
   },
   137: {
-    apiKey: alchemyId,
+    apiKey: polygon,
     network: Network.MATIC_MAINNET,
   },
 };
@@ -277,7 +278,7 @@ export default function UserDashboardComponent(props) {
 
   useEffect(() => {
     if (address) {
-      getDashBoardData(80001);
+      getDashBoardData(1442);
       //getDashBoardData(137);
     }
 
