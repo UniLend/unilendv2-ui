@@ -8,15 +8,22 @@ import { contractAddress } from "../core/contractData/contracts";
 import { Alchemy, Network } from "alchemy-sdk";
 
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
+const mumbai = import.meta.env.VITE_ALCHEMY_MUMBAI;
+const polygon = import.meta.env.VITE_ALCHEMY_MUMBAI;
+const zkEvm = import.meta.env.VITE_ALCHEMY_ZKKEVM;
 const config = {
   80001: {
-    apiKey: alchemyId,
+    apiKey: mumbai,
     network: Network.MATIC_MUMBAI,
   },
   137: {
-    apiKey: alchemyId,
+    apiKey: polygon,
     network: Network.MATIC_MAINNET,
   },
+  1442:{
+    apiKey: zkEvm,
+    network: Network.POLYGONZKEVM_TESTNET,
+  }
 };
 
 export const findTokenPrice = (list, address) => {
@@ -235,10 +242,12 @@ console.log(fetchedDATA);
 }
 
 export const getUserTokens = async (address, chainId) => {
-
+console.log(address, chainId, config[chainId]);
   const alchemy = new Alchemy(config[chainId]);
+  console.log(alchemy);
  const userTokens = await  alchemy.core.getTokenBalances(`${address}`);
-  const tokens = await getTokensFromUserWallet(userTokens);
+ console.log(userTokens);
+  const tokens = await getTokensFromUserWallet(userTokens, chainId);
   return tokens
 };
 
@@ -514,14 +523,15 @@ export const getNetHealthFactor = (positions) => {
   return (value / counter).toFixed(2);
 };
 
-export const getTokensFromUserWallet = async (data) => {
+export const getTokensFromUserWallet = async (data, chainId) => {
   const tokensArray = data?.tokenBalances.map((token) => token.contractAddress);
 
   const tokensObject = [];
 
-  // const provider = getProvider();
+   //const provider = getProvider();
+   const provider =  getEthersProvider({chainId})
   for (const tokenAddress of tokensArray) {
-    const contract = await getEtherContract(tokenAddress, erc20Abi) 
+    const contract =  getEtherContractWithProvider(tokenAddress, erc20Abi, provider) 
     
    
     const res = await Promise.all([
