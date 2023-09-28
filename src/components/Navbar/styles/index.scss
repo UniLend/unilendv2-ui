@@ -93,7 +93,7 @@
       color: var(--always-white);
       background-color: var(--main);
       border-radius: 5px;
-      height: 40px;
+      height: 45px;
       font-size: $font-size-sm;
       font-weight: $font-weight-semi-bold;
       border: 0px;
@@ -114,11 +114,19 @@
     .network_chamber {
       color: var(--pure-black);
       background-color: var(--low-dark-bg);
+      div{
+        height: 35px;
+      }
     }
+    .network_address{
+      color: var(--pure-black);
+      background-color: var(--low-dark-bg);
+    }
+
     div {
       height: max-content;
       width: max-content;
-      height: 35px;
+      // height:40px;
       white-space: nowrap;
       padding: 0px 5px;
       overflow: hidden;
@@ -128,39 +136,55 @@
       display: flex;
       align-items: center;
       cursor: pointer;
+      .address{
+        background-color: var(--main);
+        color: var(--always-white);
+      }
       p {
         margin: 5px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: noWrap;
         font-size: $font-size-md;
-        color: var(--pure-black);
       }
       div {
         margin: 5px;
-        padding: 10px;
-        height: 25px;
-        background-color: var(--main);
+        padding: 0px;
+        height: 40px;
         border-radius: 5px;
         font-size: $font-size-md;
         color: var(--pure-black);
-        max-width: 120px;
+        // max-width: 120px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         p {
-          margin: 0px;
-          color: var(--always-white);
-        }
-      }
-
-      @media ($mobile) {
-        p,
-        div {
-          font-size: $font-size-xsm;
+          margin: 5px;
         }
       }
     }
+    @media ($mobile) {
+      .wallet_connection{
+        gap:4px;
+      }
+        div{
+          p,
+          div {
+            font-size: $font-size-xxsm;
+            margin: 0px;
+          }
+          .address{
+            height:30px;
+          }
+          }
+          .network_address{
+            .bal{
+              display: none;
+            }
+        }
+     
+    }
+
   }
 
   .hamberger {
@@ -171,7 +195,7 @@
   @media ($tablet) {
     .last_container {
       display: flex;
-      width: 70%;
+      width: 80%;
       justify-content: end;
     }
     .nav_routes {
@@ -190,7 +214,7 @@
   @media ($mobile) {
     .last_container {
       display: flex;
-      width: 70%;
+      width: 80%;
       justify-content: end;
     }
     padding: 5px;

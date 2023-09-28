@@ -419,12 +419,14 @@ export default function Navbar() {
                 onOpenChange={handleOpenSwitchNetwork}
               >
                 <div className="network_chamber">
-                  <p>{currentUser?.network?.name}</p>
-                  <FaChevronDown />
+                  <div>
+                    <p>{currentUser?.network?.name}</p>
+                    <FaChevronDown />
+                  </div>
                 </div>
               </Popover>
-              <div>
-                <p>
+              <div className="network_address">
+                <p className="bal">
                   {currentUser?.balance} {currentUser?.symbol}
                 </p>
                 <Popover
