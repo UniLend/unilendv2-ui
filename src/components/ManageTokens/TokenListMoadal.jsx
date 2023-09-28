@@ -138,16 +138,13 @@ export default function TokenListMoadal({
       }
     });
 
-    // if (openToken.token0) {
-    //   setSelectedToken("token0");
-    // } else if (openToken.token1) {
-    //   setSelectedToken("token1");
-    // }
-
-    // console.log("poolAddressFound", "selected", selectedTokens);
-
+    if (openToken.token0) {
+      setSelectedToken("token0");
+    } else if (openToken.token1) {
+      setSelectedToken("token1");
+    }
     // cleanup event listener when component unmounts
-    //   return () => window.removeEventListener('resize', handleResize);
+    // return () => window.removeEventListener("resize", handleResize);
   }, [openToken, selectedTokens]);
 
   return (
@@ -172,7 +169,7 @@ export default function TokenListMoadal({
           )} */}
         {Array.isArray(tokensList[selectedToken]) &&
           tokensList[selectedToken].length > 0 &&
-          tokensList[selectedToken].map(
+          tokensList[selectedToken]?.map(
             (token, i) =>
               i < page * 100 && (
                 <div

@@ -1,47 +1,77 @@
 @import "/src/core/theme";
 .sort_dropDown {
+  top: 479px;
   .ant-popover-arrow {
     display: none;
   }
-  .ant-popover-inner-content {
-    padding: 5px;
-    border-radius: 5px;
-    background-color: var(--pure-white);
-  }
-  .ant-popover-inner {
-    border-radius: 5px;
-    background-color: var(--pure-white);
-  }
-  .sort_popover {
-    width: max-content;
-    min-width: 120px;
-    p {
-      width: 100%;
-      font-size: $font-size-sm;
-      line-height: 10px;
-      padding: 10px;
-      color: var(--light-gray);
-      margin: 5px 0px;
-      border-radius: 5px;
-      cursor: pointer;
-      display: flex;
-      span {
-        &:first-child {
-          width: 25px;
-          display: flex;
-          justify-content: left;
-        }
-        &:last-child {
-          width: max-content;
-          text-align: left;
-        }
-      }
-      &:hover {
-        background-color: var(--mid-blue);
-      }
+  .ant-popover-content {
+    padding: 0px;
+    width: 100%;
+    $border: 1px;
+    color: var(--always-white);
+    background: var(--popup-back-color);
+    background-clip: padding-box; /* !importanté */
+    border: solid $border transparent; /* !importanté */
+    border-radius: 12px;
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: -1;
+      margin: -$border; /* !importanté */
+      border-radius: inherit; /* !importanté */
+      background: var(--popup-border);
     }
-    .activeSort {
-      background-color: var(--mid-blue);
+
+    .ant-popover-inner-content {
+      padding: 15px;
+      border-radius: 11px;
+      background-color: var(--popup-back-color);
+      box-shadow: var(--popup-shadow);
+    }
+    .ant-popover-inner {
+      border-radius: 11px;
+      background: var(--popup-back-color);
+    }
+    .sort_popover {
+      width: max-content;
+      min-width: 130px;
+      p {
+        width: 100%;
+        font-size: $font-size-sm;
+        line-height: 10px;
+        padding: 10px;
+        color: var(--pure-black);
+        margin: 5px 0px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: flex;
+        background-color: var(--popup-back-color);
+        span {
+          &:first-child {
+            width: 25px;
+            display: flex;
+            justify-content: left;
+          }
+          &:last-child {
+            width: max-content;
+            text-align: left;
+          }
+        }
+        &:hover {
+          // box-shadow: 0 0 5px var(--main-light);
+          // background-color: var(--low-dark-bg);
+          background-color: var(--main);
+          color: var(--always-white) !important;
+        }
+      }
+      .activeSort {
+        color: var(--always-white) !important;
+        background-color: var(--main);
+      }
     }
   }
 }
@@ -52,13 +82,13 @@
   height: 40px;
   cursor: pointer;
   border-radius: 16px;
-  border: 1px solid var(--light-gray);
-  color: var(--pure-black);
+  border: 1px solid var(--main);
+  color: var(--always-white);
   place-items: center center;
   justify-content: center;
   gap: 24px;
   padding: 12px;
-
+  background-color: var(--main);
   p {
     margin: 0px 0px;
   }
