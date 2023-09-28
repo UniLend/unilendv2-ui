@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Slider, Button, message, Modal, Popover, Tooltip } from "antd";
+import { Slider, Button, message, Modal, Popover, Tooltip, notification } from "antd";
 import { FaChevronDown } from "react-icons/fa";
 import "./styles/index.scss";
 import { useNavigate, useParams } from "react-router-dom";
 import { DownOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+
 import {
   getPoolBasicData,
   getPoolAllData,
@@ -141,6 +143,29 @@ export default function PoolComponent(props) {
       getCollateral();
     }
   }, [amount, selectLTV]);
+// Notification 
+const openNotificationWithIcon = (result, txnData) => {
+  notification.open({
+    mesage: { result },
+    description: `Transaction for ${txnData.method} of ${Number(
+      txnData.amount
+    ).toFixed(4)} for token ${txnData.tokenSymbol}`,
+    onClick: () => {
+      console.log("Notification Clicked!");
+    },
+    className: "notification_class",
+    closeIcon: false,
+    duration: 5,
+    icon:
+      result == "success" ? (
+        <CheckCircleOutlined style={{ color: "green" }} />
+      ) : (
+        <CloseCircleOutlined style={{ color: "red" }} />
+      ),
+  });
+};
+
+
 
   const checkTxnStatus = (hash, txnData) => {
     waitForTransactionLib({
@@ -149,12 +174,7 @@ export default function PoolComponent(props) {
       .then((receipt) => {
         console.log(receipt);
         if (receipt.status == "success") {
-          message.success(
-            `Transaction for ${txnData.method} of ${Number(
-              txnData.amount
-            ).toFixed(4)} for token ${txnData.tokenSymbol}`,
-            5
-          );
+          openNotificationWithIcon("success", txnData);
           setReFetching(true);
           if (txnData.method !== "approval") {
             setAmount(0);
@@ -199,7 +219,8 @@ export default function PoolComponent(props) {
     setIsOperationLoading(false);
 
     const errorText = String(error.reason);
-    message.error(error?.message ? errorText : "Error: Transaction Error");
+    const data = error?.message ? errorText : "Error: Transaction Error";
+    openNotificationWithIcon("error", data);
   };
 
   const handleOperation = () => {
