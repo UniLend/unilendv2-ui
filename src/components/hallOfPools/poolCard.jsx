@@ -51,7 +51,6 @@ import useWalletHook from '../../lib/hooks/useWallet';
         </div>
         <p className="paragraph01">{`${token0?.symbol}/${token1?.symbol}`}</p>
       </div>
-
       <div className="pool_data">
         <div>
           <p className="paragraph06">Total Supply</p>

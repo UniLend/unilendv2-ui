@@ -8,13 +8,14 @@
   padding: 28px 0;
   cursor: pointer;
   transition: all 0.5s;
+  border: 0.25px solid var(--main-light);
   &:hover {
     transform: scale(1.05);
   }
 
   .pool_icons {
     padding-bottom: 24px;
-    border-bottom: 0.35px solid var(--pure-black);
+    border-bottom: 0.25px solid var(--main-light);
     width: 100%;
     display: flex;
     align-items: center;
@@ -40,7 +41,7 @@
     }
   }
   .pool_data {
-    border-bottom: 0.35px solid var(--pure-black);
+    border-bottom: 0.25px solid var(--main-light);
     padding: 24px 0;
 
     div {
