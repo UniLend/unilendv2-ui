@@ -9,6 +9,8 @@ import Ring from "./components/Loader/Ring";
 import AppWrapper from "./appWrapper";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+// Custom theme 
+import {myCustomTheme} from "./core/theme/customWalletTheme"
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import {
   mainnet,
@@ -69,8 +71,10 @@ const connectors = connectorsForWallets([
       injectedWallet({ chains }),
       coinbaseWallet({ appName:'UnilendV2', chains}),
       walletConnectWallet({chains, projectId}),
+  
     ],
   },
+
 ]);
 
 const wagmiConfig = createConfig({
@@ -80,16 +84,12 @@ const wagmiConfig = createConfig({
 });
 //uri: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend_mumbai",
 
-
-
-
-
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Suspense fallback={<Ring />}>
       <Provider store={store}>
         <WagmiConfig config={wagmiConfig}>
-          <RainbowKitProvider chains={chains} modalSize="compact">
+          <RainbowKitProvider chains={chains} modalSize="compact"  theme= {myCustomTheme}  >
             <BrowserRouter>
               <AppWrapper />
             </BrowserRouter>
