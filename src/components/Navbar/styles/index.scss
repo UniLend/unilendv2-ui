@@ -116,6 +116,10 @@
       background-color: var(--low-dark-bg);
       div{
         height: 35px;
+        img{
+          width:20px;
+          height:20px;
+        }
       }
     }
     .network_address{
@@ -171,16 +175,19 @@
           p,
           div {
             font-size: $font-size-xxsm;
-            margin: 0px;
+            // margin: 0px;
           }
           .address{
             height:30px;
           }
           }
-          .network_address{
-            .bal{
-              display: none;
+          .network_chamber{
+            div{
+              p{
+                display: none;
+              }
             }
+           
         }
      
     }
@@ -826,8 +833,8 @@
                 color: var(--always-white) !important;
               }
               img {
-                width: 17px;
-                height: 17px;
+                width: 22px;
+                height: 22px;
                 transition: all 0.3s ease-in-out;
                 padding: 2px;
               }

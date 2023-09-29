@@ -45,6 +45,9 @@ import { ChangeNetwork } from "../../core/networks/networks";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { switchNetworkLib } from "../../lib/fun/functions";
 
+//custom Networks 
+import {networks} from "../../core/networks/customNetworks"
+
 export default function Navbar() {
   const user = useSelector((state) => state.user);
   const theme = useSelector((state) => state.theme);
@@ -198,55 +201,33 @@ export default function Navbar() {
     return (
       <div className="sort_popover">
         <h3>Select a Network</h3>
-
-        <div className="network-box" onClick={() => handleSwitchNetwork(1442)}>
-          <div className="activeChain">
-            <img src={ethlogo} alt="ZkEVM" />
-            <p className="wallet-name">ZkEVM Testnet</p>
+        {Object.keys(networks).map((chainId) => (
+          <div
+            key={chainId}
+            className="network-box"
+            onClick={() => handleSwitchNetwork(chainId)}
+          >
+            <div
+              className={
+                currentUser?.network.id == chainId ? "activeChain" : ""
+              }
+            >
+              <img
+                src={networks[chainId].logoUrl}
+                alt={`${networks[chainId].chainName} Logo`}
+              />
+              <p className="wallet-name">{networks[chainId].chainName}</p>
+            </div>
           </div>
-        </div>
-        <div className="network-box" onClick={() => handleSwitchNetwork(137)}>
-          <div>
-            <img src={polyMainlogo} alt="polygon" />
-            <p className="wallet-name">Polygon Mainnet</p>
-          </div>
-        </div>
-        <div className="network-box" onClick={() => handleSwitchNetwork(80001)}>
-          <div>
-            <img src={polyMainlogo} alt="ZkEVM" />
-            <p className="wallet-name">Polygon Testnet</p>
-          </div>
-        </div>
-        <div className="network-box" onClick={() => handleSwitchNetwork(8081)}>
-          <div>
-            <img src={shardeumLogo} alt="ZkEVM" />
-            <p className="wallet-name">Shardeum Testnet</p>
-          </div>
-        </div>
+        ))}
       </div>
     );
   });
-
-  // const WalletConnectModal = () => {
-  //   return (
-  //     <div className="walletConnectModal">
-  //       <div onClick={() => handleConnect("metamask", true)}>
-  //         <img src={metamaskicon} alt="metamask icon" />
-  //         <p>Connect to Metamask Wallet</p>
-  //       </div>
-  //       <div onClick={() => handleConnect("walletConnect", true)}>
-  //         <img src={walletconnecticon} alt="walletconnect icon" />
-  //         <p>Connect to WalletConnect Wallet</p>
-  //       </div>
-  //     </div>
-  //   );
-  // };
 
   const WalletConnectModal = () => {
     return (
       <div className="walletConnectModal">
         <p className="head_text">Connect to the Wallet</p>
-
         <div
           className="wallet-box"
           onClick={() => handleConnect("metamask", true)}
@@ -256,7 +237,6 @@ export default function Navbar() {
             <img src={metamaskicon} alt="metamask icon" />
           </div>
         </div>
-
         <div
           className="wallet-box"
           onClick={() => handleConnect("walletConnect", true)}
@@ -420,6 +400,12 @@ export default function Navbar() {
               >
                 <div className="network_chamber">
                   <div>
+                    <img
+                      src={networks[currentUser?.network?.id].logoUrl}
+                      alt={`${
+                        networks[currentUser?.network?.id].chainName
+                      } Logo`}
+                    />
                     <p>{currentUser?.network?.name}</p>
                     <FaChevronDown />
                   </div>

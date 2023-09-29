@@ -1,6 +1,6 @@
 export  const myCustomTheme = {
     blurs: {
-      modalOverlay: 'small',
+      modalOverlay: 'medium',
     },
     
     colors: {
