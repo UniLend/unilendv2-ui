@@ -46,10 +46,6 @@
       background-color: var(--dark-bg);
       border: 0.35px solid var(--light-gray);
       border-radius: 12px;
-
-        &:focus{
-        outline: 2px solid green;
-        }
    
       svg {
         color: var(--light-gray);
