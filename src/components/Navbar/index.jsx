@@ -41,12 +41,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTheme, setUser } from "../../store/Action";
 import { fetchUserDomain } from "../../utils/axios";
 import { useConnectModal, ConnectButton } from "@rainbow-me/rainbowkit";
-import { ChangeNetwork } from "../../core/networks/networks";
+import { ChangeNetwork, supportedNetworks } from "../../core/networks/networks";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { switchNetworkLib } from "../../lib/fun/functions";
-
-//custom Networks 
-import {networks} from "../../core/networks/supportedNetwork"
 
 export default function Navbar() {
   const user = useSelector((state) => state.user);
@@ -201,7 +198,7 @@ export default function Navbar() {
     return (
       <div className="sort_popover">
         <h3>Select a Network</h3>
-        {Object.keys(networks).map((chainId) => (
+        {Object.keys(supportedNetworks).map((chainId) => (
           <div
             key={chainId}
             className="network-box"
@@ -213,10 +210,10 @@ export default function Navbar() {
               }
             >
               <img
-                src={networks[chainId].logoUrl}
-                alt={`${networks[chainId].chainName} Logo`}
+                src={supportedNetworks[chainId].logoUrl}
+                alt={`${supportedNetworks[chainId].chainName} Logo`}
               />
-              <p className="wallet-name">{networks[chainId].chainName}</p>
+              <p className="wallet-name">{supportedNetworks[chainId].chainName}</p>
             </div>
           </div>
         ))}
@@ -401,9 +398,9 @@ export default function Navbar() {
                 <div className="network_chamber">
                   <div>
                     <img
-                      src={networks[currentUser?.network?.id].logoUrl}
+                      src={supportedNetworks[currentUser?.network?.id].logoUrl}
                       alt={`${
-                        networks[currentUser?.network?.id].chainName
+                        supportedNetworks[currentUser?.network?.id].chainName
                       } Logo`}
                     />
                     <p>{currentUser?.network?.name}</p>

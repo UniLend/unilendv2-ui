@@ -137,6 +137,75 @@ export const networks = {
   }
 };
 
+// Supported network List 
+export const supportedNetworks = {
+
+  137: {
+    chainId: `0x${Number(137).toString(16)}`,
+    chainName: 'Polygon Mainnet',
+    nativeCurrency: {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      decimals: 18,
+    },
+    logoUrl:polygon,
+    rpcUrls: ['https://polygon-rpc.com/'],
+    blockExplorerUrls: ['https://polygonscan.com/'],
+  },
+
+
+  11155111: {
+    chainId: `0x${Number(11155111).toString(16)}`,
+    chainName: 'Sepolia Test Network',
+    nativeCurrency: {
+      name: 'Ether',
+      symbol: 'SepoliaETH',
+      decimals: 18,
+    },
+    logoUrl:eth,
+    rpcUrls: ['https://sepolia.infura.io/v3/' ,
+    'https://rpc.sepolia.dev',
+    'https://rpc.sepolia.online',
+    'https://www.sepoliarpc.space',
+    'https://rpc.sepolia.org',
+    'https://rpc-sepolia.rockx.com'],
+    blockExplorerUrls: ['https://sepolia.etherscan.io'],
+  },
+  
+  80001: {
+    chainId: `0x${Number(80001).toString(16)}`,
+    chainName: 'Polygon Mumbai',
+    nativeCurrency: {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      decimals: 18,
+    },
+    logoUrl:polygon,
+    rpcUrls: ['https://polygon-rpc.com/'],
+    blockExplorerUrls: ['https://polygonscan.com/'],
+  },
+  1442: {
+    chainId: `0x${Number(1442).toString(16)}`,
+    chainName: 'zkEVM Testnet',
+    nativeCurrency: {
+      name: 'ETH',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    logoUrl:eth,
+    rpcUrls: ['https://polygon-rpc.com/'],
+    blockExplorerUrls: ['https://polygonscan.com/'],
+  },
+  8081: {
+    chainId: `0x${Number(8081).toString(16)}`,
+    chainName: 'Shardeum Sphinx Dapp 1.X',
+    nativeCurrency:{ name: "shardeum", symbol: "SHM", decimals: 18 },
+    rpcUrls: ['https://dapps.shardeum.org/'],
+    blockExplorerUrls: ["https://explorer-dapps.shardeum.org/"],
+    logoUrl:shardeum,
+  }
+};
+
 
 export const ChangeNetwork = async (networkId) => {
   try {
