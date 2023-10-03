@@ -46,7 +46,7 @@ import useWalletHook from "../../lib/hooks/useWallet";
 import { switchNetworkLib } from "../../lib/fun/functions";
 
 //custom Networks 
-import {networks} from "../../core/networks/customNetworks"
+import {networks} from "../../core/networks/supportedNetwork"
 
 export default function Navbar() {
   const user = useSelector((state) => state.user);
