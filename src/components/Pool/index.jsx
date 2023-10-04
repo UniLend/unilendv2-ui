@@ -163,7 +163,7 @@ export default function PoolComponent(props) {
       },
       className: "notification_class",
       closeIcon: false,
-      duration: 0,
+      duration: 5,
       icon:
         result == "success" ? (
           <CheckCircleOutlined style={{ color: "green" }} />
