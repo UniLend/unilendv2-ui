@@ -85,20 +85,20 @@ export const holeskyTestnet = {
         // "https://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
         "https://ethereum-holesky.publicnode.com",
       ],
-      webSocket: [
-        "wss://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
-        "wss://ethereum-holesky.publicnode.com",
-      ],
+      // webSocket: [
+      //   "wss://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
+      //   "wss://ethereum-holesky.publicnode.com",
+      // ],
     },
     public: {
       http: [
         // "https://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
         "https://ethereum-holesky.publicnode.com",
       ],
-      webSocket: [
-        "wss://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
-        "wss://ethereum-holesky.publicnode.com",
-      ],
+      // webSocket: [
+      //   "wss://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
+      //   "wss://ethereum-holesky.publicnode.com",
+      // ],
     },
   },
   blockExplorers: {

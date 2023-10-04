@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Slider, Button, message, Modal, Popover, Tooltip } from "antd";
-import {FaChevronDown} from 'react-icons/fa'
+import { FaChevronDown } from "react-icons/fa";
 import { waitForTransaction } from "@wagmi/core";
 import "./styles/index.scss";
 import { useNavigate, useParams } from "react-router-dom";
@@ -35,6 +35,7 @@ const repay = "repay";
 
 export default function PoolComponent(props) {
   const { contracts, user, web3, isLoading, isError, poolList } = props;
+  console.log("CONTRACT", contracts);
   const [activeToken, setActiveToken] = useState(0);
   const [selectedToken, setSelectedToken] = useState(null);
   const [collateralToken, setCollaterralToken] = useState(null);
@@ -55,7 +56,7 @@ export default function PoolComponent(props) {
     getOraclePrice: false,
     getPoolTokensData: false,
   });
- const [reFetching, setReFetching] = useState(false)
+  const [reFetching, setReFetching] = useState(false);
   const [openToken0, setOpenToken0] = useState(false);
   const [openToken1, setOpenToken1] = useState(false);
   const [selectedTokens, setSelectedTokens] = useState({
@@ -143,7 +144,6 @@ export default function PoolComponent(props) {
       hash,
     })
       .then((receipt) => {
-
         // console.log("receipt", receipt);
         if (receipt.status == 1) {
           message.success(
@@ -152,7 +152,7 @@ export default function PoolComponent(props) {
             ).toFixed(4)} for token ${txnData.tokenSymbol}`,
             5
           );
-          setReFetching(true)
+          setReFetching(true);
           if (txnData.method !== "approval") {
             setAmount(0);
             //setShowTwitterModal(true)
@@ -196,67 +196,63 @@ export default function PoolComponent(props) {
 
   const handleOperation = () => {
     try {
-
-    (async () => {
-      setIsOperationLoading(true);
-      if (contracts.coreContract) {
-        if (activeOperation === lend) {
-          handleLend(
-            amount,
-            selectedToken,
-            poolData,
-            contracts,
-            user.address,
-            selectedPool,
-            web3,
-            checkTxnStatus,
-            checkTxnError
-          );
-        } else if (activeOperation === redeem) {
-          handleRedeem(
-            amount,
-            selectedToken,
-            max,
-            poolData,
-            selectedPool,
-            user.address,
-            contracts,
-            checkTxnStatus,
-            checkTxnError
-          );
-        } else if (activeOperation === borrow) {
-          handleBorrow(
-            selectedToken,
-            user.address,
-            collateralToken,
-            poolData,
-            contracts,
-            colleteral,
-            amount,
-            web3,
-            checkTxnStatus,
-            checkTxnError
-          );
-        } else if (activeOperation === repay) {
-          handleRepay(
-            amount,
-            selectedToken,
-            poolData,
-            max,
-            contracts,
-            selectedPool,
-            user.address,
-            web3,
-            checkTxnStatus,
-            checkTxnError
-          );
+      (async () => {
+        setIsOperationLoading(true);
+        if (contracts.coreContract) {
+          if (activeOperation === lend) {
+            handleLend(
+              amount,
+              selectedToken,
+              poolData,
+              contracts,
+              user.address,
+              selectedPool,
+              web3,
+              checkTxnStatus,
+              checkTxnError
+            );
+          } else if (activeOperation === redeem) {
+            handleRedeem(
+              amount,
+              selectedToken,
+              max,
+              poolData,
+              selectedPool,
+              user.address,
+              contracts,
+              checkTxnStatus,
+              checkTxnError
+            );
+          } else if (activeOperation === borrow) {
+            handleBorrow(
+              selectedToken,
+              user.address,
+              collateralToken,
+              poolData,
+              contracts,
+              colleteral,
+              amount,
+              web3,
+              checkTxnStatus,
+              checkTxnError
+            );
+          } else if (activeOperation === repay) {
+            handleRepay(
+              amount,
+              selectedToken,
+              poolData,
+              max,
+              contracts,
+              selectedPool,
+              user.address,
+              web3,
+              checkTxnStatus,
+              checkTxnError
+            );
+          }
         }
-      }
-    })();
-          
-  } catch (error) {
-      
-  }
+      })();
+    } catch (error) {}
   };
 
   const toggleToken = (token) => {
@@ -305,72 +301,70 @@ export default function PoolComponent(props) {
 
   // get contract data
 
-
   const fetchPoolDATA = async () => {
     try {
+      if (!methodLoaded.getPoolData) {
+        const pool = await getPoolBasicData(
+          contracts,
+          selectedPool,
+          poolData,
+          poolList[selectedPool]
+        );
 
-    if (!methodLoaded.getPoolData) {
-      const pool = await getPoolBasicData(
-        contracts,
-        selectedPool,
-        poolData,
-        poolList[selectedPool]
-      );
-      if(pool?.token0 && pool?.token1){
-        setPoolData(pool);
-        setMethodLoaded({ ...methodLoaded, getPoolData: true });
+        if (pool?.token0 && pool?.token1) {
+          setPoolData(pool);
+          setMethodLoaded({ ...methodLoaded, getPoolData: true });
+        }
+      } else if (methodLoaded.getPoolData && !methodLoaded.getPoolFullData) {
+        const pool = await getPoolAllData(
+          contracts,
+          poolData,
+          selectedPool,
+          user.address
+        );
+        if (pool?.token0 && pool?.token1) {
+          setMethodLoaded({ ...methodLoaded, getPoolFullData: true });
+          setPoolData(pool);
+        }
+      } else if (
+        methodLoaded.getPoolData &&
+        methodLoaded.getPoolFullData &&
+        !methodLoaded.getOraclePrice
+      ) {
+        const pool = await getOracleData(contracts, poolData);
+        if (pool?.token0 && pool?.token1) {
+          setPoolData(pool);
+          setMethodLoaded({ ...methodLoaded, getOraclePrice: true });
+        }
+      } else if (
+        methodLoaded.getPoolData &&
+        methodLoaded.getPoolFullData &&
+        methodLoaded.getOraclePrice &&
+        !methodLoaded.getPoolTokensData
+      ) {
+        const poolTokensPrice = await getTokenPrice(
+          contracts,
+          poolData,
+          selectedPool,
+          user.address
+        );
+        if (poolTokensPrice?.token0 && poolTokensPrice?.token1) {
+          setPoolData(poolTokensPrice);
+          setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
+        }
       }
- 
-    } else if (methodLoaded.getPoolData && !methodLoaded.getPoolFullData) {
-      const pool = await getPoolAllData(
-        contracts,
-        poolData,
-        selectedPool,
-        user.address
-      );
-      if(pool?.token0 && pool?.token1){
-      setMethodLoaded({ ...methodLoaded, getPoolFullData: true });
-      setPoolData(pool);
-      }
-    } else if (
-      methodLoaded.getPoolData &&
-      methodLoaded.getPoolFullData &&
-      !methodLoaded.getOraclePrice
-    ) {
-      const pool = await getOracleData(contracts, poolData);
-      if(pool?.token0 && pool?.token1){
-      setPoolData(pool);
-      setMethodLoaded({ ...methodLoaded, getOraclePrice: true });
-      }
-    } else if (
-      methodLoaded.getPoolData &&
-      methodLoaded.getPoolFullData &&
-      methodLoaded.getOraclePrice &&
-      !methodLoaded.getPoolTokensData
-    ) {
-      const poolTokensPrice = await getTokenPrice(
-        contracts,
-        poolData,
-        selectedPool,
-        user.address
-      );
-      if(poolTokensPrice?.token0 && poolTokensPrice?.token1){
-
-      setPoolData(poolTokensPrice);
-      setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
-      }
+    } catch (error) {
+      throw error;
     }
-          
-  } catch (error) {
-      throw error
-  }
-  }
-
+  };
 
   useEffect(() => {
     if (selectedToken === null) setIsPageLoading(true);
 
-    const isAllTrue = Object.values(methodLoaded).find((el) => el === false) === undefined ? true: false;
+    const isAllTrue =
+      Object.values(methodLoaded).find((el) => el === false) === undefined
+        ? true
+        : false;
 
     if (
       contracts.helperContract &&
@@ -378,51 +372,47 @@ export default function PoolComponent(props) {
       Object.values(poolList).length > 0 &&
       isAllTrue == false
     ) {
-    
       try {
-        fetchPoolDATA()
+        fetchPoolDATA();
       } catch (error) {
-       
-        fetchPoolDATA()
+        fetchPoolDATA();
       }
-
     }
 
-      if (
-        isAllTrue  &&
-        selectedToken !== null &&
-        selectedToken?._symbol === poolData?.token0?._symbol
-      ) {
-        setSelectedToken(poolData?.token0);
-        setCollaterralToken(poolData?.token1);
-        setReFetching(false)
-        setActiveToken(0);
-        setIsPageLoading(false);
-        setSelectedTokens({
-          token0: poolData?.token0?.symbol,
-          token1: poolData?.token1?.symbol
-        })
-      } else if (isAllTrue  && selectedToken !== null) {
-        setSelectedToken(poolData?.token1);
-        setCollaterralToken(poolData?.token0);
-        setIsPageLoading(false);
-        setReFetching(false)
-        setSelectedTokens({
-          token0: poolData?.token0?.symbol,
-          token1: poolData?.token1?.symbol
-        })
-      } else if (isAllTrue ) {
-        setSelectedToken(poolData?.token0);
-        setCollaterralToken(poolData?.token1);
-        setActiveToken(0);
-        setIsPageLoading(false);
-        setReFetching(false)
-        setSelectedTokens({
-          token0: poolData?.token0?.symbol,
-          token1: poolData?.token1?.symbol
-        })
-      }
-    
+    if (
+      isAllTrue &&
+      selectedToken !== null &&
+      selectedToken?._symbol === poolData?.token0?._symbol
+    ) {
+      setSelectedToken(poolData?.token0);
+      setCollaterralToken(poolData?.token1);
+      setReFetching(false);
+      setActiveToken(0);
+      setIsPageLoading(false);
+      setSelectedTokens({
+        token0: poolData?.token0?.symbol,
+        token1: poolData?.token1?.symbol,
+      });
+    } else if (isAllTrue && selectedToken !== null) {
+      setSelectedToken(poolData?.token1);
+      setCollaterralToken(poolData?.token0);
+      setIsPageLoading(false);
+      setReFetching(false);
+      setSelectedTokens({
+        token0: poolData?.token0?.symbol,
+        token1: poolData?.token1?.symbol,
+      });
+    } else if (isAllTrue) {
+      setSelectedToken(poolData?.token0);
+      setCollaterralToken(poolData?.token1);
+      setActiveToken(0);
+      setIsPageLoading(false);
+      setReFetching(false);
+      setSelectedTokens({
+        token0: poolData?.token0?.symbol,
+        token1: poolData?.token1?.symbol,
+      });
+    }
   }, [contracts, methodLoaded, user, poolList, selectedPool, poolData]);
 
   // max trigger for sending max values in redeem, lend, borrow, repay;
@@ -494,7 +484,7 @@ export default function PoolComponent(props) {
       [key]: token,
     };
     setSelectedTokens(tokens);
-    setShowSelectTokenModal(false)
+    setShowSelectTokenModal(false);
     if (tokens.token0 && tokens.token1) {
       let poolAddress;
       const poolsArray = Object.values(poolList);
@@ -507,7 +497,7 @@ export default function PoolComponent(props) {
             poolsArray[i].token1.symbol == tokens.token0)
         ) {
           poolAddress = pool.poolAddress;
-          navigate(`/pool/${pool.poolAddress}`)
+          navigate(`/pool/${pool.poolAddress}`);
           setMethodLoaded({
             getPoolData: false,
             getPoolFullData: false,
@@ -523,23 +513,22 @@ export default function PoolComponent(props) {
         }
       }
 
-      if(poolAddress == undefined){
+      if (poolAddress == undefined) {
         setSelectedTokens({
           token0: poolData?.token0?.symbol,
-          token1: poolData?.token1?.symbol
-        })
+          token1: poolData?.token1?.symbol,
+        });
       }
       // console.log("poolAddressFound", poolAddress, poolData);
     }
 
     // console.log("handlePoolAndTokenSelect", tokens);
-
   };
   const handleSelectTokens = (key, symbol) => {
     // setVisible0(bool);
     const token = {
-      ...selectedToken
-    }
+      ...selectedToken,
+    };
   };
 
   const SortContent = () => {
@@ -593,22 +582,20 @@ export default function PoolComponent(props) {
   //         }
   //       });
   //     setTokensWithCreatedPools(filtered);
-   
+
   //   }
   // }, [poolList]);
 
-
   const handleOpenSelectTokenMoadal = (bool, token) => {
-    if(token === 'token0'){
-      setOpenToken0(true)
-      setOpenToken1(false)
-    } else if (token === 'token1'){
-      setOpenToken1(true)
-      setOpenToken0(false)
+    if (token === "token0") {
+      setOpenToken0(true);
+      setOpenToken1(false);
+    } else if (token === "token1") {
+      setOpenToken1(true);
+      setOpenToken0(false);
     }
-    setShowSelectTokenModal(bool)
-  }
-
+    setShowSelectTokenModal(bool);
+  };
 
   return (
     <>
@@ -616,7 +603,6 @@ export default function PoolComponent(props) {
         <PoolSkeleton />
       ) : (
         <div className="pool_container">
- 
           <div className="token_container">
             <div>
               <div
@@ -669,19 +655,26 @@ export default function PoolComponent(props) {
               >
                 Redeem
               </div>
-              <Tooltip title={selectedToken?.tabs?.includes("borrow")? '': 'Oracle is not set'} defaultOpen >
-              <div
-                onClick={() => toggleOperation(borrow)}
-                className={
-                  activeOperation === borrow
-                    ? "active"
-                    : selectedToken?.tabs?.includes("borrow")
+              <Tooltip
+                title={
+                  selectedToken?.tabs?.includes("borrow")
                     ? ""
-                    : "disable_tab"
+                    : "Oracle is not set"
                 }
+                defaultOpen
               >
-                Borrow
-              </div>
+                <div
+                  onClick={() => toggleOperation(borrow)}
+                  className={
+                    activeOperation === borrow
+                      ? "active"
+                      : selectedToken?.tabs?.includes("borrow")
+                      ? ""
+                      : "disable_tab"
+                  }
+                >
+                  Borrow
+                </div>
               </Tooltip>
               <div
                 onClick={() => toggleOperation(repay)}
@@ -699,12 +692,15 @@ export default function PoolComponent(props) {
 
             <div className="user_liquidity">
               <p>{liquidityText[activeOperation]}</p>
-              <Tooltip title={getLiquidityAmount[activeOperation]} trigger='hover'>
-              <h1>
-                {selectedToken
-                  ? fixFormatNumber(getLiquidityAmount[activeOperation])
-                  : 0}
-              </h1>
+              <Tooltip
+                title={getLiquidityAmount[activeOperation]}
+                trigger="hover"
+              >
+                <h1>
+                  {selectedToken
+                    ? fixFormatNumber(getLiquidityAmount[activeOperation])
+                    : 0}
+                </h1>
               </Tooltip>
             </div>
 
@@ -888,7 +884,11 @@ export default function PoolComponent(props) {
             footer={null}
             closable={false}
           >
-            <TokenListMoadal openToken={{token0: openToken0, token1: openToken1}} handlePoolAndTokenSelect={handlePoolAndTokenSelect} selectedTokens={selectedTokens} />
+            <TokenListMoadal
+              openToken={{ token0: openToken0, token1: openToken1 }}
+              handlePoolAndTokenSelect={handlePoolAndTokenSelect}
+              selectedTokens={selectedTokens}
+            />
           </Modal>
         </div>
       )}
