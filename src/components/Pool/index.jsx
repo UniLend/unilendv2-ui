@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Slider, Button, message, Modal, Popover, Tooltip, notification } from "antd";
+import {
+  Slider,
+  Button,
+  message,
+  Modal,
+  Popover,
+  Tooltip,
+  notification,
+} from "antd";
 import { FaChevronDown } from "react-icons/fa";
 import "./styles/index.scss";
 import { useNavigate, useParams } from "react-router-dom";
@@ -143,29 +151,27 @@ export default function PoolComponent(props) {
       getCollateral();
     }
   }, [amount, selectLTV]);
-// Notification 
-const openNotificationWithIcon = (result, txnData) => {
-  notification.open({
-    mesage: { result },
-    description: `Transaction for ${txnData.method} of ${Number(
-      txnData.amount
-    ).toFixed(4)} for token ${txnData.tokenSymbol}`,
-    onClick: () => {
-      console.log("Notification Clicked!");
-    },
-    className: "notification_class",
-    closeIcon: false,
-    duration: 5,
-    icon:
-      result == "success" ? (
-        <CheckCircleOutlined style={{ color: "green" }} />
-      ) : (
-        <CloseCircleOutlined style={{ color: "red" }} />
-      ),
-  });
-};
-
-
+  // Notification
+  const openNotificationWithIcon = (result, txnData) => {
+    notification.open({
+      mesage: { result },
+      description: `Transaction for ${txnData.method} of ${Number(
+        txnData.amount
+      ).toFixed(4)} for token ${txnData.tokenSymbol}`,
+      onClick: () => {
+        console.log("Notification Clicked!");
+      },
+      className: "notification_class",
+      closeIcon: false,
+      duration: 0,
+      icon:
+        result == "success" ? (
+          <CheckCircleOutlined style={{ color: "green" }} />
+        ) : (
+          <CloseCircleOutlined style={{ color: "red" }} />
+        ),
+    });
+  };
 
   const checkTxnStatus = (hash, txnData) => {
     waitForTransactionLib({

@@ -534,30 +534,19 @@ input[type="number"] {
   }
 }
 
-
-.ant-notification {
-  margin-top: 32px;
-  padding: 0px;
+.notification_class {
+  margin-top: 35px;
   $border: 1px;
   background-clip: padding-box;
-  border: solid $border transparent;
+  border: solid $border var(--button-border);
   border-radius: 12px;
-  &:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-    margin: -$border;
-    border-radius: inherit;
-    background: var(--popup-border);
-  }
+  color: var(--pure-black);
+  background-color: var(--popup-back-color);
+  border-radius: 11px;
+  padding: 8px 5px;
+}
+@media ($mobile) {
   .notification_class {
-    margin: 0 auto;
-    color: var(--pure-black);
-    background-color: var(--popup-back-color);
-    border-radius: 11px;
+    padding: 3px;
   }
 }

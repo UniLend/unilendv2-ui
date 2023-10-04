@@ -213,7 +213,9 @@ export default function Navbar() {
                 src={supportedNetworks[chainId].logoUrl}
                 alt={`${supportedNetworks[chainId].chainName} Logo`}
               />
-              <p className="wallet-name">{supportedNetworks[chainId].chainName}</p>
+              <p className="wallet-name">
+                {supportedNetworks[chainId].chainName}
+              </p>
             </div>
           </div>
         ))}

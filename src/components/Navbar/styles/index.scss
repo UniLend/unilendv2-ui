@@ -114,16 +114,16 @@
     .network_chamber {
       color: var(--pure-black);
       background-color: var(--low-dark-bg);
-      div{
+      div {
         height: 35px;
-        img{
-          width:20px;
-          height:20px;
+        img {
+          width: 20px;
+          height: 20px;
           padding: 1px;
         }
       }
     }
-    .network_address{
+    .network_address {
       color: var(--pure-black);
       background-color: var(--low-dark-bg);
     }
@@ -141,7 +141,7 @@
       display: flex;
       align-items: center;
       cursor: pointer;
-      .address{
+      .address {
         background-color: var(--main);
         color: var(--always-white);
       }
@@ -169,33 +169,30 @@
       }
     }
     @media ($mobile) {
-      .wallet_connection{
-        gap:4px;
+      .wallet_connection {
+        gap: 4px;
       }
-        div{
-          p,
-          div {
-            font-size: $font-size-xxsm;
-            // margin: 0px;
-          }
-          .address{
-            height:30px;
-          }
-          }
-          .network_chamber{
-            div{
-              p{
-                display: none;
-              }
-              img{
-                margin: 4px;
-              }
-            }
-           
+      div {
+        p,
+        div {
+          font-size: $font-size-xxsm;
+          // margin: 0px;
         }
-     
+        .address {
+          height: 30px;
+        }
+      }
+      .network_chamber {
+        div {
+          p {
+            display: none;
+          }
+          img {
+            margin: 4px;
+          }
+        }
+      }
     }
-
   }
 
   .hamberger {
