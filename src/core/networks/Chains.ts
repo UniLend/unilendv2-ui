@@ -1,25 +1,30 @@
-
-import { Chain } from "@wagmi/core"
+import { Chain } from "@wagmi/core";
 export const zkEVMTestNet = {
-    id: 1442,
-    name: 'zkEVM Testnet',
-    network: 'polygon-zkevm-testnet',
-    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-    rpcUrls: {
-      default: {
-        http: ['https://rpc.public.zkevm-test.net','https://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a'],
-      },
-      public: {
-        http: ['https://rpc.public.zkevm-test.net','https://rpc.public.zkevm-test.net'],
-      },
+  id: 1442,
+  name: "zkEVM Testnet",
+  network: "polygon-zkevm-testnet",
+  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: [
+        "https://rpc.public.zkevm-test.net",
+        "https://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a",
+      ],
     },
-    blockExplorers: {
-      default: {
-        name: 'Blockscout',
-        url: 'https://explorer.public.zkevm-test.net',
-      },
+    public: {
+      http: [
+        "https://rpc.public.zkevm-test.net",
+        "https://rpc.public.zkevm-test.net",
+      ],
     },
-    testnet: true,
+  },
+  blockExplorers: {
+    default: {
+      name: "Blockscout",
+      url: "https://explorer.public.zkevm-test.net",
+    },
+  },
+  testnet: true,
 } as Chain;
 
 export const shardeumTestnet = {
@@ -29,10 +34,10 @@ export const shardeumTestnet = {
   nativeCurrency: { name: "shardeum", symbol: "SHM", decimals: 18 },
   rpcUrls: {
     default: {
-      http: [ 'https://dapps.shardeum.org/'],
+      http: ["https://dapps.shardeum.org/"],
     },
     public: {
-      http: [ 'https://dapps.shardeum.org/ '],
+      http: ["https://dapps.shardeum.org/ "],
     },
   },
   blockExplorers: {
@@ -51,16 +56,55 @@ export const sepoliaTestnet = {
   nativeCurrency: { name: "Etherium", symbol: "ETH", decimals: 18 },
   rpcUrls: {
     default: {
-      http: [ 'https://sepolia.infura.io/v3/603c7bc2fa6c46ecb189576fded15f81' ,'https://eth-sepolia.g.alchemy.com/v2/mibiTKAFT4EkiFnw5Fkl55NkwpOVibgP'],
+      http: [
+        "https://sepolia.infura.io/v3/603c7bc2fa6c46ecb189576fded15f81",
+        "https://eth-sepolia.g.alchemy.com/v2/mibiTKAFT4EkiFnw5Fkl55NkwpOVibgP",
+      ],
     },
     public: {
-      http: [ 'https://sepolia.infura.io/v3/ '],
+      http: ["https://sepolia.infura.io/v3/ "],
     },
   },
   blockExplorers: {
     default: {
       name: "sepolia",
       url: "https://sepolia.etherscan.io/",
+    },
+  },
+  testnet: true,
+} as Chain;
+
+export const holeskyTestnet = {
+  id: 17000,
+  name: "Holesky Testnet",
+  network: "Holesky Testnet",
+  nativeCurrency: { name: "Etherium", symbol: "ETH", decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: [
+        // "https://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
+        "https://ethereum-holesky.publicnode.com",
+      ],
+      webSocket: [
+        "wss://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
+        "wss://ethereum-holesky.publicnode.com",
+      ],
+    },
+    public: {
+      http: [
+        // "https://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
+        "https://ethereum-holesky.publicnode.com",
+      ],
+      webSocket: [
+        "wss://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
+        "wss://ethereum-holesky.publicnode.com",
+      ],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "holesky",
+      url: "https://holesky.etherscan.io/",
     },
   },
   testnet: true,

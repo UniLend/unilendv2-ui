@@ -1,82 +1,90 @@
-export const contractAddress = { 
-  '137': {
+export const contractAddress = {
+  137: {
     helperAddress: import.meta.env.VITE_POLYGON_HELPER,
-  
+
     coreAddress: import.meta.env.VITE_POLYGON_CORE,
     positionAddress: import.meta.env.VITE_POLYGON_POSITION,
-  
+
     poolAddress: import.meta.env.VITE_POLYGON_POOL,
     unilendOracle: import.meta.env.VITE_POLYGON_ORACLE,
     interestRateModal: import.meta.env.VITE_POLYGON_INTERESTRATEMODAL,
-    uftToken : import.meta.env.VITE_POLYGON_UFT,
-    uftgToken: import.meta.env.VITE_POLYGON_UFTG
+    uftToken: import.meta.env.VITE_POLYGON_UFT,
+    uftgToken: import.meta.env.VITE_POLYGON_UFTG,
   },
-  '8081': {
-    helperAddress: '0xAD2bC0ba9368d932c9648dbb40C3D38B4Da36E6E',
-  
-    coreAddress: '0x084e270Fe5b92295703527732aF6e834c1767BE8',
-    positionAddress: '0xCD720950b194e98744520991C75Af8d9b57c2763',
-  
-    poolAddress: '0xBA98A84e0A77823b8DA87c1D1eAce1879F8EF0Ca',
-    unilendOracle: '0x63CaE3Ac0d8024FC5F11d93A036f9D3775fe85e3',
-    interestRateModal:'0x2e6fa297973280c4f5ab7324AD74C86788EC5eEa'
-  },
-  
-  '11155111': {
-    helperAddress: '0xDa7389416Fe3588122109B15B6CF069cb3E70038',
-  
-    coreAddress: '0x207Cb7aEb640fA6CEe696269dEe1A441D0425a3d',
-    positionAddress: '0x1D223E31014d436b909225eDd5D0677C93E77622',
-  
-    poolAddress: '0xeAA6370e45BaBD9093491fe4f03191A328f138fe',
-    unilendOracle: '0x27f30F672f40192D34216f39FcA40e4b14Aeb31C',
+  8081: {
+    helperAddress: "0xAD2bC0ba9368d932c9648dbb40C3D38B4Da36E6E",
+
+    coreAddress: "0x084e270Fe5b92295703527732aF6e834c1767BE8",
+    positionAddress: "0xCD720950b194e98744520991C75Af8d9b57c2763",
+
+    poolAddress: "0xBA98A84e0A77823b8DA87c1D1eAce1879F8EF0Ca",
+    unilendOracle: "0x63CaE3Ac0d8024FC5F11d93A036f9D3775fe85e3",
+    interestRateModal: "0x2e6fa297973280c4f5ab7324AD74C86788EC5eEa",
   },
 
-  '80001': {
-    helperAddress: '0x311bE495c75dd7061A1365d507F6D81A4164192f',
-  
-    coreAddress: '0x35B7296a75845399b0447a4F5dBCB07b5BcC8B4D',
-    positionAddress: '0x62f5Be0da0302665Dc39F3386B8e3e60aDe4bf7B',
-  
-    poolAddress: '0x84D3B40256879601824A5E4F249d73dAE24D1fA3',
-    unilendOracle: '0x7F1455c727e58A51dFA168fd711b8B664E1E48BA',
-    uftToken : '0x5093af5dF5EAfd96B518a11cfb32c37DA2f8f0C3',
-    uftgToken: '0x0EdFD045ce944e3F7298ABC2CCE7ef495984368B',//'0xE6D4BEAc72EF4D4D525318C67Eb502C133da8B7f',
-    
-    uftgTokenold: '0x5dabCD04f47Dd4b8A974C9fcBF75cdcdebac6DBb',//old
-    timeLock:'0xEC8283E65557Fc4E17AA75C56144eFb8eFA3B9e2', //old
-    delegate: '0xE0555dBE41dA929d6cEbe0b92c4f85679a37ED87', //old
-    delegator: '0xDdF869E44BD3d5877777f59058F738F4A916fC26' //old
+  11155111: {
+    helperAddress: "0xDa7389416Fe3588122109B15B6CF069cb3E70038",
+
+    coreAddress: "0x207Cb7aEb640fA6CEe696269dEe1A441D0425a3d",
+    positionAddress: "0x1D223E31014d436b909225eDd5D0677C93E77622",
+
+    poolAddress: "0xeAA6370e45BaBD9093491fe4f03191A328f138fe",
+    unilendOracle: "0x27f30F672f40192D34216f39FcA40e4b14Aeb31C",
   },
 
-  '1442': {
-    helperAddress: '0x1aaeF1b135691491f49b1029d2BDC52de4521f10',
-    coreAddress: '0xECF9c681c22D3CcFC53670812E863b0d05828dBC',
-    positionAddress: '0x9422A2D29d932FeDB8a7e7D2259D24a4B50eF232',
-    poolAddress: '0xA9259387E643c1188B71Dc18A0cd5b42F991CF8F',
-    unilendOracle: '0x534a6CF97fC2FA2Da632be805eC4B1fAa3481635',
+  80001: {
+    helperAddress: "0x311bE495c75dd7061A1365d507F6D81A4164192f",
+
+    coreAddress: "0x35B7296a75845399b0447a4F5dBCB07b5BcC8B4D",
+    positionAddress: "0x62f5Be0da0302665Dc39F3386B8e3e60aDe4bf7B",
+
+    poolAddress: "0x84D3B40256879601824A5E4F249d73dAE24D1fA3",
+    unilendOracle: "0x7F1455c727e58A51dFA168fd711b8B664E1E48BA",
+    uftToken: "0x5093af5dF5EAfd96B518a11cfb32c37DA2f8f0C3",
+    uftgToken: "0x0EdFD045ce944e3F7298ABC2CCE7ef495984368B", //'0xE6D4BEAc72EF4D4D525318C67Eb502C133da8B7f',
+
+    uftgTokenold: "0x5dabCD04f47Dd4b8A974C9fcBF75cdcdebac6DBb", //old
+    timeLock: "0xEC8283E65557Fc4E17AA75C56144eFb8eFA3B9e2", //old
+    delegate: "0xE0555dBE41dA929d6cEbe0b92c4f85679a37ED87", //old
+    delegator: "0xDdF869E44BD3d5877777f59058F738F4A916fC26", //old
   },
-  '1':{
-    uftToken : '0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1',
-    uftgToken: '0x43EAbB2706deC026C844161D5Bdb1773161D3D7c',
-    timeLock:'0x596DEb3c6B99970b18DDa0F567e9d39DD70B1caa',
-    delegate: '0x96AA92388db80469A242514068A6B83ebEe22861',
-    delegator: '0x2e93bc7dEA58B0F577a3c9DDbd29ca5939d74145'
+
+  1442: {
+    helperAddress: "0x1aaeF1b135691491f49b1029d2BDC52de4521f10",
+    coreAddress: "0xECF9c681c22D3CcFC53670812E863b0d05828dBC",
+    positionAddress: "0x9422A2D29d932FeDB8a7e7D2259D24a4B50eF232",
+    poolAddress: "0xA9259387E643c1188B71Dc18A0cd5b42F991CF8F",
+    unilendOracle: "0x534a6CF97fC2FA2Da632be805eC4B1fAa3481635",
   },
-  '1422': {
-    helperAddress: '0xAe7a2D9C86fc387432Cd619379ee1c96Aa5E6a0a',
-    coreAddress: '0xbcC80cCbDe188d34D35018602dC3f56766bA377D',
-    positionAddress: '0x9958D2e9dcC2e3757F8a503A898D1d09c29A0a1F',
-    poolAddress: '0x9fb4303C68D58e16410c35C12D4299eFa6f300c4',
-    unilendOracle: '0x281Fd22367D046946d188288eB57A3Fb2e30681c',
+  1: {
+    uftToken: "0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1",
+    uftgToken: "0x43EAbB2706deC026C844161D5Bdb1773161D3D7c",
+    timeLock: "0x596DEb3c6B99970b18DDa0F567e9d39DD70B1caa",
+    delegate: "0x96AA92388db80469A242514068A6B83ebEe22861",
+    delegator: "0x2e93bc7dEA58B0F577a3c9DDbd29ca5939d74145",
   },
-  '280': {
-    helperAddress: '0xAe7a2D9C86fc387432Cd619379ee1c96Aa5E6a0a',
-    coreAddress: '0x4d532A1F9a7663509aC935d7Eb13eC2D6cDD1017',
-    positionAddress: '0x8Fd4Fc36Ecf0365BCf5A0d2d863faBf6D614358C',
-    poolAddress: '0x6A62411c73270778E0DB25361b8D2bD3E8f18b63',
-    unilendOracle: '0xD8659Cb7f24B2057C48c4CD4ec4ACe6e01516037',
-    interestModal:'0x5286aF7E56c2320bDFC7C7db159B6BA68cbdc16B'
+  1422: {
+    helperAddress: "0xAe7a2D9C86fc387432Cd619379ee1c96Aa5E6a0a",
+    coreAddress: "0xbcC80cCbDe188d34D35018602dC3f56766bA377D",
+    positionAddress: "0x9958D2e9dcC2e3757F8a503A898D1d09c29A0a1F",
+    poolAddress: "0x9fb4303C68D58e16410c35C12D4299eFa6f300c4",
+    unilendOracle: "0x281Fd22367D046946d188288eB57A3Fb2e30681c",
+  },
+  280: {
+    helperAddress: "0xAe7a2D9C86fc387432Cd619379ee1c96Aa5E6a0a",
+    coreAddress: "0x4d532A1F9a7663509aC935d7Eb13eC2D6cDD1017",
+    positionAddress: "0x8Fd4Fc36Ecf0365BCf5A0d2d863faBf6D614358C",
+    poolAddress: "0x6A62411c73270778E0DB25361b8D2bD3E8f18b63",
+    unilendOracle: "0xD8659Cb7f24B2057C48c4CD4ec4ACe6e01516037",
+    interestModal: "0x5286aF7E56c2320bDFC7C7db159B6BA68cbdc16B",
+  },
+  17000: {
+    helperAddress: "0xD9750f7EFC966493A237d636072162DacF6C60a4",
+    coreAddress: "0x12B0eeC23722BF9d15238eBcBe52C92F91aCdeA1",
+    positionAddress: "0xffd57a89e8A3202546c2D22e03d28b7c63b49C59",
+    poolAddress: "0x93EB029Bf6Cdb7c8d7D1a75DDb0bB90dCC3f9D00",
+    unilendOracle: "0x9D2157cBf3060B2B87995b423178098d75696206",
+    interestModal: "0x530dccDcbc730D76ACbA0334Dfca99dCfAaeba30",
   },
 };
 

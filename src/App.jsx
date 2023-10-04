@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Web3 from "web3";
 import { useDispatch, useSelector } from "react-redux";
 //import { useQuery } from "@apollo/client";
-import { useQuery, useQueryClient} from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import "antd/dist/antd.css";
 import {
   createClient,
@@ -19,7 +19,7 @@ import { publicProvider } from "@wagmi/core/providers/public";
 import { InjectedConnector } from "@wagmi/core/connectors/injected";
 import { MetaMaskConnector } from "@wagmi/core/connectors/metaMask";
 import { alchemyProvider } from "@wagmi/core/providers/alchemy";
-import { infuraProvider } from '@wagmi/core/providers/infura'
+import { infuraProvider } from "@wagmi/core/providers/infura";
 
 import { CoinbaseWalletConnector } from "@wagmi/core/connectors/coinbaseWallet";
 
@@ -31,7 +31,7 @@ import {
   sepolia,
   polygonZkEvmTestnet,
   zkSyncTestnet,
-  polygon
+  polygon,
 } from "@wagmi/core/chains";
 import { ethers } from "ethers";
 import { WalletConnectConnector } from "@wagmi/core/connectors/walletConnect";
@@ -70,18 +70,38 @@ import {
   getTokenPrice,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
-import { zkEVMTestNet, shardeumTestnet, sepoliaTestnet } from "./core/networks/Chains";
+import {
+  zkEVMTestNet,
+  shardeumTestnet,
+  sepoliaTestnet,
+  holeskyTestnet,
+} from "./core/networks/Chains";
 import { getTokenUSDPrice } from "./helpers/contracts";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const alchemyId2 = import.meta.env.VITE_ALCHEMY_ID2;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
-const infuraID = import.meta.env.VITE_INFURA_ID
+const infuraID = import.meta.env.VITE_INFURA_ID;
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, bsc, polygonMumbai, sepoliaTestnet, zkEVMTestNet, zkSyncTestnet, polygon, shardeumTestnet],
-  [ alchemyProvider({ apiKey: alchemyId }),alchemyProvider({ apiKey: alchemyId2 }), infuraProvider({ apiKey: infuraID, stallTimeout: 1_000  }), publicProvider()]
+  [
+    mainnet,
+    bsc,
+    polygonMumbai,
+    sepoliaTestnet,
+    zkEVMTestNet,
+    zkSyncTestnet,
+    polygon,
+    shardeumTestnet,
+    holeskyTestnet,
+  ],
+  [
+    alchemyProvider({ apiKey: alchemyId }),
+    alchemyProvider({ apiKey: alchemyId2 }),
+    infuraProvider({ apiKey: infuraID, stallTimeout: 1_000 }),
+    publicProvider(),
+  ]
 );
 
 export const MetaMaskconnector = new MetaMaskConnector({
@@ -98,9 +118,7 @@ export const WalletConnector = new WalletConnectConnector({
 });
 
 const client = createClient({
-  connectors: [
-    new InjectedConnector({ chains }),
-  ],
+  connectors: [new InjectedConnector({ chains })],
   autoConnect: true,
   provider,
   webSocketProvider,
@@ -111,34 +129,37 @@ const graphURL = {
   137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
 };
 
-const shardeumPools = [{
-  pool: '0x665ACEc556dC92C2E504beFA061d5f65Cd9493e2',
-  token1: '0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1',
-  token0:'0x11f13ad374e79b466a36eb835747e431fbbe3890'
-},
-// {
-//   pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
-//   token1: '0xd146878affF8c8dd3e9EBd9177F2AE4f6d4e5979',
-//   token0:'0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1'
-// }
-]
+const shardeumPools = [
+  {
+    pool: "0x665ACEc556dC92C2E504beFA061d5f65Cd9493e2",
+    token1: "0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1",
+    token0: "0x11f13ad374e79b466a36eb835747e431fbbe3890",
+  },
+  // {
+  //   pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
+  //   token1: '0xd146878affF8c8dd3e9EBd9177F2AE4f6d4e5979',
+  //   token0:'0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1'
+  // }
+];
 
 function App() {
   const dispatch = useDispatch();
-  const queryClient = useQueryClient()
-  const {isConnected} = getAccount();
+  const queryClient = useQueryClient();
+  const { isConnected } = getAccount();
   const { chain, chains } = getNetwork();
-  const {user, poolList} = useSelector((state) => state)
+  const { user, poolList } = useSelector((state) => state);
   const query = getPoolCreatedGraphQuery(user?.address);
   // const etherProvider = new ethers.providers.JsonRpcProvider( `https://sepolia.infura.io/v3/${infuraID}`);
   const state = useSelector((state) => state);
-  const networksWithGraph = [80001, 137]
+  const networksWithGraph = [80001, 137];
 
- const { data, loading, error , refetch} = useQuery('pools', async () => {
- const fetchedDATA = await fetchGraphQlData((chain?.id || user?.network?.id || 137), query)
- return fetchedDATA;
- } );
-
+  const { data, loading, error, refetch } = useQuery("pools", async () => {
+    const fetchedDATA = await fetchGraphQlData(
+      chain?.id || user?.network?.id || 137,
+      query
+    );
+    return fetchedDATA;
+  });
 
   document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`;
 
@@ -146,13 +167,11 @@ function App() {
 
   const isSame = state?.user?.address != getFromLocalStorage("user")?.address;
 
-
   useEffect(() => {
-    if(isConnected){
-
-      refetch()
+    if (isConnected) {
+      refetch();
     }
-  }, [isConnected])
+  }, [isConnected]);
   useEffect(() => {
     (async () => {
       try {
@@ -161,21 +180,22 @@ function App() {
           localStorage.getItem("wagmi.connected")
         );
         // const account = getAccount();
-        let provider ;
-        if (walletconnect && user?.isConnected ) {
+        let provider;
+        if (walletconnect && user?.isConnected) {
           const user = await connectWallet();
           dispatch(setUser(user));
           provider = getProvider();
         } else {
-           provider = new ethers.providers.JsonRpcProvider( `https://rpc.public.zkevm-test.net`);
+          provider = new ethers.providers.JsonRpcProvider(
+            `https://rpc.public.zkevm-test.net`
+          );
         }
         // dispatch(setWeb3(web3));
         const { chain: nextChain, chains } = getNetwork();
-        const networkID = user?.network?.id
+        const networkID = user?.network?.id;
         const { coreAddress, helperAddress, positionAddress } =
           contractAddress[chain?.id || nextChain?.id || networkID || "1442"];
 
-         
         const preparedData = [
           { abi: coreAbi, address: coreAddress },
           { abi: helperAbi, address: helperAddress },
@@ -203,7 +223,6 @@ function App() {
             throw err;
           });
       } catch (error) {
-       
         dispatch(setError(error));
       }
     })();
@@ -212,24 +231,26 @@ function App() {
   // for getting the pools and tokens datafor non graph networks
   useEffect(() => {
     const { chain } = getNetwork();
-    const networkID = user?.network?.id
-    if (state.contracts.coreContract && !networksWithGraph.includes(networkID) ) {
+    const networkID = user?.network?.id;
+    if (
+      state.contracts.coreContract &&
+      !networksWithGraph.includes(networkID)
+    ) {
       try {
         (async () => {
-        
           const poolData = {};
           const account = getAccount();
           let result;
 
-          if(networkID == 8081){
-            result = shardeumPools
+          if (networkID == 8081) {
+            result = shardeumPools;
           } else {
             result = await getAllEvents(
               state.contracts.coreContract,
               "PoolCreated"
             );
           }
-        
+
           const array = [];
           const tokenList = {};
           for (const pool of result) {
@@ -266,7 +287,7 @@ function App() {
             );
             const reverseResult = result.reverse();
             for (const poolElement of reverseResult) {
-              if(hidePools.includes(poolElement.pool)){
+              if (hidePools.includes(poolElement.pool)) {
                 continue;
               }
               poolData[poolElement.pool] = {
@@ -283,7 +304,6 @@ function App() {
               };
             }
           } else {
-         
             const ercTokens = await Promise.all(
               poolTokens.map((contract, i) => fetchToken({ address: contract }))
             );
@@ -305,7 +325,7 @@ function App() {
 
             const reverseResult = result.reverse();
             for (const poolElement of reverseResult) {
-              if(hidePools.includes(poolElement.pool)){
+              if (hidePools.includes(poolElement.pool)) {
                 continue;
               }
               poolData[poolElement.pool] = {
@@ -326,34 +346,31 @@ function App() {
           dispatch(setPools({ poolData, tokenList }));
         })();
       } catch (error) {
-       
         dispatch(setError(error));
       }
     }
   }, [state.contracts, chain?.id, user]);
 
-// get pools details from graph
+  // get pools details from graph
   useEffect(() => {
     const { chain } = getNetwork();
-    const networkID = user?.network?.id
+    const networkID = user?.network?.id;
 
     console.log("Graphdata", data);
-    if ( data && networksWithGraph.includes(networkID) && false) {
-     const allPositions = data?.positions
+    if (data && networksWithGraph.includes(networkID) && false) {
+      const allPositions = data?.positions;
       const poolData = {};
       const tokenList = {};
-    const poolsData = Array.isArray(data.pools) && data.pools
+      const poolsData = Array.isArray(data.pools) && data.pools;
 
-      for(const pool of poolsData){
-        if(hidePools.includes(pool?.pool)){
+      for (const pool of poolsData) {
+        if (hidePools.includes(pool?.pool)) {
           continue;
         }
-       const li = 
-       fixedToShort(pool.liquidity0) *
-        Number(pool.token0.priceUSD) +
-        fixedToShort(pool.liquidity1) *
-        Number(pool.token1.priceUSD) 
-       const openPosiions = allPositions.filter(
+        const li =
+          fixedToShort(pool.liquidity0) * Number(pool.token0.priceUSD) +
+          fixedToShort(pool.liquidity1) * Number(pool.token1.priceUSD);
+        const openPosiions = allPositions.filter(
           (el) => el?.pool?.pool == pool.pool
         );
         const poolInfo = {
@@ -363,48 +380,47 @@ function App() {
 
           totalLiquidity:
             fixedToShort(pool.liquidity0) *
-            getTokenUSDPrice(pool.token0.priceUSD) +
-             fixedToShort(pool.liquidity1) *
-             getTokenUSDPrice(pool.token1.priceUSD) ,
+              getTokenUSDPrice(pool.token0.priceUSD) +
+            fixedToShort(pool.liquidity1) *
+              getTokenUSDPrice(pool.token1.priceUSD),
 
           totalBorrowed:
-          fixedToShort(pool.totalBorrow0) *
-          getTokenUSDPrice(pool.token0.priceUSD) +
-           fixedToShort(pool.totalBorrow1) *
-           getTokenUSDPrice(pool.token1.priceUSD) ,
+            fixedToShort(pool.totalBorrow0) *
+              getTokenUSDPrice(pool.token0.priceUSD) +
+            fixedToShort(pool.totalBorrow1) *
+              getTokenUSDPrice(pool.token1.priceUSD),
 
-           openPosition: openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
-          token0:{
+          openPosition:
+            openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
+          token0: {
             ...pool.token0,
             address: pool?.token0?.id,
             logo: getTokenLogo(pool.token0.symbol),
           },
-          token1:{
+          token1: {
             ...pool.token1,
             address: pool?.token1?.id,
             logo: getTokenLogo(pool.token1.symbol),
-          }
-        }
+          },
+        };
         tokenList[String(pool.token0.id).toUpperCase()] = {
           ...pool.token0,
           address: pool?.token0?.id,
           logo: getTokenLogo(pool.token0.symbol),
-          pricePerToken: pool.token0.priceUSD
+          pricePerToken: pool.token0.priceUSD,
         };
         tokenList[String(pool.token1.id).toUpperCase()] = {
           ...pool.token1,
           address: pool?.token1?.id,
           logo: getTokenLogo(pool.token1.symbol),
-          pricePerToken: pool.token1.priceUSD
+          pricePerToken: pool.token1.priceUSD,
         };
         poolData[pool?.pool] = poolInfo;
-      
       }
 
-    
       dispatch(setPools({ poolData, tokenList }));
     }
-  }, [data , user]);
+  }, [data, user]);
 
   return (
     <>
