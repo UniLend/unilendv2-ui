@@ -206,6 +206,14 @@ export const supportedNetworks = {
     blockExplorerUrls: ["https://explorer-dapps.shardeum.org/"],
     logoUrl: shardeum,
   },
+  17000: {
+    chainId: `0x${Number(17000).toString(16)}`,
+    chainName: "Holesky Testnet",
+    nativeCurrency: { name: "Ethereum", symbol: "ETH", decimals: 18 },
+    rpcUrls: ["https://ethereum-holesky.publicnode.com"],
+    blockExplorerUrls: ["https://holesky.etherscan.io/"],
+    logoUrl: eth,
+  },
 };
 
 export const ChangeNetwork = async (networkId) => {

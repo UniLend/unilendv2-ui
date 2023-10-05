@@ -60,10 +60,11 @@ import {
   zkEVMTestNet,
   mumbaiTestnet,
   shardeumTestnet,
+  holeskyTestnet
 } from "./core/networks/Chains";
 
 const { chains, publicClient } = configureChains(
-  [sepoliaTestnet, zkEVMTestNet, mumbaiTestnet, polygon, shardeumTestnet],
+  [sepoliaTestnet, zkEVMTestNet, mumbaiTestnet, polygon, shardeumTestnet, holeskyTestnet],
   [publicProvider(), alchemyProvider({ apiKey: alchemyId })]
 );
 

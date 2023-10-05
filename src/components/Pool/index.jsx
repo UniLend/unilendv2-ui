@@ -94,6 +94,7 @@ export default function PoolComponent(props) {
     redeem: selectedToken?.redeemBalanceFixed,
     repay: selectedToken?.borrowBalanceFixed,
   };
+  console.log('approval',selectedToken?.allowance)
 
   // Operation Button Text based on values;
   const buttonAction = getActionBtn(
@@ -106,7 +107,7 @@ export default function PoolComponent(props) {
   );
 
   const handleAmount = (e) => {
-    setAmount(e.target.value);
+    setAmount(parseFloat(e.target.value));
     setMax(false);
     const LtvBasedOnAmount = getSelectLTV(
       selectedToken,

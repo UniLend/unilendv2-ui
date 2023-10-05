@@ -78,6 +78,14 @@ export const contractAddress = {
     unilendOracle: '0xD8659Cb7f24B2057C48c4CD4ec4ACe6e01516037',
     interestModal:'0x5286aF7E56c2320bDFC7C7db159B6BA68cbdc16B'
   },
+  '17000': {
+    helperAddress: '0xD9750f7EFC966493A237d636072162DacF6C60a4',
+    coreAddress: '0x12B0eeC23722BF9d15238eBcBe52C92F91aCdeA1',
+    positionAddress: '0xffd57a89e8A3202546c2D22e03d28b7c63b49C59',
+    poolAddress: '0x93EB029Bf6Cdb7c8d7D1a75DDb0bB90dCC3f9D00',
+    unilendOracle: '0x9D2157cBf3060B2B87995b423178098d75696206',
+    interestModal:'0x530dccDcbc730D76ACbA0334Dfca99dCfAaeba30'
+  },
 };
 
 // '1422': {
