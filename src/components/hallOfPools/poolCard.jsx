@@ -49,7 +49,7 @@ import useWalletHook from '../../lib/hooks/useWallet';
           <img src={token0?.logo} onError={imgError} alt="" />
           <img src={token1?.logo} onError={imgError} alt="" />
         </div>
-        <p className="paragraph01">{`${token0?.symbol} / ${token1?.symbol}`}</p>
+        <p className="paragraph03">{`${token0?.symbol} / ${token1?.symbol}`}</p>
       </div>
       <div className="pool_data">
         <div>
