@@ -46,7 +46,7 @@
       background-color: var(--dark-bg);
       border: 0.35px solid var(--light-gray);
       border-radius: 12px;
-
+      
       svg {
         color: var(--light-gray);
         width: 18px;
@@ -238,6 +238,7 @@
 
     .ant-pagination-item {
       color: var(--pure-black);
+      margin: 2px 15px;
     }
 
     .ant-pagination-item-active {

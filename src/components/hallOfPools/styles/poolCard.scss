@@ -8,13 +8,14 @@
   padding: 28px 0;
   cursor: pointer;
   transition: all 0.5s;
+  border: 1px solid var(--pool-card-bg);
   &:hover {
     transform: scale(1.05);
   }
 
   .pool_icons {
     padding-bottom: 24px;
-    border-bottom: 0.35px solid var(--pure-black);
+    border-bottom: 0.25px solid var(--pool-card-bg);
     width: 100%;
     display: flex;
     align-items: center;
@@ -26,8 +27,8 @@
       display: flex;
 
       img {
-        width: 56px;
-        height: 56px;
+        width: 43px;
+        height: 43px;
         border-radius: 50%;
 
         &:first-child {
@@ -40,7 +41,7 @@
     }
   }
   .pool_data {
-    border-bottom: 0.35px solid var(--pure-black);
+    border-bottom: 0.25px solid var(--main-light);
     padding: 24px 0;
 
     div {

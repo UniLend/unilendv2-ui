@@ -41,7 +41,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTheme, setUser } from "../../store/Action";
 import { fetchUserDomain } from "../../utils/axios";
 import { useConnectModal, ConnectButton } from "@rainbow-me/rainbowkit";
-import { ChangeNetwork } from "../../core/networks/networks";
+import { ChangeNetwork, supportedNetworks } from "../../core/networks/networks";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { switchNetworkLib } from "../../lib/fun/functions";
 
@@ -62,7 +62,7 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const [currentTheme, setCurrentTheme] = useState(theme);
   const { chain, isConnected } = useWalletHook();
-  const availableChain = [11155111, 1442];
+  const availableChain = [11155111, 1442, 17000];
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -198,55 +198,35 @@ export default function Navbar() {
     return (
       <div className="sort_popover">
         <h3>Select a Network</h3>
-
-        <div className="network-box" onClick={() => handleSwitchNetwork(1442)}>
-          <div className="activeChain">
-            <img src={ethlogo} alt="ZkEVM" />
-            <p className="wallet-name">ZkEVM Testnet</p>
+        {Object.keys(supportedNetworks).map((chainId) => (
+          <div
+            key={chainId}
+            className="network-box"
+            onClick={() => handleSwitchNetwork(chainId)}
+          >
+            <div
+              className={
+                currentUser?.network.id == chainId ? "activeChain" : ""
+              }
+            >
+              <img
+                src={supportedNetworks[chainId].logoUrl}
+                alt={`${supportedNetworks[chainId].chainName} Logo`}
+              />
+              <p className="wallet-name">
+                {supportedNetworks[chainId].chainName}
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="network-box" onClick={() => handleSwitchNetwork(137)}>
-          <div>
-            <img src={polyMainlogo} alt="polygon" />
-            <p className="wallet-name">Polygon Mainnet</p>
-          </div>
-        </div>
-        <div className="network-box" onClick={() => handleSwitchNetwork(80001)}>
-          <div>
-            <img src={polyMainlogo} alt="ZkEVM" />
-            <p className="wallet-name">Polygon Testnet</p>
-          </div>
-        </div>
-        <div className="network-box" onClick={() => handleSwitchNetwork(8081)}>
-          <div>
-            <img src={shardeumLogo} alt="ZkEVM" />
-            <p className="wallet-name">Shardeum Testnet</p>
-          </div>
-        </div>
+        ))}
       </div>
     );
   });
-
-  // const WalletConnectModal = () => {
-  //   return (
-  //     <div className="walletConnectModal">
-  //       <div onClick={() => handleConnect("metamask", true)}>
-  //         <img src={metamaskicon} alt="metamask icon" />
-  //         <p>Connect to Metamask Wallet</p>
-  //       </div>
-  //       <div onClick={() => handleConnect("walletConnect", true)}>
-  //         <img src={walletconnecticon} alt="walletconnect icon" />
-  //         <p>Connect to WalletConnect Wallet</p>
-  //       </div>
-  //     </div>
-  //   );
-  // };
 
   const WalletConnectModal = () => {
     return (
       <div className="walletConnectModal">
         <p className="head_text">Connect to the Wallet</p>
-
         <div
           className="wallet-box"
           onClick={() => handleConnect("metamask", true)}
@@ -256,7 +236,6 @@ export default function Navbar() {
             <img src={metamaskicon} alt="metamask icon" />
           </div>
         </div>
-
         <div
           className="wallet-box"
           onClick={() => handleConnect("walletConnect", true)}
@@ -419,12 +398,20 @@ export default function Navbar() {
                 onOpenChange={handleOpenSwitchNetwork}
               >
                 <div className="network_chamber">
-                  <p>{currentUser?.network?.name}</p>
-                  <FaChevronDown />
+                  <div>
+                    <img
+                      src={supportedNetworks[currentUser?.network?.id].logoUrl}
+                      alt={`${
+                        supportedNetworks[currentUser?.network?.id].chainName
+                      } Logo`}
+                    />
+                    <p>{currentUser?.network?.name}</p>
+                    <FaChevronDown />
+                  </div>
                 </div>
               </Popover>
-              <div>
-                <p>
+              <div className="network_address">
+                <p className="bal">
                   {currentUser?.balance} {currentUser?.symbol}
                 </p>
                 <Popover
