@@ -87,7 +87,7 @@ function App() {
         );
 
         const { coreAddress, helperAddress, positionAddress } = contractAddress[chain?.id || user?.network?.id || 1442]
-
+        console.log('contractAddres',coreAddress, helperAddress, positionAddress);
         const preparedData = [
           { abi: coreAbi, address: coreAddress },
           { abi: helperAbi, address: helperAddress },
@@ -320,13 +320,13 @@ function App() {
           ...pool.token0,
           address: pool?.token0?.id,
           logo: getTokenLogo(pool.token0.symbol),
-          pricePerToken: pool.token0.priceUSD,
+          pricePerToken: pool.token0.priceUSD/100000000,
         };
         tokenList[String(pool.token1.id).toUpperCase()] = {
           ...pool.token1,
           address: pool?.token1?.id,
           logo: getTokenLogo(pool.token1.symbol),
-          pricePerToken: pool.token1.priceUSD,
+          pricePerToken: pool.token1.priceUSD/100000000,
         };
         poolData[pool?.pool] = poolInfo;
       }

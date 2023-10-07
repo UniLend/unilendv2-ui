@@ -90,3 +90,27 @@ export const mumbaiTestnet = {
   },
   testnet: true,
 } as Chain;
+
+export const polygonMainnet = {
+  id: 137,
+  name: 'Polygon',
+  network: 'Polygon',
+  nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['https://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn'],
+      webSocket:  ['wss://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn']
+    },
+    public:{
+      http: ['https://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn'],
+      webSocket:  ['wss://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn']
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'etherscan',
+      url: 'https://mumbai.polygonscan.com/',
+    },
+  },
+  testnet: true,
+} as Chain;
