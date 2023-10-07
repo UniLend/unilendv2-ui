@@ -63,7 +63,7 @@ function App() {
   const contracts = useSelector((state) => state.contracts);
   const user = useSelector((state) => state.user);
   const query = getPoolCreatedGraphQuery(address);
-  const networksWithGraph = [80001, 137];
+  const networksWithGraph = [80001, 137, 1442];
 
   const { data, loading, error, refetch } = useQuery("pools", async () => {
     const fetchedDATA = await fetchGraphQlData(chain?.id || 137, query);
