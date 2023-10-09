@@ -12,8 +12,9 @@ import Web3 from "web3";
 //     return error;
 //   }
 // };
-export const getAllEvents = async (contract, event, batchSize) => {
+export const getAllEvents = async (contract, event) => {
   try {
+    const batchSize = 49000;
     const provider = getProvider();
     const latestBlockNumber = await provider.getBlockNumber();
     const events = [];
@@ -75,8 +76,10 @@ export const allTransaction = async (
 ) => {
   const data = await getAllEvents(coreContract, "PoolCreated");
   // array of all pools address
+  console.log(data);
+  console.log(poollist);
   const newData = data.map((event) => event.pool);
-
+  console.log(newData)
   let array = [];
   for (let i = 0; i < newData.length; i++) {
     const position = await positionId(
@@ -84,9 +87,8 @@ export const allTransaction = async (
       newData[i],
       userAddress
     );
-
+  
     const poolInfo = poollist[newData[i]];
-
     const poolContract = getContract({
       address: newData[i],
       abi: poolAbi,
