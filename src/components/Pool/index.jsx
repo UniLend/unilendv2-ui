@@ -93,7 +93,7 @@ export default function PoolComponent(props) {
   );
 
   const handleAmount = (e) => {
-    setAmount(e.target.value);
+    setAmount(parseFloat(e.target.value));
     setMax(false);
     const LtvBasedOnAmount = getSelectLTV(
       selectedToken,

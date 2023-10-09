@@ -241,13 +241,12 @@ function App() {
           const poolData = {};
           const account = getAccount();
           let result;
-
+          let batchSize = 40000;
           if (networkID == 8081) {
             result = shardeumPools;
           } else {
             result = await getAllEvents(
-              state.contracts.coreContract,
-              "PoolCreated"
+              state.contracts.coreContract, "PoolCreated", batchSize
             );
           }
 
