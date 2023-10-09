@@ -148,6 +148,14 @@ const tokensBYSymbol = {
   FLOKI:{
     logo: "https://i.imgur.com/JYTPKWf.jpg",
     symbol: "FLOKI",
+  },
+  IND:{
+    logo:'https://i.postimg.cc/zG0sGQnW/India.png',
+    symbol:"IND"
+  },
+  AUS:{
+    logo:'https://i.postimg.cc/zfv9bkjQ/australia-1.png',
+    symbol:"IND"
   }
 };
 
