@@ -77,7 +77,7 @@ export const handleRedeem = async (
   checkTxnStatus,
   checkTxnError
 ) => {
-  let Amount = decimal2Fixed('1000000.34567876543456787654345678765434567876543456787654345676543', selectedToken._decimals);
+  let Amount = decimal2Fixed(amount, selectedToken._decimals);
   let maxAmount = selectedToken.lendShare;
   if(Number(selectedToken.lendShare) > Number(selectedToken.liquidity)){
     maxAmount = selectedToken.liquidity;
