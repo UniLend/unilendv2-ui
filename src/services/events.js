@@ -14,7 +14,7 @@ import Web3 from "web3";
 // };
 export const getAllEvents = async (contract, event) => {
   try {
-    const batchSize = 49000;
+    const batchSize = 50000;
     const provider = getProvider();
     const latestBlockNumber = await provider.getBlockNumber();
     const events = [];
@@ -40,12 +40,44 @@ export const getAllEvents = async (contract, event) => {
   }
 };
 
+export const getEventData = async (contract, event) => {
+  try {
+    const provider = getProvider();
+    const batchSize = 50000;
+    const latestBlockNumber = await provider.getBlockNumber();
+
+    const fetchBatch = async (fromBlock, toBlock) => {
+      const batchResult = await contract.queryFilter(event, fromBlock, toBlock);
+      return batchResult.map((item) => item);
+    };
+
+    const batchPromises = [];
+    let fromBlock = 0;
+    while (fromBlock <= latestBlockNumber) {
+      const toBlock = Math.min(fromBlock + batchSize - 1, latestBlockNumber);
+      batchPromises.push(fetchBatch(fromBlock, toBlock));
+      fromBlock = toBlock + 1;
+    }
+
+    const result = [];
+    await Promise.all(batchPromises).then((batchResults) => {
+      batchResults.forEach((batchResult) => result.push(...batchResult));
+    });
+
+    return result;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const getEventsWithFilter = async (contract, event, filter) => {
-  const events = await contract.queryFilter(event);
+  const events = await getEventData(contract, event);
+
+  // const events = await contract.queryFilter(event);
+
   const filtered = events.filter(
     (event) => fromBigNumber(event.args._positionID) == filter._positionID
   );
-
   return filtered;
 };
 
@@ -76,10 +108,8 @@ export const allTransaction = async (
 ) => {
   const data = await getAllEvents(coreContract, "PoolCreated");
   // array of all pools address
-  console.log(data);
   console.log(poollist);
   const newData = data.map((event) => event.pool);
-  console.log(newData)
   let array = [];
   for (let i = 0; i < newData.length; i++) {
     const position = await positionId(
@@ -87,7 +117,7 @@ export const allTransaction = async (
       newData[i],
       userAddress
     );
-  
+
     const poolInfo = poollist[newData[i]];
     const poolContract = getContract({
       address: newData[i],
@@ -97,11 +127,13 @@ export const allTransaction = async (
 
     const eventNames = ["Borrow", "Lend", "Redeem", "RepayBorrow"];
     const IspositionId = fromBigNumber(position);
+    console.log("IspositionId", IspositionId);
     if (IspositionId != 0) {
       for (let j = 0; j < eventNames.length; j++) {
         const events = await getEventsWithFilter(poolContract, eventNames[j], {
           _positionID: `${position}`,
         });
+        
         const eventsWithPoolInfo = events.map(
           (el) =>
             (el = {
