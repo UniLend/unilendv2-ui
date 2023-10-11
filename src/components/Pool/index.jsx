@@ -55,7 +55,8 @@ export default function PoolComponent(props) {
   const [activeOperation, setActiveOperation] = useState(lend);
   const [selectLTV, setSelectLTV] = useState(5);
   const [poolData, setPoolData] = useState({});
-  const [amount, setAmount] = useState(0);
+  // const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(null);
   const [max, setMax] = useState(false);
   const [isOperationLoading, setIsOperationLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -94,7 +95,7 @@ export default function PoolComponent(props) {
     redeem: selectedToken?.redeemBalanceFixed,
     repay: selectedToken?.borrowBalanceFixed,
   };
-  console.log('approval',selectedToken?.allowance)
+  console.log("approval", selectedToken?.allowance);
 
   // Operation Button Text based on values;
   const buttonAction = getActionBtn(
