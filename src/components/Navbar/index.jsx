@@ -201,7 +201,7 @@ export default function Navbar() {
         {Object.keys(supportedNetworks).map((chainId) => (
           <div
             key={chainId}
-            className="network-box"
+            className="network_box"
             onClick={() => handleSwitchNetwork(chainId)}
           >
             <div

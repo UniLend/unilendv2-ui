@@ -2,17 +2,13 @@
 
 footer,
 .footer_nav {
-  // position: fixed;
   bottom: 0vh;
   display: flex;
   justify-content: space-between;
-  // background-color: var(--pure-white);
   align-items: center;
   width: 100%;
   z-index: 2;
   padding: 20px 10px;
-  // border-top: 1px solid var(--border-gray);
-  //   color: var(--sharp-blue);
   color: var(--pure-black);
 
   a {
@@ -26,7 +22,6 @@ footer,
   p {
     margin: 0px;
     text-align: center;
-    font-weight: 600;
     font-size: $font-size-md;
     color: var(--pure-black);
   }
@@ -37,7 +32,6 @@ footer,
   a {
     margin: 0px 10px;
     color: var(--pure-black);
-    font-weight: 600;
     font-size: $font-size-md;
     &:hover {
       color: var(--main-light);
@@ -77,10 +71,12 @@ footer,
       padding: 5px;
       border-radius: 5px;
       font-size: $font-size-md;
-      font-weight: 600;
       display: flex;
       &:hover {
         background-color: var(--light-blue);
+      }
+      svg {
+        margin-top: 3px;
       }
     }
     .disable_route {
@@ -107,7 +103,6 @@ footer,
       padding: 5px;
       border-radius: 5px;
       font-size: $font-size-xsm;
-      font-weight: 600;
       display: flex;
     }
     .disable_route {

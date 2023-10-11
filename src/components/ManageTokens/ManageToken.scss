@@ -44,6 +44,11 @@
       width: 23%;
       box-shadow: none;
       border: 0px;
+      margin-right: 4px;
+      @media only screen and (max-width: 992px) {
+        width: fit-content;
+        margin-right: 0px;
+      }
       @media only screen and (max-width: 768px) {
         width: 45%;
       }
@@ -65,13 +70,13 @@
 
       @media only screen and (max-width: 600px) {
         margin: 0px 8px 0 4px;
-        font-size: $font-size-xsm;
+        font-size: $font-size-xxsm;
       }
     }
     h5 {
       font-size: $font-size-md;
       color: var(--pure-black);
-      text-align: center;
+      text-align: left;
       margin: 13px 0;
       width: 100%;
       cursor: pointer;
@@ -79,12 +84,13 @@
         color: var(--main-light);
       }
       @media only screen and (max-width: 768px) {
-        font-size: $font-size-sm;
+        font-size: $font-size-xsm;
         margin-top: 8px;
       }
 
       @media only screen and (max-width: 600px) {
         font-size: $font-size-xsm;
+        text-align: center;
       }
     }
 
@@ -99,6 +105,10 @@
 
     svg {
       color: var(--always-white);
+      @media only screen and (max-width: 600px) {
+        width: 10px;
+        height: 10px;
+      }
     }
   }
   .selector {
@@ -147,6 +157,10 @@
       justify-content: center;
       height: 32px;
       width: 120px;
+
+      h3 {
+        font-size: $font-size-xxsm;
+      }
     }
   }
 

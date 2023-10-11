@@ -1,6 +1,6 @@
-import eth from "../../assets/ethnew.svg";
-import polygon from "../../assets/polygon.svg";
-import shardeum from "../../assets/shardeumLogo.png";
+import eth from "../../assets/eth_nav.svg";
+import polygon from "../../assets/polygon_nav.svg";
+import shardeum from "../../assets/shardeum_nav.svg";
 export const networks = {
   1: {
     chainId: `0x${Number(1).toString(16)}`,
