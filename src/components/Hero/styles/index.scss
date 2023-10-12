@@ -2,7 +2,7 @@
 
 .dark {
   .app_container {
-    background: unset;
+    // background: unset;
     .hallofpools_container {
       background: url("/src/assets/large-bg.svg");
       background-position: top 35% right 50%;
@@ -10,6 +10,19 @@
     }
   }
 }
+.light{
+  .app_container {
+    background: unset;
+    .hallofpools_container {
+      background: url("/src/assets/light-BG.svg");
+      background-position: top 35% right 50%;
+      background-repeat: no-repeat;
+    }
+  }
+}
+
+
+
 
 .banner {
   width: 80%;

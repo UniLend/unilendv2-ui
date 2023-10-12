@@ -9,7 +9,15 @@
     background-size: cover;
   }
 }
-
+.light {
+  .app_container {
+    background: unset;
+    background: url("/src/assets/light-bg.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
 .vote_container {
   width: 100%;
   overflow: hidden;
