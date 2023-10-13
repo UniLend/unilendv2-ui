@@ -62,7 +62,7 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const [currentTheme, setCurrentTheme] = useState(theme);
   const { chain, isConnected } = useWalletHook();
-  const availableChain = [11155111, 1442, 17000];
+  const availableChain = Object.values(supportedNetworks).filter((network)=> network.graphAvailable && network.chainId ).map((net)=> net.chainId);
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
