@@ -40,7 +40,7 @@ function HistoryComponent() {
   const query = getHistoryGraphQuery(user?.address);
   const [called, setIsCalled] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
-  const networksWithGraph = [80001, 137];
+  const networksWithGraph = [80001, 137, 1442];
 
   const { data, loading, error, refetch } = useQuery("history", async () => {
     const fetchedDATA = await fetchGraphQlData(
