@@ -31,6 +31,7 @@ export const networks = {
     logoURl: polygon,
     rpcUrls: ["https://polygon-rpc.com/"],
     blockExplorerUrls: ["https://polygonscan.com/"],
+    graphAvailable: true
   },
 
   56: {
@@ -142,7 +143,7 @@ export const networks = {
 // Supported network List
 export const supportedNetworks = {
   137: {
-    chainId: `0x${Number(137).toString(16)}`,
+    chainId: 137,
     chainName: "Polygon Mainnet",
     nativeCurrency: {
       name: "MATIC",
@@ -152,10 +153,11 @@ export const supportedNetworks = {
     logoUrl: polygon,
     rpcUrls: ["https://polygon-rpc.com/"],
     blockExplorerUrls: ["https://polygonscan.com/"],
+    graphAvailable: true
   },
 
   11155111: {
-    chainId: `0x${Number(11155111).toString(16)}`,
+    chainId: 11155111,
     chainName: "Sepolia Test Network",
     nativeCurrency: {
       name: "Ether",
@@ -172,10 +174,11 @@ export const supportedNetworks = {
       "https://rpc-sepolia.rockx.com",
     ],
     blockExplorerUrls: ["https://sepolia.etherscan.io"],
+    graphAvailable: false
   },
 
   80001: {
-    chainId: `0x${Number(80001).toString(16)}`,
+    chainId: 80001,
     chainName: "Polygon Mumbai",
     nativeCurrency: {
       name: "MATIC",
@@ -185,9 +188,10 @@ export const supportedNetworks = {
     logoUrl: polygon,
     rpcUrls: ["https://polygon-rpc.com/"],
     blockExplorerUrls: ["https://polygonscan.com/"],
+    graphAvailable: true
   },
   1442: {
-    chainId: `0x${Number(1442).toString(16)}`,
+    chainId: 1442,
     chainName: "zkEVM Testnet",
     nativeCurrency: {
       name: "ETH",
@@ -197,22 +201,25 @@ export const supportedNetworks = {
     logoUrl: eth,
     rpcUrls: ["https://polygon-rpc.com/"],
     blockExplorerUrls: ["https://polygonscan.com/"],
+    graphAvailable: true
   },
   8081: {
-    chainId: `0x${Number(8081).toString(16)}`,
+    chainId: 8081,
     chainName: "Shardeum Sphinx Dapp 1.X",
     nativeCurrency: { name: "shardeum", symbol: "SHM", decimals: 18 },
     rpcUrls: ["https://dapps.shardeum.org/"],
     blockExplorerUrls: ["https://explorer-dapps.shardeum.org/"],
     logoUrl: shardeum,
+    graphAvailable: false
   },
   17000: {
-    chainId: `0x${Number(17000).toString(16)}`,
+    chainId: 17000,
     chainName: "Holesky Testnet",
     nativeCurrency: { name: "Ethereum", symbol: "ETH", decimals: 18 },
     rpcUrls: ["https://ethereum-holesky.publicnode.com"],
     blockExplorerUrls: ["https://holesky.etherscan.io/"],
     logoUrl: eth,
+    graphAvailable: false
   },
 };
 
