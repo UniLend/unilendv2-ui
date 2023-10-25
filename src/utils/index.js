@@ -76,3 +76,7 @@ export function fixFormatNumber(number) {
     // Return the formatted number with 6 decimals if true, otherwise with 3 decimals
     return hasNonZeroDigits ? Number(number).toFixed(3) : Number(number).toFixed(6);
   }
+
+  export function sum (...numbers){
+   return numbers.reduce((ac, el) => ac+el, 0)
+  }
