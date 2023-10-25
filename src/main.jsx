@@ -13,47 +13,27 @@ import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { myCustomTheme } from "./core/theme/customWalletTheme";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import {
-  mainnet,
+
   polygon,
-  optimism,
-  arbitrum,
-  zora,
-  sepolia,
-  polygonMumbai,
-  polygonZkEvm,
+
 } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 import {
   injectedWallet,
-  rainbowWallet,
+
   walletConnectWallet,
-  metaMaskWallet,
+
   coinbaseWallet,
-  argentWallet,
-  bitskiWallet,
-  braveWallet,
-  dawnWallet,
-  imTokenWallet,
-  ledgerWallet,
-  mewWallet,
-  okxWallet,
-  omniWallet,
-  phantomWallet,
-  rabbyWallet,
-  safeWallet,
-  tahoWallet,
-  trustWallet,
-  xdefiWallet,
-  zerionWallet,
+
 } from "@rainbow-me/rainbowkit/wallets";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
-const alchemyId2 = import.meta.env.VITE_ALCHEMY_ID2;
+
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
-const infuraID = import.meta.env.VITE_INFURA_ID;
+
 
 import {
   sepoliaTestnet,
