@@ -30,9 +30,9 @@ export default function Footer() {
   return (
     <>
     <footer>
-      <div className='poolFooter-copyright'>
+      {/* <div className='poolFooter-copyright'>
         <p>©2022 UniLend. All Rights Reserved.</p>
-      </div>
+      </div> */}
       <div className='poolFooter-content'>
           <a href='https://unilend.gitbook.io/unilend-finance/' target='_blank'>
             Gitbook

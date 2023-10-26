@@ -11,6 +11,19 @@
     }
   }
 }
+.light {
+  .app_container {
+    background: unset;
+    .user_dashboard_component {
+      background: url("/src/assets/light-bg.svg");
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  }
+}
+
+
 
 .user_dashboard_component {
   width: 100%;

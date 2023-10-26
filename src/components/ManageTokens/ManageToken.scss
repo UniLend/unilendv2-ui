@@ -260,6 +260,14 @@
   }
   &:hover {
     background: var(--main);
+    div{
+      h3{
+        color:var(--always-white)
+      }
+      span{
+        color: var(--always-white);
+      }
+    }
   }
 }
 

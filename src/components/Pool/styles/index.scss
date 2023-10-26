@@ -8,6 +8,14 @@
     background-size: cover;
   }
 }
+.light {
+  .app_container {
+    background: url("/src/assets/light-BG.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
 
 .pool_container {
   //Card Container
@@ -125,7 +133,7 @@
 
       .active {
         background-color: var(--dark-button);
-        color: var(--main-light);
+        color: var(--pure-black);
         border: 2px solid var(--button-border);
       }
       .disable_tab {
@@ -232,7 +240,7 @@
         padding: 6px 10px;
         border-radius: 16px;
         font-size: $font-size-xsm;
-        color: var(--main-light);
+        color: var(--pure-black);
         cursor: pointer;
       }
     }

@@ -103,11 +103,13 @@ export function toDecimals(x, po) {
 }
 
 export function decimal2Fixed(amount, decimals) {
-  let newNum = new BigNumber(amount).multipliedBy(10 ** decimals).toFixed();
-  if (newNum.indexOf(".") > -1) {
-    newNum = newNum.split(".")[0];
-  }
-  return newNum;
+  // let newNum = new BigNumber(amount).multipliedBy(10 ** decimals).toFixed();
+  let newNum = BigInt(Math.trunc(Number(amount) * 10 ** decimals));
+  // return bigint.toString();
+  // if (newNum.indexOf(".") > -1) {
+  //   newNum = newNum.split(".")[0];
+  // }
+  return newNum.toString();
 }
 
 export function fixed2Decimals(amount, decimals = 18) {
@@ -115,7 +117,7 @@ export function fixed2Decimals(amount, decimals = 18) {
 }
 
 export function fixed2Decimals18(amount, decimals = 18) {
-  console.log('amount', amount)
+  console.log("amount", amount);
   return new BigNumber(amount).dividedBy(10 ** decimals).toFixed();
 }
 
@@ -202,28 +204,35 @@ export const getActionBtn = (
     text: `${activeOperation} ${selectedToken?._symbol}`,
     disable: false,
   };
-   if(reFetching){
+  if (reFetching) {
     return { text: "Fetching Data", disable: false };
-   }
+  }
   if (amount <= 0) {
-   return { text: "Enter Amount", disable: true };
+    return { text: "Enter Amount", disable: true };
   } else if (amount && activeOperation === lend) {
-    console.log('data',fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals) )
-    console.log('amount', amount);
-    if (fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals) < amount) {
-      console.log("approve working in lend")
-      console.log("allowance",selectedToken?.allowance)
-      console.log("decimals", selectedToken?._decimals)
-      return  { text: "Approve " + selectedToken?._symbol };
+    console.log(
+      "data",
+      fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals)
+    );
+    console.log("amount", amount);
+    if (
+      fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals) <
+      amount
+    ) {
+      console.log("approve working in lend");
+      console.log("allowance", selectedToken?.allowance);
+      console.log("decimals", selectedToken?._decimals);
+      return { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.balanceFixed)) {
-      return  { text: "Low Balance in Wallet", disable: true };
+      return { text: "Low Balance in Wallet", disable: true };
     }
   } else if (amount && activeOperation === borrow) {
     if (
       collateral > 0 &&
-      fixed2Decimals18(collateralToken?.allowance, collateralToken._decimals) <= collateral
+      fixed2Decimals18(collateralToken?.allowance, collateralToken._decimals) <=
+        collateral
     ) {
-      return  { text: "Approve " + collateralToken?._symbol };
+      return { text: "Approve " + collateralToken?._symbol };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
       return { text: "Not Enough Liquidity", disable: true };
     } else if (collateral > Number(collateralToken?.balanceFixed)) {
@@ -233,7 +242,6 @@ export const getActionBtn = (
       };
     }
   } else if (amount && activeOperation === redeem) {
-  
     if (amount > Number(selectedToken.lendBalanceFixed)) {
       return { text: "Not Enough Amount Lent", disable: true };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
@@ -242,8 +250,19 @@ export const getActionBtn = (
       return { text: "Exceeds Redeemable Amount", disable: true };
     }
   } else if (amount && activeOperation === repay) {
-   console.log("activeOperation", fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals),  amount, Number(fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals)) < Number(amount));
-    if (Number(fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals)) < Number(amount)) {
+    console.log(
+      "activeOperation",
+      fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals),
+      amount,
+      Number(
+        fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals)
+      ) < Number(amount)
+    );
+    if (
+      Number(
+        fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals)
+      ) < Number(amount)
+    ) {
       return { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.borrowBalanceFixed)) {
       return { text: "Exceeds Borrowed Amount", disable: true };
