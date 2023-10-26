@@ -178,7 +178,8 @@ export default function VoteComponent() {
               <Popover
                 content={<BalancePopover />}
                 overlayClassName="total_balance_popover"
-                placement="rightTop"
+                // placement="rightTop"
+                placement="bottomLeft"
               >
                 <FiInfo />
               </Popover>

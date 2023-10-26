@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { useQuery } from "react-query";
 import { fetchGraphQlData } from "../../utils/axios";
 import useWalletHook from "../../lib/hooks/useWallet";
+import { supportedNetworks } from "../../core/networks/networks";
 
 function HistoryComponent() {
   const { contracts, user, web3, poolList, tokenList } = useSelector(
@@ -40,8 +41,9 @@ function HistoryComponent() {
   const query = getHistoryGraphQuery(user?.address);
   const [called, setIsCalled] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
-  const networksWithGraph = [80001, 137];
+  const networksWithGraph = Object.values(supportedNetworks).filter((network)=> network.graphAvailable && network.chainId ).map((net)=> net.chainId);
 
+console.log('networksWithGraph', networksWithGraph);
   const { data, loading, error, refetch } = useQuery("history", async () => {
     const fetchedDATA = await fetchGraphQlData(
       chain?.id || user?.network?.id || 137,

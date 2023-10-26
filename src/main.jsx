@@ -9,6 +9,8 @@ import Ring from "./components/Loader/Ring";
 import AppWrapper from "./appWrapper";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+// Custom theme
+import { myCustomTheme } from "./core/theme/customWalletTheme";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import {
   mainnet,
@@ -45,8 +47,7 @@ import {
   xdefiWallet,
   zerionWallet,
 } from "@rainbow-me/rainbowkit/wallets";
-import { alchemyProvider } from 'wagmi/providers/alchemy'
-
+import { alchemyProvider } from "wagmi/providers/alchemy";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -54,21 +55,27 @@ const alchemyId2 = import.meta.env.VITE_ALCHEMY_ID2;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID;
 
-import { sepoliaTestnet, zkEVMTestNet, mumbaiTestnet, shardeumTestnet, polygonMainnet } from "./core/networks/Chains";
-
+import {
+  sepoliaTestnet,
+  zkEVMTestNet,
+  mumbaiTestnet,
+  shardeumTestnet,
+  holeskyTestnet
+} from "./core/networks/Chains";
 
 const { chains, publicClient } = configureChains(
-  [sepoliaTestnet, zkEVMTestNet, mumbaiTestnet, polygonMainnet, shardeumTestnet],
-  [publicProvider(),alchemyProvider({ apiKey: alchemyId })]
+  [sepoliaTestnet, zkEVMTestNet, mumbaiTestnet, polygon, shardeumTestnet, holeskyTestnet],
+  [publicProvider(), alchemyProvider({ apiKey: alchemyId })]
 );
 
 const connectors = connectorsForWallets([
   {
     groupName: "Recommended",
-    wallets: [,
+    wallets: [
+      ,
       injectedWallet({ chains }),
-      coinbaseWallet({ appName:'UnilendV2', chains}),
-      walletConnectWallet({chains, projectId}),
+      coinbaseWallet({ appName: "UnilendV2", chains }),
+      walletConnectWallet({ chains, projectId }),
     ],
   },
 ]);
@@ -80,16 +87,16 @@ const wagmiConfig = createConfig({
 });
 //uri: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend_mumbai",
 
-
-
-
-
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Suspense fallback={<Ring />}>
       <Provider store={store}>
         <WagmiConfig config={wagmiConfig}>
-          <RainbowKitProvider chains={chains} modalSize="compact">
+          <RainbowKitProvider
+            chains={chains}
+            modalSize="compact"
+            theme={myCustomTheme}
+          >
             <BrowserRouter>
               <AppWrapper />
             </BrowserRouter>

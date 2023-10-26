@@ -5,6 +5,7 @@ import { FaChevronDown } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { LockOutlined, WalletFilled } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { FiCopy } from "react-icons/fi";
 
 import {
   getFromLocalStorage,
@@ -20,19 +21,27 @@ import faq from "../../assets/faq.svg";
 import copyIcon from "../../assets/copyIcon.svg";
 import doc from "../../assets/document.svg";
 import career from "../../assets/career.svg";
-import ethlogo from "../../assets/ethlogo.png";
+// import ethlogo from "../../assets/ethlogo.png";
+import ethlogo from "../../assets/eth.svg";
 import sun from "../../assets/sun.svg";
 import moon from "../../assets/moon.svg";
 import metamaskicon from "../../assets/metamaskicon.svg";
 import walletconnecticon from "../../assets/walletconnecticon.png";
+import walletconnect from "../../assets/walletconnect.svg";
+import polyMainlogo from "../../assets/polygon.svg";
+import shardeumLogo from "../../assets/shardeumLogo.png";
+import bscnew from "../../assets/bscnew.svg";
+import coinbase from "../../assets/coinbase.svg";
+import zengo from "../../assets/zengo.svg";
 import viewExplorer from "../../assets/viewExplorerIcon.svg";
+import viewExplorerLight from "../../assets/viewExplorerIconLight.svg";
 import "./styles/index.scss";
 import Sider from "antd/lib/layout/Sider";
 import { useDispatch, useSelector } from "react-redux";
 import { setTheme, setUser } from "../../store/Action";
 import { fetchUserDomain } from "../../utils/axios";
 import { useConnectModal, ConnectButton } from "@rainbow-me/rainbowkit";
-import { ChangeNetwork } from "../../core/networks/networks";
+import { ChangeNetwork, supportedNetworks } from "../../core/networks/networks";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { switchNetworkLib } from "../../lib/fun/functions";
 
@@ -53,7 +62,7 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const [currentTheme, setCurrentTheme] = useState(theme);
   const { chain, isConnected } = useWalletHook();
-  const availableChain = [11155111, 1442];
+  const availableChain = Object.values(supportedNetworks).filter((network)=> network.graphAvailable && network.chainId ).map((net)=> net.chainId);
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -141,10 +150,10 @@ export default function Navbar() {
   const WalletModalBody = () => {
     return (
       <div className="walletModel">
-        <h1>Network Not Supported</h1>
+        <h1>Wrong Network</h1>
         <p>
-          UniLend V2 is in Testnet Phase. <br /> Please Connect to the Below
-          Networks.
+          UniLend V2 is in Testnet Phase.
+          <br /> Please Connect to the Below Networks.
         </p>
         <div className="networks">
           <div onClick={() => handleSwitchNetwork(11155111)}>
@@ -188,14 +197,28 @@ export default function Navbar() {
   const SortContent = React.memo(() => {
     return (
       <div className="sort_popover">
-        <p onClick={() => handleSwitchNetwork(11155111)}>
-          {" "}
-          Sepolia Test Network
-        </p>
-        <p onClick={() => handleSwitchNetwork(80001)}> Polygon Mumbai</p>
-        <p onClick={() => handleSwitchNetwork(137)}> Polygon Mainnet</p>
-        <p onClick={() => handleSwitchNetwork(1442)}> zkEVM Testnet</p>
-        <p onClick={() => handleSwitchNetwork(8081)}> Shardeum Testnet</p>
+        <h3>Select a Network</h3>
+        {Object.keys(supportedNetworks).map((chainId) => (
+          <div
+            key={chainId}
+            className="network_box"
+            onClick={() => handleSwitchNetwork(chainId)}
+          >
+            <div
+              className={
+                currentUser?.network.id == chainId ? "activeChain" : ""
+              }
+            >
+              <img
+                src={supportedNetworks[chainId].logoUrl}
+                alt={`${supportedNetworks[chainId].chainName} Logo`}
+              />
+              <p className="wallet-name">
+                {supportedNetworks[chainId].chainName}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     );
   });
@@ -203,18 +226,56 @@ export default function Navbar() {
   const WalletConnectModal = () => {
     return (
       <div className="walletConnectModal">
-        <div onClick={() => handleConnect("metamask", true)}>
-          <img src={metamaskicon} alt="metamask icon" />
-          <p>Connect to Metamask Wallet</p>
+        <p className="head_text">Connect to the Wallet</p>
+        <div
+          className="wallet-box"
+          onClick={() => handleConnect("metamask", true)}
+        >
+          <div>
+            <p className="wallet-name">Metamask</p>
+            <img src={metamaskicon} alt="metamask icon" />
+          </div>
         </div>
-        <div onClick={() => handleConnect("walletConnect", true)}>
-          <img src={walletconnecticon} alt="walletconnect icon" />
-          <p>Connect to WalletConnect Wallet</p>
+        <div
+          className="wallet-box"
+          onClick={() => handleConnect("walletConnect", true)}
+        >
+          <div className="active">
+            <p>WalletConnect</p>
+            <img src={walletconnect} alt="walletconnect icon" />
+          </div>
+        </div>
+        <div
+          className="wallet-box"
+          onClick={() => handleConnect("Binance", true)}
+        >
+          <div>
+            <p>Bsc Wallet</p>
+            <img src={bscnew} alt="walletconnect icon" />
+          </div>
+        </div>
+
+        <div
+          className="wallet-box"
+          onClick={() => handleConnect("Binance", true)}
+        >
+          <div>
+            <p>Coinbase</p>
+            <img src={coinbase} alt="walletconnect icon" />
+          </div>
+        </div>
+        <div
+          className="wallet-box"
+          onClick={() => handleConnect("Binance", true)}
+        >
+          <div>
+            <p>Zengo</p>
+            <img src={zengo} alt="walletconnect icon" />
+          </div>
         </div>
       </div>
     );
   };
-
   const PopoverContent = () => {
     const [copied, setCopied] = useState(false);
 
@@ -237,7 +298,8 @@ export default function Navbar() {
         </div>
         <div className="explorer">
           <div onClick={copyToClipboard} className={copied ? "copied" : ""}>
-            <img src={copyIcon} alt="copyicon" />
+            {/* <img src={copyIcon} alt="copyicon" /> */}
+            <FiCopy />
             <p> {copied ? "Copied" : "Copy address"}</p>
           </div>
           <a
@@ -245,7 +307,10 @@ export default function Navbar() {
             target="_blank"
           >
             <div>
-              <img src={viewExplorer} alt="viewExplorericon" />
+              <img
+                src={theme === "dark" ? viewExplorer : viewExplorerLight}
+                alt="viewExplorericon"
+              />
               <p>TXN History</p>
             </div>
           </a>
@@ -327,24 +392,32 @@ export default function Navbar() {
               <Popover
                 content={<SortContent />}
                 trigger="click"
-                overlayClassName="sort_dropDown"
+                overlayClassName="sort_dropDownnew"
                 placement="bottomLeft"
                 open={isNetworkVisible}
                 onOpenChange={handleOpenSwitchNetwork}
               >
                 <div className="network_chamber">
-                  <p>{currentUser?.network?.name}</p>
-                  <FaChevronDown />
+                  <div>
+                    <img
+                      src={supportedNetworks[currentUser?.network?.id].logoUrl}
+                      alt={`${
+                        supportedNetworks[currentUser?.network?.id].chainName
+                      } Logo`}
+                    />
+                    <p>{currentUser?.network?.name}</p>
+                    <FaChevronDown />
+                  </div>
                 </div>
               </Popover>
-              <div>
-                <p>
+              <div className="network_address">
+                <p className="bal">
                   {currentUser?.balance} {currentUser?.symbol}
                 </p>
                 <Popover
                   content={<PopoverContent />}
                   trigger="click"
-                  overlayClassName="antd-popover-classname"
+                  overlayClassName="sort_dropDownnew"
                   placement="bottomLeft"
                   open={visible}
                   onOpenChange={handleVisibleChange}
@@ -390,7 +463,7 @@ export default function Navbar() {
       </div>
 
       <Modal
-        className="antd_modal_overlay"
+        className="antd_modal_overlaywrong"
         open={wrongNetworkModal}
         centered
         footer={null}
@@ -399,7 +472,7 @@ export default function Navbar() {
         <WalletModalBody />
       </Modal>
       <Modal
-        className="antd_modal_overlay"
+        className="antd_modal_overlaywallet"
         open={isWalletModalVisible}
         centered
         footer={null}

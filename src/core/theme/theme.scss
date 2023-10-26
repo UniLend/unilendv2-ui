@@ -20,6 +20,7 @@ $light: (
   light-gray: #99959c,
   main: #4b2eff,
   main-light: #9a8bfa,
+  main-light-low: #9a8bfa,
   dark-button: #d5ceff,
   tran-button: #161423,
   //161423 check it
@@ -28,21 +29,12 @@ $light: (
   //EEECFF check it
   dark-bg: #f3f1ff,
   low-dark-bg: #eae8f6,
-  // bg-color:
-  //   radial-gradient(
-  //     50.67% 95.96% at 49.97% 50%,
-  //     #e2edfc 0.09%,
-  //     #d8e7fc 0.1%,
-  //     #eaf2fd 40.8%,
-  //     #ffffff 100%
-  //   )
-  // bg-color:
-  //   radial-gradient(
-  //     51.2% 25.96% at 54.77% 50.7%,
-  //     #5700fe 0%,
-  //     rgba(87, 0, 254, 0.261849) 52.63%,
-  //     rgba(87, 0, 254, 0) 100%
-  //   ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+  pool-card-bg: rgba(154, 139, 250, 0.1),
+  light-back-colour: #4b2eff,
+  popup-shadow: 11.36967px 12.31714px 18.94944px -0.94747px rgba(0, 0, 0, 0.11),
+  popup-border: 0.947px solid #eee1ff,
+  popup-back-color:
+    linear-gradient(to bottom, rgba(243, 233, 255, 1), rgba(242, 232, 255, 1)),
 );
 
 $dark: (
@@ -65,27 +57,24 @@ $dark: (
   light-gray: #99959c,
   main: #4b2eff,
   main-light: #9a8bfa,
+  main-light-low: rgba(154, 139, 250, 0.25),
   dark-button: #070032,
   tran-button: #161423,
-  //161423 check it
   button-border: #140095,
   bg-color: #110f1b,
   dark-bg: #0f0e19,
   low-dark-bg: #161423,
+  pool-card-bg: rgba(154, 139, 250, 0.1),
+  light-back-colour: #ffffff,
+  light-gov-border: #eee1ff,
+  popup-shadow: -3px 5px 36px 3px #20004c,
+  popup-back-color: #1e174c,
+  popup-border:
+    linear-gradient(
+      to bottom right,
+      rgba(52, 44, 101, 1),
+      rgba(110, 86, 255, 0.9),
+      rgba(108, 84, 255, 0.87),
+      rgba(32, 13, 148, 0.83)
+    ),
 );
-
-//low-gray: #1F2127,
-// $white: #ffffff;
-// $black: #000000;
-// $gray-u: #99959c;
-
-// $main: #4b2eff;
-// $main-light: #9a8bfa;
-
-// $button-border: #140095;
-// $dark-button: #070032;
-// $tran-button: #171423;
-
-// $bg: #130f1b;
-// $dark-bg: #0f0e19;
-// $low-dark-bg: #161423;

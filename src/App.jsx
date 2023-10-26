@@ -40,6 +40,7 @@ import {
 import { ethers } from "ethers";
 import { getTokenUSDPrice } from "./helpers/contracts";
 import useWalletHook from "./lib/hooks/useWallet";
+import { supportedNetworks } from "./core/networks/networks";
 
 const shardeumPools = [
   {
@@ -63,7 +64,8 @@ function App() {
   const contracts = useSelector((state) => state.contracts);
   const user = useSelector((state) => state.user);
   const query = getPoolCreatedGraphQuery(address);
-  const networksWithGraph = [80001, 137, 1442];
+  const networksWithGraph = Object.values(supportedNetworks).filter((network)=> network.graphAvailable && network.chainId ).map((net)=> net.chainId);
+
 
   const { data, loading, error, refetch } = useQuery("pools", async () => {
     const fetchedDATA = await fetchGraphQlData(chain?.id || 137, query);

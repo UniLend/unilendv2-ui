@@ -2,31 +2,27 @@
 
 footer,
 .footer_nav {
-  // position: fixed;
   bottom: 0vh;
   display: flex;
   justify-content: space-between;
-  // background-color: var(--pure-white);
   align-items: center;
   width: 100%;
   z-index: 2;
   padding: 20px 10px;
-  // border-top: 1px solid var(--border-gray);
-  //   color: var(--sharp-blue);
   color: var(--pure-black);
 
   a {
     color: var(--pure-black);
   }
   div {
-    width: calc(100% / 3);
+    width: calc(100% / 5);
   }
 }
 .poolFooter-copyright {
   p {
     margin: 0px;
     text-align: center;
-    font-weight: 600;
+    font-size: $font-size-md;
     color: var(--pure-black);
   }
 }
@@ -36,7 +32,7 @@ footer,
   a {
     margin: 0px 10px;
     color: var(--pure-black);
-    font-weight: 600;
+    font-size: $font-size-md;
     &:hover {
       color: var(--main-light);
     }
@@ -74,8 +70,7 @@ footer,
       color: var(--pure-black);
       padding: 5px;
       border-radius: 5px;
-      font-size: 15px;
-      font-weight: 600;
+      font-size: $font-size-md;
       display: flex;
       &:hover {
         background-color: var(--light-blue);
@@ -104,8 +99,7 @@ footer,
     a {
       padding: 5px;
       border-radius: 5px;
-      font-size: 15px;
-      font-weight: 600;
+      font-size: $font-size-xsm;
       display: flex;
     }
     .disable_route {
@@ -117,6 +111,9 @@ footer,
     }
     .active {
       color: var(--main-light);
+    }
+    svg {
+      margin-top: 3px;
     }
   }
 }

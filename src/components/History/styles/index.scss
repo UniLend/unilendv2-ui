@@ -1,5 +1,14 @@
 @import "/src/core/theme";
 
+.dark {
+  .app_container {
+    background: url("/src/assets/blue-bg.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
+
 .history_table_container {
   width: 80%;
   // min-height: 860px;
@@ -37,7 +46,7 @@
       background-color: var(--dark-bg);
       border: 0.35px solid var(--light-gray);
       border-radius: 12px;
-
+      
       svg {
         color: var(--light-gray);
         width: 18px;
@@ -229,6 +238,7 @@
 
     .ant-pagination-item {
       color: var(--pure-black);
+      margin: 2px 15px;
     }
 
     .ant-pagination-item-active {

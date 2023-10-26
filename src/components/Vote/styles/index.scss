@@ -1,4 +1,23 @@
 @import "/src/core/theme";
+
+.dark {
+  .app_container {
+    background: unset;
+    background: url("/src/assets/blue-bg.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
+.light {
+  .app_container {
+    background: unset;
+    background: url("/src/assets/light-bg.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
 .vote_container {
   width: 100%;
   overflow: hidden;
@@ -10,7 +29,7 @@
   // }
   .vote_content {
     width: 80%;
-    margin: 116px auto;
+    margin: 48px auto;
     min-height: 500px;
     position: relative;
     overflow: hidden;
@@ -439,28 +458,46 @@
 }
 
 .total_balance_popover {
+  border-radius: 5px;
   .ant-popover-arrow {
     display: none;
   }
   .ant-popover-inner-content {
     padding: 32px;
     border-radius: 16px;
-    border: none;
+    border-image-source: var(--popup-border);
     outline: none;
+    width: 100%;
+    $border: 0.9px;
+    color: #fff;
+    background: var(--popup-back-color);
+    background-clip: padding-box; /* !importanté */
+    border: solid $border transparent; /* !importanté */
+    border-radius: 16px;
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: -1;
+      margin: -$border; /* !importanté */
+      border-radius: inherit; /* !importanté */
+      background: var(--popup-border);
+    }
   }
 
   .ant-popover-open {
     padding: 0;
   }
   .ant-popover-inner {
-    border-radius: 16px;
-    background: linear-gradient(
-      142deg,
-      rgba(71, 54, 177, 0.49) 0%,
-      rgba(58, 43, 147, 0.23) 100%
-    );
-    box-shadow: -3px 5px 36px 3px #20004c;
-    backdrop-filter: blur(12px);
+    border-radius: 16px !important;
+    background: var(--popup-back-color);
+    border: var(--popup-border);
+    box-shadow: 11.36967px 12.31714px 18.94944px -0.94747px rgba(0, 0, 0, 0.11);
+    backdrop-filter: blur(12.5px);
   }
 
   @media ($tablet) {
@@ -500,9 +537,11 @@
 
       p {
         font-size: $font-size-lg;
-        color: var(--pure-black);
-        margin: 0;
+        color: var(--light-back-colour);
+        font-weight: $font-weight-bold;
 
+        margin: 0;
+        letter-spacing: 2px;
         .uft_span {
           margin-right: 20px;
         }

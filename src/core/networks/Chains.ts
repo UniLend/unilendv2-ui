@@ -110,6 +110,43 @@ export const polygonMainnet = {
     default: {
       name: 'etherscan',
       url: 'https://mumbai.polygonscan.com/',
+
+    },
+  },
+  testnet: true,
+} as Chain;
+
+export const holeskyTestnet = {
+  id: 17000,
+  name: "Holesky Testnet",
+  network: "Holesky Testnet",
+  nativeCurrency: { name: "Etherium", symbol: "ETH", decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: [
+        // "https://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
+        "https://ethereum-holesky.publicnode.com",
+      ],
+      webSocket: [
+        // "wss://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
+        "wss://ethereum-holesky.publicnode.com",
+      ],
+    },
+    public: {
+      http: [
+        // "https://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
+        "https://ethereum-holesky.publicnode.com",
+      ],
+      webSocket: [
+       // "wss://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
+        "wss://ethereum-holesky.publicnode.com",
+      ],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "holesky",
+      url: "https://holesky.etherscan.io/",
     },
   },
   testnet: true,

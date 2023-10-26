@@ -274,9 +274,9 @@ export default function UserDashboardComponent(props) {
   };
 
   useEffect(() => {
-    if (address && chain.id && Object.values(tokenList).length) {
+    if (address) {
+      // getDashBoardData(1442);
       getDashBoardData(chain?.id);
-      //getDashBoardData(137);
     }
   }, [query, tokenList]);
 

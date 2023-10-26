@@ -1,5 +1,27 @@
-// @use "../../../core/theme/constants.scss" as *;
 @import "/src/core/theme";
+
+.dark {
+  .app_container {
+    background: unset;
+    .hallofpools_container {
+      background: url("/src/assets/large-bg.svg");
+      background-position: top 35% right 50%;
+      background-repeat: no-repeat;
+    }
+  }
+}
+.light {
+  .app_container {
+    background: unset;
+    .hallofpools_container {
+      background: url("/src/assets/light-BG.svg");
+      background-position: top 35% right 50%;
+      background-repeat: no-repeat;
+    }
+  }
+}
+
+
 .banner {
   width: 80%;
   margin: 50px auto;
@@ -91,7 +113,8 @@
 .poolcard_container {
   width: 80%;
   margin: auto;
-  margin-bottom: 100px;
+  padding-bottom: 48px;
+  // margin-bottom: 100px;
   display: grid;
   row-gap: 36px;
   grid-template-columns: repeat(5, calc(100% / 5));
