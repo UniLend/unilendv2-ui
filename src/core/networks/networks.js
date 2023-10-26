@@ -142,19 +142,19 @@ export const networks = {
 
 // Supported network List
 export const supportedNetworks = {
-  137: {
-    chainId: 137,
-    chainName: "Polygon Mainnet",
-    nativeCurrency: {
-      name: "MATIC",
-      symbol: "MATIC",
-      decimals: 18,
-    },
-    logoUrl: polygon,
-    rpcUrls: ["https://polygon-rpc.com/"],
-    blockExplorerUrls: ["https://polygonscan.com/"],
-    graphAvailable: true
-  },
+  // 137: {
+  //   chainId: 137,
+  //   chainName: "Polygon Mainnet",
+  //   nativeCurrency: {
+  //     name: "MATIC",
+  //     symbol: "MATIC",
+  //     decimals: 18,
+  //   },
+  //   logoUrl: polygon,
+  //   rpcUrls: ["https://polygon-rpc.com/"],
+  //   blockExplorerUrls: ["https://polygonscan.com/"],
+  //   graphAvailable: true
+  // },
 
   11155111: {
     chainId: 11155111,
@@ -177,19 +177,19 @@ export const supportedNetworks = {
     graphAvailable: false
   },
 
-  80001: {
-    chainId: 80001,
-    chainName: "Polygon Mumbai",
-    nativeCurrency: {
-      name: "MATIC",
-      symbol: "MATIC",
-      decimals: 18,
-    },
-    logoUrl: polygon,
-    rpcUrls: ["https://polygon-rpc.com/"],
-    blockExplorerUrls: ["https://polygonscan.com/"],
-    graphAvailable: true
-  },
+  // 80001: {
+  //   chainId: 80001,
+  //   chainName: "Polygon Mumbai",
+  //   nativeCurrency: {
+  //     name: "MATIC",
+  //     symbol: "MATIC",
+  //     decimals: 18,
+  //   },
+  //   logoUrl: polygon,
+  //   rpcUrls: ["https://polygon-rpc.com/"],
+  //   blockExplorerUrls: ["https://polygonscan.com/"],
+  //   graphAvailable: true
+  // },
   1442: {
     chainId: 1442,
     chainName: "zkEVM Testnet",
@@ -203,24 +203,24 @@ export const supportedNetworks = {
     blockExplorerUrls: ["https://polygonscan.com/"],
     graphAvailable: true
   },
-  8081: {
-    chainId: 8081,
-    chainName: "Shardeum Sphinx Dapp 1.X",
-    nativeCurrency: { name: "shardeum", symbol: "SHM", decimals: 18 },
-    rpcUrls: ["https://dapps.shardeum.org/"],
-    blockExplorerUrls: ["https://explorer-dapps.shardeum.org/"],
-    logoUrl: shardeum,
-    graphAvailable: false
-  },
-  17000: {
-    chainId: 17000,
-    chainName: "Holesky Testnet",
-    nativeCurrency: { name: "Ethereum", symbol: "ETH", decimals: 18 },
-    rpcUrls: ["https://ethereum-holesky.publicnode.com"],
-    blockExplorerUrls: ["https://holesky.etherscan.io/"],
-    logoUrl: eth,
-    graphAvailable: false
-  },
+  // 8081: {
+  //   chainId: 8081,
+  //   chainName: "Shardeum Sphinx Dapp 1.X",
+  //   nativeCurrency: { name: "shardeum", symbol: "SHM", decimals: 18 },
+  //   rpcUrls: ["https://dapps.shardeum.org/"],
+  //   blockExplorerUrls: ["https://explorer-dapps.shardeum.org/"],
+  //   logoUrl: shardeum,
+  //   graphAvailable: false
+  // },
+  // 17000: {
+  //   chainId: 17000,
+  //   chainName: "Holesky Testnet",
+  //   nativeCurrency: { name: "Ethereum", symbol: "ETH", decimals: 18 },
+  //   rpcUrls: ["https://ethereum-holesky.publicnode.com"],
+  //   blockExplorerUrls: ["https://holesky.etherscan.io/"],
+  //   logoUrl: eth,
+  //   graphAvailable: false
+  // },
 };
 
 export const ChangeNetwork = async (networkId) => {

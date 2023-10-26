@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// import { useQuery } from "@apollo/client";
 import Lottie from "react-lottie";
 import "./styles/index.scss";
 import { FiPercent } from "react-icons/fi";
