@@ -968,7 +968,7 @@ export const getHistoryGraphQuery = (address) => {
 export const getPoolCreatedGraphQuery = (address) => {
   const query = `
   {
-      positions(where: {owner: "${address}"}) {
+      positions(where: {owner: "${address || '0x0000000000000000000000000000000000000000'}"}) {
         id
         owner
         pool {

@@ -68,16 +68,17 @@ function App() {
 
 
   const { data, loading, error, refetch } = useQuery("pools", async () => {
-    const fetchedDATA = await fetchGraphQlData(chain?.id || 137, query);
+    const fetchedDATA = await fetchGraphQlData(chain?.id || 1442, query);
     return fetchedDATA;
   });
 
   document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`;
 
   useEffect(() => {
-    if (isConnected) {
-      refetch();
-    }
+    console.log("data", data);
+    // if (isConnected) {
+    //   refetch();
+    // }
   }, [isConnected]);
 
   useEffect(() => {
@@ -89,7 +90,7 @@ function App() {
         );
 
         const { coreAddress, helperAddress, positionAddress } = contractAddress[chain?.id || user?.network?.id || 1442]
-        console.log('contractAddres',coreAddress, helperAddress, positionAddress);
+        // console.log('contractAddres',coreAddress, helperAddress, positionAddress);
         const preparedData = [
           { abi: coreAbi, address: coreAddress },
           { abi: helperAbi, address: helperAddress },
@@ -116,26 +117,26 @@ function App() {
               // throw err;
             });
         } else {
-          const provider = new ethers.providers.JsonRpcProvider(
-            "https://rpc.public.zkevm-test.net"
-          );
-          Promise.all(
-            preparedData.map((item) =>
-              getEtherContractWithProvider(item.address, item.abi, provider)
-            )
-          )
-            .then((res) => {
-              const payload = {
-                coreContract: res[0],
-                helperContract: res[1],
-                positionContract: res[2],
-              };
+          // const provider = new ethers.providers.JsonRpcProvider(
+          //   "https://rpc.public.zkevm-test.net"
+          // );
+          // Promise.all(
+          //   preparedData.map((item) =>
+          //     getEtherContractWithProvider(item.address, item.abi, provider)
+          //   )
+          // )
+          //   .then((res) => {
+          //     const payload = {
+          //       coreContract: res[0],
+          //       helperContract: res[1],
+          //       positionContract: res[2],
+          //     };
 
-              dispatch(setContracts(payload));
-            })
-            .catch((err) => {
-              throw err;
-            });
+          //     dispatch(setContracts(payload));
+          //   })
+          //   .catch((err) => {
+          //     throw err;
+          //   });
         }
       } catch (error) {
         console.log("ContractError", error);
@@ -271,8 +272,10 @@ function App() {
   }, [contracts]);
 
   useEffect(() => {
-    const networkID = chain?.id;
-    if (data && networksWithGraph.includes(networkID) && contracts.coreContract ) {
+    const networkID = chain?.id || 1442;
+    console.log('networksWithGraph', data, networksWithGraph, networkID,networksWithGraph.includes(networkID));
+    if (data && networksWithGraph.includes(networkID) ) {
+      
       const allPositions = data?.positions;
       const poolData = {};
       const tokenList = {};
