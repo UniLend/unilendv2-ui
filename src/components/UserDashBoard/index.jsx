@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-// import { useQuery } from "@apollo/client";
 import Lottie from "react-lottie";
 import "./styles/index.scss";
 import { FiPercent } from "react-icons/fi";
@@ -243,31 +242,28 @@ export default function UserDashboardComponent(props) {
     try {
       setPositionLoading(true);
       setWalletTokenLoading(true)
-      const { position, pieChart, analytics } = await getUserData(
+      const ValidAddress = verifiedAddress ||  address
+      console.log('tokenList', tokenList);
+      const { position, pieChart, analytics, tokens } = await getUserData(
         chainId,
         query,
+        tokenList, 
+        ValidAddress
       );
 
       setPositionData(position);
       setPositionDataBackup(position);
       setPieChartInputs(pieChart);
       setHeaderAnalytics(analytics);
-      setPositionLoading(false);
-      const ValidAddress = verifiedAddress ||  address
-
-      console.log(ValidAddress, chainId);
-       const tokens = await getUserTokens(ValidAddress, chainId);
-      
       setWalletTokens(tokens);
-      // if (verifiedAddress) {
-      //  const tokens = await getUserTokens(verifiedAddress || address, chainId);
-      //  console.log(tokens);
-      //  setWalletTokens(tokens);
-       
-      // } else if (userAddress == "" || verifiedAddress == "") {
-      //   const tokens = await getUserTokens(address, chain?.id || user?.network?.id || 137);
-      //   setWalletTokens(tokens);
-      // }
+      setPositionLoading(false);
+     
+
+      // console.log(ValidAddress, chainId);
+      //  const tokens = await getUserTokens(ValidAddress, chainId, tokenList);
+      
+    
+
       setWalletTokenLoading(false)
       // console.log(chainId, position, pieChart, analytics, tokens);
       return position, pieChart, analytics, tokens
@@ -279,11 +275,9 @@ export default function UserDashboardComponent(props) {
   useEffect(() => {
     if (address) {
       // getDashBoardData(1442);
-      getDashBoardData(80001);
+      getDashBoardData(chain?.id);
     }
-
-
-  }, [query]);
+  }, [query, tokenList]);
 
   // const getUserTokens = async (address, chainId) => {
   //   setWalletTokenLoading(true);
@@ -501,7 +495,7 @@ export default function UserDashboardComponent(props) {
             </div>
             <div className="tbody">
               {!walletTokenLoading &&
-                (walletTokens.length > 0 ? (
+                (walletTokens?.length > 0 ? (
                   walletTokens
                     .slice((walletCurrentPage - 1) * 7, walletCurrentPage * 7)
                     .map((token, i) => {
@@ -518,9 +512,9 @@ export default function UserDashboardComponent(props) {
                             </p>
                             <p className="hide_for_monitor">{token?.symbol}</p>
                           </span>
-                          <span>-</span>
+                          <span>{token?.pricePerToken}</span>
                           <span>{token?.balance}</span>
-                          <span>-</span>
+                          <span>{token?.value}</span>
                         </div>
                       );
                     })

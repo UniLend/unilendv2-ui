@@ -78,6 +78,12 @@ const connectors = connectorsForWallets([
       walletConnectWallet({ chains, projectId }),
     ],
   },
+  {
+    groupName: "More",
+    wallets: [
+    trustWallet({chains, projectId})
+    ],
+  },
 ]);
 
 const wagmiConfig = createConfig({

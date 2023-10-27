@@ -62,7 +62,7 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const [currentTheme, setCurrentTheme] = useState(theme);
   const { chain, isConnected } = useWalletHook();
-  const availableChain = Object.values(supportedNetworks).filter((network)=> network.graphAvailable && network.chainId ).map((net)=> net.chainId);
+  const availableChain = Object.values(supportedNetworks).map((net)=> net.chainId);
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -120,7 +120,7 @@ export default function Navbar() {
     }
     // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
     if (user?.network?.id && !availableChain.includes(user?.network?.id)) {
-      // setWrongNetworkModal(true);
+       setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);
     }
@@ -399,12 +399,12 @@ export default function Navbar() {
               >
                 <div className="network_chamber">
                   <div>
-                    <img
+                    {/* <img
                       src={supportedNetworks[currentUser?.network?.id].logoUrl}
                       alt={`${
                         supportedNetworks[currentUser?.network?.id].chainName
                       } Logo`}
-                    />
+                    /> */}
                     <p>{currentUser?.network?.name}</p>
                     <FaChevronDown />
                   </div>

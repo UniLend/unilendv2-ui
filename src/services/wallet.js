@@ -1,6 +1,5 @@
 
 // local imports
-import { providerOptions } from "../constants/wallet";
 import { fromWei, removeFromLocalStorage, saveToLocalStorage } from "../utils";
 import { networks } from "../core/networks/networks";
 import { getAccountLib, getNetworkLib, fetchBalanceLib, disconnectLib } from "../lib/fun/functions";

@@ -6,10 +6,12 @@ export const zkEVMTestNet = {
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     rpcUrls: {
       default: {
-        http: ['https://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a', 'https://rpc.public.zkevm-test.net'],
+        http: ['https://polygonzkevm-testnet.g.alchemy.com/v2/Y-o5wyGBAAG1-0zx1UpZqB9f_K7C3YIE','https://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a', 'https://rpc.public.zkevm-test.net'],
+        webSocket: ['wss://polygonzkevm-testnet.g.alchemy.com/v2/Y-o5wyGBAAG1-0zx1UpZqB9f_K7C3YIE','wss://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a', 'wss://rpc.public.zkevm-test.net'],
       },
       public: {
-        http: ['https://rpc.public.zkevm-test.net','https://rpc.public.zkevm-test.net'],
+        http: ['https://polygonzkevm-testnet.g.alchemy.com/v2/Y-o5wyGBAAG1-0zx1UpZqB9f_K7C3YIE','https://rpc.public.zkevm-test.net','https://rpc.public.zkevm-test.net'],
+        webSocket:['wss://polygonzkevm-testnet.g.alchemy.com/v2/Y-o5wyGBAAG1-0zx1UpZqB9f_K7C3YIE','wss://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a','wss://rpc.public.zkevm-test.net','wss://rpc.public.zkevm-test.net']
       },
     },
     blockExplorers: {
@@ -91,6 +93,31 @@ export const mumbaiTestnet = {
   testnet: true,
 } as Chain;
 
+export const polygonMainnet = {
+  id: 137,
+  name: 'Polygon',
+  network: 'Polygon',
+  nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['https://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn'],
+      webSocket:  ['wss://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn']
+    },
+    public:{
+      http: ['https://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn'],
+      webSocket:  ['wss://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn']
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'etherscan',
+      url: 'https://mumbai.polygonscan.com/',
+
+    },
+  },
+  testnet: true,
+} as Chain;
+
 export const holeskyTestnet = {
   id: 17000,
   name: "Holesky Testnet",
@@ -103,7 +130,7 @@ export const holeskyTestnet = {
         "https://ethereum-holesky.publicnode.com",
       ],
       webSocket: [
-        "wss://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
+        // "wss://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
         "wss://ethereum-holesky.publicnode.com",
       ],
     },
@@ -113,7 +140,7 @@ export const holeskyTestnet = {
         "https://ethereum-holesky.publicnode.com",
       ],
       webSocket: [
-        "wss://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
+       // "wss://cosmological-attentive-brook.ethereum-holesky.discover.quiknode.pro/69f39654fa3a896989bffe0693039994ec14a8ce/",
         "wss://ethereum-holesky.publicnode.com",
       ],
     },

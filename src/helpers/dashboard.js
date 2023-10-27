@@ -1,8 +1,26 @@
 import { getTokenLogo } from "../utils";
-import { coreAbi, erc20Abi, helperAbi, positionAbi } from "../core/contractData/abi";
-import { add, decimal2Fixed, div, fixed2Decimals, fromBigNumber, greaterThan, mul, toAPY } from "./contracts";
+import {
+  coreAbi,
+  erc20Abi,
+  helperAbi,
+  positionAbi,
+} from "../core/contractData/abi";
+import {
+  add,
+  decimal2Fixed,
+  div,
+  fixed2Decimals,
+  fromBigNumber,
+  greaterThan,
+  mul,
+  toAPY,
+} from "./contracts";
 import { ethers } from "ethers";
-import { getEtherContract, getEtherContractWithProvider, getEthersProvider } from "../lib/fun/wagmi";
+import {
+  getEtherContract,
+  getEtherContractWithProvider,
+  getEthersProvider,
+} from "../lib/fun/wagmi";
 import { fetchGraphQlData } from "../utils/axios";
 import { contractAddress } from "../core/contractData/contracts";
 import { Alchemy, Network } from "alchemy-sdk";
@@ -20,10 +38,10 @@ const config = {
     apiKey: polygon,
     network: Network.MATIC_MAINNET,
   },
-  1442:{
+  1442: {
     apiKey: zkEvm,
     network: Network.POLYGONZKEVM_TESTNET,
-  }
+  },
 };
 
 export const findTokenPrice = (list, address) => {
@@ -117,8 +135,6 @@ export const getChartData = (data, tokenList) => {
     }
   }
 
-
-
   return { lendValues, borrowValues, donutLends, donutBorrows };
 };
 
@@ -192,32 +208,24 @@ const getPercent = (x, y) => {
 const calculateCurrentLTV = (borrow0, lend1, price1) => {
   const prevLTV =
     Number(borrow0) > 0
-      ? Number(borrow0) /
-       (Number(lend1) * Number(price1))
+      ? Number(borrow0) / (Number(lend1) * Number(price1))
       : 0;
 
   return (prevLTV.toFixed(4) * 100).toFixed(2);
-}
+};
 
-export const getUserData = async (chainId, query) => {
-
-  const fetchedDATA = await fetchGraphQlData(
-    chainId || 137,
-    query
-  );
-
-console.log(fetchedDATA);
+export const getUserData = async (chainId, query, tokenList, ValidAddress) => {
+  console.log("1",new Date().getSeconds());
+  const fetchedDATA = await fetchGraphQlData(chainId || 137, query);
+  console.log("12",new Date().getSeconds());
+  console.log(fetchedDATA);
   const position = await getPositionData(fetchedDATA, chainId);
 
   const pieChart = getPieChartValues(position); //getChartData(data, tokenList);
 
   const analytics = {};
   if (position?.borrowArray.length > 0) {
-    const borrowAPY = getAverage(
-      position.borrowArray,
-      "apy",
-      "borrowBalance"
-    );
+    const borrowAPY = getAverage(position.borrowArray, "apy", "borrowBalance");
     analytics.borrowAPY = borrowAPY;
   }
   if (position?.lendArray.length > 0) {
@@ -225,11 +233,7 @@ console.log(fetchedDATA);
       .map((el) => el.interestEarned)
       .reduce((ac, el) => ac + el);
     analytics.interestEarned = earned;
-    const lendAPY = getAverage(
-      position.lendArray,
-      "apy",
-      "LendBalance"
-    );
+    const lendAPY = getAverage(position.lendArray, "apy", "LendBalance");
     analytics.lendAPY = lendAPY;
     const powerUsed = getBorrowedPowerUsed(position.lendArray);
     analytics.powerUsed = powerUsed;
@@ -238,73 +242,70 @@ console.log(fetchedDATA);
     const HF = getNetHealthFactor(fetchedDATA.positions);
     analytics.healthFactor = isNaN(HF) ? 0 : HF;
   }
-  return { position, pieChart, analytics }
-}
+  console.log("2",new Date().getSeconds());
+  const tokens = await getTokensFromUserWallet(tokenList, chainId, ValidAddress);
+  console.log("3",new Date().getSeconds());
+  return { position, pieChart, analytics, tokens };
+};
 
-export const getUserTokens = async (address, chainId) => {
-console.log(address, chainId, config[chainId]);
-  const alchemy = new Alchemy(config[chainId]);
-  console.log(alchemy);
- const userTokens = await  alchemy.core.getTokenBalances(`${address}`);
- console.log(userTokens);
-  const tokens = await getTokensFromUserWallet(userTokens, chainId);
-  return tokens
+export const getUserTokens = async (address, chainId, tokenList) => {
+  // console.log(address, chainId, config[chainId]);
+  //   const alchemy = new Alchemy(config[chainId]);
+  //   console.log(alchemy);
+  //  const userTokens = await  alchemy.core.getTokenBalances(`${address}`);
+  //  console.log(userTokens);
+  // const tokens = await getTokensFromUserWallet(tokenList, chainId, address);
+  // return tokens;
 };
 
 export const getPositionData = async (data, chainId) => {
   const position = data["positions"];
- 
+
   const lendArray = [];
   const borrowArray = [];
 
-  const {  coreAddress, helperAddress, positionAddress } = contractAddress[chainId];
+  const { coreAddress, helperAddress, positionAddress } =
+    contractAddress[chainId];
 
   const preparedData = [
     { abi: helperAbi, address: helperAddress },
     { abi: coreAbi, address: coreAddress },
   ];
 
-  const provider =  getEthersProvider({chainId})
+  const provider = getEthersProvider({ chainId });
 
- const [helperContract,coreContract] = await Promise.all(
-    preparedData.map((item) => getEtherContractWithProvider(item.address, item.abi, provider))
-  )
+  const [helperContract, coreContract] = await Promise.all(
+    preparedData.map((item) =>
+      getEtherContractWithProvider(item.address, item.abi, provider)
+    )
+  );
 
+  const allPositionAPoolddrs =
+    Array.isArray(position) &&
+    position.map(function (pool) {
+      return { owner: pool.owner, ...pool.pool };
+    });
+  console.log("contractsEthers", helperContract, helperAddress);
+  const arrayPromise = allPositionAPoolddrs.map(function (pool) {
+    let promises = [
+      helperContract.getPoolFullData(positionAddress, pool.pool, pool.owner),
+      coreContract.getOraclePrice(
+        pool.token0.id,
+        pool.token1.id,
+        decimal2Fixed(1, 18)
+      ),
+      helperContract.getPoolData(pool.pool),
+    ];
 
+    return promises;
+  });
 
-  const allPositionAPoolddrs = Array.isArray(position) && position.map(function(pool){
-    return {owner: pool.owner, ...pool.pool}
-  })
-  console.log('contractsEthers', helperContract, helperAddress );
-  const arrayPromise = allPositionAPoolddrs.map(function(pool) {
-    let promises =
-    [
-        helperContract.getPoolFullData(
-          positionAddress,
-          pool.pool,
-          pool.owner
-        ),
-        coreContract.getOraclePrice(
-          pool.token0.id,
-          pool.token1.id,
-            decimal2Fixed(1, 18)
-         ),
-         helperContract.getPoolData(pool.pool)
-        ]
+  const flatArray = [].concat(...arrayPromise);
 
-        return promises
+  const PromiseData = await Promise.all(flatArray);
 
-  } )
+  var counter = 0;
 
-  const flatArray = [].concat(...arrayPromise)
-
-  const PromiseData =  await Promise.all(flatArray) 
-
-
-  var counter = 0
-
-
-  
   for (const object of position) {
     const positionPoolAddress = object.pool.pool;
 
@@ -321,21 +322,21 @@ export const getPositionData = async (data, chainId) => {
     //    ),
     //    contracts.helperContract.getPoolData(positionPoolAddress)
     //   ]
-    // ) 
- 
-    const realTimePoolData = PromiseData[counter]
-    const priceInBigNumber = PromiseData[counter+1]
-    const poolBasicData = PromiseData[counter+2]
+    // )
 
-    counter = counter+3
+    const realTimePoolData = PromiseData[counter];
+    const priceInBigNumber = PromiseData[counter + 1];
+    const poolBasicData = PromiseData[counter + 2];
 
-    const token0Liq = fromBigNumber(poolBasicData._token0Liquidity)
-    const token1Liq = fromBigNumber(poolBasicData._token1Liquidity)
-    const decimals0 = fromBigNumber(poolBasicData._decimals0)
-    const decimals1 = fromBigNumber(poolBasicData._decimals1)
+    counter = counter + 3;
+
+    const token0Liq = fromBigNumber(poolBasicData._token0Liquidity);
+    const token1Liq = fromBigNumber(poolBasicData._token1Liquidity);
+    const decimals0 = fromBigNumber(poolBasicData._decimals0);
+    const decimals1 = fromBigNumber(poolBasicData._decimals1);
     const totLiqFull0 = add(
       div(mul(token0Liq, 100), fromBigNumber(poolBasicData.rf)),
-     fromBigNumber(realTimePoolData._totalBorrow0)
+      fromBigNumber(realTimePoolData._totalBorrow0)
     );
 
     const totLiqFull1 = add(
@@ -343,36 +344,35 @@ export const getPositionData = async (data, chainId) => {
       fromBigNumber(realTimePoolData._totalBorrow1)
     );
 
+    const price0 = Number(fixed2Decimals(priceInBigNumber, 18));
+    const price1 = Number(1 / price0);
 
-  
-  const price0 = Number(fixed2Decimals(priceInBigNumber, 18));
-  const price1 = Number(1 / price0);
-
-
-    if(fromBigNumber(realTimePoolData._borrowBalance0) > 0){
-            const BorrowObj = {};
+    if (fromBigNumber(realTimePoolData._borrowBalance0) > 0) {
+      const BorrowObj = {};
 
       BorrowObj.borrowBalance = fixedToShort(
         fromBigNumber(realTimePoolData._borrowBalance0)
       );
-      BorrowObj.LendBalance = fixedToShort(fromBigNumber(realTimePoolData._lendBalance1));
+      BorrowObj.LendBalance = fixedToShort(
+        fromBigNumber(realTimePoolData._lendBalance1)
+      );
       BorrowObj.tokenSymbol = object.pool.token0.symbol;
       BorrowObj.token = object.pool.token0;
       BorrowObj.pool = object.pool;
-      BorrowObj.apy = toAPY(
-        fixed2Decimals(realTimePoolData._interest0, 18)
-      )//object.pool.borrowApy0;
+      BorrowObj.apy = toAPY(fixed2Decimals(realTimePoolData._interest0, 18)); //object.pool.borrowApy0;
       BorrowObj.healthFactor = greaterThan(
         fixed2Decimals(realTimePoolData._healthFactor0, 18),
         100
       )
         ? "100"
-        : Number(fixed2Decimals(realTimePoolData._healthFactor0, 18)).toFixed(2);
-      BorrowObj.currentLTV = calculateCurrentLTV(fixedToShort(
-        fromBigNumber(realTimePoolData._borrowBalance0)
-      ), fixedToShort(
-        fromBigNumber(realTimePoolData._lendBalance1)
-      ), price1);
+        : Number(fixed2Decimals(realTimePoolData._healthFactor0, 18)).toFixed(
+            2
+          );
+      BorrowObj.currentLTV = calculateCurrentLTV(
+        fixedToShort(fromBigNumber(realTimePoolData._borrowBalance0)),
+        fixedToShort(fromBigNumber(realTimePoolData._lendBalance1)),
+        price1
+      );
       BorrowObj.poolInfo = {
         token0Symbol: object.pool.token0.symbol,
         token0Logo: getTokenLogo(object.pool.token0.symbol),
@@ -382,12 +382,14 @@ export const getPositionData = async (data, chainId) => {
       borrowArray.push(BorrowObj);
     }
 
-    if( fromBigNumber(realTimePoolData._borrowBalance1) >0){
-            const BorrowObj = {}
+    if (fromBigNumber(realTimePoolData._borrowBalance1) > 0) {
+      const BorrowObj = {};
       BorrowObj.borrowBalance = fixedToShort(
         fromBigNumber(realTimePoolData._borrowBalance1)
       );
-      BorrowObj.LendBalance = fixedToShort(fromBigNumber(realTimePoolData._lendBalance0));
+      BorrowObj.LendBalance = fixedToShort(
+        fromBigNumber(realTimePoolData._lendBalance0)
+      );
       BorrowObj.tokenSymbol = object.pool.token1.symbol;
       BorrowObj.token = object.pool.token1;
       BorrowObj.pool = object.pool;
@@ -397,26 +399,28 @@ export const getPositionData = async (data, chainId) => {
         token1Symbol: object.pool.token1.symbol,
         token1Logo: getTokenLogo(object.pool.token1.symbol),
       };
-      BorrowObj.apy = toAPY(
-        fixed2Decimals(realTimePoolData._interest1, 18)
-      );
+      BorrowObj.apy = toAPY(fixed2Decimals(realTimePoolData._interest1, 18));
       BorrowObj.healthFactor = greaterThan(
         fixed2Decimals(realTimePoolData._healthFactor1, 18),
         100
       )
         ? "100"
-        : Number(fixed2Decimals(realTimePoolData._healthFactor1, 18)).toFixed(2);
-      BorrowObj.currentLTV = calculateCurrentLTV(fixedToShort(
-        fromBigNumber(realTimePoolData._borrowBalance1)
-      ), fixedToShort(
-        fromBigNumber(realTimePoolData._lendBalance0)
-      ), price0);
+        : Number(fixed2Decimals(realTimePoolData._healthFactor1, 18)).toFixed(
+            2
+          );
+      BorrowObj.currentLTV = calculateCurrentLTV(
+        fixedToShort(fromBigNumber(realTimePoolData._borrowBalance1)),
+        fixedToShort(fromBigNumber(realTimePoolData._lendBalance0)),
+        price0
+      );
       borrowArray.push(BorrowObj);
     }
 
-    if(fromBigNumber(realTimePoolData._lendBalance0) > 0){
+    if (fromBigNumber(realTimePoolData._lendBalance0) > 0) {
       const LendObj = {};
-      LendObj.LendBalance = fixedToShort(fromBigNumber(realTimePoolData._lendBalance0));
+      LendObj.LendBalance = fixedToShort(
+        fromBigNumber(realTimePoolData._lendBalance0)
+      );
       LendObj.tokenSymbol = object.pool.token0.symbol;
       LendObj.token = object.pool.token0;
       LendObj.pool = object.pool;
@@ -424,11 +428,11 @@ export const getPositionData = async (data, chainId) => {
         toAPY(fixed2Decimals(realTimePoolData._interest0, 18)),
         div(totLiqFull0, fromBigNumber(realTimePoolData._totalBorrow0))
       );
-      LendObj.currentLTV = calculateCurrentLTV(fixedToShort(
-        fromBigNumber(realTimePoolData._borrowBalance1)
-      ), fixedToShort(
-        fromBigNumber(realTimePoolData._lendBalance0)
-      ), price0);
+      LendObj.currentLTV = calculateCurrentLTV(
+        fixedToShort(fromBigNumber(realTimePoolData._borrowBalance1)),
+        fixedToShort(fromBigNumber(realTimePoolData._lendBalance0)),
+        price0
+      );
       LendObj.healthFactor = greaterThan(
         fixed2Decimals(realTimePoolData._healthFactor0, 18),
         100
@@ -437,8 +441,10 @@ export const getPositionData = async (data, chainId) => {
         : Number(fixed2Decimals(realTimePoolData._healthFactor0, 18)).toFixed(
             2
           );
-     
-      LendObj.interestEarned = fixedToShort(fromBigNumber(realTimePoolData._interest0));
+
+      LendObj.interestEarned = fixedToShort(
+        fromBigNumber(realTimePoolData._interest0)
+      );
       LendObj.poolInfo = {
         token0Symbol: object.pool.token0.symbol,
         token0Logo: getTokenLogo(object.pool.token0.symbol),
@@ -448,10 +454,12 @@ export const getPositionData = async (data, chainId) => {
       lendArray.push(LendObj);
     }
 
-    if(fromBigNumber(realTimePoolData._lendBalance1) > 0){
-            const LendObj = {};
+    if (fromBigNumber(realTimePoolData._lendBalance1) > 0) {
+      const LendObj = {};
 
-      LendObj.LendBalance = fixedToShort(fromBigNumber(realTimePoolData._lendBalance1));
+      LendObj.LendBalance = fixedToShort(
+        fromBigNumber(realTimePoolData._lendBalance1)
+      );
       LendObj.tokenSymbol = object.pool.token1.symbol;
       LendObj.pool = object.pool;
       LendObj.token = object.pool.token1;
@@ -459,11 +467,11 @@ export const getPositionData = async (data, chainId) => {
         toAPY(fixed2Decimals(realTimePoolData._interest1, 18)),
         div(totLiqFull1, fromBigNumber(realTimePoolData._totalBorrow1))
       );
-      LendObj.currentLTV = calculateCurrentLTV(fixedToShort(
-        fromBigNumber(realTimePoolData._borrowBalance0)
-      ), fixedToShort(
-        fromBigNumber(realTimePoolData._lendBalance1)
-      ), price1);
+      LendObj.currentLTV = calculateCurrentLTV(
+        fixedToShort(fromBigNumber(realTimePoolData._borrowBalance0)),
+        fixedToShort(fromBigNumber(realTimePoolData._lendBalance1)),
+        price1
+      );
       LendObj.healthFactor = greaterThan(
         fixed2Decimals(realTimePoolData._healthFactor1, 18),
         100
@@ -472,14 +480,16 @@ export const getPositionData = async (data, chainId) => {
         : Number(fixed2Decimals(realTimePoolData._healthFactor1, 18)).toFixed(
             2
           );
-    
+
       LendObj.poolInfo = {
         token0Symbol: object.pool.token0.symbol,
         token0Logo: getTokenLogo(object.pool.token0.symbol),
         token1Symbol: object.pool.token1.symbol,
         token1Logo: getTokenLogo(object.pool.token1.symbol),
       };
-      LendObj.interestEarned = fixedToShort(fromBigNumber(realTimePoolData._interest1));
+      LendObj.interestEarned = fixedToShort(
+        fromBigNumber(realTimePoolData._interest1)
+      );
       lendArray.push(LendObj);
     }
   }
@@ -523,48 +533,74 @@ export const getNetHealthFactor = (positions) => {
   return (value / counter).toFixed(2);
 };
 
-export const getTokensFromUserWallet = async (data, chainId) => {
-  const tokensArray = data?.tokenBalances.map((token) => token.contractAddress);
+export const getTokensFromUserWallet = async (data, chainId, address) => {
+  const tokensArray = Object.values(data).map((token) => token.address);
+  const tokensObject = Object.values(data) || [];
 
-  const tokensObject = [];
+  const provider = getEthersProvider({ chainId });
 
-   //const provider = getProvider();
-   const provider =  getEthersProvider({chainId})
-  for (const tokenAddress of tokensArray) {
-    const contract =  getEtherContractWithProvider(tokenAddress, erc20Abi, provider) 
-    
-   
-    const res = await Promise.all([
-      contract.symbol(),
-      contract.name(),
-      contract.balanceOf(data?.address),
-    ]);
-    const resInstance = {
-      symbol: res[0],
-      address: tokenAddress,
-      name: res[1],
-      balance: (fromBigNumber(res[2]) / 10 ** 18).toFixed(2),
-      logo: getTokenLogo(res[0]),
-    };
-    tokensObject.push(resInstance);
-  }
+  const ERC20Instancees = tokensArray.map((address) =>
+    getEtherContractWithProvider(address, erc20Abi, provider)
+  );
+const tokensObj = []
+  const balances = await Promise.all(
+    ERC20Instancees.map((instance) => instance.balanceOf(address))
+  );
 
-  return tokensObject;
+  const tokens = tokensObject.map(
+    (token, index) =>
+      (token = {
+        ...token,
+        balance: Number(
+          fixed2Decimals(balances[index], token.decimals)
+        ).toFixed(4),
+
+        value :  (Number(
+          fixed2Decimals(balances[index], token.decimals)
+        ) * token.pricePerToken).toFixed(4)
+      })
+  );
+
+  // console.log(tokensArray, tokensObject, balances, tokens);
+
+  return tokens;
+
+  //const provider = getProvider();
+  //  const provider =  getEthersProvider({chainId})
+  // for (const tokenAddress of tokensArray) {
+  //   const contract =  getEtherContractWithProvider(tokenAddress, erc20Abi, provider)
+
+  //   const res = await Promise.all([
+  //     contract.symbol(),
+  //     contract.name(),
+  //     contract.balanceOf(address),
+  //   ]);
+  //   const resInstance = {
+  //     symbol: res[0],
+  //     address: tokenAddress,
+  //     name: res[1],
+  //     balance: (fromBigNumber(res[2]) / 10 ** 18).toFixed(2),
+  //     logo: getTokenLogo(res[0]),
+  //   };
+  //   tokensObject.push(resInstance);
+  // }
+
+  // return tokensObject;
 };
 
 export const getBorrowedPowerUsed = (Positions) => {
- 
   let num = 0;
   let deno = 0;
   for (const position of Positions) {
-     const curentLTV = position.currentLTV;
+    const curentLTV = position.currentLTV;
 
     const tokenUsedInPercentage =
-      (Number(curentLTV) /  Number(position.pool.maxLTV)) * 100;
-     
-    num += (tokenUsedInPercentage > 100 ? 100: tokenUsedInPercentage) * position.LendBalance;
+      (Number(curentLTV) / Number(position.pool.maxLTV)) * 100;
+
+    num +=
+      (tokenUsedInPercentage > 100 ? 100 : tokenUsedInPercentage) *
+      position.LendBalance;
     deno += position.LendBalance;
- 
   }
 
   const usedPower = (num / deno).toFixed(2);
@@ -932,7 +968,7 @@ export const getHistoryGraphQuery = (address) => {
 export const getPoolCreatedGraphQuery = (address) => {
   const query = `
   {
-      positions(where: {owner: "${address}"}) {
+      positions(where: {owner: "${address || '0x0000000000000000000000000000000000000000'}"}) {
         id
         owner
         pool {
