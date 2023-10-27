@@ -21,7 +21,6 @@ import faq from "../../assets/faq.svg";
 import copyIcon from "../../assets/copyIcon.svg";
 import doc from "../../assets/document.svg";
 import career from "../../assets/career.svg";
-// import ethlogo from "../../assets/ethlogo.png";
 import ethlogo from "../../assets/eth.svg";
 import sun from "../../assets/sun.svg";
 import moon from "../../assets/moon.svg";
@@ -62,7 +61,9 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const [currentTheme, setCurrentTheme] = useState(theme);
   const { chain, isConnected } = useWalletHook();
-  const availableChain = Object.values(supportedNetworks).map((net)=> net.chainId);
+  const availableChain = Object.values(supportedNetworks).map(
+    (net) => net.chainId
+  );
 
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
@@ -120,7 +121,7 @@ export default function Navbar() {
     }
     // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
     if (user?.network?.id && !availableChain.includes(user?.network?.id)) {
-       setWrongNetworkModal(true);
+      setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);
     }
