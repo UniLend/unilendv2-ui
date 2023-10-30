@@ -52,7 +52,7 @@ import { alchemyProvider } from "wagmi/providers/alchemy";
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const alchemyId2 = import.meta.env.VITE_ALCHEMY_ID2;
-const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
+const projectId = '18855b3b9345b6d878b636ea87cd502f' ||  import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID;
 
 import {
@@ -63,33 +63,53 @@ import {
   holeskyTestnet
 } from "./core/networks/Chains";
 
-const { chains, publicClient } = configureChains(
+const { chains, publicClient, webSocketPublicClient } = configureChains(
   [sepoliaTestnet, zkEVMTestNet, mumbaiTestnet, polygon, shardeumTestnet, holeskyTestnet],
   [publicProvider(), alchemyProvider({ apiKey: alchemyId })]
 );
 
+//const projectId = 'YOUR_PROJECT_ID';
+const { wallets } = getDefaultWallets({
+  appName: 'UnilendV2',
+  projectId,
+  chains,
+});
 const connectors = connectorsForWallets([
+  ...wallets,
   {
-    groupName: "Recommended",
+    groupName: 'Other',
     wallets: [
-      ,
       injectedWallet({ chains }),
-      coinbaseWallet({ appName: "UnilendV2", chains }),
-      walletConnectWallet({ chains, projectId }),
-    ],
-  },
-  {
-    groupName: "More",
-    wallets: [
-    trustWallet({chains, projectId})
+      argentWallet({ projectId, chains }),
+      trustWallet({ projectId, chains }),
+      ledgerWallet({ projectId, chains }),
     ],
   },
 ]);
+
+// const connectors = connectorsForWallets([
+//   {
+//     groupName: "Recommended",
+//     wallets: [
+//       metaMaskWallet({chains}),
+//       injectedWallet({ chains }),
+//       coinbaseWallet({ appName: "UnilendV2", chains }),
+//       walletConnectWallet({ chains, projectId }),
+//     ],
+//   },
+//   {
+//     groupName: "More",
+//     wallets: [
+//     trustWallet({chains, projectId})
+//     ],
+//   },
+// ]);
 
 const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
   publicClient,
+  webSocketPublicClient
 });
 //uri: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend_mumbai",
 

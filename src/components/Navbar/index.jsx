@@ -400,12 +400,12 @@ export default function Navbar() {
               >
                 <div className="network_chamber">
                   <div>
-                    {/* <img
+                    <img
                       src={supportedNetworks[currentUser?.network?.id].logoUrl}
                       alt={`${
                         supportedNetworks[currentUser?.network?.id].chainName
                       } Logo`}
-                    /> */}
+                    />
                     <p>{currentUser?.network?.name}</p>
                     <FaChevronDown />
                   </div>
@@ -440,7 +440,8 @@ export default function Navbar() {
               Connect Wallet
             </Button>
           </div>
-        )}
+        )} 
+        
         {/* <ConnectButton/> */}
         <div className="hamberger">
           <Popover

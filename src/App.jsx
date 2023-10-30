@@ -75,10 +75,9 @@ function App() {
   document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`;
 
   useEffect(() => {
-    console.log("data", data);
-    // if (isConnected) {
-    //   refetch();
-    // }
+    if (isConnected) {
+      refetch();
+    }
   }, [isConnected]);
 
   useEffect(() => {
