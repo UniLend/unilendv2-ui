@@ -12,6 +12,7 @@ const API = import.meta.env.VITE_INFURA_ID;
 export const handleDisconnect = async () => {
   await disconnectLib();
   removeFromLocalStorage("user");
+  localStorage.clear();
   localStorage.removeItem("walletconnect");
   window.location.reload();
 };
