@@ -401,9 +401,9 @@ export default function Navbar() {
                 <div className="network_chamber">
                   <div>
                     <img
-                      src={supportedNetworks[currentUser?.network?.id].logoUrl}
+                      src={supportedNetworks[currentUser?.network?.id]?.logoUrl}
                       alt={`${
-                        supportedNetworks[currentUser?.network?.id].chainName
+                        supportedNetworks[currentUser?.network?.id]?.chainName
                       } Logo`}
                     />
                     <p>{currentUser?.network?.name}</p>

@@ -45,7 +45,7 @@ const borrow = "borrow";
 const redeem = "redeem";
 const repay = "repay";
 
-export default function PoolComponent(props) {
+export default function PoolComponent() {
   const { contracts, user, web3, isLoading, isError, poolList } = useSelector(
     (state) => state
   );

@@ -2,8 +2,7 @@ import { getTokenLogo } from "../utils";
 import {
   coreAbi,
   erc20Abi,
-  helperAbi,
-  positionAbi,
+  helperAbi
 } from "../core/contractData/abi";
 import {
   add,
@@ -15,9 +14,7 @@ import {
   mul,
   toAPY,
 } from "./contracts";
-import { ethers } from "ethers";
 import {
-  getEtherContract,
   getEtherContractWithProvider,
   getEthersProvider,
 } from "../lib/fun/wagmi";

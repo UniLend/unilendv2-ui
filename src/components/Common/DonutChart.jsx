@@ -3,17 +3,8 @@ import ReactDOM from "react-dom";
 import { Pie, G2 } from "@ant-design/plots";
 
 const DonutChart = memo(function DonutChartMemo({ data }) {
-  const [pieData, setPieData] = useState([]);
-  // const [theme] = useState(sessionStorage.getItem("unilendV2Theme"));
+
   const G = G2.getEngine("canvas");
-  // console.log("THEME", theme);
-
-  // const firstFive = data.slice(0, 5);
-  // const othersValue = data.slice(5).reduce((acc, curr) => acc + curr.value, 0);
-  // const others = { key: "Others", value: othersValue };
-
-  // // Combine the first five and "others" into a new array
-  // const result = [...firstFive, others];
 
   // show first 5 data and remaining are in others;
   const selectedData = (data) => {

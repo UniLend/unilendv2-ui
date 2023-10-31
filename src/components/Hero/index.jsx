@@ -9,7 +9,7 @@ import PoolCard from "../hallOfPools/poolCard";
 import PoolListSkeleton from "../Loader/PoolListSkeleton";
 import NoPoolFound from "../NoPoolFound";
 
-export default function HeroComponent(props) {
+export default function HeroComponent() {
   const theme = useSelector((state) => state.theme);
   const poolList = useSelector((state) => state.poolList);
   const isLoadingPoolData = useSelector((state) => state.isLoadingPoolData);
