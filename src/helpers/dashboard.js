@@ -212,10 +212,9 @@ const calculateCurrentLTV = (borrow0, lend1, price1) => {
 };
 
 export const getUserData = async (chainId, query, tokenList, ValidAddress) => {
-  console.log("1",new Date().getSeconds());
+
   const fetchedDATA = await fetchGraphQlData(chainId || 137, query);
-  console.log("12",new Date().getSeconds());
-  console.log(fetchedDATA);
+
   const position = await getPositionData(fetchedDATA, chainId);
 
   const pieChart = getPieChartValues(position); //getChartData(data, tokenList);
@@ -239,9 +238,9 @@ export const getUserData = async (chainId, query, tokenList, ValidAddress) => {
     const HF = getNetHealthFactor(fetchedDATA.positions);
     analytics.healthFactor = isNaN(HF) ? 0 : HF;
   }
-  console.log("2",new Date().getSeconds());
+
   const tokens = await getTokensFromUserWallet(tokenList, chainId, ValidAddress);
-  console.log("3",new Date().getSeconds());
+
   return { position, pieChart, analytics, tokens };
 };
 
@@ -282,7 +281,7 @@ export const getPositionData = async (data, chainId) => {
     position.map(function (pool) {
       return { owner: pool.owner, ...pool.pool };
     });
-  console.log("contractsEthers", helperContract, helperAddress);
+  // console.log("contractsEthers", helperContract, helperAddress);
   const arrayPromise = allPositionAPoolddrs.map(function (pool) {
     let promises = [
       helperContract.getPoolFullData(positionAddress, pool.pool, pool.owner),

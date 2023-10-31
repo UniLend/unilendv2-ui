@@ -202,21 +202,26 @@ export default function UserDashboardComponent() {
       setPositionLoading(true);
       setWalletTokenLoading(true)
       const ValidAddress = verifiedAddress ||  address
-      console.log('tokenList', tokenList);
+      // console.log('tokenList',  chainId,
+      // query,
+      // tokenList, 
+      // ValidAddress);
       const { position, pieChart, analytics, tokens } = await getUserData(
         chainId,
         query,
         tokenList, 
         ValidAddress
       );
-
+      setPositionLoading(false);
+      setWalletTokenLoading(false)
+      setWalletTokens(tokens);
+      console.log("tokens", tokens, position);
       setPositionData(position);
       setPositionDataBackup(position);
       setPieChartInputs(pieChart);
       setHeaderAnalytics(analytics);
-      setWalletTokens(tokens);
-      setPositionLoading(false);
-      setWalletTokenLoading(false)
+     
+   
    
       return position, pieChart, analytics, tokens
     } catch (error) {
@@ -451,7 +456,7 @@ export default function UserDashboardComponent() {
                         </div>
                       );
                     })
-                ) : (
+                ) : walletTokens?.length == 0 && (
                   <Lottie
                     options={defaultOptionsLotti}
                     height={350}

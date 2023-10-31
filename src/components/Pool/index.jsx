@@ -228,6 +228,7 @@ export default function PoolComponent() {
 
     const errorText = String(error.reason);
     const data = error?.message ? errorText : "Error: Transaction Error";
+    console.log("Error:-", error );
     openNotificationWithIcon("error", data);
   };
 

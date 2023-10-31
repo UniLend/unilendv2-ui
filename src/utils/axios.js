@@ -79,7 +79,7 @@ export const fetchGraphQlData = async (chainId, FILMS_QUERY) => {
         query: FILMS_QUERY,
       },
     });
-    console.log("graph", graphURL[chainId || 137], data);
+  
     return data.data.data;
   } catch (err) {
     console.log("Graph Error:", err);

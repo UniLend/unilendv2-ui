@@ -55,6 +55,9 @@ export const contractAddress = {
     positionAddress: '0x9422A2D29d932FeDB8a7e7D2259D24a4B50eF232',
     poolAddress: '0xA9259387E643c1188B71Dc18A0cd5b42F991CF8F',
     unilendOracle: '0x534a6CF97fC2FA2Da632be805eC4B1fAa3481635',
+
+    uftToken:'0x06f483894d1c5fD23B999CaC46Fdd325209d2DB4',
+    uftgToken:'0x516a7501C2E8655DbD58dFe2500844A3A02E4b4b'
   },
   '1':{
     uftToken : '0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1',
