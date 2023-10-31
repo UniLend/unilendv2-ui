@@ -4,6 +4,7 @@ import viewExplorer from "../../assets/viewExplorerIcon.svg";
 import { FaChevronDown, FaSearch } from "react-icons/fa";
 import deleteIcon from "../../assets/deleteicon.svg";
 import downoutline from "../../assets/downoutline.svg";
+import coinGeckoLogo from "../../assets/coinGecko.png";
 import BSC from "../../assets/bsc.svg";
 import { fetchCoinGeckoTokens } from "../../utils/axios";
 //import Modal from "../Modal";
@@ -218,8 +219,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   const ManageTokenModalBody = () => {
     const [active, setActive] = useState("list");
     const coingecko = {
-      logoURI:
-        "https://www.coingecko.com/assets/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png",
+      logoURI:coinGeckoLogo,
       name: "CoinGecko",
       total: 4000,
     };

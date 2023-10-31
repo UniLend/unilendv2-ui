@@ -6,7 +6,7 @@
   margin-bottom: 48px;
   display: grid;
   row-gap: 36px;
-  grid-template-columns: repeat(3, calc(100% / 3));
+  grid-template-columns: repeat(5, calc(100% / 5));
   justify-content: center;
   .skeleton_card {
     width: 272px;
@@ -103,15 +103,19 @@
     }
   }
 
-  @media (1520px < width) {
+  @media only screen and (max-width: 1800px) {
     grid-template-columns: repeat(4, calc(100% / 4));
   }
 
-  @media ($tablet) {
+  @media only screen and (max-width: 1480px) {
+    grid-template-columns: repeat(3, calc(100% / 3));
+  }
+
+  @media only screen and (max-width: 1080px) {
     grid-template-columns: repeat(2, calc(100% / 2));
   }
 
   @media ($mobile) {
-    grid-template-columns: repeat(1, 100%);
+    grid-template-columns: repeat(1, calc(100% / 1));
   }
 }
