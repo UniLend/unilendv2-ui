@@ -1,8 +1,8 @@
 import BigNumber from "bignumber.js";
-import { store } from "../store/Store";
+
 import { ethers } from "ethers";
 
-const { contracts, user } = store.getState();
+
 
 // function timestamp() {
 //     return Math.round(new Date().getTime()/1000);

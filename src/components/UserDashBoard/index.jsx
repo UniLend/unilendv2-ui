@@ -2,40 +2,30 @@ import React, { useState } from "react";
 import Lottie from "react-lottie";
 import "./styles/index.scss";
 import { FiPercent } from "react-icons/fi";
-import { BsCheckLg, BsXLg } from "react-icons/bs";
 import { VscGraph } from "react-icons/vsc";
 import { GiReceiveMoney } from "react-icons/gi";
 import { ImStack } from "react-icons/im";
-import { Alchemy, Network } from "alchemy-sdk";
 import { FaWallet, FaSearch } from "react-icons/fa";
 import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
-import banner from "../../assets/dashboardbanner2.svg";
 import userIcon from "../../assets/userIcon.png";
-import { SearchOutlined } from "@ant-design/icons";
 import { Input, Button, Pagination } from "antd";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DonutChart from "../Common/DonutChart";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import {
-  getAverage,
-  getBorrowedPowerUsed,
-  getChartData,
-  getNetHealthFactor,
-  getPieChartValues,
+
   getPoolCreatedGraphQuery,
-  getPositionData,
-  getTokensFromUserWallet,
+
   getUserData,
-  getUserTokens,
+
   sortByKey,
-  userDashBoardQuery,
+
   userDashBoardQuery0,
 } from "../../helpers/dashboard";
-import { getAccount, getNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
 import { imgError } from "../../utils";
-import { fetchGraphQlData, fetchTokenPriceInUSD } from "../../utils/axios";
+import { fetchGraphQlData } from "../../utils/axios";
 import empty from "../../assets/searchEmpty.json";
 import { ethers } from "ethers";
 import { useSelector } from "react-redux";
@@ -44,24 +34,9 @@ import useWalletHook from "../../lib/hooks/useWallet";
 //const endpoint = "https://api.spacex.land/graphql/";
 const mumbai = import.meta.env.VITE_ALCHEMY_Mumbai;
 const polygon = import.meta.env.VITE_ALCHEMY_Mumbai;
-const config = {
-  80001: {
-    apiKey: mumbai,
-    network: Network.MATIC_MUMBAI,
-  },
-  137: {
-    apiKey: polygon,
-    network: Network.MATIC_MAINNET,
-  },
-};
 
-const graphURL = {
-  80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
-  137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
-};
 
-export default function UserDashboardComponent(props) {
-  const contracts = useSelector((state) => state.contracts);
+export default function UserDashboardComponent() {
   const user = useSelector((state) => state.user);
   const tokenList = useSelector((state) => state.tokenList);
   const { chain, address } = useWalletHook();
@@ -76,24 +51,11 @@ export default function UserDashboardComponent(props) {
     address || user?.address
   );
   const query = userDashBoardQuery0(verifiedAddress || address);
-  const [lendingVisible, setLendingVisible] = useState(false);
-  const [borrowingVisible, setBorrowingVisible] = useState(false);
   const [isLendTab, setIsLentab] = useState(true);
   const [pieChartInputs, setPieChartInputs] = useState({});
-  const query0 = getPoolCreatedGraphQuery(user?.address);
   const [positionData, setPositionData] = useState({});
   const [positionDataBackup, setPositionDataBackup] = useState();
-  // const { data, loading, error } = useQuery(query);
-  const { data, loading, error, refetch } = useQuery(
-    "userDashboard",
-    async () => {
-      const fetchedDATA = await fetchGraphQlData(
-        chain?.id || user?.network?.id || 137,
-        query
-      );
-      return fetchedDATA;
-    }
-  );
+
 
   const [headerAnalytics, setHeaderAnalytics] = useState({
     healthFactor: 0,
@@ -110,9 +72,6 @@ export default function UserDashboardComponent(props) {
     borrowing: 1,
   });
 
-  const handleLendingVisibleChange = (visible) => {
-    setLendingVisible(visible);
-  };
 
   const handleSearchAddress = (addr) => {
     setUserAddress(addr);
@@ -257,15 +216,8 @@ export default function UserDashboardComponent(props) {
       setHeaderAnalytics(analytics);
       setWalletTokens(tokens);
       setPositionLoading(false);
-     
-
-      // console.log(ValidAddress, chainId);
-      //  const tokens = await getUserTokens(ValidAddress, chainId, tokenList);
-      
-    
-
       setWalletTokenLoading(false)
-      // console.log(chainId, position, pieChart, analytics, tokens);
+   
       return position, pieChart, analytics, tokens
     } catch (error) {
       console.log('getDashboard error', error)
@@ -274,35 +226,16 @@ export default function UserDashboardComponent(props) {
 
   useEffect(() => {
     if (address) {
-      // getDashBoardData(1442);
+     
       getDashBoardData(chain?.id);
     }
   }, [query, tokenList]);
 
-  // const getUserTokens = async (address, chainId) => {
-  //   setWalletTokenLoading(true);
-  //   setWalletTokens([]);
-  //   const alchemy = new Alchemy(config[chainId]);
-  //   alchemy.core.getTokenBalances(`${address}`).then(async (bal) => {
-  //     // const tokenPrices = await fetchTokenPriceInUSD()
-  //     const tokens = await getTokensFromUserWallet(bal, tokenList);
-  //     setWalletTokens(tokens);
-  //     setWalletTokenLoading(false);
-  //   });
-  // };
 
   const checkNaN = (value) => {
     return isNaN(value) ? 0 : value;
   };
 
-  // useEffect(() => {
-  //   refetch();
-  //   if (verifiedAddress) {
-  //     getUserTokens(verifiedAddress || address, chain?.id || user?.network?.id || 137);
-  //   } else if (userAddress == "" || verifiedAddress == "") {
-  //     getUserTokens(address, chain?.id || user?.network?.id || 137);
-  //   }
-  // }, [verifiedAddress, userAddress, user]);
 
   return (
     <div className="user_dashboard_component">

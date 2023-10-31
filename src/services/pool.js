@@ -66,11 +66,7 @@ export const handleRedeem = async (
       const txn = await instance.redeem(poolAddress, maxAmount, userAddr);
 
       hash = txn?.hash;
-      // actnCont = await contracts.coreContract.methods.redeem(
-      //   poolAddress,
-      //   maxAmount,
-      //   userAddr
-      // );
+
     } else {
       const txn = await instance.redeemUnderlying(
         poolAddress,
@@ -79,12 +75,7 @@ export const handleRedeem = async (
       );
 
       hash = txn?.hash;
-      // hash = await getContractInstance(contracts.coreContract.address, coreAbi, 'redeemUnderlying', [poolAddress, Amount, userAddr])
-      // actnCont = await contracts.coreContract.methods.redeemUnderlying(
-      //   poolAddress,
-      //   Amount,
-      //   userAddr
-      // );
+
     }
 
     const txnData = {
@@ -97,16 +88,7 @@ export const handleRedeem = async (
     };
     checkTxnStatus(hash, txnData);
 
-    // actnCont
-    //   .send({ from: userAddr })
-    //   .on('transactionHash', (hash) => {
 
-    //   })
-    //   .on('error', function (error) {
-    //     checkTxnError(error);
-    //     throw error;
-    //     //   checkTxnError(error);
-    //   });
   } catch (error) {
     checkTxnError(error);
     throw error;
@@ -149,25 +131,7 @@ export const setAllowance = async (
     checkTxnError(error);
     throw error;
   }
-  // ERC20.methods
-  //   .approve(contractAddress.coreAddress, maxAllow)
-  //   .send({ from: userAddr })
-  //   .on('transactionHash', (hash) => {
-  //     const txn = {
-  //       method: 'approval',
-  //       amount: amount,
-  //       tokenAddress: token._address,
-  //       tokenSymbol: token._symbol,
-  //       poolAddress: poolAddress,
-  //       chainId: '',
-  //     };
-  //     checkTxnStatus(hash, txn);
-  //   })
-  //   .on('error', function (error) {
-  //     console.error('Aproove:', error);
-  //     checkTxnError(error);
-  //     throw error;
-  //   });
+
 };
 
 export const getTabs = (token) => {
@@ -199,21 +163,12 @@ export const getTokenPrice = async (
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      // const data = await contracts.helperContract.methods
-      //   .getPoolTokensData(poolAddress, userAddr)
-      //   .call();
-      //const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolTokensData', [poolAddress, userAddr])
+
       const data = await contracts.helperContract.getPoolTokensData(
         poolAddress,
         userAddr
       );
-      // const etherProvider = new ethers.providers.getDefaultProvider("sepolia");
-      // const instance = new ethers.Contract(contracts.helperContract.address, helperAbi, etherProvider)
-      // const contractInstance = await instance.getPoolTokensData(poolAddress, userAddr)
 
-      // // console.log("Contract", contractInstance);
-
-      // console.log("Data", "Read", fromBigNumber(data._balance0), fromBigNumber(contractInstance._balance0));
 
       const pool = { ...poolData };
       pool.token0.balance = fromBigNumber(data._balance0);
@@ -263,16 +218,6 @@ oracle data;
 export const getOracleData = async (contracts, poolData) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      // const data = await contracts.coreContract.methods
-      //   .getOraclePrice(
-      //     poolData.token0._address,
-      //     poolData.token1._address,
-      //     decimal2Fixed(1, poolData.token0._decimals)
-      //   )
-      //   .call();
-      //  const data = await handleRead(contracts.coreContract.address, coreAbi, 'getOraclePrice', [  poolData.token0._address,
-      //   poolData.token1._address,
-      //   decimal2Fixed(1, poolData.token0._decimals)])
 
       const data = await contracts.coreContract.getOraclePrice(
         poolData.token0._address,
@@ -347,10 +292,7 @@ export const getPoolBasicData = async (
   let pool;
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      // const data = await contracts.helperContract.methods
-      //   .getPoolData(poolAddress)
-      //   .call();
-      //const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolData', [poolAddress]  )
+
       const data = await contracts.helperContract.getPoolData(poolAddress);
 
       pool = {
@@ -398,10 +340,7 @@ export const getPoolAllData = async (
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      // const data = await contracts.helperContract.methods
-      //   .getPoolFullData(positionAddr, poolAddress, userAddr)
-      //   .call();
-      // const data = await handleRead(contracts.helperContract.address, helperAbi, 'getPoolFullData', [contracts.positionContract.address, poolAddress, userAddr]  )
+
       const data = await contracts.helperContract.getPoolFullData(
         contracts.positionContract.address,
         poolAddress,
@@ -610,12 +549,7 @@ export const handleLend = async (
         contracts.coreContract.address,
         coreAbi
       );
-      // const signer = await fetchSigner()
-      // const instance = getContract({
-      //   address: contracts.coreContract.address,
-      //   abi: coreAbi,
-      //   signerOrProvider: signer
-      // })
+
 
       const transaction = await instance.lend(poolData._address, Amount);
 
@@ -697,24 +631,7 @@ export const handleBorrow = async (
 
       checkTxnStatus(transaction?.hash, txn);
 
-      // contracts.coreContract.methods
-      //   .borrow(poolData._address, Amount, Collateral, userAddr)
-      //   .send({ from: userAddr })
-      //   .on('transactionHash', (hash) => {
-      //     const txn = {
-      //       method: 'borrow',
-      //       amount: amount,
-      //       tokenAddress: selectedToken._address,
-      //       tokenSymbol: selectedToken._symbol,
-      //       poolAddress: poolData._address,
-      //       chainId: '',
-      //     };
-      //     checkTxnStatus(hash, txn);
-      //   })
-      //   .on('error', function (error) {
-      //     checkTxnError(error);
-      //     throw error;
-      //   });
+
     } else {
       setAllowance(
         collateralToken,
@@ -780,24 +697,7 @@ export const handleRepay = async (
         chainId: "",
       };
       checkTxnStatus(hash, txn);
-      // contracts.coreContract.methods
-      //   .repay(poolAddress, Amount, userAddr)
-      //   .send({ from: userAddr })
-      //   .on('transactionHash', (hash) => {
-      //     const txn = {
-      //       method: 'repay',
-      //       amount: amount,
-      //       tokenAddress: selectedToken._address,
-      //       tokenSymbol: selectedToken._symbol,
-      //       poolAddress: poolAddress,
-      //       chainId: '',
-      //     };
-      //     checkTxnStatus(hash, txn);
-      //   })
-      //   .on('error', function (error) {
-      //     checkTxnError(error);
-      //     throw error;
-      //   });
+
     } else {
       setAllowance(
         selectedToken,
@@ -816,42 +716,42 @@ export const handleRepay = async (
   }
 };
 
-export const getCollateralNeeded = (
-  selectedToken,
-  poolData,
-  collateralToken,
-  amount,
-  selectLTV
-) => {
-  // require state here
-  setCollateralToken(
-    selectedToken.index == 0 ? poolData.token1 : poolData.token0
-  );
-  let collateralNeeded = 0;
+// export const getCollateralNeeded = (
+//   selectedToken,
+//   poolData,
+//   collateralToken,
+//   amount,
+//   selectLTV
+// ) => {
+//   // require state here
+//   setCollateralToken(
+//     selectedToken.index == 0 ? poolData.token1 : poolData.token0
+//   );
+//   let collateralNeeded = 0;
 
-  if (amount && collateralToken) {
-    collateralNeeded = div(
-      mul(
-        mul(selectedToken.price, add(amount, selectedToken.borrowBalanceFixed)),
-        100
-      ),
-      selectLTV
-    );
-    if (greaterThan(collateralToken.lendBalanceFixed, 0)) {
-      if (
-        lessThan(collateralToken.lendBalanceFixed, String(collateralNeeded))
-      ) {
-        collateralNeeded = sub(
-          collateralNeeded,
-          collateralToken.lendBalanceFixed
-        );
-      } else {
-        collateralNeeded = 0;
-      }
-    }
-  }
-  setCollateral(collateralNeeded);
-};
+//   if (amount && collateralToken) {
+//     collateralNeeded = div(
+//       mul(
+//         mul(selectedToken.price, add(amount, selectedToken.borrowBalanceFixed)),
+//         100
+//       ),
+//       selectLTV
+//     );
+//     if (greaterThan(collateralToken.lendBalanceFixed, 0)) {
+//       if (
+//         lessThan(collateralToken.lendBalanceFixed, String(collateralNeeded))
+//       ) {
+//         collateralNeeded = sub(
+//           collateralNeeded,
+//           collateralToken.lendBalanceFixed
+//         );
+//       } else {
+//         collateralNeeded = 0;
+//       }
+//     }
+//   }
+//   setCollateral(collateralNeeded);
+// };
 
 export const handleCreatePool = async (contracts) => {
   try {

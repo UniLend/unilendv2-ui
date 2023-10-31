@@ -40,53 +40,39 @@ export const connectWallet = async (wallet, ChangedAccount = null) => {
   }
 };
 
-export const changeNetwork = async (networkId) => {
-  const provider = getEthersProvider();
-  try {
-    if (!provider) throw new Error("No Crypto Wallet Found");
-    const account = await provider.request({
-      method: "wallet_switchEthereumChain",
-      params: [
-        {
-          chainId: `0x${networkId.toString(16)}`,
-        },
-      ],
-    });
-    return account;
-  } catch (error) {
-    // This error code indicates that the chain has not been added to MetaMask.
-    if (error.code === 4902) {
-      try {
-        await provider.request({
-          method: "wallet_addEthereumChain",
-          params: [
-            {
-              ...networks[networkId],
-            },
-          ],
-        });
-        return true;
-      } catch (err) {
+// export const changeNetwork = async (networkId) => {
+//   const provider = getEthersProvider();
+//   try {
+//     if (!provider) throw new Error("No Crypto Wallet Found");
+//     const account = await provider.request({
+//       method: "wallet_switchEthereumChain",
+//       params: [
+//         {
+//           chainId: `0x${networkId.toString(16)}`,
+//         },
+//       ],
+//     });
+//     return account;
+//   } catch (error) {
+//     // This error code indicates that the chain has not been added to MetaMask.
+//     if (error.code === 4902) {
+//       try {
+//         await provider.request({
+//           method: "wallet_addEthereumChain",
+//           params: [
+//             {
+//               ...networks[networkId],
+//             },
+//           ],
+//         });
+//         return true;
+//       } catch (err) {
       
-        return false;
-      }
-    }
-  }
-};
+//         return false;
+//       }
+//     }
+//   }
+// };
 
 // use in connect functions and dispatched on every event or can be used in useEffect;
 
-export const MetaMaskEventHandler = (provider) => {
-  provider.on("chainChanged", (chainId) => {
-    window.location.reload();
-  });
-  provider.on("accountsChanged", function (account) {
-    window.location.reload();
-  });
-  provider.on("message", (message) => {
-    console.log(message);
-  });
-  provider.on("disconnect", (reason) => {
-    console.log(reason);
-  });
-};

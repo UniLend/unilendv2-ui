@@ -4,8 +4,6 @@ import { getContract ,   getAccount,
   getNetwork,
   disconnect,
  fetchBalance , getWalletClient, getPublicClient, readContract, fetchToken, switchNetwork, waitForTransaction} from "wagmi/actions";
-import { changeNetwork } from "../../services/wallet";
-import { getEtherContract } from "./wagmi";
 
 export const getNetworkLib =  (props) => {
   const network =  getNetwork(props);

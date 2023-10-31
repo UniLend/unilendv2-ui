@@ -1,5 +1,5 @@
 import { poolAbi, positionAbi, coreAbi } from "../core/contractData/abi";
-import { fromBigNumber, getAllContracts } from "../helpers/contracts";
+import { fromBigNumber } from "../helpers/contracts";
 import { getEtherContract } from "../lib/fun/wagmi";
 import { getPastEvents, readContractLib } from "../lib/fun/functions";
 
@@ -49,7 +49,7 @@ export const allTransaction = async (
   const newData = data.map((event) => event.args.pool);
  
   let array = [];
-  console.log("history", 'newData', newData, data);
+
   for (let i = 0; i < newData.length; i++) {
     const position = await positionId(
       positionContract,
