@@ -4,7 +4,7 @@ import viewExplorer from "../../assets/viewExplorerIcon.svg";
 import { FaChevronDown, FaSearch } from "react-icons/fa";
 import deleteIcon from "../../assets/deleteicon.svg";
 import downoutline from "../../assets/downoutline.svg";
-import coinGeckoLogo from "../../assets/coinGecko.png";
+import coinGeckoLogo from "../../assets/CoinGecko_Logo.svg";
 import BSC from "../../assets/bsc.svg";
 import { fetchCoinGeckoTokens } from "../../utils/axios";
 //import Modal from "../Modal";
