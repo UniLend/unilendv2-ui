@@ -550,7 +550,6 @@ export const handleLend = async (
         coreAbi
       );
 
-
       const transaction = await instance.lend(poolData._address, Amount);
 
       const txn = {
@@ -561,8 +560,6 @@ export const handleLend = async (
         poolAddress: poolAddress,
         chainId: "",
       }; //will hold the value of the transaction
-
-      console.log("transaction", transaction);
       checkTxnStatus(transaction?.hash, txn);
     } else {
       setAllowance(

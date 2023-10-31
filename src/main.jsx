@@ -75,7 +75,15 @@ const { wallets } = getDefaultWallets({
   chains,
 });
 const connectors = connectorsForWallets([
-  ...wallets,
+    {
+    groupName: "Recommended",
+    wallets: [
+      metaMaskWallet({chains}),
+      injectedWallet({ chains }),
+      coinbaseWallet({ appName: "UnilendV2", chains }),
+      walletConnectWallet({ chains, projectId }),
+    ],
+  },
   {
     groupName: 'Other',
     wallets: [
