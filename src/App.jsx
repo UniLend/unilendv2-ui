@@ -64,15 +64,18 @@ function App() {
   const contracts = useSelector((state) => state.contracts);
   const user = useSelector((state) => state.user);
   const query = getPoolCreatedGraphQuery(address);
-  const networksWithGraph = Object.values(supportedNetworks).filter((network)=> network.graphAvailable && network.chainId ).map((net)=> net.chainId);
-
+  const networksWithGraph = Object.values(supportedNetworks)
+    .filter((network) => network.graphAvailable && network.chainId)
+    .map((net) => net.chainId);
 
   const { data, loading, error, refetch } = useQuery("pools", async () => {
     const fetchedDATA = await fetchGraphQlData(chain?.id || 1442, query);
     return fetchedDATA;
   });
 
-  document.body.className = `body ${getFromLocalStorage("unilendV2Theme")}`;
+  document.body.className = `body ${
+    getFromLocalStorage("unilendV2Theme") || "dark"
+  }`;
 
   useEffect(() => {
     if (isConnected) {
@@ -88,7 +91,8 @@ function App() {
           localStorage.getItem("wagmi.connected")
         );
 
-        const { coreAddress, helperAddress, positionAddress } = contractAddress[chain?.id || user?.network?.id || 1442]
+        const { coreAddress, helperAddress, positionAddress } =
+          contractAddress[chain?.id || user?.network?.id || 1442];
         // console.log('contractAddres',coreAddress, helperAddress, positionAddress);
         const preparedData = [
           { abi: coreAbi, address: coreAddress },
@@ -112,7 +116,7 @@ function App() {
               dispatch(setContracts(payload));
             })
             .catch((err) => {
-               console.log("ContractError", err);
+              console.log("ContractError", err);
               // throw err;
             });
         } else {
@@ -130,7 +134,6 @@ function App() {
           //       helperContract: res[1],
           //       positionContract: res[2],
           //     };
-
           //     dispatch(setContracts(payload));
           //   })
           //   .catch((err) => {
@@ -272,9 +275,14 @@ function App() {
 
   useEffect(() => {
     const networkID = chain?.id || 1442;
-    console.log('networksWithGraph', data, networksWithGraph, networkID,networksWithGraph.includes(networkID));
-    if (data && networksWithGraph.includes(networkID) ) {
-      
+    console.log(
+      "networksWithGraph",
+      data,
+      networksWithGraph,
+      networkID,
+      networksWithGraph.includes(networkID)
+    );
+    if (data && networksWithGraph.includes(networkID)) {
       const allPositions = data?.positions;
       const poolData = {};
       const tokenList = {};
@@ -324,13 +332,13 @@ function App() {
           ...pool.token0,
           address: pool?.token0?.id,
           logo: getTokenLogo(pool.token0.symbol),
-          pricePerToken: pool.token0.priceUSD/100000000,
+          pricePerToken: pool.token0.priceUSD / 100000000,
         };
         tokenList[String(pool.token1.id).toUpperCase()] = {
           ...pool.token1,
           address: pool?.token1?.id,
           logo: getTokenLogo(pool.token1.symbol),
-          pricePerToken: pool.token1.priceUSD/100000000,
+          pricePerToken: pool.token1.priceUSD / 100000000,
         };
         poolData[pool?.pool] = poolInfo;
       }
