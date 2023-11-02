@@ -67,7 +67,8 @@ return contract;
 }
 
 
-export const getEtherContractWithProvider = (address: any, abi: any, provider: any) => {
-  const contract = new ethers.Contract(address, abi , provider)
+export const getEtherContractWithProvider = (address: any, abi: any, chainId: number) => {
+  const pro = getEthersProvider({chainId: chainId})
+  const contract = new ethers.Contract(address, abi , pro)
 return contract;
 }

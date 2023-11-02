@@ -46,9 +46,16 @@ export const getContractLib = async({address, abi}) => {
 
 export const getPastEvents = async ( contractInstance,  event) => {
   // const contractInstance =  await getEtherContract(address, abi)
-  const events = await contractInstance.queryFilter(event);
 
-  return events
+  try {
+    const events = await contractInstance.queryFilter(event);
+
+    return events
+  } catch (error) {
+    throw error
+  }
+
+
 }
 
 
