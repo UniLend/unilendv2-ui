@@ -55,7 +55,6 @@ export default function PoolComponent() {
   const [activeOperation, setActiveOperation] = useState(lend);
   const [selectLTV, setSelectLTV] = useState(5);
   const [poolData, setPoolData] = useState({});
-  // const [amount, setAmount] = useState(0);
   const [amount, setAmount] = useState(null);
   const [max, setMax] = useState(false);
   const [isOperationLoading, setIsOperationLoading] = useState(false);
@@ -108,7 +107,11 @@ export default function PoolComponent() {
   );
 
   const handleAmount = (e) => {
-    setAmount(parseFloat(e.target.value));
+    if (e.target.value === "") {
+      setAmount(null);
+    } else {
+      setAmount(parseFloat(e.target.value));
+    }
     setMax(false);
     const LtvBasedOnAmount = getSelectLTV(
       selectedToken,
@@ -157,9 +160,12 @@ export default function PoolComponent() {
   const openNotificationWithIcon = (result, txnData) => {
     notification.open({
       mesage: { result },
-      description: `Transaction for ${txnData.method} of ${Number(
-        txnData.amount
-      ).toFixed(4)} for token ${txnData.tokenSymbol}`,
+      description:
+        result === "success"
+          ? `Transaction for ${txnData.method} of ${Number(
+              txnData.amount
+            ).toFixed(4)} for token ${txnData.tokenSymbol}`
+          : "Something went wrong",
       onClick: () => {
         console.log("Notification Clicked!");
       },
@@ -185,7 +191,7 @@ export default function PoolComponent() {
           openNotificationWithIcon("success", txnData);
           setReFetching(true);
           if (txnData.method !== "approval") {
-            setAmount(0);
+            setAmount("");
             //setShowTwitterModal(true)
             setTimeout(() => {
               setMethodLoaded({
@@ -222,14 +228,14 @@ export default function PoolComponent() {
   };
 
   const checkTxnError = (error) => {
-    setAmount(0);
+    setAmount("");
     setMax(false);
     setIsOperationLoading(false);
 
     const errorText = String(error.reason);
     const data = error?.message ? errorText : "Error: Transaction Error";
-    console.log("Error:-", error );
-    openNotificationWithIcon("error", data);
+    console.log("Error:-", error);
+    openNotificationWithIcon("error", "Error: Something went wrong");
   };
 
   const handleOperation = () => {
@@ -295,7 +301,7 @@ export default function PoolComponent() {
 
   const toggleToken = (token) => {
     setActiveToken(token);
-    setAmount(0);
+    setAmount("");
     setSelectLTV(5);
     if (token === 0) {
       setSelectedToken(poolData.token0);
@@ -311,7 +317,7 @@ export default function PoolComponent() {
   const toggleOperation = (operation) => {
     if (selectedToken?.tabs?.includes(operation)) {
       setActiveOperation(operation);
-      setAmount(0);
+      setAmount("");
       setSelectLTV(5);
     }
   };
@@ -593,6 +599,7 @@ export default function PoolComponent() {
   };
 
   const handleOpenSelectTokenMoadal = (bool, token) => {
+    setAmount("");
     if (token === "token0") {
       setOpenToken0(true);
       setOpenToken1(false);

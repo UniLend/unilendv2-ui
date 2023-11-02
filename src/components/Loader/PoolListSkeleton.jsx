@@ -4,7 +4,7 @@ import "./styles/poolList.scss";
 export default function PoolListSkeleton() {
   return (
     <div className="pool_list_skeleton_container">
-      {new Array(9).fill(9).map((el, i) => (
+      {new Array(10).fill(10).map((el, i) => (
         <div key={i} className="skeleton_card">
           <div className="pool_icons">
             <div className="div">

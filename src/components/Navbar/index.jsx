@@ -114,7 +114,11 @@ export default function Navbar() {
       const wallet = localStorage.getItem("wallet");
       handleConnect(wallet);
     }
-    if (user?.network?.id == 80001 || user?.network?.id == 137 || user?.network?.id == 1442) {
+    if (
+      user?.network?.id == 80001 ||
+      user?.network?.id == 137 ||
+      user?.network?.id == 1442
+    ) {
       setIsPolygon(true);
     } else {
       setIsPolygon(false);
@@ -277,6 +281,7 @@ export default function Navbar() {
       </div>
     );
   };
+
   const PopoverContent = () => {
     const [copied, setCopied] = useState(false);
 
@@ -304,7 +309,9 @@ export default function Navbar() {
             <p> {copied ? "Copied" : "Copy address"}</p>
           </div>
           <a
-            href={`https://sepolia.etherscan.io/address/${user.address}`}
+            href={`${
+              supportedNetworks[user?.network?.id].blockExplorerUrls[0]
+            }/address/${user.address}`}
             target="_blank"
           >
             <div>
@@ -440,8 +447,8 @@ export default function Navbar() {
               Connect Wallet
             </Button>
           </div>
-        )} 
-        
+        )}
+
         {/* <ConnectButton/> */}
         <div className="hamberger">
           <Popover
