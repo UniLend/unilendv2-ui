@@ -457,7 +457,7 @@
   }
 
   h1 {
-    color: #db2438;
+    color: var(--light-red);
     width: 100%;
     text-align: center;
   }
@@ -481,7 +481,7 @@
     border-top: 0.5px solid #c4c4c4;
 
     button {
-      background: #db2438;
+      background: var(--light-red);
       color: white;
       width: 120px;
       padding: 10px;

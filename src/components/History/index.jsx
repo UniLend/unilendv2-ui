@@ -41,9 +41,11 @@ function HistoryComponent() {
   const query = getHistoryGraphQuery(user?.address);
   const [called, setIsCalled] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
-  const networksWithGraph = Object.values(supportedNetworks).filter((network)=> network.graphAvailable && network.chainId ).map((net)=> net.chainId);
+  const networksWithGraph = Object.values(supportedNetworks)
+    .filter((network) => network.graphAvailable && network.chainId)
+    .map((net) => net.chainId);
 
-console.log('networksWithGraph', networksWithGraph);
+  console.log("networksWithGraph", networksWithGraph);
   const { data, loading, error, refetch } = useQuery("history", async () => {
     const fetchedDATA = await fetchGraphQlData(
       chain?.id || user?.network?.id || 137,
@@ -291,15 +293,30 @@ console.log('networksWithGraph', networksWithGraph);
                     </p>
                   </div>
                   <div className="hide_for_mobile">
+                    {console.log("HASH", txt)}
                     <p>
-                      <a href="#" target="_blank">
+                      <a
+                        href={`${
+                          supportedNetworks[user?.network?.id]
+                            .blockExplorerUrls[0]
+                        }/tx/${txt?.id}`}
+                        target="_blank"
+                      >
                         {shortenAddress(txt?.id)}
                       </a>
                     </p>
                   </div>
                   <div className="tx_icon">
                     {" "}
-                    <img src={txIcon} alt="" />{" "}
+                    <a
+                      href={`${
+                        supportedNetworks[user?.network?.id]
+                          .blockExplorerUrls[0]
+                      }/tx/${txt?.id}`}
+                      target="_blank"
+                    >
+                      <img src={txIcon} alt="" />{" "}
+                    </a>
                   </div>
                 </div>
               ))
@@ -358,7 +375,10 @@ console.log('networksWithGraph', networksWithGraph);
                   <div className="hide_for_mobile">
                     <p>
                       <a
-                        href={`https://sepolia.etherscan.io/tx/${txt.transactionHash}`}
+                        href={`${
+                          supportedNetworks[user?.network?.id]
+                            .blockExplorerUrls[0]
+                        }/tx/${txt?.id}`}
                         target="_blank"
                       >
                         {shortenAddress(txt.transactionHash)}
@@ -366,8 +386,15 @@ console.log('networksWithGraph', networksWithGraph);
                     </p>
                   </div>
                   <div className="tx_icon">
-                    {" "}
-                    <img src={txIcon} alt="" />{" "}
+                    <a
+                      href={`${
+                        supportedNetworks[user?.network?.id]
+                          .blockExplorerUrls[0]
+                      }/tx/${txt?.id}`}
+                      target="_blank"
+                    >
+                      <img src={txIcon} alt="" />{" "}
+                    </a>
                   </div>
                 </div>
               ))
