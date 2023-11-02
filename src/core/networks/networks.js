@@ -31,7 +31,7 @@ export const networks = {
     logoURl: polygon,
     rpcUrls: ["https://polygon-rpc.com/"],
     blockExplorerUrls: ["https://polygonscan.com/"],
-    graphAvailable: true
+    graphAvailable: true,
   },
 
   56: {
@@ -128,7 +128,7 @@ export const networks = {
     },
     logoUrl: eth,
     rpcUrls: ["https://polygon-rpc.com/"],
-    blockExplorerUrls: ["https://polygonscan.com/"],
+    blockExplorerUrls: ["https://testnet-zkevm.polygonscan.com/"],
   },
   8081: {
     chainId: `0x${Number(8081).toString(16)}`,
@@ -174,7 +174,7 @@ export const supportedNetworks = {
       "https://rpc-sepolia.rockx.com",
     ],
     blockExplorerUrls: ["https://sepolia.etherscan.io"],
-    graphAvailable: false
+    graphAvailable: false,
   },
 
   80001: {
@@ -187,8 +187,8 @@ export const supportedNetworks = {
     },
     logoUrl: polygon,
     rpcUrls: ["https://polygon-rpc.com/"],
-    blockExplorerUrls: ["https://polygonscan.com/"],
-    graphAvailable: true
+    blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
+    graphAvailable: true,
   },
   1442: {
     chainId: 1442,
@@ -200,8 +200,8 @@ export const supportedNetworks = {
     },
     logoUrl: eth,
     rpcUrls: ["https://polygon-rpc.com/"],
-    blockExplorerUrls: ["https://polygonscan.com/"],
-    graphAvailable: true
+    blockExplorerUrls: ["https://testnet-zkevm.polygonscan.com/"],
+    graphAvailable: true,
   },
   // 8081: {
   //   chainId: 8081,
