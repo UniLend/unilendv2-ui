@@ -71,7 +71,10 @@ export const fetchGraphQlData = async (chainId, FILMS_QUERY) => {
     137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
     1442: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-zkevm"
   };
+
+  if(Object.keys(graphURL).includes(String(chainId))){
   try {
+ 
     const data = await axios({
       url: graphURL[chainId || 137],
       method: "POST",
@@ -84,4 +87,5 @@ export const fetchGraphQlData = async (chainId, FILMS_QUERY) => {
   } catch (err) {
     console.log("Graph Error:", err);
   }
+}
 };

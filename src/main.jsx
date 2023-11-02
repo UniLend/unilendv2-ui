@@ -78,16 +78,16 @@ const connectors = connectorsForWallets([
     {
     groupName: "Recommended",
     wallets: [
-      metaMaskWallet({chains}),
-      injectedWallet({ chains }),
-      coinbaseWallet({ appName: "UnilendV2", chains }),
+      metaMaskWallet({chains, projectId}),
+      injectedWallet({ chains, projectId }),
+      coinbaseWallet({ appName: "UnilendV2", chains , projectId}),
       walletConnectWallet({ chains, projectId }),
     ],
   },
   {
     groupName: 'Other',
     wallets: [
-      injectedWallet({ chains }),
+      injectedWallet({ chains , projectId}),
       argentWallet({ projectId, chains }),
       trustWallet({ projectId, chains }),
       ledgerWallet({ projectId, chains }),

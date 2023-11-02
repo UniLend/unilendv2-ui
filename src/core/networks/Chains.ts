@@ -10,7 +10,7 @@ export const zkEVMTestNet = {
         webSocket: ['wss://polygonzkevm-testnet.g.alchemy.com/v2/Y-o5wyGBAAG1-0zx1UpZqB9f_K7C3YIE','wss://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a', 'wss://rpc.public.zkevm-test.net'],
       },
       public: {
-        http: ['https://polygonzkevm-testnet.g.alchemy.com/v2/Y-o5wyGBAAG1-0zx1UpZqB9f_K7C3YIE','https://rpc.public.zkevm-test.net','https://rpc.public.zkevm-test.net'],
+        http: ['https://polygonzkevm-testnet.g.alchemy.com/v2/Y-o5wyGBAAG1-0zx1UpZqB9f_K7C3YIE', 'https://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a'],
         webSocket:['wss://polygonzkevm-testnet.g.alchemy.com/v2/Y-o5wyGBAAG1-0zx1UpZqB9f_K7C3YIE','wss://polygon-zkevm-testnet.rpc.thirdweb.com/ed043a51a23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a','wss://rpc.public.zkevm-test.net','wss://rpc.public.zkevm-test.net']
       },
     },
