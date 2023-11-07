@@ -116,8 +116,7 @@ export default function Navbar() {
     }
     if (
       user?.network?.id == 80001 ||
-      user?.network?.id == 137 ||
-      user?.network?.id == 1442
+      user?.network?.id == 137 
     ) {
       setIsPolygon(true);
     } else {
