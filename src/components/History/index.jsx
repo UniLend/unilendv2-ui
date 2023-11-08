@@ -145,6 +145,7 @@ function HistoryComponent() {
   };
 
   const getTransactionData = async () => {
+  
     if (!networksWithGraph.includes(user?.network.id) && !called) {
       try {
         // setIsPageLoading(true);
@@ -157,6 +158,7 @@ function HistoryComponent() {
           setTxtData,
           setIsPageLoading
         );
+       
         if (txtArray.length > 0) {
           const sort = txtArray.sort(function (a, b) {
             // Compare the 2 dates
@@ -170,6 +172,7 @@ function HistoryComponent() {
         }
         setIsPageLoading(false);
       } catch (error) {
+        console.log("history data: error", error);
         setIsPageLoading(false);
         setHistoryLoading(false);
       }

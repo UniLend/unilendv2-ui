@@ -41,9 +41,11 @@ export const allTransaction = async (
   setTxtData,
   setIsPageLoading
 ) => {
-  const data = await getPastEvents(coreContract.address, coreAbi, "PoolCreated");
+  const data = await getPastEvents(coreContract, "PoolCreated");
 
 
+
+  console.log("history data:", data);
 
   // array of all pools address
   const newData = data.map((event) => event.args.pool);
