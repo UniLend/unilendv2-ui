@@ -206,6 +206,7 @@ export default function PoolComponent() {
                 getPoolTokensData: false,
               });
             }, 5000);
+            window.location.reload()
           }
 
           setMax(false);
