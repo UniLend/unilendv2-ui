@@ -73,7 +73,7 @@ export const allTransaction = async (
   setTxtData,
   setIsPageLoading
 ) => {
-  const data = await getEventData(coreContract, "PoolCreated");
+  const data = await getPastEvents(coreContract, "PoolCreated");
 
 
 
