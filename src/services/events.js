@@ -1,12 +1,13 @@
 import { poolAbi, positionAbi, coreAbi } from "../core/contractData/abi";
 import { fromBigNumber } from "../helpers/contracts";
-import { getEtherContract } from "../lib/fun/wagmi";
+import { getEtherContract, getEthersProvider } from "../lib/fun/wagmi";
 import { getPastEvents, readContractLib } from "../lib/fun/functions";
+
 
 
 export const getEventsWithFilter = async (contract, event, filter) => {
 
-  const events = await contract.queryFilter(event);
+  const events =  await getEventData(contract, event);
   const filtered = events.filter(
     (event) => fromBigNumber(event.args._positionID) == filter._positionID
   );
@@ -33,6 +34,37 @@ export const positionId = async (
 
 };
 
+
+export const getEventData = async (contract, event) => {
+  try {
+    const provider = getEthersProvider(11155111);
+    const batchSize = 50000;
+    const latestBlockNumber = await provider.getBlockNumber();
+
+    const fetchBatch = async (fromBlock, toBlock) => {
+      const batchResult = await contract.queryFilter(event, fromBlock, toBlock);
+      return batchResult.map((item) => item);
+    };
+
+    const batchPromises = [];
+    let fromBlock = 0;
+    while (fromBlock <= latestBlockNumber) {
+      const toBlock = Math.min(fromBlock + batchSize - 1, latestBlockNumber);
+      batchPromises.push(fetchBatch(fromBlock, toBlock));
+      fromBlock = toBlock + 1;
+    }
+
+    const result = [];
+    await Promise.all(batchPromises).then((batchResults) => {
+      batchResults.forEach((batchResult) => result.push(...batchResult));
+    });
+
+    return result;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const allTransaction = async (
   coreContract,
   positionContract,
@@ -41,7 +73,7 @@ export const allTransaction = async (
   setTxtData,
   setIsPageLoading
 ) => {
-  const data = await getPastEvents(coreContract, "PoolCreated");
+  const data = await getEventData(coreContract, "PoolCreated");
 
 
 
@@ -63,16 +95,19 @@ export const allTransaction = async (
 
     const poolContract = await getEtherContract(
      newData[i],
-      poolAbi
+      poolAbi,
+      11155111
     );
-    console.log("history", poolContract);
-    const eventNames = ["Borrow", "Lend", "Redeem", "RepayBorrow"];
+
+     const eventNames = ["Borrow", "Lend", "Redeem", "RepayBorrow"];
+    //const eventNames = ["Borrow"];
     const IspositionId = fromBigNumber(position);
     if (IspositionId != 0) {
       for (let j = 0; j < eventNames.length; j++) {
         const events = await getEventsWithFilter(poolContract, eventNames[j], {
           _positionID: `${position}`,
         });
+       
         const eventsWithPoolInfo = events.map(
           (el) =>
             (el = {
