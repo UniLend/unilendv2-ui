@@ -768,9 +768,11 @@ export default function PoolComponent() {
                   <img src={selectedToken?.logo} alt="" />
                   <p className="paragraph04">{selectedToken?._symbol}</p>
                 </div>
+                <Tooltip title={selectedToken?.balanceFixed}>
                 <p className="paragraph06">
                   Balance: {Number(selectedToken?.balanceFixed).toFixed(4)}
                 </p>
+                </Tooltip>
               </div>
             </div>
 
