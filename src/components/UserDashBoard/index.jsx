@@ -14,13 +14,9 @@ import { useNavigate } from "react-router-dom";
 import DonutChart from "../Common/DonutChart";
 import { useQuery } from "react-query";
 import {
-
   getPoolCreatedGraphQuery,
-
   getUserData,
-
   sortByKey,
-
   userDashBoardQuery0,
 } from "../../helpers/dashboard";
 import DropDown from "../Common/DropDown";
@@ -35,7 +31,6 @@ import useWalletHook from "../../lib/hooks/useWallet";
 const mumbai = import.meta.env.VITE_ALCHEMY_Mumbai;
 const polygon = import.meta.env.VITE_ALCHEMY_Mumbai;
 
-
 export default function UserDashboardComponent() {
   const user = useSelector((state) => state.user);
   const tokenList = useSelector((state) => state.tokenList);
@@ -44,7 +39,6 @@ export default function UserDashboardComponent() {
   // if (chain?.id !== 80001) {
   //   navigate("/");
   // }
-
 
   const [userAddress, setUserAddress] = useState();
   const [verifiedAddress, setVerifiedAddress] = useState(
@@ -55,7 +49,6 @@ export default function UserDashboardComponent() {
   const [pieChartInputs, setPieChartInputs] = useState({});
   const [positionData, setPositionData] = useState({});
   const [positionDataBackup, setPositionDataBackup] = useState();
-
 
   const [headerAnalytics, setHeaderAnalytics] = useState({
     healthFactor: 0,
@@ -71,7 +64,6 @@ export default function UserDashboardComponent() {
     lending: 1,
     borrowing: 1,
   });
-
 
   const handleSearchAddress = (addr) => {
     setUserAddress(addr);
@@ -200,47 +192,40 @@ export default function UserDashboardComponent() {
   const getDashBoardData = async (chainId) => {
     try {
       setPositionLoading(true);
-      setWalletTokenLoading(true)
-      const ValidAddress = verifiedAddress ||  address
-      // console.log('tokenList',  chainId,
+      setWalletTokenLoading(true);
+      const ValidAddress = verifiedAddress || address;
       // query,
-      // tokenList, 
+      // tokenList,
       // ValidAddress);
       const { position, pieChart, analytics, tokens } = await getUserData(
         chainId,
         query,
-        tokenList, 
+        tokenList,
         ValidAddress
       );
       setPositionLoading(false);
-      setWalletTokenLoading(false)
+      setWalletTokenLoading(false);
       setWalletTokens(tokens);
-      console.log("tokens", tokens, position);
       setPositionData(position);
       setPositionDataBackup(position);
       setPieChartInputs(pieChart);
       setHeaderAnalytics(analytics);
-     
-   
-   
-      return position, pieChart, analytics, tokens
+
+      return position, pieChart, analytics, tokens;
     } catch (error) {
-      console.log('getDashboard error', error)
+      console.log("getDashboard error", error);
     }
   };
 
   useEffect(() => {
     if (address) {
-     
       getDashBoardData(chain?.id);
     }
   }, [query, tokenList]);
 
-
   const checkNaN = (value) => {
     return isNaN(value) ? 0 : value;
   };
-
 
   return (
     <div className="user_dashboard_component">
@@ -433,36 +418,38 @@ export default function UserDashboardComponent() {
             </div>
             <div className="tbody">
               {!walletTokenLoading &&
-                (walletTokens?.length > 0 ? (
-                  walletTokens
-                    .slice((walletCurrentPage - 1) * 7, walletCurrentPage * 7)
-                    .map((token, i) => {
-                      return (
-                        <div key={i} className="tbody_row">
-                          <span>
-                            <img
-                              onError={imgError}
-                              src={token?.logo}
-                              alt="uft"
-                            />
-                            <p className="hide_for_mobile">
-                              {token?.name} / {token?.symbol}
-                            </p>
-                            <p className="hide_for_monitor">{token?.symbol}</p>
-                          </span>
-                          <span>{token?.pricePerToken}</span>
-                          <span>{token?.balance}</span>
-                          <span>{token?.value}</span>
-                        </div>
-                      );
-                    })
-                ) : walletTokens?.length == 0 && (
-                  <Lottie
-                    options={defaultOptionsLotti}
-                    height={350}
-                    width={350}
-                  />
-                ))}
+                (walletTokens?.length > 0
+                  ? walletTokens
+                      .slice((walletCurrentPage - 1) * 7, walletCurrentPage * 7)
+                      .map((token, i) => {
+                        return (
+                          <div key={i} className="tbody_row">
+                            <span>
+                              <img
+                                onError={imgError}
+                                src={token?.logo}
+                                alt="uft"
+                              />
+                              <p className="hide_for_mobile">
+                                {token?.name} / {token?.symbol}
+                              </p>
+                              <p className="hide_for_monitor">
+                                {token?.symbol}
+                              </p>
+                            </span>
+                            <span>{token?.pricePerToken}</span>
+                            <span>{token?.balance}</span>
+                            <span>{token?.value}</span>
+                          </div>
+                        );
+                      })
+                  : walletTokens?.length == 0 && (
+                      <Lottie
+                        options={defaultOptionsLotti}
+                        height={350}
+                        width={350}
+                      />
+                    ))}
               {walletTokenLoading &&
                 new Array(7).fill(0).map((_, i) => {
                   return (

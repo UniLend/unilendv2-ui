@@ -2,8 +2,6 @@ import BigNumber from "bignumber.js";
 
 import { ethers } from "ethers";
 
-
-
 // function timestamp() {
 //     return Math.round(new Date().getTime()/1000);
 // }
@@ -117,7 +115,6 @@ export function fixed2Decimals(amount, decimals = 18) {
 }
 
 export function fixed2Decimals18(amount, decimals = 18) {
-  console.log("amount", amount);
   return new BigNumber(amount).dividedBy(10 ** decimals).toFixed();
 }
 
@@ -210,18 +207,10 @@ export const getActionBtn = (
   if (amount <= 0) {
     return { text: "Enter Amount", disable: true };
   } else if (amount && activeOperation === lend) {
-    console.log(
-      "data",
-      fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals)
-    );
-    console.log("amount", amount);
     if (
       fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals) <
       amount
     ) {
-      console.log("approve working in lend");
-      console.log("allowance", selectedToken?.allowance);
-      console.log("decimals", selectedToken?._decimals);
       return { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.balanceFixed)) {
       return { text: "Low Balance in Wallet", disable: true };
@@ -250,14 +239,6 @@ export const getActionBtn = (
       return { text: "Exceeds Redeemable Amount", disable: true };
     }
   } else if (amount && activeOperation === repay) {
-    console.log(
-      "activeOperation",
-      fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals),
-      amount,
-      Number(
-        fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals)
-      ) < Number(amount)
-    );
     if (
       Number(
         fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals)

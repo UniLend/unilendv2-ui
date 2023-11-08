@@ -3,11 +3,8 @@ import { fromBigNumber } from "../helpers/contracts";
 import { getEtherContract, getEthersProvider } from "../lib/fun/wagmi";
 import { getPastEvents, readContractLib } from "../lib/fun/functions";
 
-
-
 export const getEventsWithFilter = async (contract, event, filter) => {
-
-  const events =  await getEventData(contract, event);
+  const events = await getEventData(contract, event);
   const filtered = events.filter(
     (event) => fromBigNumber(event.args._positionID) == filter._positionID
   );
@@ -30,10 +27,7 @@ export const positionId = async (
     args: [poolAddress, userAddress],
   });
   return id;
-
-
 };
-
 
 export const getEventData = async (contract, event) => {
   try {
@@ -75,13 +69,9 @@ export const allTransaction = async (
 ) => {
   const data = await getPastEvents(coreContract, "PoolCreated");
 
-
-
-  console.log("history data:", data);
-
   // array of all pools address
   const newData = data.map((event) => event.args.pool);
- 
+
   let array = [];
 
   for (let i = 0; i < newData.length; i++) {
@@ -90,16 +80,12 @@ export const allTransaction = async (
       newData[i],
       userAddress
     );
-  
+
     const poolInfo = poollist[newData[i]];
 
-    const poolContract = await getEtherContract(
-     newData[i],
-      poolAbi,
-      11155111
-    );
+    const poolContract = await getEtherContract(newData[i], poolAbi, 11155111);
 
-     const eventNames = ["Borrow", "Lend", "Redeem", "RepayBorrow"];
+    const eventNames = ["Borrow", "Lend", "Redeem", "RepayBorrow"];
     //const eventNames = ["Borrow"];
     const IspositionId = fromBigNumber(position);
     if (IspositionId != 0) {
@@ -107,7 +93,7 @@ export const allTransaction = async (
         const events = await getEventsWithFilter(poolContract, eventNames[j], {
           _positionID: `${position}`,
         });
-       
+
         const eventsWithPoolInfo = events.map(
           (el) =>
             (el = {
@@ -116,7 +102,7 @@ export const allTransaction = async (
               event: el.event === "RepayBorrow" ? "Repay" : el.event,
             })
         );
-      
+
         array.push(...eventsWithPoolInfo);
       }
       const sort = array.sort(function (a, b) {

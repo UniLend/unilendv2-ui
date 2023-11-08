@@ -45,7 +45,6 @@ function HistoryComponent() {
     .filter((network) => network.graphAvailable && network.chainId)
     .map((net) => net.chainId);
 
-  console.log("networksWithGraph", networksWithGraph);
   const { data, loading, error, refetch } = useQuery("history", async () => {
     const fetchedDATA = await fetchGraphQlData(
       chain?.id || user?.network?.id || 137,
@@ -87,7 +86,6 @@ function HistoryComponent() {
           ...data.redeems,
           ...data.repays,
         ];
-        console.log("graphDATAHistory", data);
         const sorted = sortByKey(newArray, "blockTimestamp", 1);
 
         setGraphHistory(sorted);
@@ -103,7 +101,6 @@ function HistoryComponent() {
   const handleSort = (index) => {
     const sortTo = isPolygon ? graphHistory : txtData;
     let sort = sortTo;
-    console.log("sort", sortTo);
     setSortIndex(index);
     if (index === 1) {
       sort = sortTo.sort(function (a, b) {
@@ -145,7 +142,6 @@ function HistoryComponent() {
   };
 
   const getTransactionData = async () => {
-  
     if (!networksWithGraph.includes(user?.network.id) && !called) {
       try {
         // setIsPageLoading(true);
@@ -158,7 +154,7 @@ function HistoryComponent() {
           setTxtData,
           setIsPageLoading
         );
-       
+
         if (txtArray.length > 0) {
           const sort = txtArray.sort(function (a, b) {
             // Compare the 2 dates
@@ -296,7 +292,6 @@ function HistoryComponent() {
                     </p>
                   </div>
                   <div className="hide_for_mobile">
-                    {console.log("HASH", txt)}
                     <p>
                       <a
                         href={`${
