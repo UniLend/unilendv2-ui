@@ -769,7 +769,7 @@ export default function PoolComponent() {
                   <p className="paragraph04">{selectedToken?._symbol}</p>
                 </div>
                 <p className="paragraph06">
-                  Balance: {Number(selectedToken?.balanceFixed).toFixed(2)}
+                  Balance: {Number(selectedToken?.balanceFixed).toFixed(4)}
                 </p>
               </div>
             </div>
