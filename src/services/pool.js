@@ -15,6 +15,8 @@ import {
 import BigNumber from "bignumber.js";
 
 import { getEtherContract } from "../lib/fun/wagmi";
+import { getFromLocalStorage, saveToLocalStorage } from "../utils";
+import { tokensBYSymbol } from "../utils/constants";
 
 /*
 @dev 
@@ -66,7 +68,6 @@ export const handleRedeem = async (
       const txn = await instance.redeem(poolAddress, maxAmount, userAddr);
 
       hash = txn?.hash;
-
     } else {
       const txn = await instance.redeemUnderlying(
         poolAddress,
@@ -75,7 +76,6 @@ export const handleRedeem = async (
       );
 
       hash = txn?.hash;
-
     }
 
     const txnData = {
@@ -87,8 +87,6 @@ export const handleRedeem = async (
       chainId: "",
     };
     checkTxnStatus(hash, txnData);
-
-
   } catch (error) {
     checkTxnError(error);
     throw error;
@@ -131,7 +129,6 @@ export const setAllowance = async (
     checkTxnError(error);
     throw error;
   }
-
 };
 
 export const getTabs = (token) => {
@@ -163,12 +160,10 @@ export const getTokenPrice = async (
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-
       const data = await contracts.helperContract.getPoolTokensData(
         poolAddress,
         userAddr
       );
-
 
       const pool = { ...poolData };
       pool.token0.balance = fromBigNumber(data._balance0);
@@ -218,7 +213,6 @@ oracle data;
 export const getOracleData = async (contracts, poolData) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-
       const data = await contracts.coreContract.getOraclePrice(
         poolData.token0._address,
         poolData.token1._address,
@@ -292,7 +286,6 @@ export const getPoolBasicData = async (
   let pool;
   if (contracts.helperContract && contracts.coreContract) {
     try {
-
       const data = await contracts.helperContract.getPoolData(poolAddress);
 
       pool = {
@@ -340,7 +333,6 @@ export const getPoolAllData = async (
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-
       const data = await contracts.helperContract.getPoolFullData(
         contracts.positionContract.address,
         poolAddress,
@@ -627,8 +619,6 @@ export const handleBorrow = async (
       };
 
       checkTxnStatus(transaction?.hash, txn);
-
-
     } else {
       setAllowance(
         collateralToken,
@@ -694,7 +684,6 @@ export const handleRepay = async (
         chainId: "",
       };
       checkTxnStatus(hash, txn);
-
     } else {
       setAllowance(
         selectedToken,
@@ -750,22 +739,93 @@ export const handleRepay = async (
 //   setCollateral(collateralNeeded);
 // };
 
-export const handleCreatePool = async (contracts) => {
+// pass token0 and token1
+export const handleCreatePool = async (contracts, token0, token1) => {
   try {
     const instance = await getEtherContract(
       contracts.coreContract.address,
       coreAbi
     );
+    console.log("INSTANCE", instance);
     const length = await instance.poolLength();
+    // console.log("POOLLENGTH", length);
 
-    const { hash } = await instance.createPool(
-      "0x4127976420204dF0869Ca3ED1C2f62c04F6cb137",
-      "0x8C57273241C2b4f4a295ccf3D1Feb29A08225A08",
-      {
-        gasLimit: 2100000,
-      }
-    );
+    // add variables for token0 and token1
+    // const { hash } = await instance.createPool(
+    //   // "0xEF0313223dB72ccc83FF57BE3D53fd8a6347fC44",
+    //   // "0x390172F6Cc152f19132Bd9919550b59f45F89042",
+    //   token0,
+    //   token1
+    //   // {
+    //   //   gasLimit: 210000,
+    //   // }
+    // );
+    // console.log("HASH", hash);
+    // return hash;
   } catch (error) {
     console.log("handleCreatePool", "error", { error });
   }
 };
+
+export const createCustomToken = async (tokenAddress, userAddress, chainId) => {
+  // token add, erc20 abi
+  // get token, name, sym,
+  // show it in list
+  // list obj{add, name, token} //save add to local storage
+  try {
+    const instance = await getEtherContract(tokenAddress, erc20Abi);
+    const hexBalance = await instance.balanceOf(userAddress);
+    const name = await instance.name();
+    const balance = fromBigNumber(hexBalance) / 10 ** 18;
+    const symbol = await instance.symbol();
+    const logo = tokensBYSymbol[symbol].logo;
+    // pass chain also
+
+    const customTokensList = getFromLocalStorage("customTokensList") || [];
+    if (customTokensList.length == 0) {
+      customTokensList.push({
+        name,
+        balance,
+        symbol,
+        logo,
+        chainId,
+        tokenAddress,
+      });
+    } else {
+      const isTokenAdded = customTokensList.findIndex(
+        (item) => item.symbol === symbol
+      );
+      isTokenAdded === -1
+        ? customTokensList.push({
+            name,
+            balance,
+            symbol,
+            logo,
+            chainId,
+            tokenAddress,
+          })
+        : console.log("Token is already exists");
+      // TODO: show error here
+    }
+    saveToLocalStorage("customTokensList", customTokensList);
+  } catch (error) {
+    console.log("createCustomToken", error);
+  }
+};
+
+// export const getCustomTokens = async () => {
+//   // const network = "polygon-mumbai";
+//   const network = "zkevm-testnet";
+//   const coingeckoEndpoint = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${network}`;
+
+//   // Make a request to CoinGecko's API to get tokens for the Polygon Mumbai network
+//   fetch(coingeckoEndpoint)
+//     .then((response) => response.json())
+//     .then((data) => {
+//       // The 'data' variable now contains information about tokens on the Polygon Mumbai network
+//       console.log("COIN_DATA", data);
+//     })
+//     .catch((error) => {
+//       console.error("Error fetching data from CoinGecko API:", error);
+//     });
+// };

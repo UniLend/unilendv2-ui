@@ -79,6 +79,8 @@
           margin: 0;
           padding: 0;
           width: 80%;
+          font-size: $font-size-md;
+          margin: 5px 0 0 0;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -88,12 +90,31 @@
     }
   }
 
+  .same_token_error {
+    color: var(--light-red);
+  }
+
   button {
     width: 100%;
   }
-  .btn_class{
+  .btn_class {
     background: var(--main);
     color: var(--always-white);
     border-radius: 12px;
+  }
+
+  .pool_icons {
+    img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+
+      &:first-child {
+        margin-left: 12px;
+      }
+      &:last-child {
+        margin-left: -12px;
+      }
+    }
   }
 }

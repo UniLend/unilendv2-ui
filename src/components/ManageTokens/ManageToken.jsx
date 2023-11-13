@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Switch, Modal } from "antd";
+import { ethers } from "ethers";
+import { useSelector } from "react-redux";
 import viewExplorer from "../../assets/viewExplorerIcon.svg";
 import { FaChevronDown, FaSearch } from "react-icons/fa";
 import deleteIcon from "../../assets/deleteicon.svg";
@@ -9,30 +11,41 @@ import BSC from "../../assets/bsc.svg";
 import { fetchCoinGeckoTokens } from "../../utils/axios";
 //import Modal from "../Modal";
 import "./ManageToken.scss";
+import { getFromLocalStorage } from "../../utils";
+import { createCustomToken } from "../../services/pool";
+import { supportedNetworks } from "../../core/networks/networks";
 
 const ManageToken = ({ handleTokens, tokens, pools }) => {
+  const { user, tokenList } = useSelector((state) => state);
   const [isOpenTokenList, setIsOpenTokenList] = React.useState(false);
   const [isOpenMangeToken, setIsOpenMangeToken] = React.useState(false);
   const [currentToken, setCurrentToken] = React.useState("");
   const [token1, setToken1] = React.useState("");
   const [token2, setToken2] = React.useState("");
   const [coinGeckoToken, setCoinGeckoToken] = React.useState([]);
-  const [coinGeckoTokenBackup, setCoinGeckoTokenBackup] = React.useState([]);
+  const [tokenBackup, setTokenBackup] = React.useState([]);
+  const [availableToken, setAvailableToken] = React.useState(
+    Object.values(tokenList)
+  );
   const [isFetching, setIsFetching] = React.useState(false);
   const [serachTokenFromList, setSerachTokenFromList] = React.useState("");
   const [fetchFrom, setFetchFrom] = React.useState({
     coinGecko: true,
   });
+  // const [addedCustomTokens, setAddedCustomtokens] = React.useState([]);
+
+  // only chainId included in array will show coinGicko tokens;
+  const isMainNet = [1, 137].includes(user.network.id);
 
   const handleSearchToken = (e) => {
     setSerachTokenFromList(e.target.value);
-    const filtered = coinGeckoTokenBackup.filter(
+    const filtered = tokenBackup.filter(
       (el) =>
-        el.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        // el.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
         el.symbol.toLowerCase().includes(e.target.value.toLowerCase()) ||
         el.address.toLowerCase().includes(e.target.value.toLowerCase())
     );
-    setCoinGeckoToken(filtered);
+    setAvailableToken(filtered);
   };
 
   const handleToken = (token) => {
@@ -49,23 +62,31 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   const handleCloseModals = () => {
     setIsOpenTokenList(false);
     setIsOpenMangeToken(false);
-    setCoinGeckoToken(coinGeckoTokenBackup);
+    // setCoinGeckoToken(coinGeckoTokenBackup);//setAvailableToken
+    setAvailableToken(tokenBackup);
     setSerachTokenFromList("");
   };
 
   useEffect(() => {
-    if (fetchFrom.coinGecko) {
-      setIsFetching(true);
-      fetchCoinGeckoTokens()
-        .then((data) => {
-          setCoinGeckoToken(data.tokens);
-          setCoinGeckoTokenBackup(data.tokens);
-        })
-        .finally(() => setIsFetching(false));
+    if (isMainNet) {
+      if (fetchFrom.coinGecko) {
+        setIsFetching(true);
+        fetchCoinGeckoTokens()
+          .then((data) => {
+            setCoinGeckoToken(data.tokens);
+            setTokenBackup(data.tokens); //
+            setAvailableToken([...data.token, ...Object.values(tokenList)]);
+          })
+          .finally(() => setIsFetching(false));
+      } else {
+        setCoinGeckoToken([]);
+      }
     } else {
-      setCoinGeckoToken([]);
+      // TODO fetch tokens as per selected chain for non-mainnet
+      setAvailableToken([...Object.values(tokenList)]);
+      setTokenBackup([...Object.values(tokenList)]);
     }
-  }, [fetchFrom]);
+  }, [fetchFrom, isMainNet]);
 
   const TokenCard = React.memo(({ token, render, index }) => {
     const handleTokensList = () => {
@@ -83,12 +104,14 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
       <>
         {render === "tokenlist" && (
           <div onClick={handleTokensList} className="token-card">
-            <img src={token.logoURI} alt="" />
+            <img src={token.logoURI || token.logo} alt="" />
             <div>
               <h3>{token.symbol}</h3>
-              <span>
-                {token.name} {index}
-              </span>
+              {token.name && (
+                <span>
+                  {token.name} {index}
+                </span>
+              )}
             </div>
           </div>
         )}
@@ -131,8 +154,11 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
             </div>
             <div className="actionButtons">
               <div>
-                <img src={BSC} alt="bsc" />
-                <p>BSC</p>
+                <img
+                  src={supportedNetworks[token.chainId].logoUrl}
+                  alt={`${supportedNetworks[token.chainId].chainName} Logo`}
+                />
+                <p>{supportedNetworks[token.chainId].chainName}</p>
               </div>
               <div>
                 <button className="style-active">Add</button>
@@ -143,15 +169,19 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
         {render === "addedCustomTokens" && (
           <div onClick={handleTokensList} className="token-card customtokens">
             <div className="token_info">
-              <img src={token.logoURI} alt="" />
+              <img src={token.logo} alt="" />
               <div className="center_content">
                 <h3>{token.name}</h3>
+                {/* <span>{token.balance} Tokens</span> */}
               </div>
             </div>
             <div className="actionButtons">
               <div>
-                <img src={BSC} alt="bsc" />
-                <p>BSC</p>
+                <img
+                  src={supportedNetworks[token.chainId]?.logoUrl}
+                  alt={`${supportedNetworks[token.chainId].chainName} Logo`}
+                />
+                <p>{supportedNetworks[token.chainId].chainName}</p>
               </div>
               <div className="space_between">
                 <img src={deleteIcon} alt="" />
@@ -196,11 +226,12 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
         </div>
         <div ref={container} className="token_list">
           {isFetching && <h2>Fetching...</h2>}
-          {!isFetching && coinGeckoToken.length === 0 && (
+          {!isFetching && availableToken.length === 0 && (
             <h2>Tokens not listed</h2>
           )}
+
           {isOpenTokenList &&
-            coinGeckoToken.map(
+            availableToken?.map(
               (token, i) =>
                 i < page * 100 && (
                   <TokenCard
@@ -218,8 +249,45 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
 
   const ManageTokenModalBody = () => {
     const [active, setActive] = useState("list");
+    const [tokenAddress, setTokenAddress] = useState("");
+
+    const customTokensList = getFromLocalStorage("customTokensList");
+    // setAddedCustomtokens(customTokensList);
+
+    const handleAddToken = async (event) => {
+      const inputValue = event.target.value;
+      setTokenAddress(inputValue);
+      if (inputValue.length === 42) {
+        const isValid = ethers.utils.isAddress(inputValue);
+        if (isValid) {
+          await createCustomToken(inputValue, user.address, user.network.id);
+          setTokenAddress("");
+        } else {
+          //performe search operation
+          // const handleSearchToken = (e) => {
+          //   setSerachTokenFromList(e.target.value);
+          //   const filtered = coinGeckoTokenBackup.filter(
+          //     (el) =>
+          //       el.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          //       el.symbol.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          //       el.address.toLowerCase().includes(e.target.value.toLowerCase())
+          //   );
+          //   setCoinGeckoToken(filtered);
+          const customTokenList = getFromLocalStorage("customTokensList");
+          const filtered = customTokenList?.filter(
+            (item) =>
+              item.name.toLowerCase().includes(inputValue.toLowerCase()) ||
+              item.symbol.toLowerCase().includes(inputValue.toLowerCase()) ||
+              item.tokenAddress.toLowerCase().includes(inputValue.toLowerCase())
+          );
+          //take state and update it
+          // setAddedCustomtokens(filtered);
+        }
+      }
+    };
+
     const coingecko = {
-      logoURI:coinGeckoLogo,
+      logoURI: coinGeckoLogo,
       name: "CoinGecko",
       total: 4000,
     };
@@ -242,7 +310,12 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
         {active == "customTokens" && (
           <div className="search_token">
             <FaSearch />
-            <input type="text" placeholder="Search Tokens" />
+            <input
+              onChange={handleAddToken}
+              value={tokenAddress}
+              type="text"
+              placeholder="Search Tokens"
+            />
           </div>
         )}
         {active == "list" && (
@@ -252,9 +325,11 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
         )}
         {active == "customTokens" && (
           <div className="customTokens_list">
-            <TokenCard token={coingecko} render="customTokens" />
+            {/* <TokenCard token={coingecko} render="customTokens" /> */}
             <h3 className="custom_token_title">Custom Tokens</h3>
-            <TokenCard token={coingecko} render="addedCustomTokens" />
+            {customTokensList?.map((item, idx) => (
+              <TokenCard key={idx} token={item} render="addedCustomTokens" />
+            ))}
           </div>
         )}
       </div>
@@ -268,7 +343,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
           <div onClick={() => handleToken("1")} className="selector section">
             {token1 ? (
               <div className="token_div">
-                <img src={token1.logoURI} alt="" />
+                <img src={token1.logoURI || token1.logo} alt="" />
                 <h3>{token1.symbol}</h3>
               </div>
             ) : (
@@ -280,7 +355,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
           <div onClick={() => handleToken("2")} className="selector section">
             {token2 ? (
               <div className="token_div">
-                <img src={token2.logoURI} alt="" />
+                <img src={token2.logoURI || token2.logo} alt="" />
                 <h3>{token2.symbol}</h3>
               </div>
             ) : (
