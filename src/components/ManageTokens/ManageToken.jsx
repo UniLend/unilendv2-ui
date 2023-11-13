@@ -3,20 +3,23 @@ import { Switch, Modal } from "antd";
 import { ethers } from "ethers";
 import { useSelector } from "react-redux";
 import viewExplorer from "../../assets/viewExplorerIcon.svg";
+import viewExplorerLight from "../../assets/viewExplorerIconLight.svg";
 import { FaChevronDown, FaSearch } from "react-icons/fa";
 import deleteIcon from "../../assets/deleteicon.svg";
+import deleteiconLight from "../../assets/deleteiconLight.svg";
 import downoutline from "../../assets/downoutline.svg";
 import coinGeckoLogo from "../../assets/CoinGecko_Logo.svg";
 import BSC from "../../assets/bsc.svg";
 import { fetchCoinGeckoTokens } from "../../utils/axios";
 //import Modal from "../Modal";
 import "./ManageToken.scss";
-import { getFromLocalStorage } from "../../utils";
+import { getFromLocalStorage, saveToLocalStorage } from "../../utils";
 import { createCustomToken } from "../../services/pool";
 import { supportedNetworks } from "../../core/networks/networks";
 
 const ManageToken = ({ handleTokens, tokens, pools }) => {
   const { user, tokenList } = useSelector((state) => state);
+  const theme = useSelector((state) => state.theme);
   const [isOpenTokenList, setIsOpenTokenList] = React.useState(false);
   const [isOpenMangeToken, setIsOpenMangeToken] = React.useState(false);
   const [currentToken, setCurrentToken] = React.useState("");
@@ -32,7 +35,6 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   const [fetchFrom, setFetchFrom] = React.useState({
     coinGecko: true,
   });
-  // const [addedCustomTokens, setAddedCustomtokens] = React.useState([]);
 
   // only chainId included in array will show coinGicko tokens;
   const isMainNet = [1, 137].includes(user.network.id);
@@ -86,113 +88,129 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
       setAvailableToken([...Object.values(tokenList)]);
       setTokenBackup([...Object.values(tokenList)]);
     }
-  }, [fetchFrom, isMainNet]);
+  }, [fetchFrom, isMainNet, tokenList]);
 
-  const TokenCard = React.memo(({ token, render, index }) => {
-    const handleTokensList = () => {
-      handleCloseModals();
-      if (currentToken === "1") {
-        setToken1(token);
-        handleTokens(token, "token1");
-      } else if (currentToken === "2") {
-        setToken2(token);
-        handleTokens(token, "token2");
-      }
-    };
+  const TokenCard = React.memo(
+    ({ token, render, index, handleDeleteToken }) => {
+      const handleTokensList = () => {
+        handleCloseModals();
+        if (currentToken === "1") {
+          setToken1(token);
+          handleTokens(token, "token1");
+        } else if (currentToken === "2") {
+          setToken2(token);
+          handleTokens(token, "token2");
+        }
+      };
 
-    return (
-      <>
-        {render === "tokenlist" && (
-          <div onClick={handleTokensList} className="token-card">
-            <img src={token.logoURI || token.logo} alt="" />
-            <div>
-              <h3>{token.symbol}</h3>
-              {token.name && (
-                <span>
-                  {token.name} {index}
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-        {render === "apiTokenList" && (
-          <div
-            className={`token-card apitokenlist ${
-              fetchFrom.coinGecko && "active_apiToken"
-            }`}
-          >
-            <div className="token_info">
-              <img src={token.logoURI} alt="" />
+      return (
+        <>
+          {render === "tokenlist" && (
+            <div onClick={handleTokensList} className="token-card">
+              <img src={token.logoURI || token.logo} alt="" />
               <div>
-                <h3>{token.name}</h3>
-                <span>{token.total} Tokens</span>
+                <h3>{token.symbol}</h3>
+                {token.name && (
+                  <span>
+                    {token.name} {index}
+                  </span>
+                )}
               </div>
             </div>
-            <div className="radio_Button">
-              <Switch
-                loading={isFetching}
-                className="switch"
-                size="small"
-                checked={fetchFrom.coinGecko}
-                onChange={() =>
-                  setFetchFrom({
-                    ...fetchFrom,
-                    coinGecko: !fetchFrom.coinGecko,
-                  })
-                }
-              />
-            </div>
-          </div>
-        )}
-        {render === "customTokens" && (
-          <div onClick={handleTokensList} className="token-card customtokens">
-            <div className="token_info">
-              <img src={token.logoURI} alt="" />
-              <div className="center_content">
-                <h3>{token.name}</h3>
+          )}
+          {render === "apiTokenList" && (
+            <div
+              className={`token-card apitokenlist 
+              ${fetchFrom.coinGecko && "active_apiToken"}
+              `}
+            >
+              <div className="token_info">
+                <img src={token.logoURI} alt="" />
+                <div>
+                  <h3>{token.name}</h3>
+                  <span>{token.total} Tokens</span>
+                </div>
               </div>
-            </div>
-            <div className="actionButtons">
-              <div>
-                <img
-                  src={supportedNetworks[token.chainId].logoUrl}
-                  alt={`${supportedNetworks[token.chainId].chainName} Logo`}
+              <div className="radio_Button">
+                <Switch
+                  loading={isFetching}
+                  className="switch"
+                  size="small"
+                  checked={fetchFrom.coinGecko}
+                  onChange={() =>
+                    setFetchFrom({
+                      ...fetchFrom,
+                      coinGecko: !fetchFrom.coinGecko,
+                    })
+                  }
                 />
-                <p>{supportedNetworks[token.chainId].chainName}</p>
-              </div>
-              <div>
-                <button className="style-active">Add</button>
               </div>
             </div>
-          </div>
-        )}
-        {render === "addedCustomTokens" && (
-          <div onClick={handleTokensList} className="token-card customtokens">
-            <div className="token_info">
-              <img src={token.logo} alt="" />
-              <div className="center_content">
-                <h3>{token.name}</h3>
-                {/* <span>{token.balance} Tokens</span> */}
+          )}
+          {render === "customTokens" && (
+            <div onClick={handleTokensList} className="token-card customtokens">
+              <div className="token_info">
+                <img src={token.logoURI} alt="" />
+                <div className="center_content">
+                  <h3>{token.name}</h3>
+                </div>
+              </div>
+              <div className="actionButtons">
+                <div>
+                  <img
+                    src={supportedNetworks[token.chainId].logoUrl}
+                    alt={`${supportedNetworks[token.chainId].chainName} Logo`}
+                  />
+                  <p>{supportedNetworks[token.chainId].chainName}</p>
+                </div>
+                <div>
+                  <button className="style-active">Add</button>
+                </div>
               </div>
             </div>
-            <div className="actionButtons">
-              <div>
-                <img
-                  src={supportedNetworks[token.chainId]?.logoUrl}
-                  alt={`${supportedNetworks[token.chainId].chainName} Logo`}
-                />
-                <p>{supportedNetworks[token.chainId].chainName}</p>
+          )}
+          {render === "addedCustomTokens" && (
+            <div onClick={handleTokensList} className="token-card customtokens">
+              <div className="token_info">
+                <img src={token.logo} alt="" />
+                <div className="center_content">
+                  <h3>{token.name}</h3>
+                  {/* <span>{token.balance} Tokens</span> */}
+                </div>
               </div>
-              <div className="space_between">
-                <img src={deleteIcon} alt="" />
-                <img src={viewExplorer} alt="" />
+              <div className="actionButtons">
+                <div>
+                  <img
+                    src={supportedNetworks[token.chainId]?.logoUrl}
+                    alt={`${supportedNetworks[token.chainId].chainName} Logo`}
+                  />
+                  <p>{supportedNetworks[token.chainId].chainName}</p>
+                </div>
+                <div className="space_between">
+                  <img
+                    onClick={(event) => handleDeleteToken(event, index)}
+                    src={theme === "dark" ? deleteIcon : deleteiconLight}
+                    alt=""
+                  />
+                  <a
+                    href={`${
+                      supportedNetworks[user?.network?.id].blockExplorerUrls[0]
+                    }/address/${user.address}`}
+                    target="_blank"
+                  >
+                    <img
+                      src={theme === "dark" ? viewExplorer : viewExplorerLight}
+                      alt=""
+                    />
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </>
-    );
-  });
+          )}
+        </>
+      );
+    }
+  );
 
   const TokenListModalBody = React.memo(() => {
     const container = React.useRef(null);
@@ -250,40 +268,40 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   const ManageTokenModalBody = () => {
     const [active, setActive] = useState("list");
     const [tokenAddress, setTokenAddress] = useState("");
-
     const customTokensList = getFromLocalStorage("customTokensList");
-    // setAddedCustomtokens(customTokensList);
+    const [addedCustomTokens, setAddedCustomtokens] =
+      React.useState(customTokensList);
 
     const handleAddToken = async (event) => {
       const inputValue = event.target.value;
       setTokenAddress(inputValue);
-      if (inputValue.length === 42) {
-        const isValid = ethers.utils.isAddress(inputValue);
-        if (isValid) {
-          await createCustomToken(inputValue, user.address, user.network.id);
-          setTokenAddress("");
-        } else {
-          //performe search operation
-          // const handleSearchToken = (e) => {
-          //   setSerachTokenFromList(e.target.value);
-          //   const filtered = coinGeckoTokenBackup.filter(
-          //     (el) =>
-          //       el.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          //       el.symbol.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          //       el.address.toLowerCase().includes(e.target.value.toLowerCase())
-          //   );
-          //   setCoinGeckoToken(filtered);
-          const customTokenList = getFromLocalStorage("customTokensList");
-          const filtered = customTokenList?.filter(
-            (item) =>
-              item.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-              item.symbol.toLowerCase().includes(inputValue.toLowerCase()) ||
-              item.tokenAddress.toLowerCase().includes(inputValue.toLowerCase())
-          );
-          //take state and update it
-          // setAddedCustomtokens(filtered);
-        }
+      const isValid = ethers.utils.isAddress(inputValue);
+      if (isValid) {
+        await createCustomToken(
+          inputValue,
+          user.address,
+          user.network.id,
+          setAddedCustomtokens,
+          setTokenAddress
+        );
+      } else {
+        const customTokenList = getFromLocalStorage("customTokensList");
+        const filtered = customTokenList?.filter(
+          (item) =>
+            item.name.toLowerCase().includes(inputValue.toLowerCase()) ||
+            item.symbol.toLowerCase().includes(inputValue.toLowerCase()) ||
+            item.tokenAddress.toLowerCase().includes(inputValue.toLowerCase())
+        );
+        setAddedCustomtokens(filtered);
       }
+    };
+
+    const handleDeleteToken = (event, index) => {
+      event.stopPropagation();
+      const tokens = [...customTokensList];
+      tokens.splice(index, 1);
+      setAddedCustomtokens(tokens);
+      saveToLocalStorage("customTokensList", tokens);
     };
 
     const coingecko = {
@@ -327,8 +345,14 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
           <div className="customTokens_list">
             {/* <TokenCard token={coingecko} render="customTokens" /> */}
             <h3 className="custom_token_title">Custom Tokens</h3>
-            {customTokensList?.map((item, idx) => (
-              <TokenCard key={idx} token={item} render="addedCustomTokens" />
+            {addedCustomTokens?.map((item, idx) => (
+              <TokenCard
+                key={idx}
+                token={item}
+                index={idx}
+                render="addedCustomTokens"
+                handleDeleteToken={handleDeleteToken}
+              />
             ))}
           </div>
         )}

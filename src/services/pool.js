@@ -767,11 +767,13 @@ export const handleCreatePool = async (contracts, token0, token1) => {
   }
 };
 
-export const createCustomToken = async (tokenAddress, userAddress, chainId) => {
-  // token add, erc20 abi
-  // get token, name, sym,
-  // show it in list
-  // list obj{add, name, token} //save add to local storage
+export const createCustomToken = async (
+  tokenAddress,
+  userAddress,
+  chainId,
+  setAddedCustomtokens,
+  setTokenAddress
+) => {
   try {
     const instance = await getEtherContract(tokenAddress, erc20Abi);
     const hexBalance = await instance.balanceOf(userAddress);
@@ -779,7 +781,6 @@ export const createCustomToken = async (tokenAddress, userAddress, chainId) => {
     const balance = fromBigNumber(hexBalance) / 10 ** 18;
     const symbol = await instance.symbol();
     const logo = tokensBYSymbol[symbol].logo;
-    // pass chain also
 
     const customTokensList = getFromLocalStorage("customTokensList") || [];
     if (customTokensList.length == 0) {
@@ -795,17 +796,39 @@ export const createCustomToken = async (tokenAddress, userAddress, chainId) => {
       const isTokenAdded = customTokensList.findIndex(
         (item) => item.symbol === symbol
       );
-      isTokenAdded === -1
-        ? customTokensList.push({
+      if (isTokenAdded === -1) {
+        customTokensList.push({
+          name,
+          balance,
+          symbol,
+          logo,
+          chainId,
+          tokenAddress,
+        });
+        setTokenAddress("");
+        setAddedCustomtokens([
+          ...getFromLocalStorage("customTokensList"),
+          {
             name,
             balance,
             symbol,
             logo,
             chainId,
             tokenAddress,
-          })
-        : console.log("Token is already exists");
-      // TODO: show error here
+          },
+        ]);
+      } else {
+        setAddedCustomtokens([
+          {
+            name,
+            balance,
+            symbol,
+            logo,
+            chainId,
+            tokenAddress,
+          },
+        ]);
+      }
     }
     saveToLocalStorage("customTokensList", customTokensList);
   } catch (error) {
