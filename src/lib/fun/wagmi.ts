@@ -69,6 +69,5 @@ export const getEtherContractWithProvider = (
 ) => {
   const pro = getEthersProvider({ chainId: chainId });
   const contract = new ethers.Contract(address, abi, pro);
-  console.log("CONTRACT", contract);
   return contract;
 };

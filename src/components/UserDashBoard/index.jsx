@@ -204,7 +204,6 @@ export default function UserDashboardComponent() {
         ValidAddress
       );
       setPositionLoading(false);
-      setWalletTokenLoading(false);
       setWalletTokens(tokens);
       setPositionData(position);
       setPositionDataBackup(position);
@@ -222,6 +221,10 @@ export default function UserDashboardComponent() {
       getDashBoardData(chain?.id);
     }
   }, [query, tokenList]);
+
+  useEffect(() => {
+    if (walletTokens.length !== 0) setWalletTokenLoading(false);
+  }, [walletTokens]);
 
   const checkNaN = (value) => {
     return isNaN(value) ? 0 : value;
@@ -431,7 +434,8 @@ export default function UserDashboardComponent() {
                                 alt="uft"
                               />
                               <p className="hide_for_mobile">
-                                {token?.name} / {token?.symbol}
+                                {/* {token?.name} / {token?.symbol} */}
+                                {token?.name}
                               </p>
                               <p className="hide_for_monitor">
                                 {token?.symbol}

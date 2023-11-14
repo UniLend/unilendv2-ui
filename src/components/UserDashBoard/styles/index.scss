@@ -359,6 +359,9 @@
             width: 30%;
             font-size: $font-size-sm;
             color: var(--light-gray);
+            .hide_for_mobile {
+              margin-left: 12px !important;
+            }
             &:first-child {
               width: 50%;
             }
@@ -607,7 +610,7 @@
             color: var(--light-gray);
             padding: 20px 10px;
             &:first-child {
-              width: 60%;
+              width: 40%;
             }
             // &:last-child{
             //   width: 0% !important;
@@ -685,6 +688,7 @@
 
               &:first-child {
                 cursor: pointer;
+
                 &:hover {
                   p {
                     transform: scale(1.1);
@@ -799,9 +803,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  @media only screen and (max-width: 1200px) {
-    width: 240px;
-  }
+  // @media only screen and (max-width: 1200px) {
+  //   width: 240px;
+  // }
 
   @media ($tablet) {
     width: 150px;
