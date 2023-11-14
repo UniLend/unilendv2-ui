@@ -16,7 +16,6 @@ import {
 } from "./contracts";
 import {
   getEtherContractWithProvider,
-  getEthersProvider,
 } from "../lib/fun/wagmi";
 import { fetchGraphQlData } from "../utils/axios";
 import { contractAddress } from "../core/contractData/contracts";
@@ -215,8 +214,10 @@ export const getUserData = async (chainId, query, tokenList, ValidAddress) => {
 
   const fetchedDATA = await fetchGraphQlData(chainId || 137, query);
 
-  const position = await getPositionData(fetchedDATA, chainId);
 
+
+   const position = await getPositionData(fetchedDATA, chainId);
+   
   const pieChart = getPieChartValues(position); //getChartData(data, tokenList);
 
   const analytics = {};
@@ -268,11 +269,11 @@ export const getPositionData = async (data, chainId) => {
     { abi: coreAbi, address: coreAddress },
   ];
 
-  const provider = getEthersProvider({ chainId });
-
+  // const provider = getEthersProvider({ chainId });
+ console.log('getPositionData',  chainId);
   const [helperContract, coreContract] = await Promise.all(
     preparedData.map((item) =>
-      getEtherContractWithProvider(item.address, item.abi, provider)
+     getEtherContractWithProvider(item.address, item.abi, chainId)
     )
   );
 
@@ -281,8 +282,10 @@ export const getPositionData = async (data, chainId) => {
     position.map(function (pool) {
       return { owner: pool.owner, ...pool.pool };
     });
-  // console.log("contractsEthers", helperContract, helperAddress);
+
+ 
   const arrayPromise = allPositionAPoolddrs.map(function (pool) {
+ 
     let promises = [
       helperContract.getPoolFullData(positionAddress, pool.pool, pool.owner),
       coreContract.getOraclePrice(
@@ -488,9 +491,9 @@ export const getPositionData = async (data, chainId) => {
       );
       lendArray.push(LendObj);
     }
-  }
+   }
 
-  return { borrowArray, lendArray };
+   return { borrowArray, lendArray };
 };
 
 export const fixedToShort = (value) => {
@@ -533,10 +536,10 @@ export const getTokensFromUserWallet = async (data, chainId, address) => {
   const tokensArray = Object.values(data).map((token) => token.address);
   const tokensObject = Object.values(data) || [];
 
-  const provider = getEthersProvider({ chainId });
+
 
   const ERC20Instancees = tokensArray.map((address) =>
-    getEtherContractWithProvider(address, erc20Abi, provider)
+    getEtherContractWithProvider(address, erc20Abi, chainId)
   );
 const tokensObj = []
   const balances = await Promise.all(
