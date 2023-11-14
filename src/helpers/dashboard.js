@@ -1,9 +1,5 @@
 import { getTokenLogo } from "../utils";
-import {
-  coreAbi,
-  erc20Abi,
-  helperAbi
-} from "../core/contractData/abi";
+import { coreAbi, erc20Abi, helperAbi } from "../core/contractData/abi";
 import {
   add,
   decimal2Fixed,
@@ -212,11 +208,8 @@ const calculateCurrentLTV = (borrow0, lend1, price1) => {
 };
 
 export const getUserData = async (chainId, query, tokenList, ValidAddress) => {
-
   const fetchedDATA = await fetchGraphQlData(chainId || 137, query);
-
   const position = await getPositionData(fetchedDATA, chainId);
-
   const pieChart = getPieChartValues(position); //getChartData(data, tokenList);
 
   const analytics = {};
@@ -239,8 +232,11 @@ export const getUserData = async (chainId, query, tokenList, ValidAddress) => {
     analytics.healthFactor = isNaN(HF) ? 0 : HF;
   }
 
-  const tokens = await getTokensFromUserWallet(tokenList, chainId, ValidAddress);
-
+  const tokens = await getTokensFromUserWallet(
+    tokenList,
+    chainId,
+    ValidAddress
+  );
   return { position, pieChart, analytics, tokens };
 };
 
@@ -281,7 +277,6 @@ export const getPositionData = async (data, chainId) => {
     position.map(function (pool) {
       return { owner: pool.owner, ...pool.pool };
     });
-  // console.log("contractsEthers", helperContract, helperAddress);
   const arrayPromise = allPositionAPoolddrs.map(function (pool) {
     let promises = [
       helperContract.getPoolFullData(positionAddress, pool.pool, pool.owner),
@@ -538,27 +533,30 @@ export const getTokensFromUserWallet = async (data, chainId, address) => {
   const ERC20Instancees = tokensArray.map((address) =>
     getEtherContractWithProvider(address, erc20Abi, provider)
   );
-const tokensObj = []
+  const tokensObj = [];
   const balances = await Promise.all(
     ERC20Instancees.map((instance) => instance.balanceOf(address))
+  );
+
+  const names = await Promise.all(
+    ERC20Instancees.map((instance) => instance.name())
   );
 
   const tokens = tokensObject.map(
     (token, index) =>
       (token = {
         ...token,
+        name: names[index],
         balance: Number(
           fixed2Decimals(balances[index], token.decimals)
         ).toFixed(4),
 
-        value :  (Number(
-          fixed2Decimals(balances[index], token.decimals)
-        ) * token.pricePerToken).toFixed(4)
+        value: (
+          Number(fixed2Decimals(balances[index], token.decimals)) *
+          token.pricePerToken
+        ).toFixed(4),
       })
   );
-
-  // console.log(tokensArray, tokensObject, balances, tokens);
-
   return tokens;
 
   //const provider = getProvider();
@@ -964,7 +962,9 @@ export const getHistoryGraphQuery = (address) => {
 export const getPoolCreatedGraphQuery = (address) => {
   const query = `
   {
-      positions(where: {owner: "${address || '0x0000000000000000000000000000000000000000'}"}) {
+      positions(where: {owner: "${
+        address || "0x0000000000000000000000000000000000000000"
+      }"}) {
         id
         owner
         pool {
