@@ -7,8 +7,8 @@
     "start": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest ",
-    "test:ui": "vitest --ui"
+    "test": "vitest --coverage",
+    "test:ui": "vitest --ui "
   },
   "dependencies": {
     "@ant-design/plots": "^1.2.3",

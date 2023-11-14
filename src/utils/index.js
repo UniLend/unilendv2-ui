@@ -6,18 +6,18 @@ export const fromWei = (web3, val) => {
     return result;
   };
 
-export function getTokenLogo(address){
-    if(tokensBYSymbol[address]){
-        return tokensBYSymbol[address]['logo'];
+export function getTokenLogo(symbol){
+    if(tokensBYSymbol[symbol]){
+        return tokensBYSymbol[symbol]['logo'];
     } 
     else {
         return 'https://e7.pngegg.com/pngimages/407/710/png-clipart-ethereum-cryptocurrency-bitcoin-cash-smart-contract-bitcoin-blue-angle-thumbnail.png'
     }
 }
 
-export function getTokenSymbol(address){
-    if(tokensBYSymbol[address]){
-        return tokensBYSymbol[address]['symbol'];
+export function getTokenSymbol(symbol){
+    if(tokensBYSymbol[symbol]){
+        return tokensBYSymbol[symbol]['symbol'];
     } 
     else {
         return `Token`;

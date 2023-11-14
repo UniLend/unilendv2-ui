@@ -1,4 +1,5 @@
-import { sum, fromWei , shortenAddress, fixFormatNumber} from ".";
+import { sum, fromWei , shortenAddress, fixFormatNumber, getTokenLogo, getTokenSymbol} from ".";
+import { fetchCoinGeckoTokens} from './axios.js'
 
 import { describe, expect, it, vi} from 'vitest'
 
@@ -68,7 +69,23 @@ describe('Utils Functions', ()=> {
       });
 
 
+      it('get default token logo coorecly if address not available', ()=> {
+        let tokenLogoUrl = getTokenLogo("0x00000000")
+        expect(tokenLogoUrl).toBe('https://e7.pngegg.com/pngimages/407/710/png-clipart-ethereum-cryptocurrency-bitcoin-cash-smart-contract-bitcoin-blue-angle-thumbnail.png')
+      })
+      it('get default token logo coorecly if address available', ()=> {
+        let tokenLogoUrl = getTokenLogo("ETH")
+        expect(tokenLogoUrl).toBeDefined()
+      })
 
+      it('get default token symbol coorecly if address not available', ()=> {
+        let tokenLogoUrl = getTokenSymbol("0x00000000")
+        expect(tokenLogoUrl).toBe('Token')
+      })
+      it('get default token symbol coorecly if address available', ()=> {
+        let tokenLogoUrl = getTokenSymbol("ETH")
+        expect(tokenLogoUrl).toBe('ETH')
+      })
 
 })
 
