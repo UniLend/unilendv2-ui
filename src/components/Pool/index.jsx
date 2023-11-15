@@ -31,6 +31,7 @@ import {
   getCurrentLTV,
   getSelectLTV,
   getActionBtn,
+  fromBigNumber,
 } from "../../helpers/contracts";
 import PoolSkeleton from "../Loader/PoolSkeleton";
 import TwitterModal from "../Common/TwitterModal";
@@ -39,6 +40,7 @@ import TokenListMoadal from "../ManageTokens/TokenListMoadal";
 import { useSelector } from "react-redux";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { waitForTransactionLib } from "../../lib/fun/functions";
+import { fetchBlockNumber } from "wagmi/actions";
 
 const lend = "lend";
 const borrow = "borrow";
@@ -182,12 +184,18 @@ export default function PoolComponent() {
   };
 
   const checkTxnStatus = (hash, txnData) => {
-    waitForTransactionLib({
-      hash,
-    })
-      .then((receipt) => {
-        console.log(receipt);
-        if (receipt.status == "success") {
+     Promise.all([ waitForTransactionLib({
+      hash: hash,
+      confirmations: 1
+      }), fetchBlockNumber()
+
+    ]).then((res) => {
+       
+       const [receipt, currentBlockNumber] = res;
+       const trasactionBlock = fromBigNumber(receipt.blockNumber)
+       const currentblock = fromBigNumber(currentBlockNumber)
+  
+        if (receipt.status == "success" && currentblock > trasactionBlock) {
           openNotificationWithIcon("success", txnData);
           setReFetching(true);
           if (txnData.method !== "approval") {

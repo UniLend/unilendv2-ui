@@ -11,6 +11,7 @@ import {
   toAPY,
   fromBigNumber,
   fixed2Decimals18,
+  fixedTrunc,
 } from "../helpers/contracts";
 import BigNumber from "bignumber.js";
 
@@ -62,8 +63,8 @@ export const handleRedeem = async (
           maxAmount = mul(maxAmount, -1);
         }
       }
-
-      const txn = await instance.redeem(poolAddress, maxAmount, userAddr);
+  
+      const txn = await instance.redeem(poolAddress, fixedTrunc(maxAmount), userAddr);
 
       hash = txn?.hash;
 
