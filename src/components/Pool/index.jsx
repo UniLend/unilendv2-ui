@@ -94,7 +94,6 @@ export default function PoolComponent() {
     redeem: selectedToken?.redeemBalanceFixed,
     repay: selectedToken?.borrowBalanceFixed,
   };
-  console.log("approval", selectedToken?.allowance);
 
   // Operation Button Text based on values;
   const buttonAction = getActionBtn(
@@ -166,9 +165,7 @@ export default function PoolComponent() {
               txnData.amount
             ).toFixed(4)} for token ${txnData.tokenSymbol}`
           : "Something went wrong",
-      onClick: () => {
-        console.log("Notification Clicked!");
-      },
+      onClick: () => {},
       className: "notification_class",
       closeIcon: false,
       duration: 5,
@@ -186,7 +183,6 @@ export default function PoolComponent() {
       hash,
     })
       .then((receipt) => {
-        console.log(receipt);
         if (receipt.status == "success") {
           openNotificationWithIcon("success", txnData);
           setReFetching(true);
@@ -210,6 +206,7 @@ export default function PoolComponent() {
                 getPoolTokensData: false,
               });
             }, 5000);
+            window.location.reload()
           }
 
           setMax(false);
@@ -234,7 +231,6 @@ export default function PoolComponent() {
 
     const errorText = String(error.reason);
     const data = error?.message ? errorText : "Error: Transaction Error";
-    console.log("Error:-", error);
     openNotificationWithIcon("error", "Error: Something went wrong");
   };
 
@@ -405,7 +401,6 @@ export default function PoolComponent() {
       isAllTrue == false
     ) {
       try {
-        console.log(methodLoaded, isAllTrue);
         fetchPoolDATA();
       } catch (error) {
         fetchPoolDATA();
@@ -552,10 +547,7 @@ export default function PoolComponent() {
           token1: poolData?.token1?.symbol,
         });
       }
-      console.log("poolAddressFound", poolAddress, poolData);
     }
-
-    // console.log("handlePoolAndTokenSelect", tokens);
   };
   const handleSelectTokens = (key, symbol) => {
     // setVisible0(bool);
@@ -768,9 +760,11 @@ export default function PoolComponent() {
                   <img src={selectedToken?.logo} alt="" />
                   <p className="paragraph04">{selectedToken?._symbol}</p>
                 </div>
-                <p className="paragraph06">
-                  Balance: {Number(selectedToken?.balanceFixed).toFixed(2)}
-                </p>
+                <Tooltip title={selectedToken?.balanceFixed}>
+                  <p className="paragraph06">
+                    Balance: {Number(selectedToken?.balanceFixed).toFixed(4)}
+                  </p>
+                </Tooltip>
               </div>
             </div>
 

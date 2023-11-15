@@ -92,7 +92,6 @@ export default function Navbar() {
   useEffect(() => {
     if (window.ethereum) {
       window.ethereum.on("chainChanged", async (chainId) => {
-        console.log("chainChanged", chainId);
         const user = await connectWallet();
         handleDomain(user);
         dispatch(setUser(user));
@@ -114,11 +113,7 @@ export default function Navbar() {
       const wallet = localStorage.getItem("wallet");
       handleConnect(wallet);
     }
-    if (
-      user?.network?.id == 80001 ||
-      user?.network?.id == 137 ||
-      user?.network?.id == 1442
-    ) {
+    if (user?.network?.id == 80001 || user?.network?.id == 137) {
       setIsPolygon(true);
     } else {
       setIsPolygon(false);
@@ -183,7 +178,6 @@ export default function Navbar() {
       const network = await switchNetworkLib({
         chainId: id,
       });
-      console.log("network", network);
       window.location.reload();
     } catch (error) {
       console.log("switchError", { error });

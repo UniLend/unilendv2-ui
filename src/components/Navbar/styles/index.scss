@@ -43,11 +43,14 @@
         font-size: $font-size-sm;
         display: flex;
         &:hover {
-          color: var(--main-light);
+          // color: var(--main-light);
+          color: var(--always-white);
+          background-color: var(--main)
         }
       }
       .active {
-        color: var(--main-light);
+        color: var(--always-white);
+        background-color: var(--main)
       }
       .disable_route {
         color: var(--light-gray);

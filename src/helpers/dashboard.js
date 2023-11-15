@@ -240,11 +240,8 @@ export const getUserData = async (chainId, query, tokenList, ValidAddress) => {
 };
 
 export const getUserTokens = async (address, chainId, tokenList) => {
-  // console.log(address, chainId, config[chainId]);
   //   const alchemy = new Alchemy(config[chainId]);
-  //   console.log(alchemy);
   //  const userTokens = await  alchemy.core.getTokenBalances(`${address}`);
-  //  console.log(userTokens);
   // const tokens = await getTokensFromUserWallet(tokenList, chainId, address);
   // return tokens;
 };
@@ -275,7 +272,6 @@ export const getPositionData = async (data, chainId) => {
     position.map(function (pool) {
       return { owner: pool.owner, ...pool.pool };
     });
-
   const arrayPromise = allPositionAPoolddrs.map(function (pool) {
     let promises = [
       helperContract.getPoolFullData(positionAddress, pool.pool, pool.owner),
