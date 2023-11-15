@@ -31,4 +31,9 @@ export const openRoutes = [
     exact: true,
     element: lazy(() => import('../pages/vote')),
   },
+  {
+    path: '/vote',
+    exact: true,
+    element: lazy(() => import('../pages/vote')),
+  },
 ];
