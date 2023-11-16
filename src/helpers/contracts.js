@@ -107,9 +107,17 @@ export function decimal2Fixed(amount, decimals) {
   // if (newNum.indexOf(".") > -1) {
   //   newNum = newNum.split(".")[0];
   // }
+
   return newNum.toString();
 }
 
+export function fixedTrunc(numberString){
+  let truncatedNumber = numberString;
+    if (numberString.indexOf(".") > -1) {
+    truncatedNumber = numberString.split(".")[0];
+  }
+  return truncatedNumber;
+}
 export function fixed2Decimals(amount, decimals = 18) {
   return new BigNumber(amount?._hex).dividedBy(10 ** decimals).toFixed();
 }

@@ -142,19 +142,19 @@ export const networks = {
 
 // Supported network List
 export const supportedNetworks = {
-  // 137: {
-  //   chainId: 137,
-  //   chainName: "Polygon Mainnet",
-  //   nativeCurrency: {
-  //     name: "MATIC",
-  //     symbol: "MATIC",
-  //     decimals: 18,
-  //   },
-  //   logoUrl: polygon,
-  //   rpcUrls: ["https://polygon-rpc.com/"],
-  //   blockExplorerUrls: ["https://polygonscan.com/"],
-  //   graphAvailable: true
-  // },
+  137: {
+    chainId: 137,
+    chainName: "Polygon Mainnet",
+    nativeCurrency: {
+      name: "MATIC",
+      symbol: "MATIC",
+      decimals: 18,
+    },
+    logoUrl: polygon,
+    rpcUrls: ["https://polygon-rpc.com/"],
+    blockExplorerUrls: ["https://polygonscan.com/"],
+    graphAvailable: true
+  },
 
   11155111: {
     chainId: 11155111,

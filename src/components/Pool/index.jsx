@@ -31,6 +31,7 @@ import {
   getCurrentLTV,
   getSelectLTV,
   getActionBtn,
+  fromBigNumber,
 } from "../../helpers/contracts";
 import PoolSkeleton from "../Loader/PoolSkeleton";
 import TwitterModal from "../Common/TwitterModal";
@@ -39,6 +40,7 @@ import TokenListMoadal from "../ManageTokens/TokenListMoadal";
 import { useSelector } from "react-redux";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { waitForTransactionLib } from "../../lib/fun/functions";
+import { fetchBlockNumber } from "wagmi/actions";
 
 const lend = "lend";
 const borrow = "borrow";
@@ -179,11 +181,19 @@ export default function PoolComponent() {
   };
 
   const checkTxnStatus = (hash, txnData) => {
-    waitForTransactionLib({
-      hash,
-    })
-      .then((receipt) => {
-        if (receipt.status == "success") {
+    Promise.all([
+      waitForTransactionLib({
+        hash: hash,
+        confirmations: 1,
+      }),
+      fetchBlockNumber(),
+    ])
+      .then((res) => {
+        const [receipt, currentBlockNumber] = res;
+        const trasactionBlock = fromBigNumber(receipt.blockNumber);
+        const currentblock = fromBigNumber(currentBlockNumber);
+
+        if (receipt.status == "success" && currentblock > trasactionBlock) {
           openNotificationWithIcon("success", txnData);
           setReFetching(true);
           if (txnData.method !== "approval") {
@@ -206,7 +216,7 @@ export default function PoolComponent() {
                 getPoolTokensData: false,
               });
             }, 5000);
-            window.location.reload()
+            window.location.reload();
           }
 
           setMax(false);
@@ -295,10 +305,16 @@ export default function PoolComponent() {
     } catch (error) {}
   };
 
+  useEffect(() => {
+    if (selectedToken && collateralToken) {
+      const ltv = getCurrentLTV(selectedToken, collateralToken);
+      setSelectLTV(ltv);
+    }
+  }, [selectedToken, collateralToken]);
+
   const toggleToken = (token) => {
     setActiveToken(token);
     setAmount("");
-    setSelectLTV(5);
     if (token === 0) {
       setSelectedToken(poolData.token0);
       //setActiveOperation(poolData.token0.tabs[0]);
@@ -314,7 +330,6 @@ export default function PoolComponent() {
     if (selectedToken?.tabs?.includes(operation)) {
       setActiveOperation(operation);
       setAmount("");
-      setSelectLTV(5);
     }
   };
 
@@ -847,8 +862,7 @@ export default function PoolComponent() {
                   <span>Oracle</span>
                   <span>
                     1 {poolData.token0._symbol} ={" "}
-                    {Number(poolData.token0.price).toFixed(2)}{" "}
-                    {poolData.token1._symbol}{" "}
+                    {Number(poolData.token0.price)} {poolData.token1._symbol}{" "}
                   </span>
                 </p>
               </div>
