@@ -113,7 +113,11 @@ export default function Navbar() {
       const wallet = localStorage.getItem("wallet");
       handleConnect(wallet);
     }
-    if (user?.network?.id == 80001 || user?.network?.id == 137) {
+    if (
+      user?.network?.id == 80001 ||
+      user?.network?.id == 137 ||
+      user?.network?.id == 1442
+    ) {
       setIsPolygon(true);
     } else {
       setIsPolygon(false);

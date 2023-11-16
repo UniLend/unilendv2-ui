@@ -154,11 +154,12 @@
           display: grid;
           grid-template-columns: repeat(4, 25%);
           column-gap: 4px;
+          min-width: 680px;
           width: 65%;
           align-items: center;
           .analytic_box {
             display: flex;
-            min-width: 120px;
+            min-width: 180px;
             width: fit-content;
             .icon_box {
               min-width: 45px;
@@ -174,7 +175,7 @@
             }
             .values {
               margin: 10px 0px;
-              min-width: 76px;
+              min-width: 112px;
               width: fit-content;
               p,
               h5 {
