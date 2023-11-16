@@ -96,7 +96,7 @@ export default function PoolComponent() {
     redeem: selectedToken?.redeemBalanceFixed,
     repay: selectedToken?.borrowBalanceFixed,
   };
-  console.log("approval", selectedToken?.allowance);
+
 
   // Operation Button Text based on values;
   const buttonAction = getActionBtn(
@@ -307,10 +307,17 @@ export default function PoolComponent() {
     } catch (error) {}
   };
 
+  useEffect(()=>{
+    if(selectedToken && collateralToken){
+      const ltv = getCurrentLTV(selectedToken, collateralToken)
+      setSelectLTV(ltv);
+    }
+ 
+  }, [selectedToken, collateralToken])
+
   const toggleToken = (token) => {
     setActiveToken(token);
     setAmount("");
-    setSelectLTV(5);
     if (token === 0) {
       setSelectedToken(poolData.token0);
       //setActiveOperation(poolData.token0.tabs[0]);
@@ -326,7 +333,7 @@ export default function PoolComponent() {
     if (selectedToken?.tabs?.includes(operation)) {
       setActiveOperation(operation);
       setAmount("");
-      setSelectLTV(5);
+    
     }
   };
 
@@ -413,7 +420,7 @@ export default function PoolComponent() {
       isAllTrue == false
     ) {
       try {
-        console.log(methodLoaded, isAllTrue);
+       
         fetchPoolDATA();
       } catch (error) {
         fetchPoolDATA();
@@ -560,7 +567,7 @@ export default function PoolComponent() {
           token1: poolData?.token1?.symbol,
         });
       }
-      console.log("poolAddressFound", poolAddress, poolData);
+
     }
 
     // console.log("handlePoolAndTokenSelect", tokens);
@@ -861,7 +868,7 @@ export default function PoolComponent() {
                   <span>Oracle</span>
                   <span>
                     1 {poolData.token0._symbol} ={" "}
-                    {Number(poolData.token0.price).toFixed(2)}{" "}
+                    {Number(poolData.token0.price)}{" "}
                     {poolData.token1._symbol}{" "}
                   </span>
                 </p>

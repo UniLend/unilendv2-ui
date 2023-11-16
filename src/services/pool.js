@@ -62,11 +62,15 @@ export const handleRedeem = async (
         if (selectedToken._address == poolData.token0._address) {
           maxAmount = mul(maxAmount, -1);
         }
+        const txn = await instance.redeemUnderlying(poolAddress, fixedTrunc(maxAmount), userAddr);
+
+        hash = txn?.hash;
+      } else {
+        const txn = await instance.redeem(poolAddress, fixedTrunc(maxAmount), userAddr);
+
+        hash = txn?.hash;
       }
   
-      const txn = await instance.redeem(poolAddress, fixedTrunc(maxAmount), userAddr);
-
-      hash = txn?.hash;
 
     } else {
       const txn = await instance.redeemUnderlying(
