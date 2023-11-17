@@ -158,16 +158,13 @@ export default function PoolComponent() {
     }
   }, [amount, selectLTV]);
   // Notification
-  const openNotificationWithIcon = (result, txnData) => {
+  const openNotificationWithIcon = (result, msg) => {
     notification.open({
       mesage: { result },
-      description:
-        result === "success"
-          ? `Transaction for ${txnData.method} of ${Number(
-              txnData.amount
-            ).toFixed(4)} for token ${txnData.tokenSymbol}`
-          : "Something went wrong",
-      onClick: () => {},
+      description: result === "success" ? msg : msg,
+      onClick: () => {
+        console.log("Notification Clicked!");
+      },
       className: "notification_class",
       closeIcon: false,
       duration: 5,
@@ -194,9 +191,12 @@ export default function PoolComponent() {
         const currentblock = fromBigNumber(currentBlockNumber);
 
         if (receipt.status == "success" && currentblock > trasactionBlock) {
-          openNotificationWithIcon("success", txnData);
           setReFetching(true);
           if (txnData.method !== "approval") {
+            const msg = `Transaction for ${txnData.method} of ${Number(
+              txnData.amount
+            ).toFixed(4)} for token ${txnData.tokenSymbol}`;
+            openNotificationWithIcon("success", msg);
             setAmount("");
             //setShowTwitterModal(true)
             setTimeout(() => {
@@ -241,7 +241,12 @@ export default function PoolComponent() {
 
     const errorText = String(error.reason);
     const data = error?.message ? errorText : "Error: Transaction Error";
-    openNotificationWithIcon("error", "Error: Something went wrong");
+    console.log("Error:-", { error });
+    const msg =
+      error?.code === "ACTION_REJECTED"
+        ? "Transaction Denied"
+        : "Something went wrongssß";
+    openNotificationWithIcon("error", msg);
   };
 
   const handleOperation = () => {
