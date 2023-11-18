@@ -1,11 +1,21 @@
 import React, { memo, useEffect, useState } from "react";
-import { FiArrowLeft, FiChevronDown, FiChevronUp } from "react-icons/fi";
-import { FaSearch } from "react-icons/fa";
+// import {
+//   FaArrowLeft,
+//   FaChevronDown,
+//   FaChevronUp,
+//   FaSearch,
+// } from "react-icons/fa";
+import {
+  FiArrowLeft,
+  FiChevronDown,
+  FiChevronUp,
+  FiSearch,
+} from "react-icons/fi";
+// import { FaSearch } from "react-icons/fa";
 import { Popover, Input, Modal, Button } from "antd";
 import "./styles/index.scss";
 import { imgError } from "../../utils";
 import { useSelector } from "react-redux";
-// import TokenListMoadal from "../ManageTokens/TokenListMoadal";
 export default function Governance() {
   const { tokenList } = useSelector((state) => state);
 
@@ -122,7 +132,7 @@ export default function Governance() {
         <div className="search_token">
           <h3 className="paragraph02">Select Token</h3>
           <div className="input_container">
-            <FaSearch />
+            <FiSearch />
             <input
               autoFocus
               type="text"
@@ -155,7 +165,7 @@ export default function Governance() {
           <div className="proposals_list">
             {new Array(10).fill(0).map((_, ind) => {
               return (
-                <a className="" key={ind}>
+                <a href={`/vote/${ind}`} className="" key={ind}>
                   <span>1.11</span>
                   <span>proposal title</span>
                   <span>execute</span>

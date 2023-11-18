@@ -1,4 +1,25 @@
 @import "/src/core/theme";
+
+.dark {
+  .app_container {
+    background: unset;
+    background: url("/src/assets/blue-bg.svg");
+    // background: url("/src/assets/large-bg.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
+.light {
+  .app_container {
+    background: unset;
+    background: url("/src/assets/light-bg.svg");
+    // background: url("/src/assets/light-bg-pool.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
 .governance {
   border: 1px solid var(--main-light-low);
   border-radius: 10px;
@@ -8,6 +29,7 @@
   margin-top: 100px;
   color: var(--pure-black) !important;
   padding: 20px;
+  background-color: var(--dark-bg);
 
   .create {
     display: flex;
@@ -67,8 +89,8 @@
 .create_proposal_container {
   max-width: 800px;
   width: 100%;
-  margin: 68px auto 0;
-  border: 1px solid white; // change the color
+  margin: 68px auto;
+  border: 1px solid var(--main-light-low); // change the color
   padding: 0 8px 0px;
   //   padding: 68px 8px 0px;
   border-radius: 16px;
@@ -112,7 +134,7 @@
     }
 
     .field {
-      border: 1px solid white; // change the color
+      border: 1px solid var(--main-light-low); // change the color
       padding: 16px;
       margin: 10px 0 0 0;
       border-radius: 12px;

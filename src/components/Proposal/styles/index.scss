@@ -1,0 +1,116 @@
+@import "/src/core/theme";
+
+.dark {
+  .app_container {
+    background: unset;
+    // background: url("/src/assets/blue-bg.svg");
+    background: url("/src/assets/large-bg.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
+.light {
+  .app_container {
+    background: unset;
+    // background: url("/src/assets/light-bg.svg");
+    background: url("/src/assets/light-bg-pool.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
+
+.proposal_component {
+  max-width: 640px;
+  width: 100%;
+  margin: 68px auto 0;
+  padding: 24px;
+  background-color: var(--dark-bg);
+  svg {
+    color: var(--pure-black);
+    width: 20px;
+    height: 20px;
+  }
+  .proposal_nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    div {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      svg {
+        min-width: 20px;
+        flex: 0.1;
+      }
+    }
+
+    .executed {
+      width: 100px;
+      margin: 0;
+      border: 1px solid var(--light-green);
+      text-align: center;
+      padding: 10px;
+      border-radius: 8px;
+      color: var(--light-green);
+      cursor: pointer;
+    }
+  }
+
+  .proposal_title {
+    margin: 24px 0;
+    p {
+      color: var(--light-gray);
+      margin-top: 20px;
+    }
+  }
+
+  .voting_data {
+    display: flex;
+    justify-content: space-between;
+    margin: 24px 0;
+    // height: 290px;
+
+    p {
+      width: 248px;
+      display: flex;
+      justify-content: space-between;
+      margin: 16px;
+      padding-bottom: 16px;
+      border-bottom: 4px solid var(--main);
+    }
+
+    @media ($mobile) {
+      flex-direction: column;
+    }
+  }
+
+  a {
+    text-decoration: none;
+    font-size: $font-size-sm;
+    color: var(--main);
+  }
+
+  p {
+    margin: 16px 0;
+    white-space: normal;
+    color: var(--pure-black);
+  }
+
+  h4 {
+    font-size: $font-size-xlg;
+    color: var(--pure-black);
+  }
+
+  .heading05 {
+    font-size: $font-size-xxxlg;
+  }
+
+  h1 {
+    margin: 20px 0;
+  }
+}
