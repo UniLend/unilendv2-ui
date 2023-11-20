@@ -88,7 +88,7 @@ const connectors = connectorsForWallets([
     groupName: 'Other',
     wallets: [
       injectedWallet({ chains , projectId}),
-      argentWallet({ projectId, chains }),
+      // argentWallet({ projectId, chains }),
       trustWallet({ projectId, chains }),
       ledgerWallet({ projectId, chains }),
     ],

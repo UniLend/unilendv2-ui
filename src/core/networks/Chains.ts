@@ -52,12 +52,12 @@ export const sepoliaTestnet = {
   nativeCurrency: { name: "Etherium", symbol: "ETH", decimals: 18 },
   rpcUrls: {
     default: {
-      http: [ 'https://sepolia.infura.io/v3/603c7bc2fa6c46ecb189576fded15f81' ,'https://eth-sepolia.g.alchemy.com/v2/mibiTKAFT4EkiFnw5Fkl55NkwpOVibgP'],
-      webSocket: [ 'wss://sepolia.infura.io/v3/603c7bc2fa6c46ecb189576fded15f81' ,'wss://eth-sepolia.g.alchemy.com/v2/mibiTKAFT4EkiFnw5Fkl55NkwpOVibgP'],
+      http: ['https://eth-sepolia.g.alchemy.com/v2/Qw1EshzKUZDHO-C0gThrpT9wukR-XKaN','https://eth-sepolia.g.alchemy.com/v2/mibiTKAFT4EkiFnw5Fkl55NkwpOVibgP', 'https://sepolia.infura.io/v3/603c7bc2fa6c46ecb189576fded15f81' ,'https://eth-sepolia.g.alchemy.com/v2/mibiTKAFT4EkiFnw5Fkl55NkwpOVibgP'],
+      webSocket: ['wss://eth-sepolia.g.alchemy.com/v2/Qw1EshzKUZDHO-C0gThrpT9wukR-XKaN', 'wss://eth-sepolia.g.alchemy.com/v2/mibiTKAFT4EkiFnw5Fkl55NkwpOVibgP','wss://sepolia.infura.io/v3/603c7bc2fa6c46ecb189576fded15f81' ,'wss://eth-sepolia.g.alchemy.com/v2/mibiTKAFT4EkiFnw5Fkl55NkwpOVibgP'],
     },
     public: {
-      http: [ 'https://sepolia.infura.io/v3/603c7bc2fa6c46ecb189576fded15f81 '],
-      webSocket: ['wss://sepolia.infura.io/v3/603c7bc2fa6c46ecb189576fded15f81 ']
+      http: ['https://eth-sepolia.g.alchemy.com/v2/Qw1EshzKUZDHO-C0gThrpT9wukR-XKaN','https://eth-sepolia.g.alchemy.com/v2/mibiTKAFT4EkiFnw5Fkl55NkwpOVibgP', 'https://sepolia.infura.io/v3/603c7bc2fa6c46ecb189576fded15f81 '],
+      webSocket: ['wss://eth-sepolia.g.alchemy.com/v2/Qw1EshzKUZDHO-C0gThrpT9wukR-XKaN','wss://eth-sepolia.g.alchemy.com/v2/mibiTKAFT4EkiFnw5Fkl55NkwpOVibgP','wss://sepolia.infura.io/v3/603c7bc2fa6c46ecb189576fded15f81 ']
     },
   },
   blockExplorers: {

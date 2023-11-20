@@ -4,6 +4,7 @@ import { getContract ,   getAccount,
   getNetwork,
   disconnect,
  fetchBalance , getWalletClient, getPublicClient, readContract, fetchToken, switchNetwork, waitForTransaction} from "wagmi/actions";
+// import { getEthersProvider } from "./wagmi";
 
 export const getNetworkLib =  (props) => {
   const network =  getNetwork(props);
@@ -48,6 +49,7 @@ export const getPastEvents = async ( contractInstance,  event) => {
   // const contractInstance =  await getEtherContract(address, abi)
 
   try {
+
     const events = await contractInstance.queryFilter(event);
 
     return events

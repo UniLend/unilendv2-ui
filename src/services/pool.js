@@ -62,16 +62,22 @@ export const handleRedeem = async (
         if (selectedToken._address == poolData.token0._address) {
           maxAmount = mul(maxAmount, -1);
         }
-        const txn = await instance.redeemUnderlying(poolAddress, fixedTrunc(maxAmount), userAddr);
+        const txn = await instance.redeemUnderlying(
+          poolAddress,
+          fixedTrunc(maxAmount),
+          userAddr
+        );
 
         hash = txn?.hash;
       } else {
-        const txn = await instance.redeem(poolAddress, fixedTrunc(maxAmount), userAddr);
+        const txn = await instance.redeem(
+          poolAddress,
+          fixedTrunc(maxAmount),
+          userAddr
+        );
 
         hash = txn?.hash;
       }
-  
-
     } else {
       const txn = await instance.redeemUnderlying(
         poolAddress,
@@ -80,7 +86,6 @@ export const handleRedeem = async (
       );
 
       hash = txn?.hash;
-
     }
 
     const txnData = {
@@ -92,8 +97,6 @@ export const handleRedeem = async (
       chainId: "",
     };
     checkTxnStatus(hash, txnData);
-
-
   } catch (error) {
     checkTxnError(error);
     throw error;
@@ -136,7 +139,6 @@ export const setAllowance = async (
     checkTxnError(error);
     throw error;
   }
-
 };
 
 export const getTabs = (token) => {
@@ -168,12 +170,10 @@ export const getTokenPrice = async (
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-
       const data = await contracts.helperContract.getPoolTokensData(
         poolAddress,
         userAddr
       );
-
 
       const pool = { ...poolData };
       pool.token0.balance = fromBigNumber(data._balance0);
@@ -207,7 +207,6 @@ export const getTokenPrice = async (
         pool.token1.price == "Infinity" || pool.token1.price == "0"
           ? getTabs(pool.token1).filter((v) => v !== "borrow")
           : getTabs(pool.token1);
-      console.log("getPoolTokensData", pool);
       return pool;
     } catch (error) {
       throw error;
@@ -223,7 +222,6 @@ oracle data;
 export const getOracleData = async (contracts, poolData) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-
       const data = await contracts.coreContract.getOraclePrice(
         poolData.token0._address,
         poolData.token1._address,
@@ -297,7 +295,6 @@ export const getPoolBasicData = async (
   let pool;
   if (contracts.helperContract && contracts.coreContract) {
     try {
-
       const data = await contracts.helperContract.getPoolData(poolAddress);
 
       pool = {
@@ -345,7 +342,6 @@ export const getPoolAllData = async (
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-
       const data = await contracts.helperContract.getPoolFullData(
         contracts.positionContract.address,
         poolAddress,
@@ -516,7 +512,6 @@ export const getPoolAllData = async (
           ),
         },
       };
-      console.log("getPoolFullData", pool);
       return pool;
     } catch (error) {
       throw error;
@@ -632,8 +627,6 @@ export const handleBorrow = async (
       };
 
       checkTxnStatus(transaction?.hash, txn);
-
-
     } else {
       setAllowance(
         collateralToken,
@@ -699,7 +692,6 @@ export const handleRepay = async (
         chainId: "",
       };
       checkTxnStatus(hash, txn);
-
     } else {
       setAllowance(
         selectedToken,

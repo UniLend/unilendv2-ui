@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ManageToken from "../ManageTokens/ManageToken";
 import PoolCard from "./poolCard";
-import banner from "../../assets/banner.svg";
+import banner from "../../assets/poolbanner.svg";
 import { FaChevronDown } from "react-icons/fa";
 import "./styles/index.scss";
 import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
@@ -130,7 +130,9 @@ export default function HallOfPoolsComponent() {
         <img src={banner} alt="v2-banner" />
       </div> */}
       <div className="analytics_container">
-        <div className="analytics"></div>
+        <div className="analytics">
+        <img src={banner} alt="v2-banner" />
+        </div>
         <div className="managepool_container">
           <ManageToken
             handleTokens={handleTokens}
