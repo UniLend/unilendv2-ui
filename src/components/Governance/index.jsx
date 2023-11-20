@@ -154,7 +154,7 @@ export default function Governance() {
   });
 
   return (
-    <>
+    <div className="governance_component">
       {!showProposal ? (
         <div className="governance">
           <div className="create">
@@ -260,6 +260,6 @@ export default function Governance() {
           </Modal>
         </main>
       )}
-    </>
+    </div>
   );
 }

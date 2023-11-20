@@ -22,11 +22,16 @@
 }
 
 .proposal_component {
-  max-width: 640px;
+  max-width: 760px;
   width: 100%;
   margin: 68px auto 0;
   padding: 24px;
   background-color: var(--dark-bg);
+
+  @media only screen and (max-width: 768px) {
+    width: calc(100% - 32px);
+    margin: 32px 16px 0;
+  }
   svg {
     color: var(--pure-black);
     width: 20px;
@@ -51,6 +56,7 @@
 
     .executed {
       width: 100px;
+      height: 40px;
       margin: 0;
       border: 1px solid var(--light-green);
       text-align: center;
@@ -81,7 +87,13 @@
       justify-content: space-between;
       margin: 16px;
       padding-bottom: 16px;
-      border-bottom: 4px solid var(--main);
+      &:first-child {
+        border-bottom: 4px solid var(--main);
+      }
+
+      &:last-child {
+        border-bottom: 4px solid var(--main-light-low);
+      }
     }
 
     @media ($mobile) {
@@ -95,22 +107,44 @@
     color: var(--main);
   }
 
-  p {
-    margin: 16px 0;
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  strong {
     white-space: normal;
     color: var(--pure-black);
+    word-break: break-all;
   }
 
-  h4 {
-    font-size: $font-size-xlg;
-    color: var(--pure-black);
+  p {
+    margin: 16px 0;
+    font-size: $font-size-sm;
   }
-
-  .heading05 {
-    font-size: $font-size-xxxlg;
-  }
-
   h1 {
+    font-size: $font-size-lg-1;
     margin: 20px 0;
+  }
+  h2 {
+    font-size: $font-size-xxxlg;
+    margin: 16px 0;
+  }
+  h3 {
+    font-size: $font-size-xlg;
+  }
+
+  ul {
+    li {
+      font-size: $font-size-sm;
+      color: var(--pure-black);
+      font-weight: $font-weight-regular;
+    }
+  }
+  strong {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
   }
 }
