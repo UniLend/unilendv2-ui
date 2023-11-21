@@ -84,7 +84,6 @@ export const handleRedeem = async (
         Amount,
         userAddr
       );
-
       hash = txn?.hash;
     }
 

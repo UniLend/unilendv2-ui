@@ -970,6 +970,7 @@ export const getPoolCreatedGraphQuery = (address) => {
       pools {
             token0 {
       symbol
+      name
       priceUSD
       poolCount
       lentCount
@@ -982,6 +983,7 @@ export const getPoolCreatedGraphQuery = (address) => {
     }
         token1 {
       symbol
+      name
       priceUSD
       poolCount
       lentCount
