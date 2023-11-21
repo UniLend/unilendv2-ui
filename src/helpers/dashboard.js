@@ -236,16 +236,12 @@ export const getUserData = async (chainId, query, tokenList, ValidAddress) => {
     chainId,
     ValidAddress
   );
-
   return { position, pieChart, analytics, tokens };
 };
 
 export const getUserTokens = async (address, chainId, tokenList) => {
-  // console.log(address, chainId, config[chainId]);
   //   const alchemy = new Alchemy(config[chainId]);
-  //   console.log(alchemy);
   //  const userTokens = await  alchemy.core.getTokenBalances(`${address}`);
-  //  console.log(userTokens);
   // const tokens = await getTokensFromUserWallet(tokenList, chainId, address);
   // return tokens;
 };
@@ -265,7 +261,6 @@ export const getPositionData = async (data, chainId) => {
   ];
 
   // const provider = getEthersProvider({ chainId });
-  console.log("getPositionData", chainId);
   const [helperContract, coreContract] = await Promise.all(
     preparedData.map((item) =>
       getEtherContractWithProvider(item.address, item.abi, chainId)
@@ -277,7 +272,6 @@ export const getPositionData = async (data, chainId) => {
     position.map(function (pool) {
       return { owner: pool.owner, ...pool.pool };
     });
-
   const arrayPromise = allPositionAPoolddrs.map(function (pool) {
     let promises = [
       helperContract.getPoolFullData(positionAddress, pool.pool, pool.owner),
@@ -537,10 +531,15 @@ export const getTokensFromUserWallet = async (data, chainId, address) => {
     ERC20Instancees.map((instance) => instance.balanceOf(address))
   );
 
+  const names = await Promise.all(
+    ERC20Instancees.map((instance) => instance.name())
+  );
+
   const tokens = tokensObject.map(
     (token, index) =>
       (token = {
         ...token,
+        name: names[index],
         balance: Number(
           fixed2Decimals(balances[index], token.decimals)
         ).toFixed(4),
@@ -551,9 +550,6 @@ export const getTokensFromUserWallet = async (data, chainId, address) => {
         ).toFixed(4),
       })
   );
-
-  // console.log(tokensArray, tokensObject, balances, tokens);
-
   return tokens;
 
   //const provider = getProvider();

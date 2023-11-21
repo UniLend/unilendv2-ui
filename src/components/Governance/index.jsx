@@ -15,7 +15,7 @@ import { Popover, Input, Modal, Button, Switch } from "antd";
 import "./styles/index.scss";
 import { imgError } from "../../utils";
 import { useSelector } from "react-redux";
-export default function Governance() {
+export default function GovernanceComponent() {
   const { tokenList } = useSelector((state) => state);
 
   const [showProposal, setShowProposal] = useState(false);

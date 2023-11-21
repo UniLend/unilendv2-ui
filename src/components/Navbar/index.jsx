@@ -92,7 +92,6 @@ export default function Navbar() {
   useEffect(() => {
     if (window.ethereum) {
       window.ethereum.on("chainChanged", async (chainId) => {
-        console.log("chainChanged", chainId);
         const user = await connectWallet();
         handleDomain(user);
         dispatch(setUser(user));
@@ -183,7 +182,6 @@ export default function Navbar() {
       const network = await switchNetworkLib({
         chainId: id,
       });
-      console.log("network", network);
       window.location.reload();
     } catch (error) {
       console.log("switchError", { error });
