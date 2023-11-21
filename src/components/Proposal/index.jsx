@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FiArrowLeft, FiChevronDown, FiChevronUp } from "react-icons/fi";
 import ReactMarkdown from "react-markdown";
 import "./styles/index.scss";
-// import MarkdownFile from "./markdown.md";
 
 export default function ProposalComponent() {
   const { proposalId } = useParams();
@@ -57,10 +56,10 @@ decentralize Scroll sequencers and provers.
     <main className="proposal_component">
       <div className="proposal_nav">
         <div role="presentation" onClick={handleMoveToProposal}>
-          <FiArrowLeft className="item" />
-          <p className="item paragraph04">All Proposals</p>
+          <FiArrowLeft />
+          <p className="paragraph04">All Proposals</p>
         </div>
-        <p className="item executed">Executed</p>
+        <p className="executed">Executed</p>
       </div>
 
       <div className="proposal_title">

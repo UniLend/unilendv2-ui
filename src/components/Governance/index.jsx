@@ -11,8 +11,7 @@ import {
   FiChevronUp,
   FiSearch,
 } from "react-icons/fi";
-// import { FaSearch } from "react-icons/fa";
-import { Popover, Input, Modal, Button } from "antd";
+import { Popover, Input, Modal, Button, Switch } from "antd";
 import "./styles/index.scss";
 import { imgError } from "../../utils";
 import { useSelector } from "react-redux";
@@ -29,10 +28,16 @@ export default function Governance() {
   );
   const [selectedToken, setSelectedToken] = useState(availableToken[0]);
   const [serachTokenFromList, setSerachTokenFromList] = useState("");
-  const [tokenBackup] = React.useState(Object.values(tokenList));
+  const [tokenBackup, setTokenBackup] = React.useState(
+    Object.values(tokenList)
+  );
 
   const handleCreateProposal = () => {
     setShowProposal(!showProposal);
+  };
+
+  const handleShowCancelled = (checked) => {
+    console.log("IS_CHECKED", checked);
   };
 
   const handleShowActionModal = (visible) => {
@@ -53,7 +58,7 @@ export default function Governance() {
     setSerachTokenFromList(e.target.value);
     const filtered = tokenBackup.filter(
       (el) =>
-        // el.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        el.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
         el.symbol.toLowerCase().includes(e.target.value.toLowerCase()) ||
         el.address.toLowerCase().includes(e.target.value.toLowerCase())
     );
@@ -66,8 +71,10 @@ export default function Governance() {
   };
 
   useEffect(() => {
-    setAvailableToken(Object.values(tokenList));
-    setSelectedToken(Object.values(tokenList)[0]);
+    const list = Object.values(tokenList);
+    setAvailableToken(list);
+    setTokenBackup(list);
+    setSelectedToken(list[0]);
   }, [tokenList]);
 
   const SelectAction = memo(() => {
@@ -101,12 +108,8 @@ export default function Governance() {
       <div onClick={handleTokensList} className="token_card">
         <img src={token.logoURI || token.logo} alt="" />
         <div>
-          <h3>{token.symbol}</h3>
-          {token.name && (
-            <span>
-              {token.name} {index}
-            </span>
-          )}
+          <h3>{token.name}</h3>
+          <span>{token.symbol}</span>
         </div>
       </div>
     );
@@ -160,6 +163,11 @@ export default function Governance() {
           <div className="create">
             <h2>Proposals</h2>
             <button onClick={handleCreateProposal}>Create proposal</button>
+          </div>
+
+          <div className="show_cancel_container">
+            <p>Show cancelled</p>
+            <Switch onChange={handleShowCancelled} />
           </div>
 
           <div className="proposals_list">

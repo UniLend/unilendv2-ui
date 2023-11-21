@@ -52,6 +52,9 @@
         min-width: 20px;
         flex: 0.1;
       }
+      p {
+        font-size: $font-size-md;
+      }
     }
 
     .executed {
