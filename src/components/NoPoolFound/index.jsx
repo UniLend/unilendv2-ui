@@ -56,6 +56,7 @@ export default function NoPoolFound({
 
   const handleCreate = async () => {
     handleCheckIspoolAvailable();
+    console.log(token01, token02);
     if (token01.address === token02.address) {
       setSameTokenError(true);
       return;

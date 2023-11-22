@@ -55,7 +55,9 @@ export default function HallOfPoolsComponent() {
   ];
 
   const handleTokens = (token, selectedToken) => {
+    console.log(token);
     if (selectedToken === "token1") {
+     
       setToken1(token);
     } else if (selectedToken === "token2") {
       setToken2(token);

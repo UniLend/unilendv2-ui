@@ -85,6 +85,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
       }
     } else {
       // TODO fetch tokens as per selected chain for non-mainnet
+      console.log("tokenlist", tokenList);
       setAvailableToken([...Object.values(tokenList)]);
       setTokenBackup([...Object.values(tokenList)]);
     }
