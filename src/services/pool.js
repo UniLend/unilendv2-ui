@@ -16,7 +16,8 @@ import {
 import BigNumber from "bignumber.js";
 
 import { getEtherContract } from "../lib/fun/wagmi";
-
+import { getFromLocalStorage, saveToLocalStorage } from "../utils";
+import { tokensBYSymbol } from "../utils/constants";
 /*
 @dev 
 redeem function here;
@@ -746,22 +747,85 @@ export const handleRepay = async (
 //   setCollateral(collateralNeeded);
 // };
 
-export const handleCreatePool = async (contracts) => {
+export const handleCreatePool = async (contracts, token0, token1) => {
   try {
     const instance = await getEtherContract(
       contracts.coreContract.address,
       coreAbi
     );
-    const length = await instance.poolLength();
-
-    const { hash } = await instance.createPool(
-      "0x4127976420204dF0869Ca3ED1C2f62c04F6cb137",
-      "0x8C57273241C2b4f4a295ccf3D1Feb29A08225A08",
-      {
-        gasLimit: 2100000,
-      }
-    );
+    //const length = await instance.poolLength();
+    const { hash } = await instance.createPool(token0, token1);
+    return hash;
   } catch (error) {
     console.log("handleCreatePool", "error", { error });
+  }
+};
+
+export const createCustomToken = async (
+  tokenAddress,
+  userAddress,
+  chainId,
+  setAddedCustomtokens,
+  setTokenAddress
+) => {
+  try {
+    const instance = await getEtherContract(tokenAddress, erc20Abi);
+    const hexBalance = await instance.balanceOf(userAddress);
+    const name = await instance.name();
+    const balance = fromBigNumber(hexBalance) / 10 ** 18;
+    const symbol = await instance.symbol();
+    const logo = tokensBYSymbol[symbol].logo;
+
+    const customTokensList = getFromLocalStorage("customTokensList") || [];
+    if (customTokensList.length == 0) {
+      customTokensList.push({
+        name,
+        balance,
+        symbol,
+        logo,
+        chainId,
+        tokenAddress,
+      });
+    } else {
+      const isTokenAdded = customTokensList.findIndex(
+        (item) => item.symbol === symbol
+      );
+      if (isTokenAdded === -1) {
+        customTokensList.push({
+          name,
+          balance,
+          symbol,
+          logo,
+          chainId,
+          tokenAddress,
+        });
+        setTokenAddress("");
+        setAddedCustomtokens([
+          ...getFromLocalStorage("customTokensList"),
+          {
+            name,
+            balance,
+            symbol,
+            logo,
+            chainId,
+            tokenAddress,
+          },
+        ]);
+      } else {
+        setAddedCustomtokens([
+          {
+            name,
+            balance,
+            symbol,
+            logo,
+            chainId,
+            tokenAddress,
+          },
+        ]);
+      }
+    }
+    saveToLocalStorage("customTokensList", customTokensList);
+  } catch (error) {
+    console.log("createCustomToken", error);
   }
 };

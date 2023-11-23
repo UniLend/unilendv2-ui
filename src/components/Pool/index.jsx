@@ -39,7 +39,10 @@ import { tokensBYSymbol } from "../../utils/constants";
 import TokenListMoadal from "../ManageTokens/TokenListMoadal";
 import { useSelector } from "react-redux";
 import useWalletHook from "../../lib/hooks/useWallet";
-import { waitForTransactionLib } from "../../lib/fun/functions";
+import {
+  waitForBlockConfirmation,
+  waitForTransactionLib,
+} from "../../lib/fun/functions";
 import { fetchBlockNumber } from "wagmi/actions";
 
 const lend = "lend";
@@ -178,13 +181,7 @@ export default function PoolComponent() {
   };
 
   const checkTxnStatus = (hash, txnData) => {
-    Promise.all([
-      waitForTransactionLib({
-        hash: hash,
-        confirmations: 1,
-      }),
-      fetchBlockNumber(),
-    ])
+    waitForBlockConfirmation(hash)
       .then((res) => {
         const [receipt, currentBlockNumber] = res;
         const trasactionBlock = fromBigNumber(receipt.blockNumber);
