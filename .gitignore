@@ -31,3 +31,4 @@ package-lock.json
 .netlify
 dist.zip
 .vercel
+coverage

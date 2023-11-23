@@ -29,7 +29,14 @@ $light: (
   //EEECFF check it
   dark-bg: #f3f1ff,
   low-dark-bg: #eae8f6,
-  pool-card-bg: rgba(154, 139, 250, 0.1),
+  // pool-card-bg: rgba(154, 139, 250, 0.1),
+  pool-card-bg:
+    linear-gradient(
+      -45deg,
+      rgba(243, 233, 255, 0.54),
+      rgba(242, 232, 255, 0.29)
+    ),
+  pool-card-border: #6e56ff,
   light-back-colour: #4b2eff,
   popup-shadow: 11.36967px 12.31714px 18.94944px -0.94747px rgba(0, 0, 0, 0.11),
   popup-border: 0.947px solid #eee1ff,
@@ -65,6 +72,7 @@ $dark: (
   dark-bg: #0f0e19,
   low-dark-bg: #161423,
   pool-card-bg: rgba(154, 139, 250, 0.1),
+  pool-card-border: #9a8bfa,
   light-back-colour: #ffffff,
   light-gov-border: #eee1ff,
   popup-shadow: -3px 5px 36px 3px #20004c,

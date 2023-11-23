@@ -113,7 +113,6 @@ export default function VoteComponent() {
     );
 
     const valueFromBigNumber = fromBigNumber(allowance);
-    console.log("allowance", valueFromBigNumber);
     setAllowanceValue(valueFromBigNumber);
   };
 

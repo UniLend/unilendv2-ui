@@ -3,7 +3,8 @@
 import { getContract ,   getAccount,
   getNetwork,
   disconnect,
- fetchBalance , getWalletClient, getPublicClient, readContract, fetchToken, switchNetwork, waitForTransaction} from "wagmi/actions";
+ fetchBalance , getWalletClient, getPublicClient, readContract, fetchToken, switchNetwork, waitForTransaction, fetchBlockNumber} from "wagmi/actions";
+// import { getEthersProvider } from "./wagmi";
 
 export const getNetworkLib =  (props) => {
   const network =  getNetwork(props);
@@ -46,9 +47,17 @@ export const getContractLib = async({address, abi}) => {
 
 export const getPastEvents = async ( contractInstance,  event) => {
   // const contractInstance =  await getEtherContract(address, abi)
-  const events = await contractInstance.queryFilter(event);
 
-  return events
+  try {
+
+    const events = await contractInstance.queryFilter(event);
+
+    return events
+  } catch (error) {
+    throw error
+  }
+
+
 }
 
 
@@ -59,7 +68,7 @@ export const readContractLib = async (props) => {
 
 export const fetchTokenLib = async (props) =>  {
    const token = await fetchToken(props)
-
+ console.log(token);
    return token
 }
 
@@ -77,3 +86,53 @@ export const waitForTransactionLib = async (props)=> {
   const txHash = await waitForTransaction(props);
   return txHash
 }
+
+export const waitForBlockConfirmation = async (hash) => {
+  try {
+ return  await Promise.all([
+      waitForTransactionLib({
+        hash: hash,
+        confirmations: 1,
+      }),
+      fetchBlockNumber(),
+    ])
+  
+  } catch (error) {
+    
+  }
+
+}
+
+// export const waitForBlockConfirmation = (hash) => {
+//   return Promise.all([
+//     waitForTransactionLib({
+//       hash: hash,
+//       confirmations: 1,
+//     }),
+//     fetchBlockNumber(),
+//   ])
+//     .then((res) => {
+//       const [receipt, currentBlockNumber] = res;
+//       const transactionBlock = fromBigNumber(receipt.blockNumber);
+//       const currentBlock = fromBigNumber(currentBlockNumber);
+
+//       if (receipt.status === "success" && currentBlock > transactionBlock) {
+//         return receipt;
+//       } else {
+//         // Use return here to propagate the promise in the recursive call
+//         return new Promise((resolve) => {
+//           setTimeout(function () {
+//             resolve(waitForBlockConfirmation(hash));
+//           }, 1000);
+//         });
+//       }
+//     })
+//     .catch((err) => {
+//       // Also use return here
+//       return new Promise((resolve) => {
+//         setTimeout(function () {
+//           resolve(waitForBlockConfirmation(hash));
+//         }, 1000);
+//       });
+//     });
+// };

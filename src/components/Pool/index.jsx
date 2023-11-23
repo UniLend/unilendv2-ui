@@ -31,6 +31,7 @@ import {
   getCurrentLTV,
   getSelectLTV,
   getActionBtn,
+  fromBigNumber,
 } from "../../helpers/contracts";
 import PoolSkeleton from "../Loader/PoolSkeleton";
 import TwitterModal from "../Common/TwitterModal";
@@ -38,7 +39,8 @@ import { tokensBYSymbol } from "../../utils/constants";
 import TokenListMoadal from "../ManageTokens/TokenListMoadal";
 import { useSelector } from "react-redux";
 import useWalletHook from "../../lib/hooks/useWallet";
-import { waitForTransactionLib } from "../../lib/fun/functions";
+import { waitForBlockConfirmation, waitForTransactionLib } from "../../lib/fun/functions";
+import { fetchBlockNumber } from "wagmi/actions";
 
 const lend = "lend";
 const borrow = "borrow";
@@ -94,7 +96,6 @@ export default function PoolComponent() {
     redeem: selectedToken?.redeemBalanceFixed,
     repay: selectedToken?.borrowBalanceFixed,
   };
-  console.log("approval", selectedToken?.allowance);
 
   // Operation Button Text based on values;
   const buttonAction = getActionBtn(
@@ -157,15 +158,10 @@ export default function PoolComponent() {
     }
   }, [amount, selectLTV]);
   // Notification
-  const openNotificationWithIcon = (result, txnData) => {
+  const openNotificationWithIcon = (result, msg) => {
     notification.open({
       mesage: { result },
-      description:
-        result === "success"
-          ? `Transaction for ${txnData.method} of ${Number(
-              txnData.amount
-            ).toFixed(4)} for token ${txnData.tokenSymbol}`
-          : "Something went wrong",
+      description: result === "success" ? msg : msg,
       onClick: () => {
         console.log("Notification Clicked!");
       },
@@ -181,16 +177,20 @@ export default function PoolComponent() {
     });
   };
 
-  const checkTxnStatus = (hash, txnData) => {
-    waitForTransactionLib({
-      hash,
-    })
-      .then((receipt) => {
-        console.log(receipt);
-        if (receipt.status == "success") {
-          openNotificationWithIcon("success", txnData);
+  const checkTxnStatus =  (hash, txnData) => {
+   waitForBlockConfirmation(hash)
+      .then((res) => {
+        const [receipt, currentBlockNumber] = res;
+        const trasactionBlock = fromBigNumber(receipt.blockNumber);
+        const currentblock = fromBigNumber(currentBlockNumber);
+
+        if (receipt.status == "success" && currentblock > trasactionBlock) {
           setReFetching(true);
           if (txnData.method !== "approval") {
+            const msg = `Transaction for ${txnData.method} of ${Number(
+              txnData.amount
+            ).toFixed(4)} for token ${txnData.tokenSymbol}`;
+            openNotificationWithIcon("success", msg);
             setAmount("");
             //setShowTwitterModal(true)
             setTimeout(() => {
@@ -210,6 +210,7 @@ export default function PoolComponent() {
                 getPoolTokensData: false,
               });
             }, 5000);
+            window.location.reload();
           }
 
           setMax(false);
@@ -234,8 +235,12 @@ export default function PoolComponent() {
 
     const errorText = String(error.reason);
     const data = error?.message ? errorText : "Error: Transaction Error";
-    console.log("Error:-", error);
-    openNotificationWithIcon("error", "Error: Something went wrong");
+    console.log("Error:-", { error });
+    const msg =
+      error?.code === "ACTION_REJECTED"
+        ? "Transaction Denied"
+        : "Something went wrongssß";
+    openNotificationWithIcon("error", msg);
   };
 
   const handleOperation = () => {
@@ -299,10 +304,16 @@ export default function PoolComponent() {
     } catch (error) {}
   };
 
+  useEffect(() => {
+    if (selectedToken && collateralToken) {
+      const ltv = getCurrentLTV(selectedToken, collateralToken);
+      setSelectLTV(ltv);
+    }
+  }, [selectedToken, collateralToken]);
+
   const toggleToken = (token) => {
     setActiveToken(token);
     setAmount("");
-    setSelectLTV(5);
     if (token === 0) {
       setSelectedToken(poolData.token0);
       //setActiveOperation(poolData.token0.tabs[0]);
@@ -318,7 +329,6 @@ export default function PoolComponent() {
     if (selectedToken?.tabs?.includes(operation)) {
       setActiveOperation(operation);
       setAmount("");
-      setSelectLTV(5);
     }
   };
 
@@ -405,7 +415,6 @@ export default function PoolComponent() {
       isAllTrue == false
     ) {
       try {
-        console.log(methodLoaded, isAllTrue);
         fetchPoolDATA();
       } catch (error) {
         fetchPoolDATA();
@@ -552,10 +561,7 @@ export default function PoolComponent() {
           token1: poolData?.token1?.symbol,
         });
       }
-      console.log("poolAddressFound", poolAddress, poolData);
     }
-
-    // console.log("handlePoolAndTokenSelect", tokens);
   };
   const handleSelectTokens = (key, symbol) => {
     // setVisible0(bool);
@@ -768,9 +774,11 @@ export default function PoolComponent() {
                   <img src={selectedToken?.logo} alt="" />
                   <p className="paragraph04">{selectedToken?._symbol}</p>
                 </div>
-                <p className="paragraph06">
-                  Balance: {Number(selectedToken?.balanceFixed).toFixed(2)}
-                </p>
+                <Tooltip title={selectedToken?.balanceFixed}>
+                  <p className="paragraph06">
+                    Balance: {Number(selectedToken?.balanceFixed).toFixed(4)}
+                  </p>
+                </Tooltip>
               </div>
             </div>
 
@@ -853,8 +861,7 @@ export default function PoolComponent() {
                   <span>Oracle</span>
                   <span>
                     1 {poolData.token0._symbol} ={" "}
-                    {Number(poolData.token0.price).toFixed(2)}{" "}
-                    {poolData.token1._symbol}{" "}
+                    {Number(poolData.token0.price)} {poolData.token1._symbol}{" "}
                   </span>
                 </p>
               </div>

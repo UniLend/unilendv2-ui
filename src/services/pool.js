@@ -11,6 +11,7 @@ import {
   toAPY,
   fromBigNumber,
   fixed2Decimals18,
+  fixedTrunc,
 } from "../helpers/contracts";
 import BigNumber from "bignumber.js";
 
@@ -63,18 +64,28 @@ export const handleRedeem = async (
         if (selectedToken._address == poolData.token0._address) {
           maxAmount = mul(maxAmount, -1);
         }
+        const txn = await instance.redeemUnderlying(
+          poolAddress,
+          fixedTrunc(maxAmount),
+          userAddr
+        );
+
+        hash = txn?.hash;
+      } else {
+        const txn = await instance.redeem(
+          poolAddress,
+          fixedTrunc(maxAmount),
+          userAddr
+        );
+
+        hash = txn?.hash;
       }
-
-      const txn = await instance.redeem(poolAddress, maxAmount, userAddr);
-
-      hash = txn?.hash;
     } else {
       const txn = await instance.redeemUnderlying(
         poolAddress,
         Amount,
         userAddr
       );
-
       hash = txn?.hash;
     }
 
@@ -197,7 +208,6 @@ export const getTokenPrice = async (
         pool.token1.price == "Infinity" || pool.token1.price == "0"
           ? getTabs(pool.token1).filter((v) => v !== "borrow")
           : getTabs(pool.token1);
-      console.log("getPoolTokensData", pool);
       return pool;
     } catch (error) {
       throw error;
@@ -503,7 +513,6 @@ export const getPoolAllData = async (
           ),
         },
       };
-      console.log("getPoolFullData", pool);
       return pool;
     } catch (error) {
       throw error;
@@ -746,22 +755,23 @@ export const handleCreatePool = async (contracts, token0, token1) => {
       contracts.coreContract.address,
       coreAbi
     );
-    console.log("INSTANCE", instance);
+    console.log("INSTANCE", instance, token0, token1 );
     const length = await instance.poolLength();
-    // console.log("POOLLENGTH", length);
+    console.log("POOLLENGTH", fromBigNumber(length));
 
     // add variables for token0 and token1
-    // const { hash } = await instance.createPool(
-    //   // "0xEF0313223dB72ccc83FF57BE3D53fd8a6347fC44",
-    //   // "0x390172F6Cc152f19132Bd9919550b59f45F89042",
-    //   token0,
-    //   token1
-    //   // {
-    //   //   gasLimit: 210000,
-    //   // }
-    // );
-    // console.log("HASH", hash);
-    // return hash;
+    const { hash } = await instance.createPool(
+      // "0xEF0313223dB72ccc83FF57BE3D53fd8a6347fC44",
+      // "0x390172F6Cc152f19132Bd9919550b59f45F89042",
+      token0,
+      token1
+      // {
+      //   gasLimit: 210000,
+      // }
+    );
+    console.log("HASH", hash);
+
+    return hash;
   } catch (error) {
     console.log("handleCreatePool", "error", { error });
   }

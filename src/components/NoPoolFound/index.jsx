@@ -62,7 +62,8 @@ export default function NoPoolFound({
       return;
     }
     if (isPoolAvailable.length === 0) {
-      await handleCreatePool(contracts, token01.address, token02.address);
+     const hash = await handleCreatePool(contracts, token01.address, token02.address);
+
     }
   };
 
