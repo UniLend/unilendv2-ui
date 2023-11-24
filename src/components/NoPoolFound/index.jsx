@@ -16,13 +16,7 @@ import { fetchCoinGeckoTokens } from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
 import { imgError } from "../../utils";
 
-export default function NoPoolFound({
-  token1,
-  token2,
-  setToken1,
-  setToken2,
-  createPool,
-}) {
+export default function NoPoolFound({ token1, token2, updateToken }) {
   const { user, contracts, tokenList, poolList } = useSelector(
     (state) => state
   );
@@ -52,11 +46,11 @@ export default function NoPoolFound({
   const handleCloseModal = () => {
     setIsCreateModalOpen(false);
     seIsPoolAvailable([]);
+    updateToken(token01, token02);
   };
 
   const handleCreate = async () => {
     handleCheckIspoolAvailable();
-    console.log(token01, token02);
     if (token01.address === token02.address) {
       setSameTokenError(true);
       return;
@@ -159,12 +153,8 @@ export default function NoPoolFound({
       <div onClick={handleTokensList} className="token-card">
         <img src={token.logoURI || token.logo} alt="" />
         <div>
-          <h3>{token.symbol}</h3>
-          {token.name && (
-            <span>
-              {token.name} {index}
-            </span>
-          )}
+          <h3>{token.name}</h3>
+          <span>{token.symbol}</span>
         </div>
       </div>
     );

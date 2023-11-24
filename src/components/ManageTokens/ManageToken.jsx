@@ -22,8 +22,8 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   const [isOpenTokenList, setIsOpenTokenList] = React.useState(false);
   const [isOpenMangeToken, setIsOpenMangeToken] = React.useState(false);
   const [token1, setToken1] = React.useState("");
-  const [currentToken, setCurrentToken] = React.useState("");
   const [token2, setToken2] = React.useState("");
+  const [currentToken, setCurrentToken] = React.useState("");
   const [coinGeckoToken, setCoinGeckoToken] = React.useState([]);
   const [tokenBackup, setTokenBackup] = React.useState([]);
   const [availableToken, setAvailableToken] = React.useState(
@@ -63,10 +63,19 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   const handleCloseModals = () => {
     setIsOpenTokenList(false);
     setIsOpenMangeToken(false);
-    // setCoinGeckoToken(coinGeckoTokenBackup);//setAvailableToken
     setAvailableToken(tokenBackup);
     setSerachTokenFromList("");
   };
+
+  useEffect(() => {
+    if (Object.entries(tokens.token1).length > 0) {
+      setToken1(tokens.token1);
+    }
+
+    if (Object.entries(tokens.token2).length > 0) {
+      setToken2(tokens.token2);
+    }
+  }, [tokens]);
 
   useEffect(() => {
     if (isMainNet) {
@@ -84,7 +93,6 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
       }
     } else {
       // TODO fetch tokens as per selected chain for non-mainnet
-      console.log("tokenlist", tokenList);
       setAvailableToken([...Object.values(tokenList)]);
       setTokenBackup([...Object.values(tokenList)]);
     }
