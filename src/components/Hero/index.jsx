@@ -15,6 +15,7 @@ export default function HeroComponent() {
   const isLoadingPoolData = useSelector((state) => state.isLoadingPoolData);
   const [token1, setToken1] = useState({});
   const [token2, setToken2] = useState({});
+  console.log("UPDATED_TOKEN_2", token2);
   const [pools, setPools] = useState({});
   const [filteredPools, setFilteredPools] = useState([]);
   const [poolBackup, setPoolBackup] = useState({});
@@ -84,6 +85,7 @@ export default function HeroComponent() {
   }, [token1, token2]);
 
   const handleTokens = (token, selectedToken) => {
+    console.log("TOKEN_SELECTED", token);
     if (selectedToken === "token1") {
       setToken1(token);
     } else if (selectedToken === "token2") {
@@ -124,7 +126,11 @@ export default function HeroComponent() {
         </div>
       ) : token1.symbol || token2.symbol ? (
         <div className="no_pool_container">
-          <NoPoolFound token1={token1} token2={token2} />
+          <NoPoolFound
+            token1={token1}
+            token2={token2}
+            handleTokens={() => handleTokens()}
+          />
         </div>
       ) : (
         <PoolCarousel pools={pools} isLoading={!isLoadingPoolData} />

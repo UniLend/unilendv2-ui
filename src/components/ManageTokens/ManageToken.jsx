@@ -11,7 +11,6 @@ import downoutline from "../../assets/downoutline.svg";
 import coinGeckoLogo from "../../assets/CoinGecko_Logo.svg";
 import BSC from "../../assets/bsc.svg";
 import { fetchCoinGeckoTokens } from "../../utils/axios";
-//import Modal from "../Modal";
 import "./ManageToken.scss";
 import { getFromLocalStorage, saveToLocalStorage } from "../../utils";
 import { createCustomToken } from "../../services/pool";
@@ -22,8 +21,8 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   const theme = useSelector((state) => state.theme);
   const [isOpenTokenList, setIsOpenTokenList] = React.useState(false);
   const [isOpenMangeToken, setIsOpenMangeToken] = React.useState(false);
-  const [currentToken, setCurrentToken] = React.useState("");
   const [token1, setToken1] = React.useState("");
+  const [currentToken, setCurrentToken] = React.useState("");
   const [token2, setToken2] = React.useState("");
   const [coinGeckoToken, setCoinGeckoToken] = React.useState([]);
   const [tokenBackup, setTokenBackup] = React.useState([]);
@@ -101,6 +100,9 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
         } else if (currentToken === "2") {
           setToken2(token);
           handleTokens(token, "token2");
+        } else {
+          setToken1(token);
+          handleTokens(token, "token1");
         }
       };
 
@@ -110,12 +112,8 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
             <div onClick={handleTokensList} className="token-card">
               <img src={token.logoURI || token.logo} alt="" />
               <div>
-                <h3>{token.symbol}</h3>
-                {token.name && (
-                  <span>
-                    {token.name} {index}
-                  </span>
-                )}
+                <h3>{token.name}</h3>
+                <span>{token.symbol}</span>
               </div>
             </div>
           )}
@@ -176,6 +174,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
                 <img src={token.logo} alt="" />
                 <div className="center_content">
                   <h3>{token.name}</h3>
+                  {/* <span>{token.symbol}</span> */}
                   {/* <span>{token.balance} Tokens</span> */}
                 </div>
               </div>
@@ -216,6 +215,11 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   const TokenListModalBody = React.memo(() => {
     const container = React.useRef(null);
     const [page, setPage] = useState(1);
+
+    const handleGoToMangeToken = () => {
+      setIsOpenTokenList(false);
+      setIsOpenMangeToken(true);
+    };
 
     useEffect(() => {
       container.current.addEventListener("scroll", () => {
@@ -262,6 +266,12 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
                 )
             )}
         </div>
+        <p
+          onClick={handleGoToMangeToken}
+          className="paragraph04 go_to_manage_token"
+        >
+          Manage Token
+        </p>
       </div>
     );
   });
@@ -269,6 +279,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   const ManageTokenModalBody = () => {
     const [active, setActive] = useState("list");
     const [tokenAddress, setTokenAddress] = useState("");
+    const [isTokenAvailable, setIsTokenAvailable] = useState(false);
     const customTokensList = getFromLocalStorage("customTokensList");
     const [addedCustomTokens, setAddedCustomtokens] =
       React.useState(customTokensList);
@@ -276,15 +287,23 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
     const handleAddToken = async (event) => {
       const inputValue = event.target.value;
       setTokenAddress(inputValue);
+
       const isValid = ethers.utils.isAddress(inputValue);
       if (isValid) {
-        await createCustomToken(
-          inputValue,
-          user.address,
-          user.network.id,
-          setAddedCustomtokens,
-          setTokenAddress
+        const isTokenAvailable = availableToken?.some(
+          (item) => item.address.toLowerCase() === inputValue.toLowerCase()
         );
+        if (isTokenAvailable) {
+          setIsTokenAvailable(true);
+        } else {
+          await createCustomToken(
+            inputValue,
+            user.address,
+            user.network.id,
+            setAddedCustomtokens,
+            setTokenAddress
+          );
+        }
       } else {
         const customTokenList = getFromLocalStorage("customTokensList");
         const filtered = customTokenList?.filter(
@@ -294,6 +313,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
             item.tokenAddress.toLowerCase().includes(inputValue.toLowerCase())
         );
         setAddedCustomtokens(filtered);
+        setIsTokenAvailable(false);
       }
     };
 
@@ -345,6 +365,12 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
         {active == "customTokens" && (
           <div className="customTokens_list">
             {/* <TokenCard token={coingecko} render="customTokens" /> */}
+
+            <p className="paragraph05">
+              {isTokenAvailable &&
+                "token name is available in select token list"}
+            </p>
+
             <h3 className="custom_token_title">Custom Tokens</h3>
             {addedCustomTokens?.map((item, idx) => (
               <TokenCard
