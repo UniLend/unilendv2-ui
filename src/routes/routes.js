@@ -1,34 +1,44 @@
-import { lazy } from 'react';
+import { lazy } from "react";
 
 export const openRoutes = [
   {
-    path: '/',
+    path: "/",
     exact: true,
-    element: lazy(() => import('../pages/heroPage')),
+    element: lazy(() => import("../pages/heroPage")),
   },
   {
-    path: '/pools',
+    path: "/pools",
     exact: true,
-    element: lazy(() => import('../pages/hallOfPools')),
+    element: lazy(() => import("../pages/hallOfPools")),
   },
   {
-    path: '/history',
+    path: "/history",
     exact: true,
-    element: lazy(() => import('../pages/history')),
+    element: lazy(() => import("../pages/history")),
   },
   {
-    path: '/pool/:poolAddress',
+    path: "/pool/:poolAddress",
     exact: true,
-    element: lazy(() => import('../pages/pool')),
+    element: lazy(() => import("../pages/pool")),
   },
   {
-    path: '/dashboard',
+    path: "/dashboard",
     exact: true,
-    element: lazy(() => import('../pages/userDashboard')) ,
+    element: lazy(() => import("../pages/userDashboard")),
   },
   {
-    path: '/governance',
+    path: "/governance",
     exact: true,
-    element: lazy(() => import('../pages/vote')),
+    element: lazy(() => import("../pages/vote")),
+  },
+  {
+    path: "/vote",
+    exact: true,
+    element: lazy(() => import("../pages/governance")),
+  },
+  {
+    path: "/vote/:proposalId",
+    exact: true,
+    element: lazy(() => import("../pages/proposal")),
   },
 ];

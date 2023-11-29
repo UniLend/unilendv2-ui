@@ -1,19 +1,22 @@
 import React, { useState, useEffect, memo } from "react";
 import ReactDOM from "react-dom";
 import { Pie, G2 } from "@ant-design/plots";
+import { useSelector } from "react-redux";
 
 const DonutChart = memo(function DonutChartMemo({ data }) {
-
+  const theme = useSelector((state) => state.theme);
+  console.log("DONOUT_DATA", data);
   const G = G2.getEngine("canvas");
 
   // show first 5 data and remaining are in others;
   const selectedData = (data) => {
-    if (data.length > 5) {
-      const firstFive = data.slice(0, 5);
+    if (data.length > 4) {
+      const firstFive = data.slice(0, 4);
       const othersValue = data
-        .slice(5)
+        .slice(4)
         .reduce((acc, curr) => acc + curr.value, 0);
-      const others = { key: "Others", value: othersValue };
+      const others = { type: "OTHERS", value: othersValue };
+      console.log("OTHERS_DATA", [...firstFive, others]);
       return [...firstFive, others];
     } else {
       return data;
@@ -84,9 +87,8 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
             x: 6,
             y: 20,
             text: `${data.value}%`,
-            // fill: "#fff",
-            // fill: `${theme === "dark" ? "#fff" : "#0045FF"}`,
-            fill: "#99959c",
+            fill: `${theme === "dark" ? "#fff" : "#99959c"}`,
+            // fill: "#99959c",
           },
         });
         return group;
@@ -98,9 +100,9 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
         "#F5AC37",
         "#8F00FF",
         "#76523B",
+        "#0E8E89",
         "#818BA1",
         "#DAD5B5",
-        "#0E8E89",
         "#E19348",
         "#F383A2",
         "#247FEA",

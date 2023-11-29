@@ -97,7 +97,6 @@ export default function PoolComponent() {
     repay: selectedToken?.borrowBalanceFixed,
   };
 
-
   // Operation Button Text based on values;
   const buttonAction = getActionBtn(
     activeOperation,
@@ -162,10 +161,7 @@ export default function PoolComponent() {
   const openNotificationWithIcon = (result, msg) => {
     notification.open({
       mesage: { result },
-      description:
-        result === "success"
-          ? msg
-          : msg,
+      description: result === "success" ? msg : msg,
       onClick: () => {
         console.log("Notification Clicked!");
       },
@@ -182,23 +178,22 @@ export default function PoolComponent() {
   };
 
   const checkTxnStatus = (hash, txnData) => {
-     Promise.all([ waitForTransactionLib({
-      hash: hash,
-      confirmations: 1
-      }), fetchBlockNumber()
+    Promise.all([
+      waitForTransactionLib({
+        hash: hash,
+        confirmations: 1,
+      }),
+      fetchBlockNumber(),
+    ])
+      .then((res) => {
+        const [receipt, currentBlockNumber] = res;
+        const trasactionBlock = fromBigNumber(receipt.blockNumber);
+        const currentblock = fromBigNumber(currentBlockNumber);
 
-    ]).then((res) => {
-       
-       const [receipt, currentBlockNumber] = res;
-       const trasactionBlock = fromBigNumber(receipt.blockNumber)
-       const currentblock = fromBigNumber(currentBlockNumber)
-  
         if (receipt.status == "success" && currentblock > trasactionBlock) {
-
-        
           setReFetching(true);
           if (txnData.method !== "approval") {
-          const msg =  `Transaction for ${txnData.method} of ${Number(
+            const msg = `Transaction for ${txnData.method} of ${Number(
               txnData.amount
             ).toFixed(4)} for token ${txnData.tokenSymbol}`;
             openNotificationWithIcon("success", msg);
@@ -221,6 +216,7 @@ export default function PoolComponent() {
                 getPoolTokensData: false,
               });
             }, 5000);
+            window.location.reload();
           }
 
           setMax(false);
@@ -245,8 +241,11 @@ export default function PoolComponent() {
 
     const errorText = String(error.reason);
     const data = error?.message ? errorText : "Error: Transaction Error";
-    console.log("Error:-", {error});
-    const msg = error?.code ===  "ACTION_REJECTED"? 'Transaction Denied': "Something went wrongssß"
+    console.log("Error:-", { error });
+    const msg =
+      error?.code === "ACTION_REJECTED"
+        ? "Transaction Denied"
+        : "Something went wrongssß";
     openNotificationWithIcon("error", msg);
   };
 
@@ -311,13 +310,12 @@ export default function PoolComponent() {
     } catch (error) {}
   };
 
-  useEffect(()=>{
-    if(selectedToken && collateralToken){
-      const ltv = getCurrentLTV(selectedToken, collateralToken)
+  useEffect(() => {
+    if (selectedToken && collateralToken) {
+      const ltv = getCurrentLTV(selectedToken, collateralToken);
       setSelectLTV(ltv);
     }
- 
-  }, [selectedToken, collateralToken])
+  }, [selectedToken, collateralToken]);
 
   const toggleToken = (token) => {
     setActiveToken(token);
@@ -337,7 +335,6 @@ export default function PoolComponent() {
     if (selectedToken?.tabs?.includes(operation)) {
       setActiveOperation(operation);
       setAmount("");
-    
     }
   };
 
@@ -424,7 +421,6 @@ export default function PoolComponent() {
       isAllTrue == false
     ) {
       try {
-       
         fetchPoolDATA();
       } catch (error) {
         fetchPoolDATA();
@@ -571,10 +567,7 @@ export default function PoolComponent() {
           token1: poolData?.token1?.symbol,
         });
       }
-
     }
-
-    // console.log("handlePoolAndTokenSelect", tokens);
   };
   const handleSelectTokens = (key, symbol) => {
     // setVisible0(bool);
@@ -787,9 +780,11 @@ export default function PoolComponent() {
                   <img src={selectedToken?.logo} alt="" />
                   <p className="paragraph04">{selectedToken?._symbol}</p>
                 </div>
-                <p className="paragraph06">
-                  Balance: {Number(selectedToken?.balanceFixed).toFixed(2)}
-                </p>
+                <Tooltip title={selectedToken?.balanceFixed}>
+                  <p className="paragraph06">
+                    Balance: {Number(selectedToken?.balanceFixed).toFixed(4)}
+                  </p>
+                </Tooltip>
               </div>
             </div>
 
@@ -872,8 +867,7 @@ export default function PoolComponent() {
                   <span>Oracle</span>
                   <span>
                     1 {poolData.token0._symbol} ={" "}
-                    {Number(poolData.token0.price)}{" "}
-                    {poolData.token1._symbol}{" "}
+                    {Number(poolData.token0.price)} {poolData.token1._symbol}{" "}
                   </span>
                 </p>
               </div>
