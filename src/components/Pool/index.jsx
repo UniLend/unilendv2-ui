@@ -10,7 +10,7 @@ import {
 } from "antd";
 import { FaChevronDown } from "react-icons/fa";
 import "./styles/index.scss";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { DownOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
@@ -55,6 +55,7 @@ export default function PoolComponent() {
   const { contracts, user, web3, isLoading, isError, poolList } = useSelector(
     (state) => state
   );
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeToken, setActiveToken] = useState(0);
   const [selectedToken, setSelectedToken] = useState(null);
   const [collateralToken, setCollaterralToken] = useState(null);
@@ -110,6 +111,15 @@ export default function PoolComponent() {
     colleteral,
     reFetching
   );
+
+  // reload page after creating new pool from create pool method
+  useEffect(() => {
+    const reloadParam = searchParams.get("reload");
+    if (reloadParam) {
+      window.location.reload();
+      setSearchParams((params) => params.set("reload", false));
+    }
+  }, [searchParams]);
 
   const handleAmount = (e) => {
     if (e.target.value === "") {
