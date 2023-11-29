@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button, message, notification } from "antd";
 import { WalletFilled } from "@ant-design/icons";
 import downoutline from "../../assets/downoutline.svg";
@@ -16,12 +16,12 @@ import { fetchCoinGeckoTokens, fetchGraphQlData } from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
 import { imgError } from "../../utils";
 import { waitForBlockConfirmation } from "../../lib/fun/functions";
-import Notification from "../Common/Notification";
+// import Notification from "../Common/Notification";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { fromBigNumber } from "../../helpers/contracts";
 import { useQuery } from "react-query";
 import useWalletHook from "../../lib/hooks/useWallet";
-import { getPoolCreatedGraphQuery, sortByKey } from "../../helpers/dashboard";
+import { getPoolCreatedGraphQuery, getPoolsGraphQuery, sortByKey } from "../../helpers/dashboard";
 
 export default function NoPoolFound({ token1, token2, updateToken }) {
   const { user, contracts, tokenList, poolList } = useSelector(
@@ -30,7 +30,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
   const dispatch = useDispatch();
   const { address, isConnected, chain } = useWalletHook();
   const navigate = useNavigate();
-  const query = getPoolCreatedGraphQuery(address);
+  const query = getPoolsGraphQuery();
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const [isOpenTokenList, setIsOpenTokenList] = React.useState(false);
   const [currentToken, setCurrentToken] = React.useState("");
@@ -46,12 +46,12 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
   const [fetchFrom, setFetchFrom] = React.useState({
     coinGecko: true,
   });
-  const [isPoolAvailable, seIsPoolAvailable] = React.useState([]);
+  const [isPoolAvailable, seIsPoolAvailable] = React.useState({});
   const [sameTokenError, setSameTokenError] = React.useState(false);
   const [isCreatePoolLoading, setIsCreatePoolLoading] = React.useState(false);
   const [isPoolCreated, setIsPoolCreated] = React.useState(false);
   const [recentlyCreatedPool, setRecentlyCreatedPool] = React.useState({});
-
+  const [poolLength, setPoolLength] = useState([])
   // only chainId included in array will show coinGicko tokens;
   const isMainNet = [1, 137].includes(user.network.id);
 
@@ -63,36 +63,43 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
   // console.log("SORTED_POOL", sortBy[0]);
   const handleCloseModal = () => {
     setIsCreateModalOpen(false);
-    seIsPoolAvailable([]);
+    seIsPoolAvailable({});
     updateToken(token01, token02);
   };
 
-  const { data, loading, error, refetch } = useQuery("pools", async () => {
-    const fetchedDATA = await fetchGraphQlData(chain?.id || 1442, query);
-    return fetchedDATA;
-  });
-  const sortBy = sortByKey(data.pools, "blockTimestamp", 1);
-  // const getCreatedPool = async () => {
-  //   // refetch();
-  //   const { data, loading, error, refetch } = useQuery("pools", async () => {
-  //     const fetchedDATA = await fetchGraphQlData(chain?.id || 1442, query);
-  //     return fetchedDATA;
-  //   });
-  //   const sortBy = sortByKey(data.pools, "blockTimestamp", 1);
-  //   console.log("SORT_BY_1", sortBy[0]);
-  //   return sortBy[0];
-  //   // const res = await fetchGraphQlData(chain?.id || 1442, query);
-  //   // const data = await res.JSON();
-  //   // console.log("AWAITED_POOLS", data.pools);
-  // };
+  // const { data, loading, error, refetch } = useQuery("pools", async () => {
+  //   const fetchedDATA = await fetchGraphQlData(chain?.id || 1442, query);
+  //   return fetchedDATA;
+  // });
+  // const sortBy = sortByKey(data.pools, "blockTimestamp", 1);
+  const getCreatedPool =  () => {
+    // refetch();
+ 
+      const fetchedDATA = fetchGraphQlData(chain?.id || 1442, query)
+      .then((res)=>{
+        console.log("res", res);
+        const sortBy = sortByKey(res.pools, "blockTimestamp", 1);
+        console.log("fetch data", sortBy, sortBy.length);
+        if(poolLength && poolLength.length < sortBy.length){
+          setIsPoolCreated(true);
+          seIsPoolAvailable(sortBy[0])
+        }
+        setPoolLength(sortBy)
+      });
 
-  // useEffect(() => {
-  //   console.log("IS_POOL_CREATED", isPoolCreated);
-  //   if (isPoolCreated) {
-  //     updateToken({}, {});
-  //     console.log("CALL_REFETCH", recentlyCreatedPool);
-  //   }
-  // }, [isPoolCreated]);
+    
+    // const sortBy = sortByKey(data.pools, "blockTimestamp", 1);
+    // console.log("SORT_BY_1", sortBy[0]);
+    // return sortBy[0];
+    // const res = await fetchGraphQlData(chain?.id || 1442, query);
+    // const data = await res.JSON();
+    // console.log("AWAITED_POOLS", data.pools);
+  };
+
+  useEffect(() => {
+
+   console.log("length data", poolLength);
+  }, [poolLength]);
 
   const openNotificationWithIcon = (result, msg) => {
     notification.open({
@@ -151,27 +158,26 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
     //0x9991eb2f84d79c39ee92274ccb2310e0d536a8d645b9549a87a7c8022da3a5f2
     waitForBlockConfirmation(hash)
       .then((res) => {
-        console.log("RESPONSE_STATUS", res);
+   
         const [receipt, currentBlockNumber] = res;
-        console.log("receipt", receipt);
-        console.log("currentBlockNumber", currentBlockNumber);
+  
+       
         const trasactionBlock = fromBigNumber(receipt.blockNumber);
-        console.log("trasactionBlock", trasactionBlock);
         const currentblock = fromBigNumber(currentBlockNumber);
-        console.log("currentblock", currentblock);
 
         if (receipt.status == "success" && currentblock > trasactionBlock) {
-          console.log("STATUS");
-          updateToken({}, {});
-          // refetch();
+          console.log("STATUS", receipt);
+          // updateToken({}, {});
+          //  refetch();
+          getCreatedPool()
           setIsCreatePoolLoading(false);
-          console.log("IS_POOL_CREATED_1", isPoolCreated);
-          setIsPoolCreated(true);
-          console.log("IS_POOL_CREATED_2", isPoolCreated);
+          // seIsPoolAvailable({address:''})
+          //  setIsPoolCreated(true);
+          // console.log("IS_POOL_CREATED_2", isPoolCreated);
           const msg = `Pool is created with ${token01.symbol} and ${token02.symbol}`;
           // getCreatedPool();
           // setRecentlyCreatedPool(getCreatedPool());
-          console.log("CALL_REFETCH", recentlyCreatedPool);
+          // console.log("CALL_REFETCH", recentlyCreatedPool);
           openNotificationWithIcon("success", msg);
           // navigate(`/`);
           // setTimeout(function () {
@@ -273,7 +279,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
         (item.token0.symbol === token02.symbol &&
           item.token1.symbol === token01.symbol)
     );
-    seIsPoolAvailable(filtered);
+    seIsPoolAvailable(filtered[0]);
   };
 
   const handleViewPool = (poolAddress) => {
@@ -281,6 +287,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
   };
 
   React.useEffect(() => {
+    getCreatedPool()
     if (isMainNet) {
       if (fetchFrom.coinGecko) {
         setIsFetching(true);
@@ -301,9 +308,10 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
     }
   }, [fetchFrom, isMainNet]);
 
+
   const TokenCard = React.memo(({ token, index }) => {
     const handleTokensList = () => {
-      seIsPoolAvailable([]);
+      seIsPoolAvailable({});
       handleCloseModals();
       if (currentToken === "1") {
         setToken01(token);
@@ -324,6 +332,8 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
       </div>
     );
   });
+
+
 
   const TokenListModalBody = React.memo(() => {
     const container = React.useRef(null);
@@ -458,7 +468,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
                 <Button
                   onClick={() =>
                     // handleViewPool(recentlyCreatedPool.poolAddress)
-                    handleViewPool(sortBy[0].poolAddress)
+                    handleViewPool(isPoolAvailable?.address)
                   }
                   className="btn_class"
                 >

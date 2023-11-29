@@ -43,8 +43,8 @@ import {
   waitForBlockConfirmation,
   waitForTransactionLib,
 } from "../../lib/fun/functions";
-import { fetchBlockNumber } from "wagmi/actions";
-import Notification from "../Common/Notification";
+// import { fetchBlockNumber } from "wagmi/actions";
+// import Notification from "../Common/Notification";
 
 const lend = "lend";
 const borrow = "borrow";

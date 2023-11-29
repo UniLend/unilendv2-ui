@@ -1024,6 +1024,38 @@ export const getPoolCreatedGraphQuery = (address) => {
   return query;
 };
 
+export const getPoolsGraphQuery = () => {
+  const query = `
+  {
+
+      pools {
+            token0 {
+      symbol
+      name
+   
+      id
+    
+    }
+        token1 {
+      symbol
+      name
+
+      id
+   
+    }
+    
+        blockNumber
+        blockTimestamp
+        id
+ 
+        pool
+   
+      }
+    }
+  `;
+  return query;
+};
+
 export const checkOpenPosition = (position) => {
   if (
     (Number(position.lendBalance0) > 0 || Number(position.lendBalance1)) > 0
