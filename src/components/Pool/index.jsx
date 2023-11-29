@@ -44,6 +44,7 @@ import {
   waitForTransactionLib,
 } from "../../lib/fun/functions";
 import { fetchBlockNumber } from "wagmi/actions";
+import Notification from "../Common/Notification";
 
 const lend = "lend";
 const borrow = "borrow";
@@ -238,7 +239,6 @@ export default function PoolComponent() {
 
     const errorText = String(error.reason);
     const data = error?.message ? errorText : "Error: Transaction Error";
-    console.log("Error:-", { error });
     const msg =
       error?.code === "ACTION_REJECTED"
         ? "Transaction Denied"

@@ -747,7 +747,13 @@ export const handleRepay = async (
 //   setCollateral(collateralNeeded);
 // };
 
-export const handleCreatePool = async (contracts, token0, token1) => {
+export const handleCreatePool = async (
+  contracts,
+  token0,
+  token1,
+  checkTxnStatus,
+  checkTxnError
+) => {
   try {
     const instance = await getEtherContract(
       contracts.coreContract.address,
@@ -757,6 +763,7 @@ export const handleCreatePool = async (contracts, token0, token1) => {
     const { hash } = await instance.createPool(token0, token1);
     return hash;
   } catch (error) {
+    checkTxnError(error);
     console.log("handleCreatePool", "error", { error });
   }
 };
