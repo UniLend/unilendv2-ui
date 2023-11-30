@@ -540,20 +540,3 @@ input[type="number"] {
     }
   }
 }
-
-.notification_class {
-  margin-top: 35px;
-  $border: 1px;
-  background-clip: padding-box;
-  border: solid $border var(--button-border);
-  border-radius: 12px;
-  color: var(--pure-black);
-  background-color: var(--popup-back-color);
-  border-radius: 11px;
-  padding: 8px 5px;
-}
-@media ($mobile) {
-  .notification_class {
-    padding: 3px;
-  }
-}
