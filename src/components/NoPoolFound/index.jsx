@@ -63,7 +63,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
     const fetchedDATA = fetchGraphQlData(chain?.id || 1442, query).then(
       (res) => {
         const sortBy = sortByKey(res.pools, "blockTimestamp", 1);
-        if (poolLength.length > 0 && poolLength.length <= sortBy.length) {
+        if (poolLength.length > 0 && poolLength.length < sortBy.length) {
           setIsPoolCreated(true);
           setAvailablePool(sortBy[0]);
         }
