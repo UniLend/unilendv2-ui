@@ -12,6 +12,7 @@ import {
   fromBigNumber,
   fixed2Decimals18,
   fixedTrunc,
+  decimal2Fixed2,
 } from "../helpers/contracts";
 import BigNumber from "bignumber.js";
 
@@ -534,7 +535,7 @@ export const handleLend = async (
   checkTxnStatus,
   checkTxnError
 ) => {
-  let Amount = decimal2Fixed(amount, selectedToken._decimals);
+  let Amount = decimal2Fixed2(amount, selectedToken._decimals);
   if (selectedToken._address == poolData.token0._address) {
     Amount = mul(Amount, -1);
   }

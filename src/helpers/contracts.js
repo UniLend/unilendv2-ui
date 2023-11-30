@@ -111,6 +111,17 @@ export function decimal2Fixed(amount, decimals) {
   return newNum.toString();
 }
 
+export function decimal2Fixed2(amount, decimals){
+  let newNum = new BigNumber(amount).multipliedBy(10 ** decimals).toFixed();
+  //let newNum = BigInt(Math.trunc(Number(amount) * 10 ** decimals));
+  // return bigint.toString();
+  if (newNum.indexOf(".") > -1) {
+    newNum = newNum.split(".")[0];
+  }
+
+  return newNum.toString();
+}
+
 export function fixedTrunc(numberString){
   let truncatedNumber = numberString;
     if (numberString.indexOf(".") > -1) {
