@@ -43,8 +43,8 @@ import {
   waitForBlockConfirmation,
   waitForTransactionLib,
 } from "../../lib/fun/functions";
+import NotificationMessage from "../Common/NotificationMessage";
 // import { fetchBlockNumber } from "wagmi/actions";
-// import Notification from "../Common/Notification";
 
 const lend = "lend";
 const borrow = "borrow";
@@ -171,25 +171,6 @@ export default function PoolComponent() {
       getCollateral();
     }
   }, [amount, selectLTV]);
-  // Notification
-  const openNotificationWithIcon = (result, msg) => {
-    notification.open({
-      mesage: { result },
-      description: result === "success" ? msg : msg,
-      onClick: () => {
-        console.log("Notification Clicked!");
-      },
-      className: "notification_class",
-      closeIcon: false,
-      duration: 5,
-      icon:
-        result == "success" ? (
-          <CheckCircleOutlined style={{ color: "green" }} />
-        ) : (
-          <CloseCircleOutlined style={{ color: "red" }} />
-        ),
-    });
-  };
 
   const checkTxnStatus = (hash, txnData) => {
     waitForBlockConfirmation(hash)
@@ -204,7 +185,7 @@ export default function PoolComponent() {
             const msg = `Transaction for ${txnData.method} of ${Number(
               txnData.amount
             ).toFixed(4)} for token ${txnData.tokenSymbol}`;
-            openNotificationWithIcon("success", msg);
+            NotificationMessage("success", msg);
             setAmount("");
             //setShowTwitterModal(true)
             setTimeout(() => {
@@ -252,8 +233,8 @@ export default function PoolComponent() {
     const msg =
       error?.code === "ACTION_REJECTED"
         ? "Transaction Denied"
-        : "Something went wrongssß";
-    openNotificationWithIcon("error", msg);
+        : "Something went wrong";
+    NotificationMessage("error", msg);
   };
 
   const handleOperation = () => {

@@ -1,23 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button, message, notification } from "antd";
+import { Modal, Button, message } from "antd";
 import { WalletFilled } from "@ant-design/icons";
 import downoutline from "../../assets/downoutline.svg";
 import "./styles/index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { connectWallet } from "../../services/wallet";
 import { setUser } from "../../store/Action";
-import { FaChevronDown, FaSearch } from "react-icons/fa";
-import {
-  // createCustomToken,
-  // getCustomTokens,
-  handleCreatePool,
-} from "../../services/pool";
+import { FaSearch } from "react-icons/fa";
+import { handleCreatePool } from "../../services/pool";
 import { fetchCoinGeckoTokens, fetchGraphQlData } from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
 import { imgError } from "../../utils";
 import { waitForBlockConfirmation } from "../../lib/fun/functions";
-// import Notification from "../Common/Notification";
-import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import NotificationMessage from "../Common/NotificationMessage";
 import { fromBigNumber } from "../../helpers/contracts";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { getPoolsGraphQuery, sortByKey } from "../../helpers/dashboard";
@@ -72,25 +67,6 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
     );
   };
 
-  const openNotificationWithIcon = (result, msg) => {
-    notification.open({
-      mesage: { result },
-      description: result === "success" ? msg : msg,
-      onClick: () => {
-        console.log("Notification Clicked!");
-      },
-      className: "notification_class",
-      closeIcon: false,
-      duration: 5,
-      icon:
-        result == "success" ? (
-          <CheckCircleOutlined style={{ color: "green" }} />
-        ) : (
-          <CloseCircleOutlined style={{ color: "red" }} />
-        ),
-    });
-  };
-
   const checkTxnStatus = (hash) => {
     waitForBlockConfirmation(hash)
       .then((res) => {
@@ -101,7 +77,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
           getCreatedPool();
           setIsCreatePoolLoading(false);
           const msg = `Pool is created with ${token01.symbol} and ${token02.symbol}`;
-          openNotificationWithIcon("success", msg);
+          NotificationMessage("success", msg);
         } else {
           setTimeout(function () {
             checkTxnStatus(hash);
@@ -125,8 +101,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
       error?.code === "ACTION_REJECTED"
         ? "Transaction Denied"
         : "Something went wrong";
-    openNotificationWithIcon("error", msg); // Notification
-    // Notification("error", msg); //
+    NotificationMessage("error", msg)();
   };
   const handleCreate = async () => {
     // handleCheckIspoolAvailable();
@@ -146,7 +121,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
         );
         checkTxnStatus(hash);
       } catch (error) {
-        log(error);
+        console.log(error);
       }
       // test on zkevm testnet with below hash
       // checkTxnStatus(
