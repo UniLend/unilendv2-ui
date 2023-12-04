@@ -10,7 +10,7 @@ import {
 } from "antd";
 import { FaChevronDown } from "react-icons/fa";
 import "./styles/index.scss";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { DownOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
@@ -39,8 +39,12 @@ import { tokensBYSymbol } from "../../utils/constants";
 import TokenListMoadal from "../ManageTokens/TokenListMoadal";
 import { useSelector } from "react-redux";
 import useWalletHook from "../../lib/hooks/useWallet";
-import { waitForTransactionLib } from "../../lib/fun/functions";
-import { fetchBlockNumber } from "wagmi/actions";
+import {
+  waitForBlockConfirmation,
+  waitForTransactionLib,
+} from "../../lib/fun/functions";
+import NotificationMessage from "../Common/NotificationMessage";
+// import { fetchBlockNumber } from "wagmi/actions";
 
 const lend = "lend";
 const borrow = "borrow";
@@ -51,6 +55,7 @@ export default function PoolComponent() {
   const { contracts, user, web3, isLoading, isError, poolList } = useSelector(
     (state) => state
   );
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeToken, setActiveToken] = useState(0);
   const [selectedToken, setSelectedToken] = useState(null);
   const [collateralToken, setCollaterralToken] = useState(null);
@@ -107,6 +112,15 @@ export default function PoolComponent() {
     reFetching
   );
 
+  // reload page after creating new pool from create pool method
+  useEffect(() => {
+    const reloadParam = searchParams.get("reload");
+    if (reloadParam) {
+      window.location.reload();
+      setSearchParams((params) => params.set("reload", false));
+    }
+  }, [searchParams]);
+
   const handleAmount = (e) => {
     if (e.target.value === "") {
       setAmount(null);
@@ -157,34 +171,9 @@ export default function PoolComponent() {
       getCollateral();
     }
   }, [amount, selectLTV]);
-  // Notification
-  const openNotificationWithIcon = (result, msg) => {
-    notification.open({
-      mesage: { result },
-      description: result === "success" ? msg : msg,
-      onClick: () => {
-        console.log("Notification Clicked!");
-      },
-      className: "notification_class",
-      closeIcon: false,
-      duration: 5,
-      icon:
-        result == "success" ? (
-          <CheckCircleOutlined style={{ color: "green" }} />
-        ) : (
-          <CloseCircleOutlined style={{ color: "red" }} />
-        ),
-    });
-  };
 
   const checkTxnStatus = (hash, txnData) => {
-    Promise.all([
-      waitForTransactionLib({
-        hash: hash,
-        confirmations: 1,
-      }),
-      fetchBlockNumber(),
-    ])
+    waitForBlockConfirmation(hash)
       .then((res) => {
         const [receipt, currentBlockNumber] = res;
         const trasactionBlock = fromBigNumber(receipt.blockNumber);
@@ -196,7 +185,7 @@ export default function PoolComponent() {
             const msg = `Transaction for ${txnData.method} of ${Number(
               txnData.amount
             ).toFixed(4)} for token ${txnData.tokenSymbol}`;
-            openNotificationWithIcon("success", msg);
+            NotificationMessage("success", msg);
             setAmount("");
             //setShowTwitterModal(true)
             setTimeout(() => {
@@ -241,12 +230,11 @@ export default function PoolComponent() {
 
     const errorText = String(error.reason);
     const data = error?.message ? errorText : "Error: Transaction Error";
-    console.log("Error:-", { error });
     const msg =
       error?.code === "ACTION_REJECTED"
         ? "Transaction Denied"
-        : "Something went wrongssß";
-    openNotificationWithIcon("error", msg);
+        : "Something went wrong";
+    NotificationMessage("error", msg);
   };
 
   const handleOperation = () => {

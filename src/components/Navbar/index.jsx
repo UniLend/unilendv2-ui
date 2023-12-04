@@ -8,9 +8,9 @@ import { Link } from "react-router-dom";
 import { FiCopy } from "react-icons/fi";
 
 import {
-  getFromLocalStorage,
-  removeFromLocalStorage,
-  saveToLocalStorage,
+  getFromSessionStorage,
+  removeFromSessionStorage,
+  saveToSessionStorage,
   shortenAddress,
 } from "../../utils";
 import { connectWallet, handleDisconnect } from "../../services/wallet";
@@ -70,7 +70,7 @@ export default function Navbar() {
   };
 
   const handleTheme = (theme) => {
-    saveToLocalStorage("unilendV2Theme", theme);
+    saveToSessionStorage("unilendV2Theme", theme);
     setCurrentTheme(theme);
     dispatch(setTheme(theme));
     document.body.className = theme;
@@ -192,7 +192,7 @@ export default function Navbar() {
     if (connector == "walletConnect") {
       setTimeout(() => {
         window.location.reload();
-        //removeFromLocalStorage('user')
+        //removeFromSessionStorage('user')
       }, 1000);
     }
   };

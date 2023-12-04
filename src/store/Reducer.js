@@ -1,4 +1,4 @@
-import { getFromLocalStorage } from "../utils";
+import { getFromSessionStorage } from "../utils";
 import {
   SET_CONTRACTS,
   SET_ERROR,
@@ -28,8 +28,8 @@ const init = {
   },
   isLoading: false,
   isError: false,
-  user: getFromLocalStorage("user") ? getFromLocalStorage("user") : user,
-  theme: getFromLocalStorage("unilendV2Theme") || "dark",
+  user: getFromSessionStorage("user") ? getFromSessionStorage("user") : user,
+  theme: getFromSessionStorage("unilendV2Theme") || "dark",
   poolList: {},
   tokenList: {},
   isLoadingPoolData: false,

@@ -124,6 +124,11 @@ export default function HallOfPoolsComponent() {
     handleCreatePool();
   };
 
+  const updateToken = (token1, token2) => {
+    setToken1(token1);
+    setToken2(token2);
+  };
+
   return (
     <div className="hallofpools_container">
       {/* <div className="banner">
@@ -131,7 +136,7 @@ export default function HallOfPoolsComponent() {
       </div> */}
       <div className="analytics_container">
         <div className="analytics">
-        <img src={banner} alt="v2-banner" />
+          <img src={banner} alt="v2-banner" />
         </div>
         <div className="managepool_container">
           <ManageToken
@@ -174,7 +179,8 @@ export default function HallOfPoolsComponent() {
         <NoPoolFound
           token1={token1}
           token2={token2}
-          createPool={handleCreatePool}
+          updateToken={updateToken}
+          // createPool={handleCreatePool}
         />
       )}
       {/* <PoolCarousel pools={pools} isLoading={!isLoadingPoolData}/> */}

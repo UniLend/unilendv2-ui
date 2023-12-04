@@ -136,7 +136,8 @@
       }
       h3 {
         text-align: left;
-        margin: 5px;
+        font-size: $font-size-md;
+        margin: 5px 0 0 0;
       }
       @media only screen and (max-width: 768px) {
         padding-left: 10px;
@@ -183,7 +184,7 @@
 
 .select_token_modal {
   // overflow: hidden;
-  height: 550px;
+  height: 600px;
   .search_token {
     padding: 30px 30px 10px;
   }
@@ -221,7 +222,7 @@
   .token_list {
     overflow-y: scroll;
     height: 400px;
-    margin-top: 10px;
+    margin: 10px auto;
     padding: 30px;
     padding-top: 0px;
     h2 {
@@ -229,43 +230,66 @@
       text-align: center;
       color: var(--always-white);
     }
+    .token-card {
+      gap: 12px;
+    }
+  }
+
+  .go_to_manage_token {
+    text-align: center;
+    cursor: pointer;
+    &:hover {
+      color: var(--main-light);
+    }
   }
 }
 
 .token-card {
   width: 100%;
   height: 55px;
-  cursor: pointer;
+  // cursor: pointer;
   margin: 10px 0px;
+  padding: 0 8px;
   display: flex;
+  // gap: 12px;
   border-radius: 12px;
   img {
     width: 36px;
     height: 36px;
-    margin: 10px 15px;
+    margin: 10px 0;
     border-radius: 50%;
   }
   div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
     h3 {
+      display: block;
+      max-width: 144px;
       letter-spacing: 0.04em;
       text-transform: uppercase;
       color: var(--pure-black);
-      font-size: $font-size-lg;
+      font-size: $font-size-sm;
       font-weight: $font-weight-medium;
-      margin: 8px 0 -8px;
+      margin: 0 0 -8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     span {
+      box-sizing: border-box;
       font-size: $font-size-xsm;
       color: var(--light-gray);
     }
   }
   &:hover {
     background: var(--main);
-    div{
-      h3{
-        color:var(--always-white)
+    div {
+      h3 {
+        color: var(--always-white);
       }
-      span{
+      span {
         color: var(--always-white);
       }
     }
@@ -294,17 +318,25 @@
   background-color: var(--low-dark-bg);
   .token_info {
     display: flex;
+    flex-direction: row;
+    align-items: center;
     img {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
     }
-    div {
+    .div {
       h3 {
+        height: 18px;
         color: var(--pure-black);
         margin: 8px 0 0;
         font-weight: $font-weight-medium;
-        font-size: $font-size-lg;
+        font-size: $font-size-sm;
         line-height: $line-height-sm;
         text-transform: capitalize;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        // white-space: nowrap;
       }
     }
   }
@@ -325,6 +357,8 @@
     background-color: var(--main);
 
     .token_info {
+      display: flex;
+      flex-direction: row;
       div {
         h3 {
           color: white;
@@ -336,17 +370,20 @@
 
 .customtokens {
   justify-content: space-between;
-  display: none;
+  // display: none;
   .token_info {
     display: flex;
+    flex-direction: row;
     div {
       h3 {
         margin: 0px;
+        min-width: 150px;
       }
     }
   }
   .actionButtons {
     display: flex;
+    flex-direction: row;
     align-items: center;
     margin: 0px 10px;
     button {
@@ -354,6 +391,7 @@
     }
     div {
       display: flex;
+      flex-direction: row;
       align-items: center;
       img {
         width: 18px;
@@ -362,32 +400,46 @@
       }
       p {
         margin-top: 15px;
-        margin-right: 10px;
+        width: 40px;
         padding: 0px;
-        font-size: 12px;
-        color: #545454;
-        font-weight: 700;
+        font-size: $font-size-xsm;
+        color: var(--pure-black);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
-    //  .space_between{
-    //   img{
-    //     margin: 0px;
-    //     // margin-left: 15px;
-    //     margin-right: 10px;
-    //     &:first-child{
-    //       margin-left: 5px;
-    //     }
-    //   }
-    //  }
+    .space_between {
+      display: flex;
+      gap: 0;
+      img {
+        margin: 0px;
+        margin-right: 10px;
+        cursor: pointer;
+        &:first-child {
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+
+  &:hover {
+    .actionButtons {
+      div {
+        p {
+          color: var(--always-white);
+        }
+      }
+    }
   }
 }
 .manage_token_modal {
-  height: 550px;
+  height: 600px;
   padding: 30px 0px;
-  background-color: var(--dark-bg);
   .token_tabs {
     width: 86%;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     border-radius: 50px;
     padding: 0x;
@@ -445,11 +497,17 @@
   }
   .api_token_list,
   .customTokens_list {
+    margin-top: 12px !important;
     overflow-y: scroll;
-    height: 340px;
+    height: 396px;
     margin-top: 10px;
-    padding: 30px;
-    padding-top: 0px;
+    padding: 0 24px 0;
+    p {
+      width: fit-content;
+      margin-left: 10px;
+      color: var(--light-green);
+      height: 14px;
+    }
     h2 {
       width: 100%;
       text-align: center;
@@ -457,7 +515,7 @@
     .custom_token_title {
       color: var(--pure-black);
       font-size: $font-size-lg;
-      margin-top: 30px;
+      margin-top: 12px;
     }
   }
   .customTokens_list {

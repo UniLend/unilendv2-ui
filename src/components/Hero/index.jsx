@@ -94,6 +94,11 @@ export default function HeroComponent() {
     }
   };
 
+  const updateToken = (token1, token2) => {
+    setToken1(token1);
+    setToken2(token2);
+  };
+
   const createPool = () => {};
 
   return (
@@ -124,7 +129,11 @@ export default function HeroComponent() {
         </div>
       ) : token1.symbol || token2.symbol ? (
         <div className="no_pool_container">
-          <NoPoolFound token1={token1} token2={token2} />
+          <NoPoolFound
+            token1={token1}
+            token2={token2}
+            updateToken={updateToken}
+          />
         </div>
       ) : (
         <PoolCarousel pools={pools} isLoading={!isLoadingPoolData} />
