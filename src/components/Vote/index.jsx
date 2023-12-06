@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Popover } from "antd";
-import { Input, Button, message } from "antd";
+import { Input, Button } from "antd";
 import banner from "../../assets/dashboardbanner.svg";
 import Vote from "../../assets/vote.svg";
 import uftIcon from "../../assets/uft.svg";
@@ -24,6 +24,7 @@ import { Link } from "react-router-dom";
 import { getEtherContract } from "../../lib/fun/wagmi";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { waitForTransactionLib } from "../../lib/fun/functions";
+import NotificationMessage from "../Common/NotificationMessage";
 
 const wrap = "wrap";
 const unWrap = "unWrap";
@@ -53,13 +54,13 @@ export default function VoteComponent() {
           if (data?.fn == "approve") {
             setTimeout(() => {
               handleAllowance();
-              message.success(`${data.message}`);
+              NotificationMessage("success", `${data.message}`);
               setIsLoading(false);
             }, 6000);
           } else {
             setTimeout(() => {
               handleAllowance();
-              message.success(`${data.message}`);
+              NotificationMessage("success", `${data.message}`);
               setIsLoading(false);
             }, 3000);
           }
@@ -79,7 +80,10 @@ export default function VoteComponent() {
   const checkTxnError = (error) => {
     setIsLoading(false);
     const errorText = String(error.reason);
-    message.error(error?.message ? errorText : "Error: Transaction Error");
+    NotificationMessage(
+      "error",
+      error?.message ? errorText : "Error: Transaction Error"
+    );
   };
 
   //
