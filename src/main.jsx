@@ -46,6 +46,7 @@ import {
   trustWallet,
   xdefiWallet,
   zerionWallet,
+  coin98Wallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 
@@ -82,6 +83,7 @@ const connectors = connectorsForWallets([
       injectedWallet({ chains, projectId }),
       coinbaseWallet({ appName: "UnilendV2", chains , projectId}),
       walletConnectWallet({ chains, projectId }),
+      coin98Wallet({ chains, projectId}),
     ],
   },
   {
