@@ -173,6 +173,10 @@ const tokensBYSymbol = {
     logo: 'https://i.postimg.cc/FHwjwtwg/New-Zealand.png',
     symbol: 'NZ',
   },
+  SNOW: {
+    logo: 'https://i.postimg.cc/vmkT2004/snow.png',
+    symbol: 'SNOW',
+  },
 };
 
 const tokensByAddress = {
@@ -272,8 +276,8 @@ const hidePools = [
   '0xDFBf948059DFeD004e17405DAc6105F7ee26Eb85',
   '0x77814A4c09c377B68087A480d83824c99E42b076',
   '0x3e7B24dB70B2ADc34632B7C28818821091E0dB53',
-  "0x173294df2B6bC4dfD30EbC2A5155188c8402be68",
-  "0x76d27C1CCcF1D68610D4Fc98C3aeC8D738bD1A08"
+  '0x173294df2B6bC4dfD30EbC2A5155188c8402be68',
+  '0x76d27C1CCcF1D68610D4Fc98C3aeC8D738bD1A08',
   // '0x06856cA8bA87c131d6D09Bd94cCcC165e8F2ee3A',
 ];
 
