@@ -7,10 +7,11 @@ import './styles/poolCard.scss';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import bunnytheme from '../../assets/bunnytheme.svg'
+import cap from '../../assets/cap.svg'
 import useWalletHook from '../../lib/hooks/useWallet';
 
 
- function PoolCard({pool}) {
+ function PoolCard({pool, slider=false}) {
   const { poolAddress, token0, token1, totalLiquidity, totalBorrowed  } = pool;
   // const user = useSelector((state)=> state.user)
   const [poolTheme, setPoolTheme] = useState(false)
@@ -26,7 +27,7 @@ import useWalletHook from '../../lib/hooks/useWallet';
   };
 
   useEffect(() => {
-    if (token0?.symbol == "BUNNY" && token1?.symbol == "EGG") {
+    if (token0?.symbol == "SANTA" && token1?.symbol == "SNOW" && !slider) {
       setPoolTheme(true);
     }
   }, []);
@@ -36,15 +37,8 @@ import useWalletHook from '../../lib/hooks/useWallet';
       onClick={handleNavigate}
       className={`${poolTheme ? "pool_theme" : ""} poolcard`}
     >
+      {poolTheme && <img src={cap} className='cap_img' alt='cap'/>}
       <div className="pool_icons">
-        {/* <div>
-          <img src={token0?.logo} onError={imgError} alt="" />
-          <h5>{token0?.symbol}</h5>
-        </div>
-        <div>
-          <img src={token1?.logo} onError={imgError} alt="" />
-          <h5>{token1?.symbol}</h5>
-        </div> */}
         <div>
           <img src={token0?.logo} onError={imgError} alt="" />
           <img src={token1?.logo} onError={imgError} alt="" />

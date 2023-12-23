@@ -81,30 +81,36 @@
     width: calc(100vw - 120px);
   }
 }
+.cap_img{
+  position: absolute;
+  top: -65px;
+  left: -90px;
+  z-index: 9999999999999999;
+}
 .pool_theme {
-  position: relative;
+   position: relative;
 
-  background: linear-gradient(
-    109.08deg,
-    #cc9156 0%,
-    #edc093 50.05%,
-    #da9855 100.11%
-  );
-  .pool_footer > p,
-  .pool_data > div > p,
-  .pool_data > div > h5,
-  .pool_icons > div > h5 {
-    color: white;
-    z-index: 1;
-  }
-  .footer_img {
-    display: block;
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    width: 100%;
-    img {
-      width: 100%;
-    }
-  }
+  // background: linear-gradient(
+  //   109.08deg,
+  //   #cc9156 0%,
+  //   #edc093 50.05%,
+  //   #da9855 100.11%
+  // );
+  // .pool_footer > p,
+  // .pool_data > div > p,
+  // .pool_data > div > h5,
+  // .pool_icons > div > h5 {
+  //   color: white;
+  //   z-index: 1;
+  // }
+  // .footer_img {
+  //   display: block;
+  //   position: absolute;
+  //   bottom: 0px;
+  //   right: 0px;
+  //   width: 100%;
+  //   img {
+  //     width: 100%;
+  //   }
+  // }
 }
