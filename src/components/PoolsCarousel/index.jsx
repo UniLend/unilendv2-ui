@@ -66,7 +66,23 @@ export default function PoolCarousel({ pools, isLoading }) {
           <h2>New Pools</h2>
           <DropDown list={blocktimeSortList} />
         </div>
-        <div className="carousel_container ">
+        <div className="recent_pools">
+          {poolDataByTime.length > 0 && isLoading
+            ? poolDataByTime.slice(0, 5).map((pool, i) => (
+                <div key={i} className="poolcard_div">
+                  {" "}
+                  <PoolCard pool={pool} slider={false} />{" "}
+                </div>
+              ))
+            : new Array(5).fill(0).map((pool, i) => (
+                <div key={i} className="poolcard_div">
+                  {" "}
+                  <PoolCardSkeleton key={i} />{" "}
+                </div>
+              ))}
+        </div>
+
+        {/* <div className="carousel_container ">
           <Carousel
             containerProps={{
               className: "containerProps",
@@ -114,13 +130,13 @@ export default function PoolCarousel({ pools, isLoading }) {
                   </div>
                 ))
               : new Array(5).fill(0).map((pool, i) => (
-                  <div  key={i} className="poolcard_div">
+                  <div key={i} className="poolcard_div">
                     {" "}
-                    <PoolCardSkeleton key={i}/>{" "}
+                    <PoolCardSkeleton key={i} />{" "}
                   </div>
                 ))}
           </Carousel>
-        </div>
+        </div> */}
         <br />
         <div className="title_sort_container">
           <h2>High Liquidity Pools</h2>
@@ -170,13 +186,13 @@ export default function PoolCarousel({ pools, isLoading }) {
               ? poolDataByLiquidity.map((pool, i) => (
                   <div key={i} className="poolcard_div">
                     {" "}
-                    <PoolCard pool={pool} key={i}  slider={true} />{" "}
+                    <PoolCard pool={pool} key={i} slider={true} />{" "}
                   </div>
                 ))
               : new Array(5).fill(0).map((pool, i) => (
                   <div key={i} className="poolcard_div">
                     {" "}
-                    <PoolCardSkeleton  key={i}/>{" "}
+                    <PoolCardSkeleton key={i} />{" "}
                   </div>
                 ))}
           </Carousel>

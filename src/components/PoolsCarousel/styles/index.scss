@@ -11,8 +11,20 @@
   }
 }
 .pool_carousel_container {
-  width: 90%;
+  // width: 90%;
   margin: auto;
+
+  .recent_pools {
+    display: flex;
+    width: 90%;
+    padding: 36px 0% 0 9.2%;
+    overflow: hidden;
+
+    @media ($mobile) {
+      padding: 36px 0% 0 12%;
+      width: 84%;
+    }
+  }
 
   .carousel_row {
     padding-bottom: 48px;
@@ -96,18 +108,18 @@
       }
     }
     .containerProps {
-      width: 100% !important ;
+      // width: 100% !important ;
+      width: 90% !important ;
+      margin: auto;
       justify-content: space-between;
+      @media ($mobile) {
+        width: 90% !important;
+      }
       flex-flow: nowrap !important;
-      //    @media ($mobile) {
-      //     width: 115% !important;
-      //     margin-left: -20px;
-      //    }
     }
     .innerclass {
       max-width: 90% !important;
       overflow-y: visible !important;
-      
     }
   }
 }
