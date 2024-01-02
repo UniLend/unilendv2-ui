@@ -42,8 +42,8 @@ export default function VoteComponent() {
   const [isLoading, setIsLoading] = useState(false);
   const [domainDetail, setDomainDetail] = useState("");
 
-  const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
-  const provider = new ethers.providers.JsonRpcProvider(key);
+  // const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
+  // const provider = new ethers.providers.JsonRpcProvider(key);
 
   const checkTxnStatus = (hash, data) => {
     waitForTransactionLib({
@@ -142,16 +142,16 @@ export default function VoteComponent() {
   };
 
   const handleDomain = async (address) => {
-    setDomainDetail("");
-    const meta = await fetchUserDomain(address);
-    const data = await provider.lookupAddress(address);
-    setDomainDetail(meta.domain ? meta.domain : data);
+    // setDomainDetail("");
+    // const meta = await fetchUserDomain(address);
+    // const data = await provider.lookupAddress(address);
+    // setDomainDetail(meta.domain ? meta.domain : data);
   };
 
   useEffect(() => {
     const isValid = ethers.utils.isAddress(delegate);
     if (isValid) {
-      handleDomain(delegate);
+     // handleDomain(delegate);
     }
   }, [delegate]);
 
@@ -312,8 +312,8 @@ const WrapAndDelegate = ({
     value: "",
     isAddress: false,
   });
-  const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
-  const provider = new ethers.providers.JsonRpcProvider(key);
+  // const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
+  // const provider = new ethers.providers.JsonRpcProvider(key);
 
   const [buttonText, setButtonText] = useState({
     text: "Enter Amount",
@@ -386,37 +386,37 @@ const WrapAndDelegate = ({
   };
 
   const handleDomain = async (isValid, input) => {
-    setDomainDetail({
-      value: "",
-      isAddress: false,
-    });
+    // setDomainDetail({
+    //   value: "",
+    //   isAddress: false,
+    // });
 
-    if (isValid) {
-      const meta = await fetchUserDomain(input);
-      const data = await provider.lookupAddress(input);
-      setDomainDetail({
-        value: meta.domain ? meta.domain : data,
-        isAddress: false,
-      });
-    } else {
-      const meta = await fetchUserAddressByDomain(input);
-      const address = await provider.resolveName(input);
-      setDomainDetail({
-        value: meta.owner ? meta.owner : address,
-        isAddress: true,
-      });
-    }
+    // if (isValid) {
+    //   const meta = await fetchUserDomain(input);
+    //   const data = await provider.lookupAddress(input);
+    //   setDomainDetail({
+    //     value: meta.domain ? meta.domain : data,
+    //     isAddress: false,
+    //   });
+    // } else {
+    //   const meta = await fetchUserAddressByDomain(input);
+    //   const address = await provider.resolveName(input);
+    //   setDomainDetail({
+    //     value: meta.owner ? meta.owner : address,
+    //     isAddress: true,
+    //   });
+    // }
   };
 
-  useEffect(() => {
-    let timeoutId;
-    if (address) {
-      timeoutId = setTimeout(() => {
-        handleDomain(valid, address);
-      }, 500);
-    }
-    return () => clearTimeout(timeoutId);
-  }, [address, 500]);
+  // useEffect(() => {
+  //   let timeoutId;
+  //   if (address) {
+  //     timeoutId = setTimeout(() => {
+  //       handleDomain(valid, address);
+  //     }, 500);
+  //   }
+  //   return () => clearTimeout(timeoutId);
+  // }, [address, 500]);
 
   const copyAddress = (text) => {
     navigator.clipboard.writeText(text);
@@ -639,8 +639,8 @@ const UpdateDelegation = ({
     isAddress: false,
   });
   const [popoverVisible, setPopoverVisible] = useState(false);
-  const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
-  const provider = new ethers.providers.JsonRpcProvider(key);
+  // const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
+  // const provider = new ethers.providers.JsonRpcProvider(key);
 
   const handleCopyClick = () => {
     setPopoverVisible(true);
@@ -688,35 +688,35 @@ const UpdateDelegation = ({
   }, [address, domainDetail.value]);
 
   const handleDomain = async (isValid, input) => {
-    setDomainDetail({
-      value: "",
-      isAddress: false,
-    });
+    // setDomainDetail({
+    //   value: "",
+    //   isAddress: false,
+    // });
 
-    if (isValid) {
-      const meta = await fetchUserDomain(input);
-      const data = await provider.lookupAddress(input);
-      setDomainDetail({
-        value: meta.domain ? meta.domain : data,
-        isAddress: false,
-      });
-    } else {
-      const meta = await fetchUserAddressByDomain(input);
-      const address = await provider.resolveName(input);
-      setDomainDetail({
-        value: meta.owner ? meta.owner : address,
-        isAddress: true,
-      });
-      setValid(true);
-    }
+    // if (isValid) {
+    //   const meta = await fetchUserDomain(input);
+    //   const data = await provider.lookupAddress(input);
+    //   setDomainDetail({
+    //     value: meta.domain ? meta.domain : data,
+    //     isAddress: false,
+    //   });
+    // } else {
+    //   const meta = await fetchUserAddressByDomain(input);
+    //   const address = await provider.resolveName(input);
+    //   setDomainDetail({
+    //     value: meta.owner ? meta.owner : address,
+    //     isAddress: true,
+    //   });
+    //   setValid(true);
+    // }
   };
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      handleDomain(valid, address);
-    }, 500);
-    return () => clearTimeout(timeoutId);
-  }, [address, 500]);
+  // useEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     handleDomain(valid, address);
+  //   }, 500);
+  //   return () => clearTimeout(timeoutId);
+  // }, [address, 500]);
 
   const copyAddress = (text) => {
     navigator.clipboard.writeText(text);
