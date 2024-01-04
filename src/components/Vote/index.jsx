@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Popover } from "antd";
 import { Input, Button } from "antd";
 import banner from "../../assets/dashboardbanner.svg";
@@ -21,15 +21,15 @@ import {
 } from "../../services/governance";
 import { fetchUserAddressByDomain, fetchUserDomain } from "../../utils/axios";
 import { Link } from "react-router-dom";
-import { getEtherContract } from "../../lib/fun/wagmi";
+import { getEtherContract, getEthersProvider } from "../../lib/fun/wagmi";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { waitForTransactionLib } from "../../lib/fun/functions";
 import NotificationMessage from "../Common/NotificationMessage";
+import useDomainHandling from "./useDomainHandling";
 
 const wrap = "wrap";
 const unWrap = "unWrap";
 const update = "update";
-const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 
 export default function VoteComponent() {
   const { address, chain } = useWalletHook();
@@ -40,10 +40,12 @@ export default function VoteComponent() {
   const [delegate, setDelegate] = useState("0x000000000000000");
   const [votingPower, setVotingPower] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [domainDetail, setDomainDetail] = useState("");
 
-  // const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
-  // const provider = new ethers.providers.JsonRpcProvider(key);
+  const provider = useMemo(() => {
+    const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
+    const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
+    return new ethers.providers.JsonRpcProvider(key);
+  }, [chain?.id]);
 
   const checkTxnStatus = (hash, data) => {
     waitForTransactionLib({
@@ -141,18 +143,10 @@ export default function VoteComponent() {
     );
   };
 
-  const handleDomain = async (address) => {
-    // setDomainDetail("");
-    // const meta = await fetchUserDomain(address);
-    // const data = await provider.lookupAddress(address);
-    // setDomainDetail(meta.domain ? meta.domain : data);
-  };
+  const { domainDetail, handleDomain } = useDomainHandling(delegate, provider);
 
   useEffect(() => {
-    const isValid = ethers.utils.isAddress(delegate);
-    if (isValid) {
-     // handleDomain(delegate);
-    }
+    handleDomain(delegate);
   }, [delegate]);
 
   useEffect(() => {
@@ -200,7 +194,9 @@ export default function VoteComponent() {
               className="address_with_copy"
             >
               <h2 className="heading05">
-                {domainDetail ? domainDetail : shortenAddress(String(delegate))}
+                {domainDetail.value
+                  ? domainDetail.value
+                  : shortenAddress(String(delegate))}
               </h2>
               <Popover
                 content="copied"
@@ -307,13 +303,14 @@ const WrapAndDelegate = ({
   const [amount, setAmount] = useState("");
   const { chain } = useWalletHook();
   const [address, setAddress] = useState(userAddress);
-  const [valid, setValid] = useState(true);
-  const [domainDetail, setDomainDetail] = useState({
-    value: "",
-    isAddress: false,
-  });
-  // const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
-  // const provider = new ethers.providers.JsonRpcProvider(key);
+  const provider = useMemo(() => {
+    const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
+    const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
+    return new ethers.providers.JsonRpcProvider(key);
+  }, [chain?.id]);
+  console.log("VOTE_PROVIDER", provider);
+
+  const { domainDetail } = useDomainHandling(address, provider);
 
   const [buttonText, setButtonText] = useState({
     text: "Enter Amount",
@@ -364,59 +361,7 @@ const WrapAndDelegate = ({
 
   const handleAddress = async (e) => {
     setAddress(e.target.value);
-    const isValid = ethers.utils.isAddress(e.target.value);
-    setValid(isValid);
-
-    // if (!isValid) {
-    //   setButtonText({
-    //     text: "Enter Valid Address",
-    //     disable: true,
-    //   });
-    // } else if (amount > tokenBalance?.uft) {
-    //   setButtonText({
-    //     text: "Low Balance",
-    //     disable: true,
-    //   });
-    // } else {
-    //   setButtonText({
-    //     text: "Wrap & Delegate",
-    //     disable: false,
-    //   });
-    // }
   };
-
-  const handleDomain = async (isValid, input) => {
-    // setDomainDetail({
-    //   value: "",
-    //   isAddress: false,
-    // });
-
-    // if (isValid) {
-    //   const meta = await fetchUserDomain(input);
-    //   const data = await provider.lookupAddress(input);
-    //   setDomainDetail({
-    //     value: meta.domain ? meta.domain : data,
-    //     isAddress: false,
-    //   });
-    // } else {
-    //   const meta = await fetchUserAddressByDomain(input);
-    //   const address = await provider.resolveName(input);
-    //   setDomainDetail({
-    //     value: meta.owner ? meta.owner : address,
-    //     isAddress: true,
-    //   });
-    // }
-  };
-
-  // useEffect(() => {
-  //   let timeoutId;
-  //   if (address) {
-  //     timeoutId = setTimeout(() => {
-  //       handleDomain(valid, address);
-  //     }, 500);
-  //   }
-  //   return () => clearTimeout(timeoutId);
-  // }, [address, 500]);
 
   const copyAddress = (text) => {
     navigator.clipboard.writeText(text);
@@ -633,14 +578,14 @@ const UpdateDelegation = ({
     text: "Enter Address",
     disable: true,
   });
-  const [valid, setValid] = useState(false);
-  const [domainDetail, setDomainDetail] = useState({
-    value: "",
-    isAddress: false,
-  });
   const [popoverVisible, setPopoverVisible] = useState(false);
-  // const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
-  // const provider = new ethers.providers.JsonRpcProvider(key);
+
+  const provider = useMemo(() => {
+    const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
+    const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
+    return new ethers.providers.JsonRpcProvider(key);
+  }, [chain?.id]);
+  const { domainDetail } = useDomainHandling(address, provider);
 
   const handleCopyClick = () => {
     setPopoverVisible(true);
@@ -651,22 +596,7 @@ const UpdateDelegation = ({
   };
 
   const handleAddress = (e) => {
-    const userAddr = e.target.value;
-    const isValid = ethers.utils.isAddress(userAddr);
-    setValid(isValid);
-
-    setAddress(userAddr);
-    // if (!isValid || userAddr == "") {
-    //   setButtonText({
-    //     text: "Enter Valid Address",
-    //     disable: true,
-    //   });
-    // } else {
-    //   setButtonText({
-    //     text: "Update Delegation",
-    //     disable: false,
-    //   });
-    // }
+    setAddress(e.target.value);
   };
 
   useEffect(() => {
@@ -686,37 +616,6 @@ const UpdateDelegation = ({
       });
     }
   }, [address, domainDetail.value]);
-
-  const handleDomain = async (isValid, input) => {
-    // setDomainDetail({
-    //   value: "",
-    //   isAddress: false,
-    // });
-
-    // if (isValid) {
-    //   const meta = await fetchUserDomain(input);
-    //   const data = await provider.lookupAddress(input);
-    //   setDomainDetail({
-    //     value: meta.domain ? meta.domain : data,
-    //     isAddress: false,
-    //   });
-    // } else {
-    //   const meta = await fetchUserAddressByDomain(input);
-    //   const address = await provider.resolveName(input);
-    //   setDomainDetail({
-    //     value: meta.owner ? meta.owner : address,
-    //     isAddress: true,
-    //   });
-    //   setValid(true);
-    // }
-  };
-
-  // useEffect(() => {
-  //   const timeoutId = setTimeout(() => {
-  //     handleDomain(valid, address);
-  //   }, 500);
-  //   return () => clearTimeout(timeoutId);
-  // }, [address, 500]);
 
   const copyAddress = (text) => {
     navigator.clipboard.writeText(text);
