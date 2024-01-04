@@ -21,7 +21,7 @@ import {
 } from "../../services/governance";
 import { fetchUserAddressByDomain, fetchUserDomain } from "../../utils/axios";
 import { Link } from "react-router-dom";
-import { getEtherContract, getEthersProvider } from "../../lib/fun/wagmi";
+import { getEtherContract } from "../../lib/fun/wagmi";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { waitForTransactionLib } from "../../lib/fun/functions";
 import NotificationMessage from "../Common/NotificationMessage";
