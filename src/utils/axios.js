@@ -35,33 +35,35 @@ export const fetchCoinLogo = async (token) => {
 };
 
 export const fetchUserDomain = async (addr) => {
-  return axios
-    .get(`https://resolve.unstoppabledomains.com/reverse/${addr}`, {
-      headers: {
-        Authorization: `Bearer ${API}`,
-      },
-    })
-    .then((response) => {
-      return response.data.meta;
-    })
-    .catch(() => {
-      return { reverse: false };
-    });
+  // return axios
+  //   .get(`https://resolve.unstoppabledomains.com/reverse/${addr}`, {
+  //     headers: {
+  //       Authorization: `Bearer ${API}`,
+  //     },
+  //   })
+  //   .then((response) => {
+  //     return response.data.meta;
+  //   })
+  //   .catch(() => {
+  //     return { reverse: false };
+  //   });
+    return { reverse: false };
 };
 
 export const fetchUserAddressByDomain = async (domain) => {
-  return axios
-    .get(`https://resolve.unstoppabledomains.com/domains/${domain}`, {
-      headers: {
-        Authorization: `Bearer ${API}`,
-      },
-    })
-    .then((response) => {
-      return response.data.meta;
-    })
-    .catch(() => {
-      return { reverse: false };
-    });
+  // return axios
+  //   .get(`https://resolve.unstoppabledomains.com/domains/${domain}`, {
+  //     headers: {
+  //       Authorization: `Bearer ${API}`,
+  //     },
+  //   })
+  //   .then((response) => {
+  //     return response.data.meta;
+  //   })
+  //   .catch(() => {
+  //     return { reverse: false };
+  //   });
+    return { reverse: false };
 };
 
 export const fetchGraphQlData = async (chainId, FILMS_QUERY) => {

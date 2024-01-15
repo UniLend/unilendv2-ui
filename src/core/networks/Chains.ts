@@ -100,12 +100,12 @@ export const polygonMainnet = {
   nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
   rpcUrls: {
     default: {
-      http: ['https://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn'],
-      webSocket:  ['wss://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn']
+      http: ['https://polygon-mainnet.infura.io/v3/66e3a238dbe74ec3b1921da35f98b8e9','https://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn'],
+      webSocket:  ['wss://polygon-mainnet.infura.io/v3/66e3a238dbe74ec3b1921da35f98b8e9','wss://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn']
     },
     public:{
-      http: ['https://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn'],
-      webSocket:  ['wss://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn']
+      http: ['https://polygon-mainnet.infura.io/v3/66e3a238dbe74ec3b1921da35f98b8e9','https://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn'],
+      webSocket:  ['wss://polygon-mainnet.infura.io/v3/66e3a238dbe74ec3b1921da35f98b8e9','wss://polygon-mainnet.g.alchemy.com/v2/3UO4F86XEds-_CMUV4vnlrf0MOgFt5bn']
     },
   },
   blockExplorers: {
