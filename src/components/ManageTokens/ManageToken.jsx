@@ -17,7 +17,8 @@ import { createCustomToken } from "../../services/pool";
 import { supportedNetworks } from "../../core/networks/networks";
 
 const ManageToken = ({ handleTokens, tokens, pools }) => {
-  const { user, tokenList } = useSelector((state) => state);
+  const user = useSelector((state) => state?.user);
+  const tokenList = useSelector((state) => state?.tokenList);
   const theme = useSelector((state) => state.theme);
   const [isOpenTokenList, setIsOpenTokenList] = React.useState(false);
   const [isOpenMangeToken, setIsOpenMangeToken] = React.useState(false);
@@ -36,7 +37,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   });
 
   // only chainId included in array will show coinGicko tokens;
-  const isMainNet = [1, 137].includes(user.network.id);
+  const isMainNet = [1].includes(user.network.id);
 
   const handleSearchToken = (e) => {
     setSerachTokenFromList(e.target.value);
