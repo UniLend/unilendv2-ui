@@ -224,12 +224,15 @@ export const getOracleData = async (contracts, poolData) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
       const data = await contracts.coreContract.getOraclePrice(
-        poolData.token0._address,
         poolData.token1._address,
-        decimal2Fixed(1, poolData.token0._decimals)
+        poolData.token0._address,
+       
+        decimal2Fixed(1, poolData.token1._decimals)
       );
 
+    
       const tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
+      console.log("oracle", data, poolData.token0._decimals, poolData.token1._decimals ,tmpPrice, 1/tmpPrice);
       const pool = { ...poolData };
       pool.token0.price = tmpPrice;
       pool.token1.price = (1 / tmpPrice).toString();
@@ -297,7 +300,7 @@ export const getPoolBasicData = async (
   if (contracts.helperContract && contracts.coreContract) {
     try {
       const data = await contracts.helperContract.getPoolData(poolAddress);
-
+  console.log("pooldata1", data);
       pool = {
         ...poolData,
         _address: poolAddress,

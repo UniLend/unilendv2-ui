@@ -51,20 +51,21 @@ import {
   zkEVMTestNet,
   mumbaiTestnet,
   shardeumTestnet,
-  holeskyTestnet
+  holeskyTestnet,
+  polygonMainnet
 } from "./core/networks/Chains";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [sepoliaTestnet, zkEVMTestNet, mumbaiTestnet, polygon, shardeumTestnet, holeskyTestnet],
-  [publicProvider(), alchemyProvider({ apiKey: alchemyId })]
+  [polygonMainnet ],
+  [publicProvider()]
 );
 
 //const projectId = 'YOUR_PROJECT_ID';
-const { wallets } = getDefaultWallets({
-  appName: 'UnilendV2',
-  projectId,
-  chains,
-});
+// const { wallets } = getDefaultWallets({
+//   appName: 'UnilendV2',
+//   projectId,
+//   chains,
+// });
 
 
 // code for infinity wallet
