@@ -39,12 +39,8 @@ import { tokensBYSymbol } from "../../utils/constants";
 import TokenListMoadal from "../ManageTokens/TokenListMoadal";
 import { useSelector } from "react-redux";
 import useWalletHook from "../../lib/hooks/useWallet";
-import {
-  waitForBlockConfirmation,
-  waitForTransactionLib,
-} from "../../lib/fun/functions";
+import { waitForBlockConfirmation } from "../../lib/fun/functions";
 import NotificationMessage from "../Common/NotificationMessage";
-// import { fetchBlockNumber } from "wagmi/actions";
 
 const lend = "lend";
 const borrow = "borrow";
@@ -52,9 +48,11 @@ const redeem = "redeem";
 const repay = "repay";
 
 export default function PoolComponent() {
-  const { contracts, user, web3, isLoading, isError, poolList } = useSelector(
-    (state) => state
-  );
+  const contracts = useSelector((state) => state?.contracts);
+  const user = useSelector((state) => state?.user);
+  const web3 = useSelector((state) => state?.web3);
+  const poolList = useSelector((state) => state?.poolList);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeToken, setActiveToken] = useState(0);
   const [selectedToken, setSelectedToken] = useState(null);
@@ -778,7 +776,7 @@ export default function PoolComponent() {
 
             <div className="input_container">
               <input
-                value={amount}
+                value={amount !== null ? amount : ""}
                 onChange={handleAmount}
                 type="number"
                 placeholder="0.0"

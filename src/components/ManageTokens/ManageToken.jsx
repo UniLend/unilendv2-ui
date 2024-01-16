@@ -86,7 +86,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
           .then((data) => {
             setCoinGeckoToken(data.tokens);
             setTokenBackup(data.tokens); //
-            setAvailableToken([...data.token, ...Object.values(tokenList)]);
+            setAvailableToken([...data?.token, ...Object.values(tokenList)]);
           })
           .finally(() => setIsFetching(false));
       } else {
