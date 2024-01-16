@@ -52,7 +52,6 @@ export default function PoolComponent() {
   const user = useSelector((state) => state?.user);
   const web3 = useSelector((state) => state?.web3);
   const poolList = useSelector((state) => state?.poolList);
-
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeToken, setActiveToken] = useState(0);
   const [selectedToken, setSelectedToken] = useState(null);
@@ -834,19 +833,21 @@ export default function PoolComponent() {
               <div className="liquidity_factors">
                 <p>
                   <span>Liquidity</span>
+                  <Tooltip title={selectedToken?.liquidityFixed}>
                   <span>
-                    {isNaN(Number(selectedToken?.liquidityFixed).toFixed(2))
+                    {isNaN(Number(selectedToken?.liquidityFixed).toFixed(6))
                       ? 0
-                      : Number(selectedToken?.liquidityFixed).toFixed(2)}{" "}
+                      : Number(selectedToken?.liquidityFixed).toFixed(6)}{" "}
                     {selectedToken?._symbol}
                   </span>
+                  </Tooltip>
                 </p>
                 <p>
                   <span>Utilization</span>
                   <span>
                     {isNaN(selectedToken?.utilRate)
                       ? 0
-                      : selectedToken?.utilRate}{" "}
+                      : selectedToken?.utilRate}%{" "}
                   </span>
                 </p>
                 <p>

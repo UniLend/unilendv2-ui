@@ -56,7 +56,7 @@ import useWalletHook from '../../lib/hooks/useWallet';
           <p className="paragraph06">Total Supply</p>
           <h5 className="paragraph06">
             {totalLiquidity !== undefined
-              ? "$" + Number(totalLiquidity).toFixed(2)
+              ? "$" + Number(totalLiquidity).toFixed(3)
               : "$162,000"}{" "}
           </h5>
         </div>
@@ -64,7 +64,7 @@ import useWalletHook from '../../lib/hooks/useWallet';
           <p className="paragraph06">Total Borrowed</p>
           <h5 className="paragraph06">
             {totalBorrowed !== undefined
-              ? "$" + Number(totalBorrowed).toFixed(2)
+              ? "$" + Number(totalBorrowed).toFixed(3)
               : "$102,000"}
           </h5>
         </div>

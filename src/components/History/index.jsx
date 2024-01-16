@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./styles/index.scss";
-import { Popover, Pagination } from "antd";
+import { Popover, Pagination, Tooltip } from "antd";
 import { useNavigate } from "react-router-dom";
 import { FaChevronDown, FaSearch } from "react-icons/fa";
 import { shortenAddress, imgError } from "../../utils";
@@ -52,7 +52,6 @@ function HistoryComponent() {
     );
     return fetchedDATA;
   });
-
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
   };
@@ -129,7 +128,9 @@ function HistoryComponent() {
         (txt) =>
           String(txt.pool).toUpperCase().includes(value) ||
           String(txt.tokenSymbol).toUpperCase().includes(value) ||
-          String(txt.__typename).toUpperCase().includes(value)
+          String(txt.__typename).toUpperCase().includes(value) ||
+          String(txt.id).toUpperCase().includes(value) || 
+          String(txt.token.symbol).toUpperCase().includes(value)
       );
       if (value == "") {
         searched = graphHistoryBackup;
