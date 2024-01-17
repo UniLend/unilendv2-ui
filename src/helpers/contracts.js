@@ -129,6 +129,15 @@ export function fixedTrunc(numberString){
   }
   return truncatedNumber;
 }
+
+//Truncate Number 
+export function truncateToDecimals(number, decimal) {
+  const powerOf10 = Math.pow(10, decimal);
+  const truncatedNumber = Math.floor(number * powerOf10) / powerOf10;
+  return truncatedNumber;
+}
+
+
 export function fixed2Decimals(amount, decimals = 18) {
   return new BigNumber(amount?._hex).dividedBy(10 ** decimals).toFixed();
 }
