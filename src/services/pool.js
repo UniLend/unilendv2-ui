@@ -616,7 +616,7 @@ export const handleBorrow = async (
         contracts.coreContract.address,
         coreAbi
       );
-
+     console.log("handleborrow",Amount, amount);
       const transaction = await instance.borrow(
         poolData._address,
         Amount,

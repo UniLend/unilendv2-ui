@@ -225,7 +225,6 @@ function App() {
         const openPosiions = allPositions.filter(
           (el) => el?.pool?.pool == pool.pool
         );
-   
         const poolInfo = {
           ...pool,
           poolAddress: pool?.pool,

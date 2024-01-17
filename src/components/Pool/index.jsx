@@ -60,7 +60,7 @@ export default function PoolComponent() {
   const [activeOperation, setActiveOperation] = useState(lend);
   const [selectLTV, setSelectLTV] = useState(5);
   const [poolData, setPoolData] = useState({});
-  const [amount, setAmount] = useState(null);
+  const [amount, setAmount] = useState('');
   const [max, setMax] = useState(false);
   const [isOperationLoading, setIsOperationLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -333,7 +333,9 @@ export default function PoolComponent() {
         collateralToken,
         value
       );
-      setAmount(amountBasedOnLtv);
+      
+      const trunc = truncateToDecimals(amountBasedOnLtv, selectedToken._decimals)
+      setAmount(trunc);
     }
   };
 
@@ -459,6 +461,7 @@ export default function PoolComponent() {
   const maxTrigger = () => {
     setMax(true);
     if (activeOperation === lend) {
+      const trunc = truncateToDecimals(selectedToken.balanceFixed, selectedToken._decimals)
       setAmount(selectedToken.balanceFixed);
     } else if (activeOperation === borrow) {
       const maxBorrow = getBorrowMax(
@@ -466,7 +469,8 @@ export default function PoolComponent() {
         collateralToken,
         poolData.ltv
       );
-      setAmount(maxBorrow);
+      const truncBorrow = truncateToDecimals(maxBorrow, selectedToken._decimals)
+      setAmount(truncBorrow);
       setSelectLTV(poolData.ltv);
     } else if (activeOperation === redeem) {
       if (
