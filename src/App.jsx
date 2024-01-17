@@ -225,7 +225,7 @@ function App() {
         const openPosiions = allPositions.filter(
           (el) => el?.pool?.pool == pool.pool
         );
-        console.log('poolinfo',fixedToShort(pool.liquidity0), getTokenUSDPrice(pool.token0.priceUSD) );
+   
         const poolInfo = {
           ...pool,
           poolAddress: pool?.pool,
@@ -233,15 +233,15 @@ function App() {
 
           totalLiquidity:
             fixedToShort(pool.liquidity0) *
-              getTokenUSDPrice(pool.token0.priceUSD) +
+              getTokenUSDPrice(1) +
             fixedToShort(pool.liquidity1) *
-              getTokenUSDPrice(pool.token1.priceUSD),
+              getTokenUSDPrice(1),
 
           totalBorrowed:
             fixedToShort(pool.totalBorrow0) *
-              getTokenUSDPrice(pool.token0.priceUSD) +
+              getTokenUSDPrice(1) +
             fixedToShort(pool.totalBorrow1) *
-              getTokenUSDPrice(pool.token1.priceUSD),
+              getTokenUSDPrice(1),
 
           openPosition:
             openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),

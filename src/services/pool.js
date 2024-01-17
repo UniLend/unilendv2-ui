@@ -208,6 +208,8 @@ export const getTokenPrice = async (
         pool.token1.price == "Infinity" || pool.token1.price == "0"
           ? getTabs(pool.token1).filter((v) => v !== "borrow")
           : getTabs(pool.token1);
+
+          console.log("Pool Data:", pool);
       return pool;
     } catch (error) {
       throw error;
@@ -232,7 +234,7 @@ export const getOracleData = async (contracts, poolData) => {
 
     
       const tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
-      console.log("oracle", data, poolData.token0._decimals, poolData.token1._decimals ,tmpPrice, 1/tmpPrice);
+    
       const pool = { ...poolData };
       pool.token0.price = tmpPrice;
       pool.token1.price = (1 / tmpPrice).toString();
@@ -300,7 +302,7 @@ export const getPoolBasicData = async (
   if (contracts.helperContract && contracts.coreContract) {
     try {
       const data = await contracts.helperContract.getPoolData(poolAddress);
-  console.log("pooldata1", data);
+ 
       pool = {
         ...poolData,
         _address: poolAddress,
@@ -768,7 +770,7 @@ export const handleCreatePool = async (
     return hash;
   } catch (error) {
     checkTxnError(error);
-    console.log("handleCreatePool", "error", { error });
+
   }
 };
 

@@ -389,9 +389,9 @@ export default function PoolComponent() {
         }
       }
     } catch (error) {
-      console.log("error on fetch", {error});
+     
       if(error.code == "CALL_EXCEPTION"){
-        console.log("error.code1", error.code);
+        
         fetchPoolDATA()
        }
       throw error;
