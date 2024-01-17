@@ -32,6 +32,7 @@ import {
   getSelectLTV,
   getActionBtn,
   fromBigNumber,
+  truncateToDecimals
 } from "../../helpers/contracts";
 import PoolSkeleton from "../Loader/PoolSkeleton";
 import TwitterModal from "../Common/TwitterModal";
@@ -740,7 +741,7 @@ export default function PoolComponent() {
               >
                 <h1 className="heading02">
                   {selectedToken
-                    ? fixFormatNumber(getLiquidityAmount[activeOperation])
+                    ? truncateToDecimals(getLiquidityAmount[activeOperation],6)
                     : 0}
                 </h1>
               </Tooltip>
@@ -767,7 +768,7 @@ export default function PoolComponent() {
                 </div>
                 <Tooltip title={selectedToken?.balanceFixed}>
                   <p className="paragraph06">
-                    Balance: {Number(selectedToken?.balanceFixed).toFixed(4)}
+                    Balance: {Number(truncateToDecimals(selectedToken?.balanceFixed,6))}
                   </p>
                 </Tooltip>
               </div>
@@ -837,8 +838,7 @@ export default function PoolComponent() {
                   <span>
                     {isNaN(Number(selectedToken?.liquidityFixed).toFixed(6))
                       ? 0
-                      : Number(selectedToken?.liquidityFixed).toFixed(6)}{" "}
-                    {selectedToken?._symbol}
+                      : Number(truncateToDecimals(selectedToken?.liquidityFixed,6))}  {selectedToken?._symbol}
                   </span>
                   </Tooltip>
                 </p>
