@@ -177,7 +177,7 @@ export default function PoolComponent() {
         const trasactionBlock = fromBigNumber(receipt.blockNumber);
         const currentblock = fromBigNumber(currentBlockNumber);
 
-        if (receipt.status == "success" && currentblock > trasactionBlock) {
+        if (receipt.status == "success" && currentblock - trasactionBlock > 1) {
           setReFetching(true);
           if (txnData.method !== "approval") {
             const msg = `Transaction for ${txnData.method} of ${Number(
@@ -195,6 +195,7 @@ export default function PoolComponent() {
               });
             }, 8000);
           } else {
+            NotificationMessage("success", 'Approval Successfull');
             setTimeout(() => {
               setMethodLoaded({
                 getPoolData: true,
@@ -203,7 +204,7 @@ export default function PoolComponent() {
                 getPoolTokensData: false,
               });
             }, 5000);
-            window.location.reload();
+            // window.location.reload();
           }
 
           setMax(false);
@@ -388,6 +389,11 @@ export default function PoolComponent() {
         }
       }
     } catch (error) {
+      console.log("error on fetch", {error});
+      if(error.code == "CALL_EXCEPTION"){
+        console.log("error.code1", error.code);
+        fetchPoolDATA()
+       }
       throw error;
     }
   };

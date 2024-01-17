@@ -225,6 +225,7 @@ function App() {
         const openPosiions = allPositions.filter(
           (el) => el?.pool?.pool == pool.pool
         );
+        console.log('poolinfo',fixedToShort(pool.liquidity0), getTokenUSDPrice(pool.token0.priceUSD) );
         const poolInfo = {
           ...pool,
           poolAddress: pool?.pool,
