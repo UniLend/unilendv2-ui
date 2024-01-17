@@ -177,6 +177,7 @@ export function totLiqFull(token, localDB) {
 }
 
 export function getBorrowMax(selectedToken, collateralToken, ltv) {
+  
   const result =
     Number(collateralToken.lendBalanceFixed * collateralToken.price) *
       (Number(ltv) / 100) -

@@ -13,6 +13,7 @@ import {
   fixed2Decimals18,
   fixedTrunc,
   decimal2Fixed2,
+  truncateToDecimals,
 } from "../helpers/contracts";
 import BigNumber from "bignumber.js";
 
@@ -225,15 +226,31 @@ oracle data;
 export const getOracleData = async (contracts, poolData) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      const data = await contracts.coreContract.getOraclePrice(
-        poolData.token1._address,
-        poolData.token0._address,
-       
-        decimal2Fixed(1, poolData.token1._decimals)
-      );
-
-    
-      const tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
+   
+      let data;
+      let tmpPrice;
+      if(poolData.token0._decimals == 6){
+         data = await contracts.coreContract.getOraclePrice(
+        
+          poolData.token0._address,
+          poolData.token1._address,
+          decimal2Fixed(1, poolData.token0._decimals)
+        );
+  
+      
+         tmpPrice = fixed2Decimals(data, poolData.token1._decimals);
+      } else {
+         data = await contracts.coreContract.getOraclePrice(
+          poolData.token1._address,
+          poolData.token0._address,
+         
+          decimal2Fixed(1, poolData.token1._decimals)
+        );
+  
+      
+         tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
+      }
+     
     
       const pool = { ...poolData };
       pool.token0.price = tmpPrice;
@@ -616,7 +633,8 @@ export const handleBorrow = async (
         contracts.coreContract.address,
         coreAbi
       );
-     console.log("handleborrow",Amount, amount);
+     console.log("handleborrow",Amount, truncateToDecimals(Amount, 1), amount);
+
       const transaction = await instance.borrow(
         poolData._address,
         Amount,
