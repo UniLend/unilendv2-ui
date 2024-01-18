@@ -14,6 +14,7 @@ import {
   fixedTrunc,
   decimal2Fixed2,
   truncateToDecimals,
+  reduceLastDecimalByOne,
 } from "../helpers/contracts";
 import BigNumber from "bignumber.js";
 
@@ -229,16 +230,16 @@ export const getOracleData = async (contracts, poolData) => {
    
       let data;
       let tmpPrice;
+      const pool = { ...poolData };
       if(poolData.token0._decimals == 6){
          data = await contracts.coreContract.getOraclePrice(
-        
           poolData.token0._address,
           poolData.token1._address,
           decimal2Fixed(1, poolData.token0._decimals)
         );
-  
-      
          tmpPrice = fixed2Decimals(data, poolData.token1._decimals);
+         pool.token0.price = tmpPrice;
+         pool.token1.price = (1 / tmpPrice).toString();
       } else {
          data = await contracts.coreContract.getOraclePrice(
           poolData.token1._address,
@@ -249,12 +250,11 @@ export const getOracleData = async (contracts, poolData) => {
   
       
          tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
+         pool.token1.price = tmpPrice;
+         pool.token0.price = (1 / tmpPrice).toString();
       }
      
     
-      const pool = { ...poolData };
-      pool.token0.price = tmpPrice;
-      pool.token1.price = (1 / tmpPrice).toString();
       pool.token0.collateralBalance = mul(
         mul(pool.token1.borrowBalance, pool.token1.price) / pool.ltv,
         100
@@ -535,6 +535,7 @@ export const getPoolAllData = async (
           ),
         },
       };
+      console.log("full data", data, pool);
       return pool;
     } catch (error) {
       throw error;
@@ -620,6 +621,8 @@ export const handleBorrow = async (
   checkTxnError
 ) => {
   let Amount = decimal2Fixed(amount, selectedToken._decimals);
+  const reduceByOneDecimal = reduceLastDecimalByOne(Amount);
+  Amount = reduceByOneDecimal
   let Collateral = decimal2Fixed(collateral, collateralToken._decimals);
   if (selectedToken._address == poolData.token0._address) {
     Amount = mul(Amount, -1);
@@ -633,7 +636,6 @@ export const handleBorrow = async (
         contracts.coreContract.address,
         coreAbi
       );
-     console.log("handleborrow",Amount, truncateToDecimals(Amount, 1), amount);
 
       const transaction = await instance.borrow(
         poolData._address,

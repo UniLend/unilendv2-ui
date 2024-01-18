@@ -150,6 +150,13 @@ export function fixed2Decimals18(amount, decimals = 18) {
   return new BigNumber(amount).dividedBy(10 ** decimals).toFixed();
 }
 
+export function reduceLastDecimalByOne(number) {
+
+const a = BigNumber(number).minus(1)
+console.log("result", number, a.toString());
+    return a.toString();
+}
+
 export function fromBigNumber(bignumber) {
   return ethers.BigNumber.from(bignumber).toString();
 }
@@ -177,7 +184,6 @@ export function totLiqFull(token, localDB) {
 }
 
 export function getBorrowMax(selectedToken, collateralToken, ltv) {
-  
   const result =
     Number(collateralToken.lendBalanceFixed * collateralToken.price) *
       (Number(ltv) / 100) -
