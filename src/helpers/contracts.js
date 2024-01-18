@@ -107,6 +107,10 @@ export function decimal2Fixed(amount, decimals) {
   // if (newNum.indexOf(".") > -1) {
   //   newNum = newNum.split(".")[0];
   // }
+  // if(newNum.toString().length > decimals){
+  //   console.log("decimal2Fixed", newNum.toString(), decimals, amount, newNum);
+  //   return '0'
+  // }
 
   return newNum.toString();
 }
@@ -144,6 +148,13 @@ export function fixed2Decimals(amount, decimals = 18) {
 
 export function fixed2Decimals18(amount, decimals = 18) {
   return new BigNumber(amount).dividedBy(10 ** decimals).toFixed();
+}
+
+export function reduceLastDecimalByOne(number) {
+
+const a = BigNumber(number).minus(1)
+console.log("result", number, a.toString());
+    return a.toString();
 }
 
 export function fromBigNumber(bignumber) {
@@ -232,11 +243,18 @@ export const getActionBtn = (
   if (reFetching) {
     return { text: "Fetching Data", disable: false };
   }
-  if (amount <= 0) {
+  let decimalAmount =0
+  if(amount && selectedToken){
+    let newNum = BigInt(Math.trunc(Number(amount) * 10 ** selectedToken?._decimals));
+     decimalAmount = newNum.toString().length > selectedToken?._decimals ? 0 : newNum.toString();
+  }
+
+
+  if (amount <= 0 || Number(decimalAmount) <= 0 ) {
     return { text: "Enter Amount", disable: true };
   } else if (amount && activeOperation === lend) {
     if (
-      fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals) <
+      fixed2Decimals18(selectedToken?.allowance, selectedToken?._decimals) <
       amount
     ) {
       return { text: "Approve " + selectedToken?._symbol };

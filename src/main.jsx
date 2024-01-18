@@ -8,7 +8,7 @@ import "./index.css";
 import Ring from "./components/Loader/Ring";
 import AppWrapper from "./appWrapper";
 import "@rainbow-me/rainbowkit/styles.css";
-import { getDefaultWallets, getWalletConnectConnector, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import {  RainbowKitProvider } from "@rainbow-me/rainbowkit";
 // Custom theme
 import { myCustomTheme } from "./core/theme/customWalletTheme";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
@@ -56,101 +56,9 @@ import {
 } from "./core/networks/Chains";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [polygonMainnet ],
+  [polygonMainnet, sepoliaTestnet, mumbaiTestnet, zkEVMTestNet ],
   [publicProvider()]
 );
-
-//const projectId = 'YOUR_PROJECT_ID';
-// const { wallets } = getDefaultWallets({
-//   appName: 'UnilendV2',
-//   projectId,
-//   chains,
-// });
-
-
-// code for infinity wallet
-
-// const Dapp_URl ="localhost://5173"
-
-// import useWalletHook from "./lib/hooks/useWallet";
-// // const {isConnected } = useWalletHook();
-
-// const isConnected = false;
-
-// if (!isConnected) {
-//   // No wallet is connected, proceed to check for Infinity Wallet
-//   if (window.ethereum && window.ethereum?.isInfinityWallet) {
-//     // Initialize Infinity Wallet Connector
-//     const infinitywalletConnector = new InfinityWalletConnector({
-//       supportedChainIds: [80001],
-//     });
-
-//     // Activate Connection
-//     const { activate } = useWeb3ReactCore();
-//     activate(infinitywalletConnector);
-//   } else {
-//     // Open Infinity Wallet if not detected
-//     openInfinityWallet(Dapp_URl, 80001);
-//   }
-// }
-
-
-
-// export const infintyWallet = ({ chains})  => ({
-//   id: 'my-wallet',
-//   name: 'My Wallet',
-//   iconUrl: 'https://my-image.xyz',
-//   iconBackground: '#0c2f78',
-//   downloadUrls: {
-//     android: 'https://play.google.com/store/apps/details?id=my.wallet',
-//     ios: 'https://apps.apple.com/us/app/my-wallet',
-//     chrome: 'https://chrome.google.com/webstore/detail/my-wallet',
-//     qrCode: 'https://my-wallet/qr',
-//   },
-//   createConnector: () => {
-//     const connector = InfinityWalletConnector({chains});
-
-//     return {
-//       connector,
-//       mobile: {
-//         getUri: async () => {
-//           const provider = await connector.getProvider();
-//           const uri = await new Promise<string>(resolve =>
-//             provider.once('display_uri', resolve)
-//           );
-//           return uri;
-//         },
-//       },
-    
-//       extension: {
-//         instructions: {
-//           learnMoreUrl: 'https://my-wallet/learn-more',
-//           steps: [
-//             {
-//               description:
-//                 'We recommend pinning My Wallet to your taskbar for quicker access to your wallet.',
-//               step: 'install',
-//               title: 'Install the My Wallet extension',
-//             },
-//             {
-//               description:
-//                 'Be sure to back up your wallet using a secure method. Never share your secret phrase with anyone.',
-//               step: 'create',
-//               title: 'Create or Import a Wallet',
-//             },
-//             {
-//               description:
-//                 'Once you set up your wallet, click below to refresh the browser and load up the extension.',
-//               step: 'refresh',
-//               title: 'Refresh your browser',
-//             },
-//           ],
-//         },
-//       },
-//     };
-//   },
-// });
-
 
 
 const connectors = connectorsForWallets([
@@ -177,23 +85,7 @@ const connectors = connectorsForWallets([
   },
 ]);
 
-// const connectors = connectorsForWallets([
-//   {
-//     groupName: "Recommended",
-//     wallets: [
-//       metaMaskWallet({chains}),
-//       injectedWallet({ chains }),
-//       coinbaseWallet({ appName: "UnilendV2", chains }),
-//       walletConnectWallet({ chains, projectId }),
-//     ],
-//   },
-//   {
-//     groupName: "More",
-//     wallets: [
-//     trustWallet({chains, projectId})
-//     ],
-//   },
-// ]);
+
 
 const wagmiConfig = createConfig({
   autoConnect: true,

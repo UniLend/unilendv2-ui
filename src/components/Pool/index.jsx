@@ -61,7 +61,7 @@ export default function PoolComponent() {
   const [activeOperation, setActiveOperation] = useState(lend);
   const [selectLTV, setSelectLTV] = useState(5);
   const [poolData, setPoolData] = useState({});
-  const [amount, setAmount] = useState(null);
+  const [amount, setAmount] = useState('');
   const [max, setMax] = useState(false);
   const [isOperationLoading, setIsOperationLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -178,7 +178,7 @@ export default function PoolComponent() {
         const trasactionBlock = fromBigNumber(receipt.blockNumber);
         const currentblock = fromBigNumber(currentBlockNumber);
 
-        if (receipt.status == "success" && currentblock > trasactionBlock) {
+        if (receipt.status == "success" && currentblock - trasactionBlock > 1) {
           setReFetching(true);
           if (txnData.method !== "approval") {
             const msg = `Transaction for ${txnData.method} of ${Number(
@@ -196,6 +196,7 @@ export default function PoolComponent() {
               });
             }, 8000);
           } else {
+            NotificationMessage("success", 'Approval Successfull');
             setTimeout(() => {
               setMethodLoaded({
                 getPoolData: true,
@@ -204,7 +205,7 @@ export default function PoolComponent() {
                 getPoolTokensData: false,
               });
             }, 5000);
-            window.location.reload();
+            // window.location.reload();
           }
 
           setMax(false);
@@ -333,7 +334,9 @@ export default function PoolComponent() {
         collateralToken,
         value
       );
-      setAmount(amountBasedOnLtv);
+      
+      const trunc = truncateToDecimals(amountBasedOnLtv, selectedToken._decimals)
+      setAmount(trunc);
     }
   };
 
@@ -389,6 +392,11 @@ export default function PoolComponent() {
         }
       }
     } catch (error) {
+     
+      if(error.code == "CALL_EXCEPTION"){
+        
+        fetchPoolDATA()
+       }
       throw error;
     }
   };
@@ -454,6 +462,7 @@ export default function PoolComponent() {
   const maxTrigger = () => {
     setMax(true);
     if (activeOperation === lend) {
+      const trunc = truncateToDecimals(selectedToken.balanceFixed, selectedToken._decimals)
       setAmount(selectedToken.balanceFixed);
     } else if (activeOperation === borrow) {
       const maxBorrow = getBorrowMax(
@@ -461,7 +470,8 @@ export default function PoolComponent() {
         collateralToken,
         poolData.ltv
       );
-      setAmount(maxBorrow);
+      const truncBorrow = truncateToDecimals(maxBorrow, selectedToken._decimals)
+      setAmount(truncBorrow);
       setSelectLTV(poolData.ltv);
     } else if (activeOperation === redeem) {
       if (
