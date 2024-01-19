@@ -805,12 +805,13 @@ export default function PoolComponent() {
                 }`}
               >
                 <p>Additional Collateral Required From Wallet</p>
-
+                <Tooltip title={colleteral}>
                 <div>
-                  <h5>{Number(colleteral).toFixed(5)}</h5>
+                  <h5>{Number(truncateToDecimals(colleteral,6))}</h5>
                   <img src={collateralToken?.logo} alt="" />
                   <p>{collateralToken?._symbol}</p>
                 </div>
+                </Tooltip>
               </div>
             }
 
@@ -863,12 +864,10 @@ export default function PoolComponent() {
                 </p>
                 <p>
                   <span>Oracle</span>
-                  <Tooltip title={poolData.token0.price}>
                   <span>
                     1 {poolData.token0._symbol} ={" "}
-                    {Number(truncateToDecimals(poolData.token0.price,6))} {poolData.token1._symbol}{" "}
+                    {Number(poolData.token0.price)} {poolData.token1._symbol}{" "}
                   </span>
-                  </Tooltip>
                 </p>
               </div>
             )}
