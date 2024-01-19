@@ -32,7 +32,7 @@ import {
   getSelectLTV,
   getActionBtn,
   fromBigNumber,
-  truncateToDecimals
+  truncateToDecimals,
 } from "../../helpers/contracts";
 import PoolSkeleton from "../Loader/PoolSkeleton";
 import TwitterModal from "../Common/TwitterModal";
@@ -53,7 +53,6 @@ export default function PoolComponent() {
   const user = useSelector((state) => state?.user);
   const web3 = useSelector((state) => state?.web3);
   const poolList = useSelector((state) => state?.poolList);
-  console.log(poolList);
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeToken, setActiveToken] = useState(0);
   const [selectedToken, setSelectedToken] = useState(null);
@@ -61,7 +60,7 @@ export default function PoolComponent() {
   const [activeOperation, setActiveOperation] = useState(lend);
   const [selectLTV, setSelectLTV] = useState(5);
   const [poolData, setPoolData] = useState({});
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState(null);
   const [max, setMax] = useState(false);
   const [isOperationLoading, setIsOperationLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -122,8 +121,10 @@ export default function PoolComponent() {
 
   const handleAmount = (e) => {
     const value = e.target.value;
-    if (/^[0-9]*[.]?[0-9]*$/.test(value) || value === '') {
-      setAmount(value);
+    const parsedValue = value === "." ? "0" + value : value;
+    
+    if (/^[.]?[0-9]*[.]?[0-9]*$/.test(parsedValue) || parsedValue === "") {
+      setAmount(parsedValue);
     }
 
     setMax(false);
@@ -178,7 +179,7 @@ export default function PoolComponent() {
         const trasactionBlock = fromBigNumber(receipt.blockNumber);
         const currentblock = fromBigNumber(currentBlockNumber);
 
-        if (receipt.status == "success" && currentblock - trasactionBlock > 1) {
+        if (receipt.status == "success" && currentblock > trasactionBlock) {
           setReFetching(true);
           if (txnData.method !== "approval") {
             const msg = `Transaction for ${txnData.method} of ${Number(
@@ -196,7 +197,6 @@ export default function PoolComponent() {
               });
             }, 8000);
           } else {
-            NotificationMessage("success", 'Approval Successfull');
             setTimeout(() => {
               setMethodLoaded({
                 getPoolData: true,
@@ -205,7 +205,7 @@ export default function PoolComponent() {
                 getPoolTokensData: false,
               });
             }, 5000);
-            // window.location.reload();
+            window.location.reload();
           }
 
           setMax(false);
@@ -334,9 +334,7 @@ export default function PoolComponent() {
         collateralToken,
         value
       );
-      
-      const trunc = truncateToDecimals(amountBasedOnLtv, selectedToken._decimals)
-      setAmount(trunc);
+      setAmount(amountBasedOnLtv);
     }
   };
 
@@ -392,11 +390,6 @@ export default function PoolComponent() {
         }
       }
     } catch (error) {
-     
-      if(error.code == "CALL_EXCEPTION"){
-        
-        fetchPoolDATA()
-       }
       throw error;
     }
   };
@@ -462,7 +455,6 @@ export default function PoolComponent() {
   const maxTrigger = () => {
     setMax(true);
     if (activeOperation === lend) {
-      const trunc = truncateToDecimals(selectedToken.balanceFixed, selectedToken._decimals)
       setAmount(selectedToken.balanceFixed);
     } else if (activeOperation === borrow) {
       const maxBorrow = getBorrowMax(
@@ -470,8 +462,7 @@ export default function PoolComponent() {
         collateralToken,
         poolData.ltv
       );
-      const truncBorrow = truncateToDecimals(maxBorrow, selectedToken._decimals)
-      setAmount(truncBorrow);
+      setAmount(maxBorrow);
       setSelectLTV(poolData.ltv);
     } else if (activeOperation === redeem) {
       if (
@@ -752,7 +743,7 @@ export default function PoolComponent() {
               >
                 <h1 className="heading02">
                   {selectedToken
-                    ? truncateToDecimals(getLiquidityAmount[activeOperation],6)
+                    ? truncateToDecimals(getLiquidityAmount[activeOperation], 6)
                     : 0}
                 </h1>
               </Tooltip>
@@ -779,7 +770,8 @@ export default function PoolComponent() {
                 </div>
                 <Tooltip title={selectedToken?.balanceFixed}>
                   <p className="paragraph06">
-                    Balance: {Number(truncateToDecimals(selectedToken?.balanceFixed,6))}
+                    Balance:{" "}
+                    {Number(truncateToDecimals(selectedToken?.balanceFixed, 6))}
                   </p>
                 </Tooltip>
               </div>
@@ -789,9 +781,8 @@ export default function PoolComponent() {
               <input
                 value={amount !== null ? amount : ""}
                 onChange={handleAmount}
-                type="string"
+                type="text"
                 placeholder="0.0"
-               
               />
               <button onClick={maxTrigger} className="max_btn">
                 MAX
@@ -806,11 +797,13 @@ export default function PoolComponent() {
                 }`}
               >
                 <p>Additional Collateral Required From Wallet</p>
+                <Tooltip title={colleteral}>
                 <div>
-                  <h5>{Number(colleteral).toFixed(5)}</h5>
+                  <h5>{Number(truncateToDecimals(colleteral, 6))}</h5>
                   <img src={collateralToken?.logo} alt="" />
                   <p>{collateralToken?._symbol}</p>
                 </div>
+                </Tooltip>
               </div>
             }
 
@@ -846,11 +839,15 @@ export default function PoolComponent() {
                 <p>
                   <span>Liquidity</span>
                   <Tooltip title={selectedToken?.liquidityFixed}>
-                  <span>
-                    {isNaN(Number(selectedToken?.liquidityFixed).toFixed(6))
-                      ? 0
-                      : Number(truncateToDecimals(selectedToken?.liquidityFixed,6))}  {selectedToken?._symbol}
-                  </span>
+                    <span>
+                      {isNaN(Number(
+                            truncateToDecimals(selectedToken?.liquidityFixed, 6)))
+                        ? 0
+                        : Number(
+                            truncateToDecimals(selectedToken?.liquidityFixed, 6)
+                          )}{" "}
+                      {selectedToken?._symbol}
+                    </span>
                   </Tooltip>
                 </p>
                 <p>
@@ -858,7 +855,8 @@ export default function PoolComponent() {
                   <span>
                     {isNaN(selectedToken?.utilRate)
                       ? 0
-                      : selectedToken?.utilRate}%{" "}
+                      : selectedToken?.utilRate}
+                    %{" "}
                   </span>
                 </p>
                 <p>
