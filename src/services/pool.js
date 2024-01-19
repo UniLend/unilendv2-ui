@@ -233,34 +233,26 @@ export const getOracleData = async (contracts, poolData) => {
       const pool = { ...poolData };
       if(poolData.token0._decimals == 6){
          data = await contracts.coreContract.getOraclePrice(
+          poolData.token0._address,
+          poolData.token1._address,
+          decimal2Fixed(1, poolData.token0._decimals)
+        );
+         tmpPrice = fixed2Decimals(data, poolData.token1._decimals);
+         pool.token0.price = tmpPrice;
+         pool.token1.price = (1 / tmpPrice).toString();
+      } else {
+         data = await contracts.coreContract.getOraclePrice(
           poolData.token1._address,
           poolData.token0._address,
-          decimal2Fixed(1, poolData.token1._decimals)
-        );
-         tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
-         pool.token1.price = tmpPrice;
-         pool.token0.price = (1 / tmpPrice).toString();
-      } else if(poolData.token1._decimals == 6) {
-         data = await contracts.coreContract.getOraclePrice(
-          poolData.token1._address,  
-          poolData.token0._address,                 
+         
           decimal2Fixed(1, poolData.token1._decimals)
         );
   
+      
          tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
-         pool.token0.price = tmpPrice;
-         pool.token1.price = (1 / tmpPrice).toString();
-      }else {
-        data = await contracts.coreContract.getOraclePrice(
-         poolData.token0._address,
-         poolData.token1._address,      
-         decimal2Fixed(1, poolData.token0._decimals)
-       );
- 
-        tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
-        pool.token0.price = tmpPrice;
-        pool.token1.price = (1 / tmpPrice).toString();
-     }
+         pool.token1.price = tmpPrice;
+         pool.token0.price = (1 / tmpPrice).toString();
+      }
      
     
       pool.token0.collateralBalance = mul(
@@ -629,8 +621,8 @@ export const handleBorrow = async (
   checkTxnError
 ) => {
   let Amount = decimal2Fixed(amount, selectedToken._decimals);
-  // const reduceByOneDecimal = reduceLastDecimalByOne(Amount);
-  // Amount = reduceByOneDecimal
+  const reduceByOneDecimal = reduceLastDecimalByOne(Amount);
+  Amount = reduceByOneDecimal
   let Collateral = decimal2Fixed(collateral, collateralToken._decimals);
   if (selectedToken._address == poolData.token0._address) {
     Amount = mul(Amount, -1);
