@@ -120,10 +120,11 @@ export default function PoolComponent() {
   }, [searchParams]);
 
   const handleAmount = (e) => {
-    if (e.target.value === "") {
-      setAmount(null);
-    } else {
-      setAmount(parseFloat(e.target.value));
+    const value = e.target.value;
+    const parsedValue = value === "." ? "0" + value : value;
+    
+    if (/^[.]?[0-9]*[.]?[0-9]*$/.test(parsedValue) || parsedValue === "") {
+      setAmount(parsedValue);
     }
     setMax(false);
     const LtvBasedOnAmount = getSelectLTV(
@@ -788,7 +789,7 @@ export default function PoolComponent() {
               <input
                 value={amount !== null ? amount : ""}
                 onChange={handleAmount}
-                type="number"
+                type="text"
                 placeholder="0.0"
               />
               <button onClick={maxTrigger} className="max_btn">
@@ -804,12 +805,13 @@ export default function PoolComponent() {
                 }`}
               >
                 <p>Additional Collateral Required From Wallet</p>
-
+                <Tooltip title={colleteral}>
                 <div>
-                  <h5>{Number(colleteral).toFixed(5)}</h5>
+                  <h5>{Number(truncateToDecimals(colleteral,6))}</h5>
                   <img src={collateralToken?.logo} alt="" />
                   <p>{collateralToken?._symbol}</p>
                 </div>
+                </Tooltip>
               </div>
             }
 
