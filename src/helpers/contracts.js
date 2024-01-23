@@ -184,6 +184,7 @@ export function totLiqFull(token, localDB) {
 }
 
 export function getBorrowMax(selectedToken, collateralToken, ltv) {
+  console.log("borrow", collateralToken.lendBalanceFixed, collateralToken.price, (Number(ltv) / 100));
   const result =
     Number(collateralToken.lendBalanceFixed * collateralToken.price) *
       (Number(ltv) / 100) -
@@ -249,8 +250,8 @@ export const getActionBtn = (
      decimalAmount = newNum.toString().length > selectedToken?._decimals ? 0 : newNum.toString();
   }
 
-
-  if (amount <= 0 || Number(decimalAmount) <= 0 ) {
+const minimumValue = selectedToken?._decimals == 18 ? 0.000000000000000001 : 0.000001;
+  if (amount <= 0 || amount <= minimumValue || Number(decimalAmount) <= minimumValue ) {
     return { text: "Enter Amount", disable: true };
   } else if (amount && activeOperation === lend) {
     if (
