@@ -20,9 +20,11 @@ import useWalletHook from "../../lib/hooks/useWallet";
 import { supportedNetworks } from "../../core/networks/networks";
 
 function HistoryComponent() {
-  const { contracts, user, web3, poolList, tokenList } = useSelector(
-    (state) => state
-  );
+  const contracts = useSelector((state) => state?.contracts);
+  const user = useSelector((state) => state?.user);
+  const tokenList = useSelector((state) => state?.tokenList);
+  const poolList = useSelector((state) => state?.poolList);
+  const web3 = useSelector((state) => state?.web3);
   const navigate = useNavigate();
   const { chain } = useWalletHook();
 
@@ -129,7 +131,7 @@ function HistoryComponent() {
           String(txt.pool).toUpperCase().includes(value) ||
           String(txt.tokenSymbol).toUpperCase().includes(value) ||
           String(txt.__typename).toUpperCase().includes(value) ||
-          String(txt.id).toUpperCase().includes(value) || 
+          String(txt.id).toUpperCase().includes(value) ||
           String(txt.token.symbol).toUpperCase().includes(value)
       );
       if (value == "") {
@@ -200,13 +202,13 @@ function HistoryComponent() {
   ];
 
   return (
-    <div className="history_table_container">
-      <div className="action_container">
-        <div className="input_container">
+    <div className='history_table_container'>
+      <div className='action_container'>
+        <div className='input_container'>
           <FaSearch />
           <input
-            type="text"
-            placeholder="Search Txt/Token/Type"
+            type='text'
+            placeholder='Search Txt/Token/Type'
             value={search}
             onChange={handleSearch}
           />
@@ -214,13 +216,13 @@ function HistoryComponent() {
         {!historyLoading ? (
           <DropDown list={dropdownlist} />
         ) : (
-          <div className="gif_loader">
+          <div className='gif_loader'>
             <span>Loading</span>
-            <img src={loader} alt="" />
+            <img src={loader} alt='' />
           </div>
         )}
       </div>
-      <div className="table_header">
+      <div className='table_header'>
         <div>
           <p>Pools</p>
         </div>
@@ -233,7 +235,7 @@ function HistoryComponent() {
         <div>
           <p>Amount</p>
         </div>
-        <div className="hide_for_mobile">
+        <div className='hide_for_mobile'>
           <p>Time Stamp</p>
         </div>
         <div>
@@ -241,7 +243,7 @@ function HistoryComponent() {
         </div>
       </div>
       {isPolygon ? (
-        <div className="table_list_container">
+        <div className='table_list_container'>
           {graphHistory.length > 0 &&
           Object.values(poolsData).length > 0 &&
           !isPageLoading &&
@@ -249,7 +251,7 @@ function HistoryComponent() {
             graphHistory
               .slice((currentPage - 1) * itemPerPage, currentPage * itemPerPage)
               .map((txt, i) => (
-                <div key={i} className="table_item">
+                <div key={i} className='table_item'>
                   <div>
                     <div>
                       <img
@@ -258,7 +260,7 @@ function HistoryComponent() {
                             .logo
                         }
                         onError={imgError}
-                        alt="token_icon"
+                        alt='token_icon'
                       />
                       <img
                         src={
@@ -266,11 +268,11 @@ function HistoryComponent() {
                             .logo
                         }
                         onError={imgError}
-                        alt="token_icon"
+                        alt='token_icon'
                       />
                     </div>
                     <a href={`pool/${txt.pool.pool}`}>
-                      <p className="hide_for_mobile hide_for_tab">
+                      <p className='hide_for_mobile hide_for_tab'>
                         {txt.pool.token0.symbol + "/" + txt.pool.token1.symbol}
                       </p>
                     </a>
@@ -287,34 +289,34 @@ function HistoryComponent() {
                       {/* {(Number(txt.returnValues._amount) / 10 ** 18).toFixed(4)} */}
                     </p>
                   </div>
-                  <div className="hide_for_mobile">
-                    <p className="success">
+                  <div className='hide_for_mobile'>
+                    <p className='success'>
                       {getDateByTimeStamp(txt?.blockTimestamp)}
                     </p>
                   </div>
-                  <div className="hide_for_mobile">
+                  <div className='hide_for_mobile'>
                     <p>
                       <a
                         href={`${
                           supportedNetworks[user?.network?.id]
                             .blockExplorerUrls[0]
                         }/tx/${txt?.id}`}
-                        target="_blank"
+                        target='_blank'
                       >
                         {shortenAddress(txt?.id)}
                       </a>
                     </p>
                   </div>
-                  <div className="tx_icon">
+                  <div className='tx_icon'>
                     {" "}
                     <a
                       href={`${
                         supportedNetworks[user?.network?.id]
                           .blockExplorerUrls[0]
                       }/tx/${txt?.id}`}
-                      target="_blank"
+                      target='_blank'
                     >
-                      <img src={txIcon} alt="" />{" "}
+                      <img src={txIcon} alt='' />{" "}
                     </a>
                   </div>
                 </div>
@@ -322,19 +324,19 @@ function HistoryComponent() {
           ) : isPageLoading && user.isConnected ? (
             <HistorySkeleton />
           ) : (
-            <div className="no_transaction">
-              <img src={noTxt} alt="" />
+            <div className='no_transaction'>
+              <img src={noTxt} alt='' />
               <h1>No Transactions Found</h1>
             </div>
           )}
         </div>
       ) : (
-        <div className="table_list_container">
+        <div className='table_list_container'>
           {txtData.length > 0 && !isPageLoading && user.isConnected ? (
             txtData
               .slice((currentPage - 1) * itemPerPage, currentPage * itemPerPage)
               .map((txt, i) => (
-                <div key={i} className="table_item">
+                <div key={i} className='table_item'>
                   <div>
                     <div>
                       <img
@@ -348,7 +350,7 @@ function HistoryComponent() {
                         alt={poolList[txt.address]?.token1?.symbol}
                       />
                     </div>
-                    <p className="hide_for_mobile hide_for_tab">
+                    <p className='hide_for_mobile hide_for_tab'>
                       {poolList[txt.address]?.token0?.symbol +
                         "/" +
                         poolList[txt.address]?.token1?.symbol}
@@ -368,31 +370,31 @@ function HistoryComponent() {
                       {/* {(Number(txt.returnValues._amount) / 10 ** 18).toFixed(4)} */}
                     </p>
                   </div>
-                  <div className="hide_for_mobile">
-                    <p className="success">-</p>
+                  <div className='hide_for_mobile'>
+                    <p className='success'>-</p>
                   </div>
-                  <div className="hide_for_mobile">
+                  <div className='hide_for_mobile'>
                     <p>
                       <a
                         href={`${
                           supportedNetworks[user?.network?.id]
                             .blockExplorerUrls[0]
                         }/tx/${txt?.id}`}
-                        target="_blank"
+                        target='_blank'
                       >
                         {shortenAddress(txt.transactionHash)}
                       </a>
                     </p>
                   </div>
-                  <div className="tx_icon">
+                  <div className='tx_icon'>
                     <a
                       href={`${
                         supportedNetworks[user?.network?.id]
                           .blockExplorerUrls[0]
                       }/tx/${txt?.id}`}
-                      target="_blank"
+                      target='_blank'
                     >
-                      <img src={txIcon} alt="" />{" "}
+                      <img src={txIcon} alt='' />{" "}
                     </a>
                   </div>
                 </div>
@@ -400,19 +402,19 @@ function HistoryComponent() {
           ) : isPageLoading && user.isConnected ? (
             <HistorySkeleton />
           ) : (
-            <div className="no_transaction">
-              <img src={noTxt} alt="" />
+            <div className='no_transaction'>
+              <img src={noTxt} alt='' />
               <h1>No Transactions Found</h1>
             </div>
           )}
         </div>
       )}
-      <div className="pagination">
+      <div className='pagination'>
         <Pagination
           current={currentPage}
           onChange={(el) => setCurrentPage(el)}
           pageSize={itemPerPage}
-          size="small"
+          size='small'
           total={isPolygon ? graphHistory.length : txtData.length}
           showSizeChanger={false}
           hideOnSinglePage={true}

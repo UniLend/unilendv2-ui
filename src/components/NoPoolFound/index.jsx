@@ -18,9 +18,10 @@ import useWalletHook from "../../lib/hooks/useWallet";
 import { getPoolsGraphQuery, sortByKey } from "../../helpers/dashboard";
 
 export default function NoPoolFound({ token1, token2, updateToken }) {
-  const { user, contracts, tokenList, poolList } = useSelector(
-    (state) => state
-  );
+  const contracts = useSelector((state) => state?.contracts);
+  const user = useSelector((state) => state?.user);
+  const tokenList = useSelector((state) => state?.tokenList);
+  const poolList = useSelector((state) => state?.poolList);
   const dispatch = useDispatch();
   const { address, isConnected, chain } = useWalletHook();
   const navigate = useNavigate();
