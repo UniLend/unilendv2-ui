@@ -47,7 +47,7 @@ export const fetchUserDomain = async (addr) => {
   //   .catch(() => {
   //     return { reverse: false };
   //   });
-    return { reverse: false };
+  return { reverse: false };
 };
 
 export const fetchUserAddressByDomain = async (domain) => {
@@ -63,7 +63,7 @@ export const fetchUserAddressByDomain = async (domain) => {
   //   .catch(() => {
   //     return { reverse: false };
   //   });
-    return { reverse: false };
+  return { reverse: false };
 };
 
 export const fetchGraphQlData = async (chainId, FILMS_QUERY) => {
@@ -88,5 +88,16 @@ export const fetchGraphQlData = async (chainId, FILMS_QUERY) => {
     } catch (err) {
       console.log("Graph Error:", err);
     }
+  }
+};
+
+export const getEthToUsd = async () => {
+  const url = "https://api.coinbase.com/v2/exchange-rates?currency=ETH";
+
+  try {
+    const response = await axios.get(url);
+    return response.data.data.rates.USD;
+  } catch (error) {
+    console.error(`Failed to retrieve USD data. Error: ${error.message}`);
   }
 };
