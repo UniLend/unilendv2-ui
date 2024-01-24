@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useQuery } from "react-query";
@@ -24,8 +24,12 @@ import { contractAddress } from "./core/contractData/contracts";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import "./App.scss";
-import { getFromSessionStorage, getTokenLogo } from "./utils";
-import { fetchCoinLogo, fetchGraphQlData } from "./utils/axios";
+import {
+  fetchEthRateForAddresses,
+  getFromSessionStorage,
+  getTokenLogo,
+} from "./utils";
+import { fetchCoinLogo, fetchGraphQlData, getEthToUsd } from "./utils/axios";
 import {
   checkOpenPosition,
   fixedToShort,
@@ -64,6 +68,8 @@ function App() {
   const contracts = useSelector((state) => state.contracts);
   const user = useSelector((state) => state.user);
   const query = getPoolCreatedGraphQuery(address);
+  const [tokenPrice, setTokenPrice] = useState({});
+
   const networksWithGraph = Object.values(supportedNetworks)
     .filter((network) => network.graphAvailable && network.chainId)
     .map((net) => net.chainId);
@@ -207,7 +213,35 @@ function App() {
     }
   };
 
-  const loadPoolsWithGraph = () => {
+  const getTokenPrice = async () => {
+    const usdPrice = await getEthToUsd();
+    const temp = await fetchEthRateForAddresses(data?.assetOracles, chain?.id);
+    const result = {};
+
+    for (const key in temp) {
+      if (temp.hasOwnProperty(key)) {
+        result[key] = (temp[key] / 10 ** 18) * usdPrice;
+      }
+    }
+    setTokenPrice(result);
+    return result;
+  };
+
+  useEffect(() => {
+    if (data?.assetOracles) {
+      getTokenPrice();
+    } else {
+      console.log("Failed to fetch Graph data");
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (Object.keys(tokenPrice).length > 0) {
+      loadPoolsWithGraph();
+    }
+  }, [tokenPrice]);
+
+  const loadPoolsWithGraph = async () => {
     const networkID = chain?.id || 1442;
     if (data && networksWithGraph.includes(networkID)) {
       const allPositions = data?.positions;
@@ -231,16 +265,12 @@ function App() {
           hide: hidePools.includes(pool?.pool),
 
           totalLiquidity:
-            fixedToShort(pool.liquidity0) *
-              getTokenUSDPrice(1) +
-            fixedToShort(pool.liquidity1) *
-              getTokenUSDPrice(1),
+            fixedToShort(pool.liquidity0) * tokenPrice[pool?.token0?.id] +
+            fixedToShort(pool.liquidity1) * tokenPrice[pool?.token1?.id],
 
           totalBorrowed:
-            fixedToShort(pool.totalBorrow0) *
-              getTokenUSDPrice(1) +
-            fixedToShort(pool.totalBorrow1) *
-              getTokenUSDPrice(1),
+            fixedToShort(pool.totalBorrow0) * tokenPrice[pool?.token0?.id] +
+            fixedToShort(pool.totalBorrow1) * tokenPrice[pool?.token1?.id],
 
           openPosition:
             openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
@@ -248,24 +278,30 @@ function App() {
             ...pool.token0,
             address: pool?.token0?.id,
             logo: getTokenLogo(pool.token0.symbol),
+            priceUSD: tokenPrice[pool?.token0?.id] * 10 ** 18,
+            pricePerToken: tokenPrice[pool?.token0?.id],
           },
           token1: {
             ...pool.token1,
             address: pool?.token1?.id,
             logo: getTokenLogo(pool.token1.symbol),
+            priceUSD: tokenPrice[pool?.token1?.id] * 10 ** 18,
+            pricePerToken: tokenPrice[pool?.token1?.id],
           },
         };
         tokenList[String(pool.token0.id).toUpperCase()] = {
           ...pool.token0,
           address: pool?.token0?.id,
           logo: getTokenLogo(pool.token0.symbol),
-          pricePerToken: pool.token0.priceUSD / 100000000,
+          priceUSD: tokenPrice[pool?.token0?.id] * 10 ** 18,
+          pricePerToken: tokenPrice[pool?.token0?.id],
         };
         tokenList[String(pool.token1.id).toUpperCase()] = {
           ...pool.token1,
           address: pool?.token1?.id,
           logo: getTokenLogo(pool.token1.symbol),
-          pricePerToken: pool.token1.priceUSD / 100000000,
+          priceUSD: tokenPrice[pool?.token1?.id] * 10 ** 18,
+          pricePerToken: tokenPrice[pool?.token1?.id],
         };
         poolData[pool?.pool] = poolInfo;
       }
@@ -276,8 +312,8 @@ function App() {
   return (
     <>
       <Navbar />
-      <div className="app_container">
-        <div className="app">
+      <div className='app_container'>
+        <div className='app'>
           <MainRoutes />
         </div>
       </div>

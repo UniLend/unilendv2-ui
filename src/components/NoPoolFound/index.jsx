@@ -18,9 +18,10 @@ import useWalletHook from "../../lib/hooks/useWallet";
 import { getPoolsGraphQuery, sortByKey } from "../../helpers/dashboard";
 
 export default function NoPoolFound({ token1, token2, updateToken }) {
-  const { user, contracts, tokenList, poolList } = useSelector(
-    (state) => state
-  );
+  const contracts = useSelector((state) => state?.contracts);
+  const user = useSelector((state) => state?.user);
+  const tokenList = useSelector((state) => state?.tokenList);
+  const poolList = useSelector((state) => state?.poolList);
   const dispatch = useDispatch();
   const { address, isConnected, chain } = useWalletHook();
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
   const [isPoolCreated, setIsPoolCreated] = React.useState(false);
   const [poolLength, setPoolLength] = useState([]);
   // only chainId included in array will show coinGicko tokens;
-  const isMainNet = [1, 137].includes(user.network.id);
+  const isMainNet = [1].includes(user.network.id);
 
   const handleCloseModal = () => {
     setIsCreateModalOpen(false);
@@ -221,8 +222,8 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
     };
 
     return (
-      <div onClick={handleTokensList} className="token-card">
-        <img src={token.logoURI || token.logo} alt="" />
+      <div onClick={handleTokensList} className='token-card'>
+        <img src={token.logoURI || token.logo} alt='' />
         <div>
           <h3>{token.name}</h3>
           <span>{token.symbol}</span>
@@ -247,21 +248,21 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
     }, []);
 
     return (
-      <div className="select_token_modal">
-        <div className="search_token">
-          <h3 className="paragraph02">Select Token {currentToken}</h3>
-          <div className="input_container">
+      <div className='select_token_modal'>
+        <div className='search_token'>
+          <h3 className='paragraph02'>Select Token {currentToken}</h3>
+          <div className='input_container'>
             <FaSearch />
             <input
               autoFocus
-              type="text"
-              placeholder="Search Tokens"
+              type='text'
+              placeholder='Search Tokens'
               value={serachTokenFromList}
               onChange={handleSearchToken}
             />
           </div>
         </div>
-        <div ref={container} className="token_list">
+        <div ref={container} className='token_list'>
           {isFetching && <h2>Fetching...</h2>}
           {!isFetching && availableToken.length === 0 && (
             <h2>Tokens not listed</h2>
@@ -278,8 +279,8 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
 
   return (
     <>
-      <div className="no_pool_container">
-        <div className="no_pool_component">
+      <div className='no_pool_container'>
+        <div className='no_pool_component'>
           <h1>No Pool Found</h1>
           <p>
             With Market, you can maximize your yield, contribute to risk
@@ -290,14 +291,14 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
           {user.address == "0x" ? (
             <Button
               icon={<WalletFilled />}
-              size="large"
-              className="btn_class"
+              size='large'
+              className='btn_class'
               onClick={handleConnect}
             >
               Connect Wallet
             </Button>
           ) : (
-            <Button onClick={handleOpenModal} className="btn_class">
+            <Button onClick={handleOpenModal} className='btn_class'>
               Create Pool
             </Button>
           )}
@@ -305,69 +306,69 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
       </div>
       {isCreateModalOpen && (
         <Modal
-          className="antd_modal_overlay"
+          className='antd_modal_overlay'
           open={isCreateModalOpen}
           centered
           onCancel={handleCloseModal}
           footer={null}
           closable={false}
         >
-          <div className="create_pool_modal">
+          <div className='create_pool_modal'>
             <h1>Create New Pool</h1>
 
             {Object.keys(availablePool).length === 0 ? (
               <>
-                <div className="selected_tokens">
-                  <div onClick={() => handleToken("1")} className="token_div">
+                <div className='selected_tokens'>
+                  <div onClick={() => handleToken("1")} className='token_div'>
                     <div>
-                      <img src={token01.logoURI || token01.logo} alt="logo" />
+                      <img src={token01.logoURI || token01.logo} alt='logo' />
                       <h3>{token01.symbol}</h3>
                     </div>
-                    <img src={downoutline} alt="" />
+                    <img src={downoutline} alt='' />
                   </div>
-                  <div onClick={() => handleToken("2")} className="token_div">
+                  <div onClick={() => handleToken("2")} className='token_div'>
                     <div>
-                      <img src={token02.logoURI || token02.logo} alt="logo" />
+                      <img src={token02.logoURI || token02.logo} alt='logo' />
                       <h3>{token02.symbol}</h3>
                     </div>
-                    <img src={downoutline} alt="" />
+                    <img src={downoutline} alt='' />
                   </div>
                 </div>
                 {sameTokenError && (
-                  <p className="paragraph05 same_token_error">
+                  <p className='paragraph05 same_token_error'>
                     Both tokens should not be same
                   </p>
                 )}
                 <Button
                   loading={isCreatePoolLoading}
                   onClick={handleCreate}
-                  className="btn_class"
+                  className='btn_class'
                 >
                   Create Pool
                 </Button>
               </>
             ) : (
               <>
-                <div className="pool_icons">
+                <div className='pool_icons'>
                   <img
                     src={token01.logoURI || token01?.logo}
                     onError={imgError}
-                    alt=""
+                    alt=''
                   />
                   <img
                     src={token02.logoURI || token02?.logo}
                     onError={imgError}
-                    alt=""
+                    alt=''
                   />
                 </div>
-                <h3 className="paragraph05">
+                <h3 className='paragraph05'>
                   {isPoolCreated
                     ? "Pool is created"
                     : "Pool is already available"}
                 </h3>
                 <Button
                   onClick={() => handleViewPool(availablePool?.id)}
-                  className="btn_class"
+                  className='btn_class'
                 >
                   View Pool
                 </Button>
@@ -378,7 +379,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
       )}
       {isOpenTokenList && (
         <Modal
-          className="antd_modal_overlay"
+          className='antd_modal_overlay'
           open={isOpenTokenList}
           centered
           onCancel={handleCloseModals}

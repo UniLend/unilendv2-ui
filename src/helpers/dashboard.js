@@ -980,7 +980,7 @@ export const getPoolCreatedGraphQuery = (address) => {
       totalPoolsLiquidityUSD
       totalPoolsLiquidity
       decimals
-    }
+      }
         token1 {
       symbol
       name
@@ -993,7 +993,7 @@ export const getPoolCreatedGraphQuery = (address) => {
       totalPoolsLiquidityUSD
       totalPoolsLiquidity
       decimals
-    }
+      }
         borrowApy0
         borrowApy1
         UtilizationRate0
@@ -1018,6 +1018,11 @@ export const getPoolCreatedGraphQuery = (address) => {
         totalBorrow1
         transactionHash
         txCount
+      }
+      assetOracles {
+        id
+        asset
+        source
       }
     }
   `;
