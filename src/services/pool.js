@@ -248,8 +248,8 @@ export const getOracleData = async (contracts, poolData) => {
         );
   
          tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
-         pool.token0.price = tmpPrice;
-         pool.token1.price = (1 / tmpPrice).toString();
+         pool.token1.price = tmpPrice;
+         pool.token0.price = (1 / tmpPrice).toString();
       }else {
         data = await contracts.coreContract.getOraclePrice(
          poolData.token0._address,
@@ -261,6 +261,16 @@ export const getOracleData = async (contracts, poolData) => {
         pool.token0.price = tmpPrice;
         pool.token1.price = (1 / tmpPrice).toString();
      }
+
+    //  data = await contracts.coreContract.getOraclePrice(
+    //   poolData.token0._address,
+    //   poolData.token1._address,      
+    //   decimal2Fixed(1, poolData.token0._decimals)
+    // );
+
+    //  tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
+    //  pool.token0.price = tmpPrice;
+    //  pool.token1.price = (1 / tmpPrice).toString();
      
     
       pool.token0.collateralBalance = mul(

@@ -122,7 +122,7 @@ function App() {
               positionContract: res[2],
             };
             dispatch(setContracts(payload));
-            // loadPoolsFromContract(payload);
+             //loadPoolsFromContract(payload);
             loadPoolsWithGraph();
           })
           .catch((err) => {
