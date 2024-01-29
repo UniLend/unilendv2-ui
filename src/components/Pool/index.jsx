@@ -122,8 +122,8 @@ export default function PoolComponent() {
   const handleAmount = (e) => {
     const value = e.target.value;
     const parsedValue = value === "." ? "0" + value : value;
-    
-    if (/^[.]?[0-9]*[.]?[0-9]*$/.test(parsedValue) || parsedValue === "") {
+   
+    if (/^[.]?[0-9]*[.]?[0-9]*$/.test(parsedValue) || parsedValue === "" ) {
       setAmount(parsedValue);
     }
     setMax(false);
