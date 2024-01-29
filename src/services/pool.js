@@ -273,20 +273,21 @@ export const getOracleData = async (contracts, poolData) => {
     //  pool.token1.price = (1 / tmpPrice).toString();
      
     
-      pool.token0.collateralBalance = mul(
+      pool.token0.collateralBalance = mul(div(mul(
         mul(pool.token1.borrowBalance, pool.token1.price) / pool.ltv,
         100
-      );
+      ), 10**pool.token1._decimals), 10**pool.token0._decimals );
+
       pool.token0.collateralBalanceFixed = new BigNumber(
         pool.token0.collateralBalance
       )
         .dividedBy(10 ** pool.token0._decimals)
         .toFixed();
 
-      pool.token1.collateralBalance = mul(
+      pool.token1.collateralBalance = mul(div(mul(
         mul(pool.token0.borrowBalance, pool.token0.price) / pool.ltv,
         100
-      );
+      ),10**pool.token0._decimals), 10**pool.token1._decimals );
       pool.token1.collateralBalanceFixed = new BigNumber(
         pool.token1.collateralBalance
       )
