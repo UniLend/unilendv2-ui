@@ -42,6 +42,7 @@ import { useSelector } from "react-redux";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { waitForBlockConfirmation } from "../../lib/fun/functions";
 import NotificationMessage from "../Common/NotificationMessage";
+import { getEthersProvider } from "../../lib/fun/wagmi";
 
 const lend = "lend";
 const borrow = "borrow";
@@ -172,13 +173,15 @@ export default function PoolComponent() {
   }, [amount, selectLTV]);
 
   const checkTxnStatus = (hash, txnData) => {
+    // const etherProvider = getEthersProvider()
+    //   etherProvider.getTransactionReceipt(hash)
     waitForBlockConfirmation(hash)
       .then((res) => {
         const [receipt, currentBlockNumber] = res;
         const trasactionBlock = fromBigNumber(receipt.blockNumber);
         const currentblock = fromBigNumber(currentBlockNumber);
 
-        if (receipt.status == "success" && currentblock - trasactionBlock > 1) {
+        if (receipt.status == "success" && currentblock - trasactionBlock > 2) {
           setReFetching(true);
           if (txnData.method !== "approval") {
             const msg = `Transaction for ${txnData.method} of ${Number(
@@ -233,7 +236,7 @@ export default function PoolComponent() {
     const msg =
       error?.code === "ACTION_REJECTED"
         ? "Transaction Denied"
-        : "Something went wrong";
+        : "Something went wrong, Refresh and Try again";
     NotificationMessage("error", msg);
   };
 
