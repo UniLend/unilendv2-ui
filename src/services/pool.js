@@ -554,7 +554,6 @@ export const getPoolAllData = async (
           ),
         },
       };
-      console.log("full data", data, pool);
       return pool;
     } catch (error) {
       throw error;

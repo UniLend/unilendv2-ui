@@ -255,9 +255,8 @@ const minimumValue = selectedToken?._decimals == 18 ? 0.000000000000000001 : 0.0
 
 const countDecimals = String(amount).split('.')[1]?.length
 
-// console.log('counts', countDecimals, amount, decimalAmount, newNum);
  
-  if (amount <= 0  || Number(decimalAmount) <= 1 ) {
+  if (amount <= minimumValue  && Number(decimalAmount) <= 1 ) {
     return { text: "Enter Amount", disable: true };
   } else if (amount && activeOperation === lend) {
     if (

@@ -91,7 +91,7 @@ export const waitForBlockConfirmation = async (hash) => {
     return await Promise.all([
       waitForTransactionLib({
         hash: hash,
-        confirmations: 1,
+        confirmations: 2,
       }),
       fetchBlockNumber(),
     ]);
