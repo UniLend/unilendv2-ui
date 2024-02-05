@@ -54,7 +54,7 @@ function PoolCard({ pool }) {
         <div>
           <p className='paragraph06'>Total Supply</p>
           {isNaN(totalLiquidity) ? (
-            <h5 className='skeleton loader'></h5>
+            <h5 className='paragraph06'>$162,000</h5>
           ) : (
             <h5 className='paragraph06'>
               {totalLiquidity !== undefined
@@ -78,7 +78,7 @@ function PoolCard({ pool }) {
         <div>
           <p className='paragraph06'>Total Borrowed</p>
           {isNaN(totalBorrowed) ? (
-            <h5 className='skeleton loader'></h5>
+            <h5 className='paragraph06'>$125,000</h5>
           ) : (
             <h5 className='paragraph06'>
               {totalBorrowed !== undefined

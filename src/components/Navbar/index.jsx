@@ -160,14 +160,22 @@ export default function Navbar() {
           <br /> Please Connect to the Below Networks.
         </p>
         <div className="networks">
-          <div onClick={() => handleSwitchNetwork(11155111)}>
+          {
+            Object.values(supportedNetworks).map((network)=>(
+              <div onClick={() => handleSwitchNetwork(network.chainId)}>
+              <img src={ethlogo} alt="Etherium" />
+              <p>{network.chainName}</p>
+            </div>
+            ))
+          }
+          {/* <div onClick={() => handleSwitchNetwork(11155111)}>
             <img src={ethlogo} alt="Etherium" />
             <p>Sepolia</p>
           </div>
           <div onClick={() => handleSwitchNetwork(1442)}>
             <img src={ethlogo} alt="Etherium" />
             <p>zkEVM</p>
-          </div>
+          </div> */}
           {/* <div onClick={() => handleSwitchNetwork(8081)}>
             <img src={shardeumLogo} alt="Etherium" />
             <p>Shardeum</p>

@@ -52,11 +52,12 @@ import {
   mumbaiTestnet,
   shardeumTestnet,
   holeskyTestnet,
-  polygonMainnet
+  polygonMainnet,
+  x1Testnet
 } from "./core/networks/Chains";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [polygonMainnet, sepoliaTestnet, mumbaiTestnet, zkEVMTestNet ],
+  [polygonMainnet, sepoliaTestnet, mumbaiTestnet, zkEVMTestNet, x1Testnet ],
   [publicProvider()]
 );
 

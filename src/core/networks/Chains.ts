@@ -153,3 +153,28 @@ export const holeskyTestnet = {
   },
   testnet: true,
 } as Chain;
+
+
+export const x1Testnet = {
+  id: 195,
+  name: 'X1 testnet',
+  network: 'X1 testnet',
+  nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: ['https://x1testrpc.okx.com'],
+      webSocket:  ['wss://testrpc.x1.tech']
+    },
+    public:{
+      http: ['https://x1testrpc.okx.com '],
+      webSocket:  ['wss://testrpc.x1.tech ']
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'etherscan',
+      url: 'https://www.okx.com/explorer/x1-test',
+    },
+  },
+  testnet: true,
+} as Chain;

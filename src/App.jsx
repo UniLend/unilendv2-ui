@@ -34,6 +34,7 @@ import {
   checkOpenPosition,
   fixedToShort,
   getPoolCreatedGraphQuery,
+  getPoolCreatedGraphQueryForTestnet,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
 import { fetchTokenLib, getPastEvents } from "./lib/fun/functions";
@@ -46,17 +47,13 @@ import { getTokenUSDPrice } from "./helpers/contracts";
 import useWalletHook from "./lib/hooks/useWallet";
 import { supportedNetworks } from "./core/networks/networks";
 
-const shardeumPools = [
+const okxPools = [
   {
-    pool: "0x665ACEc556dC92C2E504beFA061d5f65Cd9493e2",
-    token1: "0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1",
-    token0: "0x11f13ad374e79b466a36eb835747e431fbbe3890",
+    pool: "0x5865364a27a0C164b7Cee405AbfA6F7400cA7fB8",
+    token0: "0x5e7d4aafeee3213ef0bfe71c8117734103cd99a9",
+    token1: "0x6617f64e1826ddf32a060ad576d43e730824d11f",
   },
-  // {
-  //   pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
-  //   token1: '0xd146878affF8c8dd3e9EBd9177F2AE4f6d4e5979',
-  //   token0:'0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1'
-  // }
+
 ];
 //"@wagmi/core": "^0.9.7",
 window.global = window.global ?? window;
@@ -68,6 +65,7 @@ function App() {
   const contracts = useSelector((state) => state.contracts);
   const user = useSelector((state) => state.user);
   const query = getPoolCreatedGraphQuery(address);
+  const testnetQuery = getPoolCreatedGraphQueryForTestnet(address)
   const [tokenPrice, setTokenPrice] = useState({});
 
   const networksWithGraph = Object.values(supportedNetworks)
@@ -75,7 +73,7 @@ function App() {
     .map((net) => net.chainId);
 
   const { data, loading, error, refetch } = useQuery("pools", async () => {
-    const fetchedDATA = await fetchGraphQlData(chain?.id || 137, query);
+    const fetchedDATA = await fetchGraphQlData(chain?.id || 137, chain?.id == 137? query: testnetQuery);
     return fetchedDATA;
   });
 
@@ -122,7 +120,7 @@ function App() {
               positionContract: res[2],
             };
             dispatch(setContracts(payload));
-             //loadPoolsFromContract(payload);
+             loadPoolsFromContract(payload);
             loadPoolsWithGraph();
           })
           .catch((err) => {
@@ -146,8 +144,8 @@ function App() {
         const poolData = {};
         let result;
 
-        if (networkID == 8081) {
-          result = shardeumPools;
+        if (networkID == 195) {
+          result = okxPools;
         } else {
           result = await getPastEvents(v2Contracts.coreContract, "PoolCreated");
 
