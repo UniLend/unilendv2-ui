@@ -111,11 +111,19 @@ export default function Footer() {
           Rewards
           <FiLock style={{marginLeft: '5px'}}/>
         </a>
-        <a href="/history"
+        { chain.id != 195 && (
+              <a
+                href="/history"
+                className={`${pathname === "/history" ? "active" : ""}`}
+              >
+                History
+              </a>
+            )}
+        {/* <a href="/history"
         className={`${pathname === '/history' ? 'active' : ''}`}
         >
           History
-        </a>
+        </a> */}
       </nav>
     </>
   );
