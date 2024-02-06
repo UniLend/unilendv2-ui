@@ -467,7 +467,10 @@ export default function PoolComponent() {
     let amountToSet = "";
     switch (activeOperation) {
       case lend:
-        amountToSet = selectedToken.balanceFixed;
+        amountToSet = truncateToDecimals(
+          selectedToken.balanceFixed,
+          selectedToken._decimals
+        );
         break;
       case borrow:
         const maxBorrow = getBorrowMax(
