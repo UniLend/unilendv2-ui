@@ -344,11 +344,9 @@ export default function Navbar() {
             </a>
             {isPolygon ? (
               <>
-                <a
-                  href="/dashboard"
-                  className={`${pathname === "/dashboard" ? "active" : ""}`}
-                >
+              <a href="#" className="disable_route">
                   Dashboard
+                  <LockOutlined style={{ marginLeft: "5px" }} />
                 </a>
                 <a
                   href="/governance"
