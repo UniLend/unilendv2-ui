@@ -490,7 +490,7 @@ export default function PoolComponent() {
         amountToSet = selectedToken.borrowBalanceFixed;
         break;
       default:
-        console.error("Invalid operation");
+        setAmount("");
     }
 
     setAmount(amountToSet);
