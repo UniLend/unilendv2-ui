@@ -40,7 +40,7 @@ function HistoryComponent() {
   const [isPolygon, setIsPolygon] = useState(false);
   const [search, setSearch] = useState("");
   const [poolsData, setPoolsData] = useState({});
-  const query = getHistoryGraphQuery('0x0F0B5b19FfFEa6ED244e5b58b67168354Ed59f21');
+  const query = getHistoryGraphQuery(user?.address);
   const [called, setIsCalled] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
   const networksWithGraph = Object.values(supportedNetworks)
