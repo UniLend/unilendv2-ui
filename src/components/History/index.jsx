@@ -7,7 +7,7 @@ import { shortenAddress, imgError } from "../../utils";
 import { allTransaction } from "../../services/events";
 import txIcon from "../../assets/tx.svg";
 import noTxt from "../../assets/notxt.svg";
-import { fixed2Decimals, fromBigNumber } from "../../helpers/contracts";
+import { fixed2Decimals, fromBigNumber, truncateToDecimals } from "../../helpers/contracts";
 import HistorySkeleton from "../Loader/HistorySkeleton";
 import { getHistoryGraphQuery, sortByKey } from "../../helpers/dashboard";
 import DropDown from "../Common/DropDown";
@@ -40,7 +40,7 @@ function HistoryComponent() {
   const [isPolygon, setIsPolygon] = useState(false);
   const [search, setSearch] = useState("");
   const [poolsData, setPoolsData] = useState({});
-  const query = getHistoryGraphQuery(user?.address);
+  const query = getHistoryGraphQuery('0x0F0B5b19FfFEa6ED244e5b58b67168354Ed59f21');
   const [called, setIsCalled] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
   const networksWithGraph = Object.values(supportedNetworks)
@@ -88,6 +88,8 @@ function HistoryComponent() {
           ...data.repays,
         ];
         const sorted = sortByKey(newArray, "blockTimestamp", 1);
+
+        console.log("history", sorted);
 
         setGraphHistory(sorted);
         setGraphHistoryBackup(sorted);
@@ -284,10 +286,13 @@ function HistoryComponent() {
                     <p>{txt?.__typename}</p>
                   </div>
                   <div>
+                    <Tooltip title={Number(txt?.amount) / 10** Number(txt.token.decimals)} >
                     <p>
-                      {Number(fromBigNumber(txt?.amount) / 10 ** 18).toFixed(2)}
+                      {truncateToDecimals(Number(txt?.amount) / 10** Number(txt.token.decimals),6)}
                       {/* {(Number(txt.returnValues._amount) / 10 ** 18).toFixed(4)} */}
+                     
                     </p>
+                    </Tooltip>
                   </div>
                   <div className='hide_for_mobile'>
                     <p className='success'>

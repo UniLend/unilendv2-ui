@@ -854,6 +854,7 @@ export const getHistoryGraphQuery = (address) => {
         id
         priceUSD
         symbol
+        decimals
       }
       pool {
         id
@@ -861,10 +862,12 @@ export const getHistoryGraphQuery = (address) => {
         token0 {
           symbol
           id
+          decimals
         }
         token1 {
           id
           symbol
+          decimals
         }
       }
       positionId
@@ -881,6 +884,7 @@ export const getHistoryGraphQuery = (address) => {
         id
         priceUSD
         symbol
+        decimals
       }
       pool {
         id
@@ -907,6 +911,7 @@ export const getHistoryGraphQuery = (address) => {
         id
         priceUSD
         symbol
+        decimals
       }
       pool {
         id
@@ -933,6 +938,7 @@ export const getHistoryGraphQuery = (address) => {
         id
         priceUSD
         symbol
+        decimals
       }
       pool {
         id
