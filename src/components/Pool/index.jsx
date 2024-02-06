@@ -32,7 +32,7 @@ import {
   getSelectLTV,
   getActionBtn,
   fromBigNumber,
-  truncateToDecimals
+  truncateToDecimals,
 } from "../../helpers/contracts";
 import PoolSkeleton from "../Loader/PoolSkeleton";
 import TwitterModal from "../Common/TwitterModal";
@@ -61,7 +61,7 @@ export default function PoolComponent() {
   const [activeOperation, setActiveOperation] = useState(lend);
   const [selectLTV, setSelectLTV] = useState(5);
   const [poolData, setPoolData] = useState({});
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState("");
   const [max, setMax] = useState(false);
   const [isOperationLoading, setIsOperationLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -123,8 +123,8 @@ export default function PoolComponent() {
   const handleAmount = (e) => {
     const value = e.target.value;
     const parsedValue = value === "." ? "0" + value : value;
-   
-    if (/^[.]?[0-9]*[.]?[0-9]*$/.test(parsedValue) || parsedValue === "" ) {
+
+    if (/^[.]?[0-9]*[.]?[0-9]*$/.test(parsedValue) || parsedValue === "") {
       setAmount(parsedValue);
     }
     setMax(false);
@@ -199,7 +199,7 @@ export default function PoolComponent() {
               });
             }, 8000);
           } else {
-            NotificationMessage("success", 'Approval Successfull');
+            NotificationMessage("success", "Approval Successfull");
             setTimeout(() => {
               setMethodLoaded({
                 getPoolData: true,
@@ -337,8 +337,11 @@ export default function PoolComponent() {
         collateralToken,
         value
       );
-      
-      const trunc = truncateToDecimals(amountBasedOnLtv, selectedToken._decimals)
+
+      const trunc = truncateToDecimals(
+        amountBasedOnLtv,
+        selectedToken._decimals
+      );
       setAmount(trunc);
     }
   };
@@ -395,11 +398,9 @@ export default function PoolComponent() {
         }
       }
     } catch (error) {
-     
-      if(error.code == "CALL_EXCEPTION"){
-        
-        fetchPoolDATA()
-       }
+      if (error.code == "CALL_EXCEPTION") {
+        fetchPoolDATA();
+      }
       throw error;
     }
   };
@@ -461,33 +462,38 @@ export default function PoolComponent() {
     }
   }, [contracts, methodLoaded, user, poolList, selectedPool, poolData]);
 
-  // max trigger for sending max values in redeem, lend, borrow, repay;
   const maxTrigger = () => {
     setMax(true);
-    if (activeOperation === lend) {
-      const trunc = truncateToDecimals(selectedToken.balanceFixed, selectedToken._decimals)
-      setAmount(selectedToken.balanceFixed);
-    } else if (activeOperation === borrow) {
-      const maxBorrow = getBorrowMax(
-        selectedToken,
-        collateralToken,
-        poolData.ltv
-      );
-      const truncBorrow = truncateToDecimals(maxBorrow, selectedToken._decimals)
-      setAmount(truncBorrow);
-      setSelectLTV(poolData.ltv);
-    } else if (activeOperation === redeem) {
-      if (
-        Number(selectedToken.liquidityFixed) >
-        Number(selectedToken.redeemBalanceFixed)
-      ) {
-        setAmount(selectedToken.redeemBalanceFixed);
-      } else {
-        setAmount(selectedToken.liquidityFixed);
-      }
-    } else if (activeOperation == repay) {
-      setAmount(selectedToken.borrowBalanceFixed);
+    let amountToSet = "";
+    switch (activeOperation) {
+      case lend:
+        amountToSet = selectedToken.balanceFixed;
+        break;
+      case borrow:
+        const maxBorrow = getBorrowMax(
+          selectedToken,
+          collateralToken,
+          poolData.ltv
+        );
+        amountToSet = truncateToDecimals(maxBorrow, selectedToken._decimals);
+        setSelectLTV(poolData.ltv);
+        break;
+      case redeem:
+        amountToSet =
+          Number(selectedToken.liquidityFixed) >
+          Number(selectedToken.redeemBalanceFixed)
+            ? selectedToken.redeemBalanceFixed
+            : selectedToken.liquidityFixed;
+        amountToSet = truncateToDecimals(amountToSet, selectedToken._decimals);
+        break;
+      case repay:
+        amountToSet = selectedToken.borrowBalanceFixed;
+        break;
+      default:
+        console.error("Invalid operation");
     }
+
+    setAmount(amountToSet);
   };
 
   const handleCloseModals = () => {
@@ -509,16 +515,16 @@ export default function PoolComponent() {
 
   const ConfirmationModal = () => {
     return (
-      <div className="ConfirmModel">
-        <div className="collateral_icon">
-          <img className="ticker_img" src={collateralToken?.logo} />
+      <div className='ConfirmModel'>
+        <div className='collateral_icon'>
+          <img className='ticker_img' src={collateralToken?.logo} />
           {collateralToken?._symbol}
         </div>
         <h1> {Number(colleteral).toFixed(4)}</h1>
         <p>
           Additional Collateral Required <br /> From Wallet
         </p>
-        <div className="buttons">
+        <div className='buttons'>
           <button onClick={handleCloseModals}>Cancel</button>
           <button onClick={handleOperationWithConfirmation}>Confirm</button>
         </div>
@@ -580,7 +586,7 @@ export default function PoolComponent() {
     return (
       <div
         style={{ height: "200px", overflow: "scroll" }}
-        className="sort_popover"
+        className='sort_popover'
       >
         {Object.keys(tokensBYSymbol).map((symbol, i) => (
           <p key={i} onClick={handlePoolAndTokenSelect}>
@@ -595,7 +601,7 @@ export default function PoolComponent() {
     return (
       <div
         style={{ height: "200px", overflow: "scroll" }}
-        className="sort_popover"
+        className='sort_popover'
       >
         {tokensWithCreatedPools.map((token) => (
           <p
@@ -627,7 +633,7 @@ export default function PoolComponent() {
       {isPageLoading && selectedToken == null ? (
         <PoolSkeleton />
       ) : (
-        <div className="pool_container">
+        <div className='pool_container'>
           {/* <div className="token_container">
             <Popover
               content={<SortContent />}
@@ -654,20 +660,20 @@ export default function PoolComponent() {
               </div>
             </Popover>
           </div> */}
-          <div className="token_container">
+          <div className='token_container'>
             <div>
               <div
                 onClick={() => toggleToken(0)}
                 className={`token_tab ${activeToken === 0 ? " active" : ""}`}
               >
-                <img src={poolData?.token0?.logo} onError={imgError} alt="" />
+                <img src={poolData?.token0?.logo} onError={imgError} alt='' />
                 <h2>{poolData?.token0?._symbol}</h2>
               </div>
               <div
                 onClick={() => handleOpenSelectTokenMoadal(true, "token0")}
-                className="dropdown"
+                className='dropdown'
               >
-                <FaChevronDown className="dropicon" />
+                <FaChevronDown className='dropicon' />
               </div>
             </div>
             <div>
@@ -675,19 +681,19 @@ export default function PoolComponent() {
                 onClick={() => toggleToken(1)}
                 className={`token_tab ${activeToken === 1 ? " active" : ""}`}
               >
-                <img src={poolData?.token1?.logo} onError={imgError} alt="" />
+                <img src={poolData?.token1?.logo} onError={imgError} alt='' />
                 <h2>{poolData?.token1?._symbol}</h2>
               </div>
               <div
                 onClick={() => handleOpenSelectTokenMoadal(true, "token1")}
-                className="dropdown"
+                className='dropdown'
               >
-                <FaChevronDown className="dropicon" />
+                <FaChevronDown className='dropicon' />
               </div>
             </div>
           </div>
-          <div className="content">
-            <div className="oparation_tab">
+          <div className='content'>
+            <div className='oparation_tab'>
               <div
                 onClick={() => toggleOperation(lend)}
                 className={
@@ -747,55 +753,56 @@ export default function PoolComponent() {
               </div>
             </div>
 
-            <div className="user_liquidity">
-              <p className="paragraph06">{liquidityText[activeOperation]}</p>
+            <div className='user_liquidity'>
+              <p className='paragraph06'>{liquidityText[activeOperation]}</p>
               <Tooltip
                 title={getLiquidityAmount[activeOperation]}
-                trigger="hover"
+                trigger='hover'
               >
-                <h1 className="heading02">
+                <h1 className='heading02'>
                   {selectedToken
-                    ? truncateToDecimals(getLiquidityAmount[activeOperation],6)
+                    ? truncateToDecimals(getLiquidityAmount[activeOperation], 6)
                     : 0}
                 </h1>
               </Tooltip>
             </div>
 
-            <div className="token_balance_container">
-              <div className="lable">
-                <p className="paragraph05">{activeOperation}</p>
+            <div className='token_balance_container'>
+              <div className='lable'>
+                <p className='paragraph05'>{activeOperation}</p>
                 <div>
                   {" "}
                   <a
                     href={`https://chaindrop.org/?chainid=${user?.network?.id}&token=${selectedToken?._address}`}
-                    target="_blank"
+                    target='_blank'
                   >
                     {" "}
                     {/* <img src={faucet} alt='faucet icon' />{' '} */}
                   </a>
                 </div>
               </div>
-              <div className="token_balance">
+              <div className='token_balance'>
                 <div>
-                  <img src={selectedToken?.logo} alt="" />
-                  <p className="paragraph04">{selectedToken?._symbol}</p>
+                  <img src={selectedToken?.logo} alt='' />
+                  <p className='paragraph04'>{selectedToken?._symbol}</p>
                 </div>
                 <Tooltip title={selectedToken?.balanceFixed}>
-                  <p className="paragraph06">
-                    Balance: {Number(truncateToDecimals(selectedToken?.balanceFixed,6))}
+                  <p className='paragraph06'>
+                    Balance:{" "}
+                    {Number(truncateToDecimals(selectedToken?.balanceFixed, 6))}
                   </p>
                 </Tooltip>
               </div>
             </div>
 
-            <div className="input_container">
+            <div className='input_container'>
               <input
                 value={amount !== null ? amount : ""}
                 onChange={handleAmount}
-                type="text"
-                placeholder="0.0"
+                type='text'
+                placeholder='0.0'
               />
-              <button onClick={maxTrigger} className="max_btn">
+              <button onClick={maxTrigger} className='max_btn'>
                 MAX
               </button>
             </div>
@@ -809,17 +816,17 @@ export default function PoolComponent() {
               >
                 <p>Additional Collateral Required From Wallet</p>
                 <Tooltip title={colleteral}>
-                <div>
-                  <h5>{Number(truncateToDecimals(colleteral,6))}</h5>
-                  <img src={collateralToken?.logo} alt="" />
-                  <p>{collateralToken?._symbol}</p>
-                </div>
+                  <div>
+                    <h5>{Number(truncateToDecimals(colleteral, 6))}</h5>
+                    <img src={collateralToken?.logo} alt='' />
+                    <p>{collateralToken?._symbol}</p>
+                  </div>
                 </Tooltip>
               </div>
             }
 
             {activeOperation === borrow && (
-              <div className="ltv_container">
+              <div className='ltv_container'>
                 <p>
                   <span>Current LTV</span>
                   <span>{getCurrentLTV(selectedToken, collateralToken)}%</span>
@@ -840,21 +847,24 @@ export default function PoolComponent() {
                   max={Number(poolData.ltv)}
                   //tooltipVisible={false}
 
-                  className="ltv_slider"
+                  className='ltv_slider'
                 />
               </div>
             )}
 
             {(activeOperation === redeem || activeOperation === borrow) && (
-              <div className="liquidity_factors">
+              <div className='liquidity_factors'>
                 <p>
                   <span>Liquidity</span>
                   <Tooltip title={selectedToken?.liquidityFixed}>
-                  <span>
-                    {isNaN(Number(selectedToken?.liquidityFixed).toFixed(6))
-                      ? 0
-                      : Number(truncateToDecimals(selectedToken?.liquidityFixed,6))}  {selectedToken?._symbol}
-                  </span>
+                    <span>
+                      {isNaN(Number(selectedToken?.liquidityFixed).toFixed(6))
+                        ? 0
+                        : Number(
+                            truncateToDecimals(selectedToken?.liquidityFixed, 6)
+                          )}{" "}
+                      {selectedToken?._symbol}
+                    </span>
                   </Tooltip>
                 </p>
                 <p>
@@ -862,7 +872,8 @@ export default function PoolComponent() {
                   <span>
                     {isNaN(selectedToken?.utilRate)
                       ? 0
-                      : selectedToken?.utilRate}%{" "}
+                      : selectedToken?.utilRate}
+                    %{" "}
                   </span>
                 </p>
                 <p>
@@ -876,10 +887,10 @@ export default function PoolComponent() {
             )}
 
             {(activeOperation === lend || activeOperation === borrow) && (
-              <div className="analytics">
+              <div className='analytics'>
                 <div>
                   <span>{activeOperation} APY</span>
-                  <h3 className="paragraph04">
+                  <h3 className='paragraph04'>
                     {activeOperation === lend
                       ? isNaN(Number(selectedToken?.lendAPY).toFixed(4))
                         ? 0
@@ -892,7 +903,7 @@ export default function PoolComponent() {
                 </div>
                 <div>
                   <span>Utilization rate</span>
-                  <h3 className="paragraph04">
+                  <h3 className='paragraph04'>
                     {isNaN(selectedToken?.utilRate)
                       ? 0
                       : selectedToken?.utilRate}
@@ -901,7 +912,7 @@ export default function PoolComponent() {
                 </div>
                 <div>
                   <span>Health Factor</span>
-                  <h3 className="paragraph04">
+                  <h3 className='paragraph04'>
                     {selectedToken?.healthFactorFixed > 100
                       ? 100
                       : Number(selectedToken?.healthFactorFixed).toFixed(2)}
@@ -909,7 +920,7 @@ export default function PoolComponent() {
                 </div>
               </div>
             )}
-            <div className="operation_btn">
+            <div className='operation_btn'>
               <Button
                 onClick={handleOperationWithConfirmation}
                 loading={isOperationLoading || reFetching}
@@ -920,7 +931,7 @@ export default function PoolComponent() {
             </div>
           </div>
           <Modal
-            className="antd_modal_overlay"
+            className='antd_modal_overlay'
             open={isOpenConfirmModal}
             centered
             onCancel={handleCloseModals}
@@ -940,7 +951,7 @@ export default function PoolComponent() {
             {<TwitterModal />}
           </Modal> */}
           <Modal
-            className="antd_modal_overlay"
+            className='antd_modal_overlay'
             open={showSelectTokenModal}
             centered
             onCancel={() => setShowSelectTokenModal(false)}
