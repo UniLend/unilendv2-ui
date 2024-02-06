@@ -1,15 +1,15 @@
 export const contractAddress = { 
   '137': {
-    helperAddress: import.meta.env.VITE_POLYGON_HELPER,
+    helperAddress: '0x4F57c40D3dAA7BF2EC970Dd157B1268982158720',
   
-    coreAddress: import.meta.env.VITE_POLYGON_CORE,
-    positionAddress: import.meta.env.VITE_POLYGON_POSITION,
+    coreAddress: '0x4ceA84C8b31f40AdC606084F2d1aaF207E504BAd',
+    positionAddress: '0x48D604cC5B2D1A3867ea062DE299702b801aDe24',
   
-    poolAddress: import.meta.env.VITE_POLYGON_POOL,
-    unilendOracle: import.meta.env.VITE_POLYGON_ORACLE,
-    interestRateModal: import.meta.env.VITE_POLYGON_INTERESTRATEMODAL,
-    uftToken : import.meta.env.VITE_POLYGON_UFT,
-    uftgToken: import.meta.env.VITE_POLYGON_UFTG
+    poolAddress: '0xeEac91075Fa729ff2F4a3Ef17F0DA74d946781a8',
+    unilendOracle: '0x86148E1eF9D102b3Cf1345FBb8456329C3dEEd29',
+    interestRateModal: '0x5a3A1562f245Da7B2Dfa068547351BD0f2199be5 ',
+    uftToken : '0x5B4CF2C120A9702225814E18543ee658c5f8631e',
+    uftgToken: '0x6CbFa51AF1C1B8940f823DA4C58877E409d6da25'
   },
   '8081': {
     helperAddress: '0xAD2bC0ba9368d932c9648dbb40C3D38B4Da36E6E',

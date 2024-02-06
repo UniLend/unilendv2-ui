@@ -69,8 +69,8 @@ export const fetchUserAddressByDomain = async (domain) => {
 export const fetchGraphQlData = async (chainId, FILMS_QUERY) => {
   const graphURL = {
     80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
+    // 137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
     137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon-2",
-    // 137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon-3",
     1442: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-zkevm",
   };
 
