@@ -8,7 +8,6 @@ import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
 import { useSelector } from "react-redux";
 import { erc20Abi } from "../../core/contractData/abi";
 import NoPoolFound from "../NoPoolFound";
-import { fetchCoinLogo } from "../../utils/axios";
 import PoolListSkeleton from "../Loader/PoolListSkeleton";
 import PoolCarousel from "../PoolsCarousel";
 import { Button } from "antd";

@@ -162,11 +162,11 @@ export const x1Testnet = {
   nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 },
   rpcUrls: {
     default: {
-      http: ['https://x1testrpc.okx.com'],
+      http: ['https://testrpc.x1.tech','https://x1testrpc.okx.com'],
       webSocket:  ['wss://testrpc.x1.tech']
     },
     public:{
-      http: ['https://x1testrpc.okx.com '],
+      http: ['https://testrpc.x1.tech','https://x1testrpc.okx.com '],
       webSocket:  ['wss://testrpc.x1.tech ']
     },
   },

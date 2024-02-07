@@ -29,7 +29,7 @@ import {
   getFromSessionStorage,
   getTokenLogo,
 } from "./utils";
-import { fetchCoinLogo, fetchGraphQlData, getEthToUsd } from "./utils/axios";
+import { fetchGraphQlData, getEthToUsd } from "./utils/axios";
 import {
   checkOpenPosition,
   fixedToShort,
@@ -169,7 +169,7 @@ function App() {
             (token, i) => (tokenList[poolTokens[i]] = { symbol: token.symbol })
           );
           const logos = await Promise.all(
-            ercTokens.map((token, i) => fetchCoinLogo(token.symbol))
+            ercTokens.map((token, i) => getTokenLogo(token.symbol))
           );
 
           logos.forEach(
