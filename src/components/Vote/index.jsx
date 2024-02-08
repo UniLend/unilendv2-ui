@@ -40,6 +40,7 @@ export default function VoteComponent() {
   const [delegate, setDelegate] = useState("0x000000000000000");
   const [votingPower, setVotingPower] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDataLoading, setIsDataLoading] = useState(false)
 
   const provider = useMemo(() => {
     const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -109,6 +110,7 @@ export default function VoteComponent() {
   };
 
   const handleAllowance = async () => {
+    setIsDataLoading(true)
     const contractsAdd = contractAddress[chain?.id || "1"];
     getTokenBal();
     const { allowance } = await checkAllowance(
@@ -120,6 +122,7 @@ export default function VoteComponent() {
 
     const valueFromBigNumber = fromBigNumber(allowance);
     setAllowanceValue(valueFromBigNumber);
+     setIsDataLoading(false)
   };
 
   const BalancePopover = () => {
@@ -167,9 +170,12 @@ export default function VoteComponent() {
         {/* User Info */}
         <div className="user_info">
           <div>
-            <h2 className="heading05">
+            {
+              isDataLoading ? <h2 className="heading_loader skeleton"></h2> :  <h2 className="heading05">
               {Number(tokenBalance.uft + tokenBalance.uftg).toFixed(2)}
             </h2>
+            }
+        
             <div className="total_balance">
               <p className="paragraph03">Total Balance</p>
               <Popover
@@ -182,17 +188,19 @@ export default function VoteComponent() {
               </Popover>
             </div>
           </div>
-          <div>
-            <h2 className="heading05">{Number(votingPower).toFixed(2)}</h2>
+          <div >
+           {isDataLoading ? <h2 className="heading_loader skeleton"></h2>: <h2 className="heading05">{Number(votingPower).toFixed(2)}</h2>} 
             <p className="paragraph03">Voting Power</p>
           </div>
           <div>
-            <div
+            {
+              isDataLoading ?  <h2 className="heading_loader skeleton"></h2>:       <div
               onClick={() => {
                 navigator.clipboard.writeText(delegate);
               }}
               className="address_with_copy"
             >
+              
               <h2 className="heading05">
                 {domainDetail.value
                   ? domainDetail.value
@@ -207,6 +215,8 @@ export default function VoteComponent() {
                 <FiCopy />
               </Popover>
             </div>
+            }
+      
             <p className="paragraph03">Delegation address</p>
           </div>
         </div>
@@ -308,7 +318,6 @@ const WrapAndDelegate = ({
     const key = `https://eth-mainnet.g.alchemy.com/v2/${alchemyId}`;
     return new ethers.providers.JsonRpcProvider(key);
   }, [chain?.id]);
-  console.log("VOTE_PROVIDER", provider);
 
   const { domainDetail } = useDomainHandling(address, provider);
 

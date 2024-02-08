@@ -57,7 +57,7 @@ export default function Navbar() {
   });
   const [visible, setVisible] = useState(false);
   const [isNetworkVisible, setIsNetworkVisible] = useState(false);
-  const [isPolygon, setIsPolygon] = useState(false);
+  const [isNavigateAllow, setIsNavigateAllow] = useState(false);
   const dispatch = useDispatch();
   const [currentTheme, setCurrentTheme] = useState(theme);
   const { chain, isConnected } = useWalletHook();
@@ -116,11 +116,12 @@ export default function Navbar() {
     if (
       user?.network?.id == 80001 ||
       user?.network?.id == 137 ||
-      user?.network?.id == 1442
+      user?.network?.id == 1442 ||
+      user?.network?.id == 1
     ) {
-      setIsPolygon(true);
+      setIsNavigateAllow(true);
     } else {
-      setIsPolygon(false);
+      setIsNavigateAllow(false);
     }
     // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
     if (user?.network?.id && !availableChain.includes(user?.network?.id)) {
@@ -342,7 +343,7 @@ export default function Navbar() {
             >
               Pools
             </a>
-            {isPolygon ? (
+            {isNavigateAllow ? (
               <>
               <a href="#" className="disable_route">
                   Dashboard
