@@ -157,18 +157,18 @@ export default function Navbar() {
       <div className="walletModel">
         <h1>Wrong Network</h1>
         <p>
-          UniLend V2 is in Testnet Phase.
-          <br /> Please Connect to the Below Networks.
+        UniLend V2 Governance is on Ethereum Mainnet only. 
+          Please Switch Network.
         </p>
         <div className="networks">
-          <div onClick={() => handleSwitchNetwork(11155111)}>
+          <div onClick={() => handleSwitchNetwork(1)}>
             <img src={ethlogo} alt="Etherium" />
-            <p>Sepolia</p>
+            <p>Ethereum</p>
           </div>
-          <div onClick={() => handleSwitchNetwork(1442)}>
+          {/* <div onClick={() => handleSwitchNetwork(1442)}>
             <img src={ethlogo} alt="Etherium" />
             <p>zkEVM</p>
-          </div>
+          </div> */}
           {/* <div onClick={() => handleSwitchNetwork(8081)}>
             <img src={shardeumLogo} alt="Etherium" />
             <p>Shardeum</p>
@@ -335,7 +335,7 @@ export default function Navbar() {
             <img src={logo} alt="unilend_logo" />
           </a>
         </div>
-        <div className="nav_routes">
+        {/* <div className="nav_routes">
           <nav>
             <a
               href="/pools"
@@ -388,13 +388,13 @@ export default function Navbar() {
               Faucet
             </a>
           </nav>
-        </div>
+        </div> */}
       </div>
       <div className="last_container">
         {isConnected && currentUser?.balance ? (
           <>
             <div className="wallet_connection">
-              <Popover
+              {/* <Popover
                 content={<SortContent />}
                 trigger="click"
                 overlayClassName="sort_dropDownnew"
@@ -414,7 +414,7 @@ export default function Navbar() {
                     <FaChevronDown />
                   </div>
                 </div>
-              </Popover>
+              </Popover> */}
               <div className="network_address">
                 <p className="bal">
                   {currentUser?.balance} {currentUser?.symbol}

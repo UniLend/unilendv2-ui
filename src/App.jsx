@@ -46,6 +46,7 @@ import { ethers } from "ethers";
 import { getTokenUSDPrice } from "./helpers/contracts";
 import useWalletHook from "./lib/hooks/useWallet";
 import { supportedNetworks } from "./core/networks/networks";
+import Vote from "./pages/vote";
 
 const shardeumPools = [
   {
@@ -75,21 +76,19 @@ function App() {
     .filter((network) => network.graphAvailable && network.chainId)
     .map((net) => net.chainId);
 
-  const { data, loading, error, refetch } = useQuery("pools", async () => {
-    const fetchedDATA = await fetchGraphQlData(chain?.id || 1, chain?.id  === 80001 ? testnetQuery : query);
-    return fetchedDATA;
-  });
+  // const { data, loading, error, refetch } = useQuery("pools", async () => {
+  //   const fetchedDATA = await fetchGraphQlData(chain?.id || 1, chain?.id  === 80001 ? testnetQuery : query);
+  //   return fetchedDATA;
+  // });
 
   document.body.className = `body ${
     getFromSessionStorage("unilendV2Theme") || "dark"
   }`;
 
   useEffect(() => {
-    if (isConnected) {
-      refetch();
-    }
+
     createContract();
-  }, [address, isConnected, data]);
+  }, [address, isConnected]);
 
   const createContract = async (withProvider = false) => {
     try {
@@ -124,17 +123,17 @@ function App() {
             };
             dispatch(setContracts(payload));
              //loadPoolsFromContract(payload);
-            loadPoolsWithGraph();
+            // loadPoolsWithGraph();
           })
           .catch((err) => {
             throw err;
           });
       } else {
-        loadPoolsWithGraph();
+        // loadPoolsWithGraph();
       }
     } catch (error) {
       console.log("ContractError", error);
-      loadPoolsWithGraph();
+      // loadPoolsWithGraph();
       dispatch(setError(error));
     }
   };
@@ -228,19 +227,19 @@ function App() {
     return result;
   };
 
-  useEffect(() => {
-    if (data?.assetOracles) {
-      getTokenPrice();
-    } else {
-      console.log("Failed to fetch Graph data");
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data?.assetOracles) {
+  //     getTokenPrice();
+  //   } else {
+  //     console.log("Failed to fetch Graph data");
+  //   }
+  // }, [data]);
 
-  useEffect(() => {
-    if (Object.keys(tokenPrice).length > 0) {
-      loadPoolsWithGraph();
-    }
-  }, [tokenPrice]);
+  // useEffect(() => {
+  //   if (Object.keys(tokenPrice).length > 0) {
+  //     loadPoolsWithGraph();
+  //   }
+  // }, [tokenPrice]);
 
   const loadPoolsWithGraph = async () => {
     const networkID = chain?.id || 1442;
@@ -315,10 +314,10 @@ function App() {
       <Navbar />
       <div className='app_container'>
         <div className='app'>
-          <MainRoutes />
+          <Vote/>
         </div>
       </div>
-      <Footer />
+      
     </>
   );
 }

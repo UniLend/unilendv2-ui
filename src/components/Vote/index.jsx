@@ -23,7 +23,7 @@ import { fetchUserAddressByDomain, fetchUserDomain } from "../../utils/axios";
 import { Link } from "react-router-dom";
 import { getEtherContract } from "../../lib/fun/wagmi";
 import useWalletHook from "../../lib/hooks/useWallet";
-import { waitForTransactionLib } from "../../lib/fun/functions";
+import { waitForBlockConfirmation, waitForTransactionLib } from "../../lib/fun/functions";
 import NotificationMessage from "../Common/NotificationMessage";
 import useDomainHandling from "./useDomainHandling";
 
@@ -32,12 +32,12 @@ const unWrap = "unWrap";
 const update = "update";
 
 export default function VoteComponent() {
-  const { address, chain } = useWalletHook();
+  const { address, chain, isConnected } = useWalletHook();
   const [userAddress, setUserAddress] = useState(address);
   const [tokenBalance, setTokenBalance] = useState({ uft: "", uftg: "" });
   const [activeTab, setActiveTab] = useState(wrap);
   const [allowanceValue, setAllowanceValue] = useState("");
-  const [delegate, setDelegate] = useState("0x000000000000000");
+  const [delegate, setDelegate] = useState(address);
   const [votingPower, setVotingPower] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(false)
@@ -48,12 +48,21 @@ export default function VoteComponent() {
     return new ethers.providers.JsonRpcProvider(key);
   }, [chain?.id]);
 
+
+  const handleTabs = (tab)=>{
+    if(address && isConnected){
+
+      setActiveTab(tab)
+    }
+  }
+
   const checkTxnStatus = (hash, data) => {
-    waitForTransactionLib({
-      hash,
-    })
-      .then((receipt) => {
-        if (receipt.status == "success") {
+    waitForBlockConfirmation(hash)
+      .then((res) => {
+        const [receipt, currentBlockNumber] = res;
+        const trasactionBlock = fromBigNumber(receipt.blockNumber);
+        const currentblock = fromBigNumber(currentBlockNumber);
+        if (receipt.status == "success" && currentblock - trasactionBlock > 2) {
           if (data?.fn == "approve") {
             setTimeout(() => {
               handleAllowance();
@@ -91,38 +100,51 @@ export default function VoteComponent() {
 
   //
   const getTokenBal = async () => {
-    const contractsAdd = contractAddress[chain?.id || "1"];
-    // const provider = getProvider();
-    const UFT = await getEtherContract(contractsAdd.uftToken, erc20Abi);
-    const UFTG = await getEtherContract(contractsAdd?.uftgToken, uftgABI);
-    const delegatesAddress = await UFTG.delegates(address);
-    const isValid = ethers.utils.isAddress(delegatesAddress);
+    try {
+      const contractsAdd = contractAddress[chain?.id || "1"];
+      // const provider = getProvider();
+      const UFT = await getEtherContract(contractsAdd.uftToken, erc20Abi);
+     
+      const UFTG = await getEtherContract(contractsAdd?.uftgToken, uftgABI);
+       const delegatesAddress = await UFTG.delegates(address);
+     
+      const isValid = ethers.utils.isAddress(delegatesAddress);
+  
+      delegatesAddress != 0 && isValid && setDelegate(delegatesAddress);
+      const uftBalance_BigNumber = await UFT.balanceOf(address);
+      const uftgBalance_BigNumber = await UFTG.balanceOf(address);
+      const uftgVotes_BigNumber = await UFTG.getCurrentVotes(address);
+      const uftBalance = fromBigNumber(uftBalance_BigNumber) / 10 ** 18;
+      const uftgBalance = fromBigNumber(uftgBalance_BigNumber) / 10 ** 18;
+      const uftgVotes = fromBigNumber(uftgVotes_BigNumber) / 10 ** 18;
+      setVotingPower(uftgVotes);
+      setTokenBalance({ uft: uftBalance, uftg: uftgBalance });
+    } catch (error) {
+      throw error
+    }
 
-    delegatesAddress != 0 && isValid && setDelegate(delegatesAddress);
-    const uftBalance_BigNumber = await UFT.balanceOf(address);
-    const uftgBalance_BigNumber = await UFTG.balanceOf(address);
-    const uftgVotes_BigNumber = await UFTG.getCurrentVotes(address);
-    const uftBalance = fromBigNumber(uftBalance_BigNumber) / 10 ** 18;
-    const uftgBalance = fromBigNumber(uftgBalance_BigNumber) / 10 ** 18;
-    const uftgVotes = fromBigNumber(uftgVotes_BigNumber) / 10 ** 18;
-    setVotingPower(uftgVotes);
-    setTokenBalance({ uft: uftBalance, uftg: uftgBalance });
   };
 
   const handleAllowance = async () => {
-    setIsDataLoading(true)
-    const contractsAdd = contractAddress[chain?.id || "1"];
-    getTokenBal();
-    const { allowance } = await checkAllowance(
-      contractsAdd?.uftToken,
-      erc20Abi,
-      address,
-      contractsAdd?.uftgToken
-    );
+    try {
+      setIsDataLoading(true)
+      const contractsAdd = contractAddress[chain?.id || "1"];
+     await getTokenBal();
+      const { allowance } = await checkAllowance(
+        contractsAdd?.uftToken,
+        erc20Abi,
+        address,
+        contractsAdd?.uftgToken
+      );
+  
+      const valueFromBigNumber = fromBigNumber(allowance);
+      setAllowanceValue(valueFromBigNumber);
+       setIsDataLoading(false)
+    } catch (error) {
+       console.log("error Gov:", error);
+       setIsDataLoading(false)
+    }
 
-    const valueFromBigNumber = fromBigNumber(allowance);
-    setAllowanceValue(valueFromBigNumber);
-     setIsDataLoading(false)
   };
 
   const BalancePopover = () => {
@@ -149,16 +171,35 @@ export default function VoteComponent() {
   const { domainDetail, handleDomain } = useDomainHandling(delegate, provider);
 
   useEffect(() => {
-    handleDomain(delegate);
+    if(delegate){
+
+      handleDomain(delegate);
+    }
   }, [delegate]);
 
   useEffect(() => {
-    if (address) {
+    if (address && window.navigator.onLine) {
       setDelegate(address);
+      setIsDataLoading(true)
       // getTokenBal();
-      handleAllowance();
+      setTimeout(() => {
+        handleAllowance();
+      }, 1000);
+    
     }
+
+
   }, [address]);
+
+  useEffect(()=> {
+    if(!window.navigator.onLine){
+      NotificationMessage(
+        "error",
+        "Please check internet connection"
+      );
+     } 
+  
+  }, [])
 
   return (
     <div className="vote_container">
@@ -204,7 +245,7 @@ export default function VoteComponent() {
               <h2 className="heading05">
                 {domainDetail.value
                   ? domainDetail.value
-                  : shortenAddress(String(delegate))}
+                  : shortenAddress(String(delegate == undefined ? '0x0000000000': delegate))}
               </h2>
               <Popover
                 content="copied"
@@ -224,19 +265,19 @@ export default function VoteComponent() {
         <div className="operation">
           <div className="tabs">
             <div
-              onClick={() => setActiveTab(wrap)}
+              onClick={() => handleTabs(wrap)}
               className={` ${activeTab === wrap ? "active_tab" : ""}`}
             >
               <span>Wrap & Delegate</span>
             </div>
             <div
-              onClick={() => setActiveTab(unWrap)}
+              onClick={() => handleTabs(unWrap)}
               className={` ${activeTab === unWrap ? "active_tab" : ""}`}
             >
               <span>Unwrap</span>
             </div>
             <div
-              onClick={() => setActiveTab(update)}
+              onClick={() => handleTabs(update)}
               className={` ${activeTab === update ? "active_tab" : ""}`}
             >
               <span>Update delegation</span>
@@ -257,6 +298,7 @@ export default function VoteComponent() {
           {activeTab === unWrap && (
             <UnWrap
               checkTxnStatus={checkTxnStatus}
+              userAddress={delegate}
               tokenBalance={tokenBalance}
               isLoading={isLoading}
               setIsLoading={setIsLoading}
@@ -339,7 +381,13 @@ const WrapAndDelegate = ({
     const isValid = ethers.utils.isAddress(
       domainDetail.isAddress ? domainDetail.value : address
     );
-
+   if(!address){
+    setButtonText({
+      text: "Please Connect",
+      disable: true,
+    });
+   } else
+    
     if (decimal2Fixed(amount, 18) > Number(allowanceValue)) {
       setButtonText({
         text: "Approve",
@@ -369,7 +417,10 @@ const WrapAndDelegate = ({
   }, [address, domainDetail.value, amount, allowanceValue, tokenBalance]);
 
   const handleAddress = async (e) => {
-    setAddress(e.target.value);
+    if(userAddress){
+
+      setAddress(e.target.value);
+    }
   };
 
   const copyAddress = (text) => {
@@ -385,7 +436,7 @@ const WrapAndDelegate = ({
       handleWrapAndDelegate(
         contracts?.uftgToken,
         uftgABI,
-        domainDetail.isAddress ? domainDetail.value : address,
+        address,
         amount,
         checkTxnStatus,
         checkTxnError
@@ -457,6 +508,7 @@ const WrapAndDelegate = ({
             </Popover>
           </div>
         )}
+        
         <Button
           loading={isLoading}
           onClick={handleWrap}
@@ -471,6 +523,7 @@ const WrapAndDelegate = ({
 
 const UnWrap = ({
   checkTxnStatus,
+  userAddress,
   tokenBalance,
   isLoading,
   setIsLoading,
@@ -486,7 +539,12 @@ const UnWrap = ({
   const handleAmount = (e) => {
     const value = e.target.value;
     setAmount(value);
-
+    if(!userAddress){
+      setButtonText({
+        text: "Please Connect",
+        disable: true,
+      });
+     } else
     if (value > tokenBalance?.uftg) {
       setButtonText({
         text: "Low Balance",
@@ -518,6 +576,12 @@ const UnWrap = ({
   };
 
   useEffect(() => {
+    if(!userAddress){
+      setButtonText({
+        text: "Please Connect",
+        disable: true,
+      });
+     } else
     if (amount > tokenBalance?.uftg) {
       setButtonText({
         text: "Low Balance",
