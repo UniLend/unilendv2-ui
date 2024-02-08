@@ -142,6 +142,24 @@ export const networks = {
 
 // Supported network List
 export const supportedNetworks = {
+  1: {
+    chainId: 1,
+    chainName: "Ethereum Mainnet",
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    logoUrl: eth,
+    rpcUrls: [
+      "https://mainnet.infura.io/v3/${INFURA_API_KEY}",
+      "wss://mainnet.infura.io/ws/v3/${INFURA_API_KEY}",
+      "https://api.mycryptoapi.com/eth",
+      "https://cloudflare-eth.com",
+    ],
+    blockExplorerUrls: ["https://etherscan.io"],
+    graphAvailable: true
+  },
   137: {
     chainId: 137,
     chainName: "Polygon Mainnet",
@@ -156,26 +174,26 @@ export const supportedNetworks = {
     graphAvailable: true
   },
 
-  11155111: {
-    chainId: 11155111,
-    chainName: "Sepolia Test Network",
-    nativeCurrency: {
-      name: "Ether",
-      symbol: "SepoliaETH",
-      decimals: 18,
-    },
-    logoUrl: eth,
-    rpcUrls: [
-      "https://sepolia.infura.io/v3/",
-      "https://rpc.sepolia.dev",
-      "https://rpc.sepolia.online",
-      "https://www.sepoliarpc.space",
-      "https://rpc.sepolia.org",
-      "https://rpc-sepolia.rockx.com",
-    ],
-    blockExplorerUrls: ["https://sepolia.etherscan.io"],
-    graphAvailable: false,
-  },
+  // 11155111: {
+  //   chainId: 11155111,
+  //   chainName: "Sepolia Test Network",
+  //   nativeCurrency: {
+  //     name: "Ether",
+  //     symbol: "SepoliaETH",
+  //     decimals: 18,
+  //   },
+  //   logoUrl: eth,
+  //   rpcUrls: [
+  //     "https://sepolia.infura.io/v3/",
+  //     "https://rpc.sepolia.dev",
+  //     "https://rpc.sepolia.online",
+  //     "https://www.sepoliarpc.space",
+  //     "https://rpc.sepolia.org",
+  //     "https://rpc-sepolia.rockx.com",
+  //   ],
+  //   blockExplorerUrls: ["https://sepolia.etherscan.io"],
+  //   graphAvailable: false,
+  // },
 
   80001: {
     chainId: 80001,
@@ -190,19 +208,19 @@ export const supportedNetworks = {
     blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
     graphAvailable: true,
   },
-  1442: {
-    chainId: 1442,
-    chainName: "zkEVM Testnet",
-    nativeCurrency: {
-      name: "ETH",
-      symbol: "ETH",
-      decimals: 18,
-    },
-    logoUrl: eth,
-    rpcUrls: ["https://polygon-rpc.com/"],
-    blockExplorerUrls: ["https://testnet-zkevm.polygonscan.com/"],
-    graphAvailable: true,
-  },
+  // 1442: {
+  //   chainId: 1442,
+  //   chainName: "zkEVM Testnet",
+  //   nativeCurrency: {
+  //     name: "ETH",
+  //     symbol: "ETH",
+  //     decimals: 18,
+  //   },
+  //   logoUrl: eth,
+  //   rpcUrls: ["https://polygon-rpc.com/"],
+  //   blockExplorerUrls: ["https://testnet-zkevm.polygonscan.com/"],
+  //   graphAvailable: true,
+  // },
   // 8081: {
   //   chainId: 8081,
   //   chainName: "Shardeum Sphinx Dapp 1.X",

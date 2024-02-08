@@ -34,6 +34,7 @@ import {
   checkOpenPosition,
   fixedToShort,
   getPoolCreatedGraphQuery,
+  getPoolCreatedGraphQueryTestnet,
 } from "./helpers/dashboard";
 import { hidePools } from "./utils/constants";
 import { fetchTokenLib, getPastEvents } from "./lib/fun/functions";
@@ -67,6 +68,7 @@ function App() {
   const { address, isConnected, chain } = useWalletHook();
   const user = useSelector((state) => state.user);
   const query = getPoolCreatedGraphQuery(address);
+  const testnetQuery = getPoolCreatedGraphQueryTestnet(address)
   const [tokenPrice, setTokenPrice] = useState({});
 
   const networksWithGraph = Object.values(supportedNetworks)
@@ -74,7 +76,7 @@ function App() {
     .map((net) => net.chainId);
 
   const { data, loading, error, refetch } = useQuery("pools", async () => {
-    const fetchedDATA = await fetchGraphQlData(chain?.id || 1, query);
+    const fetchedDATA = await fetchGraphQlData(chain?.id || 1, chain?.id  === 80001 ? testnetQuery : query);
     return fetchedDATA;
   });
 
