@@ -15,6 +15,7 @@ import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import {
   
   polygon,
+  mainnet
 
 } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
@@ -42,7 +43,6 @@ import { alchemyProvider } from "wagmi/providers/alchemy";
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
-const alchemyId2 = import.meta.env.VITE_ALCHEMY_ID2;
 const projectId = '18855b3b9345b6d878b636ea87cd502f' ||  import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID;
 
@@ -56,7 +56,7 @@ import {
 } from "./core/networks/Chains";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [polygonMainnet, sepoliaTestnet, mumbaiTestnet, zkEVMTestNet ],
+  [mainnet, polygonMainnet ],
   [publicProvider()]
 );
 

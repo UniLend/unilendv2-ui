@@ -65,7 +65,6 @@ window.Buffer = window.Buffer ?? Buffer;
 function App() {
   const dispatch = useDispatch();
   const { address, isConnected, chain } = useWalletHook();
-  const contracts = useSelector((state) => state.contracts);
   const user = useSelector((state) => state.user);
   const query = getPoolCreatedGraphQuery(address);
   const [tokenPrice, setTokenPrice] = useState({});
@@ -75,7 +74,7 @@ function App() {
     .map((net) => net.chainId);
 
   const { data, loading, error, refetch } = useQuery("pools", async () => {
-    const fetchedDATA = await fetchGraphQlData(chain?.id || 137, query);
+    const fetchedDATA = await fetchGraphQlData(chain?.id || 1, query);
     return fetchedDATA;
   });
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ManageToken from "../ManageTokens/ManageToken";
 import PoolCard from "./poolCard";
-import banner from "../../assets/poolbanner.svg";
+import banner from "../../assets/poolbannermainnet.svg";
 import { FaChevronDown } from "react-icons/fa";
 import "./styles/index.scss";
 import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";

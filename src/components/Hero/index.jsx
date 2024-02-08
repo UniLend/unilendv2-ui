@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ManageToken from "../ManageTokens/ManageToken";
-import banner from "../../assets/banner.svg";
+import banner from "../../assets/bannermainnet.svg";
 import darkbanner from "../../assets/darkBanner.svg";
 import "./styles/index.scss";
 import { useSelector } from "react-redux";
