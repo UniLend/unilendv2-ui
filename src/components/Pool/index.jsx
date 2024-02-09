@@ -350,15 +350,14 @@ export default function PoolComponent() {
 
   const fetchPoolDATA = async () => {
     try {
-      const helperContractInstance = await getEtherContractWithProvider(contracts.helperContract.address, helperAbi,chain?.id)
-  console.log("helper", helperContractInstance);
+ 
       if (!methodLoaded.getPoolData) {
         const pool = await getPoolBasicData(
           contracts,
           selectedPool,
           poolData,
           poolList[selectedPool],
-          helperContractInstance
+      
         );
         if (pool?.token0 && pool?.token1) {
           setPoolData(pool);
@@ -370,7 +369,7 @@ export default function PoolComponent() {
           poolData,
           selectedPool,
           user.address,
-          helperContractInstance
+   
         );
         if (pool?.token0 && pool?.token1) {
           setMethodLoaded({ ...methodLoaded, getPoolFullData: true });
@@ -397,7 +396,7 @@ export default function PoolComponent() {
           poolData,
           selectedPool,
           user.address,
-          helperContractInstance
+   
         );
         if (poolTokensPrice?.token0 && poolTokensPrice?.token1) {
           setPoolData(poolTokensPrice);

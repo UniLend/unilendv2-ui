@@ -35,6 +35,11 @@ import {
   coin98Wallet,
 } from "@rainbow-me/rainbowkit/wallets";
 
+
+import { mainnet, sepolia } from 'wagmi/chains'
+
+
+
 //infinity wallet integration 
 // import { InfinityWalletConnector, openInfinityWallet } from '@infinitywallet/infinity-connector';
 
@@ -86,8 +91,7 @@ const connectors = connectorsForWallets([
 ]);
 
 
-
-const wagmiConfig = createConfig({
+export const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
   publicClient,
