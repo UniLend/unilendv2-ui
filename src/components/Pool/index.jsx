@@ -42,7 +42,7 @@ import { useSelector } from "react-redux";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { waitForBlockConfirmation } from "../../lib/fun/functions";
 import NotificationMessage from "../Common/NotificationMessage";
-import { getEtherContract, getEthersProvider } from "../../lib/fun/wagmi";
+import { getEtherContract, getEtherContractWithProvider, getEthersProvider } from "../../lib/fun/wagmi";
 import { coreAbi, helperAbi } from "../../core/contractData/abi";
 
 const lend = "lend";
@@ -350,7 +350,7 @@ export default function PoolComponent() {
 
   const fetchPoolDATA = async () => {
     try {
-      const helperContractInstance = await getEtherContract(contracts.helperContract.address, helperAbi,chain?.id)
+      const helperContractInstance = await getEtherContractWithProvider(contracts.helperContract.address, helperAbi,chain?.id)
   console.log("helper", helperContractInstance);
       if (!methodLoaded.getPoolData) {
         const pool = await getPoolBasicData(
