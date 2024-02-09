@@ -178,24 +178,24 @@ export const getTokenPrice = async (
       const pool = { ...poolData };
       pool.token0.balance = fromBigNumber(data[2]);
       pool.token0.balanceFixed = fixed2Decimals(
-        data._balance0,
+        data[2],
         poolData.token0._decimals
       );
 
       pool.token1.balance = fromBigNumber(data[3]);
       pool.token1.balanceFixed = fixed2Decimals(
-        data._balance1,
+        data[3],
         poolData.token1._decimals
       );
       pool.token0.allowance = fromBigNumber(data[0]);
       pool.token0.allowanceFixed = fixed2Decimals(
-        data._allowance0,
+        data[0],
         poolData.token0._decimals
       );
 
       pool.token1.allowance = fromBigNumber(data[1]);
       pool.token1.allowanceFixed = fixed2Decimals(
-        data._allowance1,
+        data[1],
         poolData.token1._decimals
       );
 
