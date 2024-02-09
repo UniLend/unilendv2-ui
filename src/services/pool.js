@@ -169,11 +169,12 @@ export const getTokenPrice = async (
   contracts,
   poolData,
   poolAddress,
-  userAddr
+  userAddr,
+  helperContractInstance
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      const data = await contracts.helperContract.getPoolTokensData(
+      const data = await helperContractInstance.getPoolTokensData(
         poolAddress,
         userAddr
       );
@@ -227,12 +228,12 @@ oracle data;
 export const getOracleData = async (contracts, poolData) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-   
+      const coreContractInstance = await getEtherContract(contracts.coreContract.address, coreAbi)
       let data;
       let tmpPrice;
       const pool = { ...poolData };
       if(poolData.token0._decimals == 6){
-         data = await contracts.coreContract.getOraclePrice(
+         data = await coreContractInstance.getOraclePrice(
           poolData.token1._address,
           poolData.token0._address,
           decimal2Fixed(1, poolData.token1._decimals)
@@ -241,7 +242,7 @@ export const getOracleData = async (contracts, poolData) => {
          pool.token1.price = tmpPrice;
          pool.token0.price = (1 / tmpPrice).toString();
       } else if(poolData.token1._decimals == 6) {
-         data = await contracts.coreContract.getOraclePrice(
+         data = await coreContractInstance.getOraclePrice(
           poolData.token1._address,  
           poolData.token0._address,                 
           decimal2Fixed(1, poolData.token1._decimals)
@@ -251,7 +252,7 @@ export const getOracleData = async (contracts, poolData) => {
          pool.token1.price = tmpPrice;
          pool.token0.price = (1 / tmpPrice).toString();
       }else {
-        data = await contracts.coreContract.getOraclePrice(
+        data = await coreContractInstance.getOraclePrice(
          poolData.token0._address,
          poolData.token1._address,      
          decimal2Fixed(1, poolData.token0._decimals)
@@ -332,12 +333,13 @@ export const getPoolBasicData = async (
   contracts,
   poolAddress,
   poolData,
-  poolTokens
+  poolTokens,
+  helperContractInstance
 ) => {
   let pool;
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      const data = await contracts.helperContract.getPoolData(poolAddress);
+      const data = await helperContractInstance.getPoolData(poolAddress);
  
       pool = {
         ...poolData,
@@ -380,11 +382,12 @@ export const getPoolAllData = async (
   contracts,
   poolData,
   poolAddress,
-  userAddr
+  userAddr,
+  helperContractInstance
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      const data = await contracts.helperContract.getPoolFullData(
+      const data = await helperContractInstance.getPoolFullData(
         contracts.positionContract.address,
         poolAddress,
         userAddr
