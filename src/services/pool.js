@@ -211,7 +211,7 @@ export const getTokenPrice = async (
           ? getTabs(pool.token1).filter((v) => v !== "borrow")
           : getTabs(pool.token1);
 
-          console.log("Pool Data:", pool);
+      console.log("Pool Data:", pool);
       return pool;
     } catch (error) {
       throw error;
@@ -227,56 +227,60 @@ oracle data;
 export const getOracleData = async (contracts, poolData) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-   
       let data;
       let tmpPrice;
       const pool = { ...poolData };
-      if(poolData.token0._decimals == 6){
-         data = await contracts.coreContract.getOraclePrice(
+      if (poolData.token0._decimals == 6) {
+        data = await contracts.coreContract.getOraclePrice(
           poolData.token1._address,
           poolData.token0._address,
           decimal2Fixed(1, poolData.token1._decimals)
         );
-         tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
-         pool.token1.price = tmpPrice;
-         pool.token0.price = (1 / tmpPrice).toString();
-      } else if(poolData.token1._decimals == 6) {
-         data = await contracts.coreContract.getOraclePrice(
-          poolData.token1._address,  
-          poolData.token0._address,                 
+        tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
+        pool.token1.price = tmpPrice;
+        pool.token0.price = (1 / tmpPrice).toString();
+      } else if (poolData.token1._decimals == 6) {
+        data = await contracts.coreContract.getOraclePrice(
+          poolData.token1._address,
+          poolData.token0._address,
           decimal2Fixed(1, poolData.token1._decimals)
         );
-  
-         tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
-         pool.token1.price = tmpPrice;
-         pool.token0.price = (1 / tmpPrice).toString();
-      }else {
+
+        tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
+        pool.token1.price = tmpPrice;
+        pool.token0.price = (1 / tmpPrice).toString();
+      } else {
         data = await contracts.coreContract.getOraclePrice(
-         poolData.token0._address,
-         poolData.token1._address,      
-         decimal2Fixed(1, poolData.token0._decimals)
-       );
- 
+          poolData.token0._address,
+          poolData.token1._address,
+          decimal2Fixed(1, poolData.token0._decimals)
+        );
+
         tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
         pool.token0.price = tmpPrice;
         pool.token1.price = (1 / tmpPrice).toString();
-     }
+      }
 
-    //  data = await contracts.coreContract.getOraclePrice(
-    //   poolData.token0._address,
-    //   poolData.token1._address,      
-    //   decimal2Fixed(1, poolData.token0._decimals)
-    // );
+      //  data = await contracts.coreContract.getOraclePrice(
+      //   poolData.token0._address,
+      //   poolData.token1._address,
+      //   decimal2Fixed(1, poolData.token0._decimals)
+      // );
 
-    //  tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
-    //  pool.token0.price = tmpPrice;
-    //  pool.token1.price = (1 / tmpPrice).toString();
-     
-    
-      pool.token0.collateralBalance = mul(div(mul(
-        mul(pool.token1.borrowBalance, pool.token1.price) / pool.ltv,
-        100
-      ), 10**pool.token1._decimals), 10**pool.token0._decimals );
+      //  tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
+      //  pool.token0.price = tmpPrice;
+      //  pool.token1.price = (1 / tmpPrice).toString();
+
+      pool.token0.collateralBalance = mul(
+        div(
+          mul(
+            mul(pool.token1.borrowBalance, pool.token1.price) / pool.ltv,
+            100
+          ),
+          10 ** pool.token1._decimals
+        ),
+        10 ** pool.token0._decimals
+      );
 
       pool.token0.collateralBalanceFixed = new BigNumber(
         pool.token0.collateralBalance
@@ -284,10 +288,16 @@ export const getOracleData = async (contracts, poolData) => {
         .dividedBy(10 ** pool.token0._decimals)
         .toFixed();
 
-      pool.token1.collateralBalance = mul(div(mul(
-        mul(pool.token0.borrowBalance, pool.token0.price) / pool.ltv,
-        100
-      ),10**pool.token0._decimals), 10**pool.token1._decimals );
+      pool.token1.collateralBalance = mul(
+        div(
+          mul(
+            mul(pool.token0.borrowBalance, pool.token0.price) / pool.ltv,
+            100
+          ),
+          10 ** pool.token0._decimals
+        ),
+        10 ** pool.token1._decimals
+      );
       pool.token1.collateralBalanceFixed = new BigNumber(
         pool.token1.collateralBalance
       )
@@ -338,7 +348,7 @@ export const getPoolBasicData = async (
   if (contracts.helperContract && contracts.coreContract) {
     try {
       const data = await contracts.helperContract.getPoolData(poolAddress);
- 
+
       pool = {
         ...poolData,
         _address: poolAddress,
@@ -417,18 +427,13 @@ export const getPoolAllData = async (
           ),
 
           healthFactor18: fromBigNumber(data._healthFactor0),
-          healthFactorFixed: fixed2Decimals(
-            data._healthFactor0,
-            poolData.token0._decimals
-          ),
+          healthFactorFixed: fixed2Decimals(data._healthFactor0, 18),
           healthFactor: greaterThan(
-            fixed2Decimals(data._healthFactor0, poolData.token0._decimals),
+            fixed2Decimals(data._healthFactor0, 18),
             100
           )
             ? "100"
-            : Number(
-                fixed2Decimals(data._healthFactor0, poolData.token0._decimals)
-              ).toFixed(2),
+            : Number(fixed2Decimals(data._healthFactor0, 18)).toFixed(2),
 
           interest: fromBigNumber(data._interest0),
           interestFixed: fixed2Decimals(
@@ -493,18 +498,13 @@ export const getPoolAllData = async (
           ),
 
           healthFactor18: fromBigNumber(data._healthFactor1),
-          healthFactorFixed: fixed2Decimals(
-            data._healthFactor1,
-            poolData.token1._decimals
-          ),
+          healthFactorFixed: fixed2Decimals(data._healthFactor1, 18),
           healthFactor: greaterThan(
-            fixed2Decimals(data._healthFactor1, poolData.token1._decimals),
+            fixed2Decimals(data._healthFactor1, 18),
             100
           )
             ? "100"
-            : Number(
-                fixed2Decimals(data._healthFactor1, poolData.token1._decimals)
-              ).toFixed(2),
+            : Number(fixed2Decimals(data._healthFactor1, 18)).toFixed(2),
 
           interest: fromBigNumber(data._interest1),
           interestFixed: fixed2Decimals(
@@ -808,7 +808,6 @@ export const handleCreatePool = async (
     return hash;
   } catch (error) {
     checkTxnError(error);
-
   }
 };
 
