@@ -351,7 +351,7 @@ export default function PoolComponent() {
   const fetchPoolDATA = async () => {
     try {
       const helperContractInstance = await getEtherContract(contracts.helperContract.address, helperAbi,chain?.id)
-  
+  console.log("helper", helperContractInstance);
       if (!methodLoaded.getPoolData) {
         const pool = await getPoolBasicData(
           contracts,
