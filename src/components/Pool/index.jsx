@@ -88,7 +88,7 @@ export default function PoolComponent() {
   const { poolAddress } = useParams();
   const [selectedPool, setSelectedPool] = useState(poolAddress);
   const navigate = useNavigate();
-  const { isConnected } = useWalletHook();
+  const { isConnected, chain } = useWalletHook();
   const liquidityText = {
     lend: "Your Liquidity",
     redeem: "Redeemable Amount",
@@ -350,7 +350,7 @@ export default function PoolComponent() {
 
   const fetchPoolDATA = async () => {
     try {
-      const helperContractInstance = await getEtherContract(contracts.helperContract.address, helperAbi)
+      const helperContractInstance = await getEtherContract(contracts.helperContract.address, helperAbi,chain?.id)
   
       if (!methodLoaded.getPoolData) {
         const pool = await getPoolBasicData(
