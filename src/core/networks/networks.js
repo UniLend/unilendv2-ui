@@ -142,6 +142,25 @@ export const networks = {
 
 // Supported network List
 export const supportedNetworks = {
+  1: {
+    chainId: 1,
+    chainName: "Ethereum Mainnet",
+    nativeCurrency: {
+      name: "Ether",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    logoUrl: eth,
+    rpcUrls: [
+      "https://mainnet.infura.io/v3/${INFURA_API_KEY}",
+      "wss://mainnet.infura.io/ws/v3/${INFURA_API_KEY}",
+      "https://api.mycryptoapi.com/eth",
+      "https://cloudflare-eth.com",
+    ],
+    blockExplorerUrls: ["https://etherscan.io"],
+    graphAvailable: true
+  },
+
   137: {
     chainId: 137,
     chainName: "Polygon Mainnet",
