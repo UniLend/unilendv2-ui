@@ -1,9 +1,12 @@
 import * as React from "react";
 import { type WalletClient, type PublicClient, useWalletClient } from "wagmi";
 
-import { getPublicClient, getWalletClient, getNetwork } from "wagmi/actions";
+import { getPublicClient, getWalletClient, getNetwork, readContract } from "wagmi/actions";
 import { providers, ethers } from "ethers";
 import { type HttpTransport } from "viem";
+import { wagmiConfig } from "../../main";
+import { helperAbi } from "../../core/contractData/abi";
+
 
 export function publicClientToProvider(publicClient: PublicClient) {
   const { chain, transport } = publicClient;
@@ -55,8 +58,9 @@ export async function getEtherContract(
   chainId?: number
 ) {
   const signer = await getEthersSigner({ chainId });
+  const provider = getEthersProvider({ chainId });
 
-  const contract = new ethers.Contract(address, abi, signer);
+  const contract = new ethers.Contract(address, abi, signer? signer: provider);
 
   return contract;
 }
@@ -70,3 +74,13 @@ export const getEtherContractWithProvider = (
   const contract = new ethers.Contract(address, abi, pro);
   return contract;
 };
+
+export const readContracts = async (address: any, abi: any, functionName: string, args: Array<String>) => { 
+  const result = await readContract({
+    abi,
+    address: address,
+    functionName: functionName,
+    args: args
+  })
+  return result;
+} 

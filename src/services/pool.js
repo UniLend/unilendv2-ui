@@ -18,7 +18,7 @@ import {
 } from "../helpers/contracts";
 import BigNumber from "bignumber.js";
 
-import { getEtherContract } from "../lib/fun/wagmi";
+import { getEtherContract, readContracts } from "../lib/fun/wagmi";
 import { getFromLocalStorage, saveToLocalStorage } from "../utils";
 import { tokensBYSymbol } from "../utils/constants";
 /*
@@ -169,36 +169,33 @@ export const getTokenPrice = async (
   contracts,
   poolData,
   poolAddress,
-  userAddr
+  userAddr,
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      const data = await contracts.helperContract.getPoolTokensData(
-        poolAddress,
-        userAddr
-      );
+      const data =  await readContracts(contracts.helperContract.address, helperAbi, 'getPoolTokensData', [ poolAddress, userAddr] )
 
       const pool = { ...poolData };
-      pool.token0.balance = fromBigNumber(data._balance0);
+      pool.token0.balance = fromBigNumber(data[2]);
       pool.token0.balanceFixed = fixed2Decimals(
-        data._balance0,
+        data[2],
         poolData.token0._decimals
       );
 
-      pool.token1.balance = fromBigNumber(data._balance1);
+      pool.token1.balance = fromBigNumber(data[3]);
       pool.token1.balanceFixed = fixed2Decimals(
-        data._balance1,
+        data[3],
         poolData.token1._decimals
       );
-      pool.token0.allowance = fromBigNumber(data._allowance0);
+      pool.token0.allowance = fromBigNumber(data[0]);
       pool.token0.allowanceFixed = fixed2Decimals(
-        data._allowance0,
+        data[0],
         poolData.token0._decimals
       );
 
-      pool.token1.allowance = fromBigNumber(data._allowance1);
+      pool.token1.allowance = fromBigNumber(data[1]);
       pool.token1.allowanceFixed = fixed2Decimals(
-        data._allowance1,
+        data[1],
         poolData.token1._decimals
       );
 
@@ -227,35 +224,43 @@ oracle data;
 export const getOracleData = async (contracts, poolData) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-   
       let data;
       let tmpPrice;
       const pool = { ...poolData };
       if(poolData.token0._decimals == 6){
-         data = await contracts.coreContract.getOraclePrice(
-          poolData.token1._address,
+         data =  await readContracts(contracts.coreContract.address, coreAbi, 'getOraclePrice', [   poolData.token1._address,
           poolData.token0._address,
-          decimal2Fixed(1, poolData.token1._decimals)
-        );
+          decimal2Fixed(1, poolData.token1._decimals)] )
+        //  data = await coreContractInstance.getOraclePrice(
+        //   poolData.token1._address,
+        //   poolData.token0._address,
+        //   decimal2Fixed(1, poolData.token1._decimals)
+        // );
          tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
          pool.token1.price = tmpPrice;
          pool.token0.price = (1 / tmpPrice).toString();
       } else if(poolData.token1._decimals == 6) {
-         data = await contracts.coreContract.getOraclePrice(
-          poolData.token1._address,  
+        data =  await readContracts(contracts.coreContract.address, coreAbi, 'getOraclePrice', [  poolData.token1._address,  
           poolData.token0._address,                 
-          decimal2Fixed(1, poolData.token1._decimals)
-        );
+          decimal2Fixed(1, poolData.token1._decimals)] )
+        //  data = await coreContractInstance.getOraclePrice(
+        //   poolData.token1._address,  
+        //   poolData.token0._address,                 
+        //   decimal2Fixed(1, poolData.token1._decimals)
+        // );
   
          tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
          pool.token1.price = tmpPrice;
          pool.token0.price = (1 / tmpPrice).toString();
       }else {
-        data = await contracts.coreContract.getOraclePrice(
-         poolData.token0._address,
-         poolData.token1._address,      
-         decimal2Fixed(1, poolData.token0._decimals)
-       );
+        data =  await readContracts(contracts.coreContract.address, coreAbi, 'getOraclePrice', [      poolData.token0._address,
+          poolData.token1._address,      
+          decimal2Fixed(1, poolData.token0._decimals)] )
+      //   data = await coreContractInstance.getOraclePrice(
+      //    poolData.token0._address,
+      //    poolData.token1._address,      
+      //    decimal2Fixed(1, poolData.token0._decimals)
+      //  );
  
         tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
         pool.token0.price = tmpPrice;
@@ -332,17 +337,19 @@ export const getPoolBasicData = async (
   contracts,
   poolAddress,
   poolData,
-  poolTokens
+  poolTokens,
 ) => {
   let pool;
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      const data = await contracts.helperContract.getPoolData(poolAddress);
- 
+    const data =  await readContracts(contracts.helperContract.address, helperAbi, 'getPoolData', [poolAddress] )
+   
+      //const data = await helperContractInstance.getPoolData(poolAddress);
+      console.log("result", data, fromBigNumber(50));
       pool = {
         ...poolData,
         _address: poolAddress,
-        ltv: Number(data.ltv - 0.01),
+        ltv: Number( fromBigNumber(data.ltv) - 0.01),
         lb: fromBigNumber(data.lb),
         rf: fromBigNumber(data.rf),
         token0: {
@@ -380,15 +387,18 @@ export const getPoolAllData = async (
   contracts,
   poolData,
   poolAddress,
-  userAddr
+  userAddr,
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      const data = await contracts.helperContract.getPoolFullData(
-        contracts.positionContract.address,
+      const data =  await readContracts(contracts.helperContract.address, helperAbi, 'getPoolFullData', [ contracts.positionContract.address,
         poolAddress,
-        userAddr
-      );
+        userAddr])
+      // const data = await helperContractInstance.getPoolFullData(
+      //   contracts.positionContract.address,
+      //   poolAddress,
+      //   userAddr
+      // );
 
       const totLiqFull0 = add(
         div(mul(poolData.token0.liquidity, 100), poolData.rf),

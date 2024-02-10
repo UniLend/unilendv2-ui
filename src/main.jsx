@@ -26,11 +26,16 @@ import {
   coin98Wallet,
 } from "@rainbow-me/rainbowkit/wallets";
 
-//infinity wallet integration
+
+import { mainnet, sepolia } from 'wagmi/chains'
+
+
+
+//infinity wallet integration 
 // import { InfinityWalletConnector, openInfinityWallet } from '@infinitywallet/infinity-connector';
 
 import { alchemyProvider } from "wagmi/providers/alchemy";
-import { infuraProvider } from "wagmi/providers/infura";
+import { infuraProvider } from 'wagmi/providers/infura'
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -38,6 +43,7 @@ const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID;
 
 import { mumbaiTestnet } from "./core/networks/Chains";
+
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet, polygon, mumbaiTestnet],
