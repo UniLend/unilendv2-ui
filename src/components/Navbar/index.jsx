@@ -157,18 +157,17 @@ export default function Navbar() {
       <div className="walletModel">
         <h1>Wrong Network</h1>
         <p>
-          UniLend V2 is in Testnet Phase.
-          <br /> Please Connect to the Below Networks.
+        UniLend V2 is on Ethereum Mainnet only. Please Switch Network.
         </p>
         <div className="networks">
-          <div onClick={() => handleSwitchNetwork(11155111)}>
+          <div onClick={() => handleSwitchNetwork(1)}>
             <img src={ethlogo} alt="Etherium" />
-            <p>Sepolia</p>
+            <p>Ethereum</p>
           </div>
-          <div onClick={() => handleSwitchNetwork(1442)}>
+          {/* <div onClick={() => handleSwitchNetwork(1442)}>
             <img src={ethlogo} alt="Etherium" />
             <p>zkEVM</p>
-          </div>
+          </div> */}
           {/* <div onClick={() => handleSwitchNetwork(8081)}>
             <img src={shardeumLogo} alt="Etherium" />
             <p>Shardeum</p>
@@ -373,7 +372,7 @@ export default function Navbar() {
               Rewards
               <LockOutlined style={{ marginLeft: "5px" }} />
             </a>
-            {true && (
+            {isNavigateAllow  && (
               <a
                 href="/history"
                 className={`${pathname === "/history" ? "active" : ""}`}
@@ -381,12 +380,12 @@ export default function Navbar() {
                 History
               </a>
             )}
-            <a
+            {/* <a
               href="https://chaindrop.org/?chainid=11155111&token=0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
               target="_blank"
             >
               Faucet
-            </a>
+            </a> */}
           </nav>
         </div>
       </div>

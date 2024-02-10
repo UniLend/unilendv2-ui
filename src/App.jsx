@@ -243,7 +243,7 @@ function App() {
   }, [tokenPrice]);
 
   const loadPoolsWithGraph = async () => {
-    const networkID = chain?.id || 1442;
+    const networkID = chain?.id || 1;
     if (data && networksWithGraph.includes(networkID)) {
       const allPositions = data?.positions;
       const poolData = {};

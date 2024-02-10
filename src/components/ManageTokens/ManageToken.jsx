@@ -79,13 +79,13 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   }, [tokens]);
 
   useEffect(() => {
-    if (isMainNet) {
+    if (true) {
       if (fetchFrom.coinGecko) {
         setIsFetching(true);
         fetchCoinGeckoTokens()
           .then((data) => {
             setCoinGeckoToken(data.tokens);
-            setTokenBackup(data.tokens); //
+            setTokenBackup(data.tokens); 
             setAvailableToken([...data?.token, ...Object.values(tokenList)]);
           })
           .finally(() => setIsFetching(false));

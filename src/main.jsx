@@ -27,10 +27,6 @@ import {
 } from "@rainbow-me/rainbowkit/wallets";
 
 
-import { mainnet, sepolia } from 'wagmi/chains'
-
-
-
 //infinity wallet integration 
 // import { InfinityWalletConnector, openInfinityWallet } from '@infinitywallet/infinity-connector';
 
@@ -54,7 +50,6 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   ]
 );
 
-console.log("Ethereum", chains, {publicClient});
 
 const connectors = connectorsForWallets([
   {
