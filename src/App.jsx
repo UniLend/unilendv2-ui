@@ -279,14 +279,14 @@ function App() {
             ...pool.token0,
             address: pool?.token0?.id,
             logo: getTokenLogo(pool.token0.symbol),
-            priceUSD: tokenPrice[pool?.token0?.id] * 10 ** 18,
+            priceUSD: tokenPrice[pool?.token0?.id] *  pool.token0.decimals,
             pricePerToken: tokenPrice[pool?.token0?.id],
           },
           token1: {
             ...pool.token1,
             address: pool?.token1?.id,
             logo: getTokenLogo(pool.token1.symbol),
-            priceUSD: tokenPrice[pool?.token1?.id] * 10 ** 18,
+            priceUSD: tokenPrice[pool?.token1?.id] * pool.token1.decimals,
             pricePerToken: tokenPrice[pool?.token1?.id],
           },
         };
@@ -294,14 +294,14 @@ function App() {
           ...pool.token0,
           address: pool?.token0?.id,
           logo: getTokenLogo(pool.token0.symbol),
-          priceUSD: tokenPrice[pool?.token0?.id] * 10 ** 18,
+          priceUSD: tokenPrice[pool?.token0?.id] *  pool.token0.decimals,
           pricePerToken: tokenPrice[pool?.token0?.id],
         };
         tokenList[String(pool.token1.id).toUpperCase()] = {
           ...pool.token1,
           address: pool?.token1?.id,
           logo: getTokenLogo(pool.token1.symbol),
-          priceUSD: tokenPrice[pool?.token1?.id] * 10 ** 18,
+          priceUSD: tokenPrice[pool?.token1?.id] * pool.token1.decimals,
           pricePerToken: tokenPrice[pool?.token1?.id],
         };
         poolData[pool?.pool] = poolInfo;
