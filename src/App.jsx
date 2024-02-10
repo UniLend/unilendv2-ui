@@ -43,7 +43,7 @@ import {
   getEtherContractWithProvider,
 } from "./lib/fun/wagmi";
 import { ethers } from "ethers";
-import { getTokenUSDPrice } from "./helpers/contracts";
+import { fixed2Decimals, getTokenUSDPrice } from "./helpers/contracts";
 import useWalletHook from "./lib/hooks/useWallet";
 import { supportedNetworks } from "./core/networks/networks";
 
@@ -265,13 +265,13 @@ function App() {
           poolAddress: pool?.pool,
           hide: hidePools.includes(pool?.pool),
 
-          totalLiquidity:
-            fixedToShort(pool.liquidity0) * tokenPrice[pool?.token0?.id] +
-            fixedToShort(pool.liquidity1) * tokenPrice[pool?.token1?.id],
+            totalLiquidity:
+            fixed2Decimals(pool.liquidity0, pool.token0.decimals ) * tokenPrice[pool?.token0?.id] +
+            fixed2Decimals(pool.liquidity1, pool.token1.decimals ) * tokenPrice[pool?.token1?.id],
 
           totalBorrowed:
-            fixedToShort(pool.totalBorrow0) * tokenPrice[pool?.token0?.id] +
-            fixedToShort(pool.totalBorrow1) * tokenPrice[pool?.token1?.id],
+          fixed2Decimals(pool.totalBorrow0, pool.token0.decimals) * tokenPrice[pool?.token0?.id] +
+          fixed2Decimals(pool.totalBorrow1,  pool.token1.decimals) * tokenPrice[pool?.token1?.id],
 
           openPosition:
             openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
