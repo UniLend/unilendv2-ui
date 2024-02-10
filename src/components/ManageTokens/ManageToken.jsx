@@ -84,9 +84,10 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
         setIsFetching(true);
         fetchCoinGeckoTokens()
           .then((data) => {
-            setCoinGeckoToken(data.tokens);
-            setTokenBackup(data.tokens); 
-            setAvailableToken([...data?.token, ...Object.values(tokenList)]);
+            const tokensArray = Array.isArray(data?.tokens) && data?.tokens
+            setCoinGeckoToken(tokensArray.concat(Object.values(tokenList)));
+            setTokenBackup(tokensArray.concat(Object.values(tokenList))); 
+            setAvailableToken( tokensArray.concat(Object.values(tokenList)) );
           })
           .finally(() => setIsFetching(false));
       } else {
@@ -258,7 +259,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
         </div>
         <div ref={container} className="token_list">
           {isFetching && <h2>Fetching...</h2>}
-          {!isFetching && availableToken.length === 0 && (
+          {!isFetching && availableToken?.length === 0 && (
             <h2>Tokens not listed</h2>
           )}
 
