@@ -44,6 +44,7 @@ import { mainnet, sepolia } from 'wagmi/chains'
 // import { InfinityWalletConnector, openInfinityWallet } from '@infinitywallet/infinity-connector';
 
 import { alchemyProvider } from "wagmi/providers/alchemy";
+import { infuraProvider } from 'wagmi/providers/infura'
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -60,9 +61,10 @@ import {
   polygonMainnet
 } from "./core/networks/Chains";
 
+
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [polygonMainnet, sepoliaTestnet, mumbaiTestnet, zkEVMTestNet ],
-  [publicProvider()]
+  [ mainnet, polygonMainnet, sepoliaTestnet, mumbaiTestnet, zkEVMTestNet ],
+  [publicProvider(), infuraProvider({apiKey: infuraID})]
 );
 
 
