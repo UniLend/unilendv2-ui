@@ -143,7 +143,9 @@ export function truncateToDecimals(number, decimal) {
 
 
 export function fixed2Decimals(amount, decimals = 18) {
-  return new BigNumber(amount?._hex).dividedBy(10 ** decimals).toFixed();
+  const amt = amount?._hex ? amount?._hex : amount
+  const dec = fromBigNumber(decimals)
+  return new BigNumber(amt).dividedBy(10 ** dec).toFixed();
 }
 
 export function fixed2Decimals18(amount, decimals = 18) {

@@ -42,7 +42,8 @@ import { useSelector } from "react-redux";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { waitForBlockConfirmation } from "../../lib/fun/functions";
 import NotificationMessage from "../Common/NotificationMessage";
-import { getEthersProvider } from "../../lib/fun/wagmi";
+import { getEtherContract, getEtherContractWithProvider, getEthersProvider } from "../../lib/fun/wagmi";
+import { coreAbi, helperAbi } from "../../core/contractData/abi";
 
 const lend = "lend";
 const borrow = "borrow";
@@ -83,10 +84,11 @@ export default function PoolComponent() {
     token1: "",
   });
   const [tokensWithCreatedPools, setTokensWithCreatedPools] = useState([]);
+  const [helperContractInstance,setHelperContractInstance ] = useState(null)
   const { poolAddress } = useParams();
   const [selectedPool, setSelectedPool] = useState(poolAddress);
   const navigate = useNavigate();
-  const { isConnected } = useWalletHook();
+  const { isConnected, chain } = useWalletHook();
   const liquidityText = {
     lend: "Your Liquidity",
     redeem: "Redeemable Amount",
@@ -348,12 +350,14 @@ export default function PoolComponent() {
 
   const fetchPoolDATA = async () => {
     try {
+ 
       if (!methodLoaded.getPoolData) {
         const pool = await getPoolBasicData(
           contracts,
           selectedPool,
           poolData,
-          poolList[selectedPool]
+          poolList[selectedPool],
+      
         );
         if (pool?.token0 && pool?.token1) {
           setPoolData(pool);
@@ -364,7 +368,8 @@ export default function PoolComponent() {
           contracts,
           poolData,
           selectedPool,
-          user.address
+          user.address,
+   
         );
         if (pool?.token0 && pool?.token1) {
           setMethodLoaded({ ...methodLoaded, getPoolFullData: true });
@@ -390,7 +395,8 @@ export default function PoolComponent() {
           contracts,
           poolData,
           selectedPool,
-          user.address
+          user.address,
+   
         );
         if (poolTokensPrice?.token0 && poolTokensPrice?.token1) {
           setPoolData(poolTokensPrice);

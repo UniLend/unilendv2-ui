@@ -70,8 +70,9 @@ export const fetchGraphQlData = async (chainId, FILMS_QUERY) => {
   const graphURL = {
     80001: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend',
     // 137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
-    137: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon-3',
-    1442: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-zkevm',
+    137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon-2",
+    1442: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-zkevm",
+    1: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-mainnet'
   };
 
   if (Object.keys(graphURL).includes(String(chainId))) {

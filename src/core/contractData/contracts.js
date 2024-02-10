@@ -1,3 +1,17 @@
+<<<<<<< HEAD
+export const contractAddress = { 
+  '137': {
+    helperAddress: '0x4F57c40D3dAA7BF2EC970Dd157B1268982158720',
+  
+    coreAddress: '0x26883aD38ef58f4E33ce533f64E16c61319c99f6',
+    positionAddress: '0x4B915E92a80498ca5e13c2f2715706A56C05659c',
+  
+    poolAddress: '0xB69Ad3b0e874DDEfC885fe7BeDA015D108F35D82 ',
+    unilendOracle: '0x86148E1eF9D102b3Cf1345FBb8456329C3dEEd29',
+    interestRateModal: '0x5a3A1562f245Da7B2Dfa068547351BD0f2199be5 ',
+    uftToken : '0x5B4CF2C120A9702225814E18543ee658c5f8631e',
+    uftgToken: '0x6CbFa51AF1C1B8940f823DA4C58877E409d6da25'
+=======
 export const contractAddress = {
   137: {
     helperAddress: import.meta.env.VITE_POLYGON_HELPER,
@@ -10,6 +24,7 @@ export const contractAddress = {
     interestRateModal: import.meta.env.VITE_POLYGON_INTERESTRATEMODAL,
     uftToken: '0x5B4CF2C120A9702225814E18543ee658c5f8631e',
     uftgToken: '0x6CbFa51AF1C1B8940f823DA4C58877E409d6da25',
+>>>>>>> fe9de39f76cf1b2af31b9f8cc5a28ac64f9f0439
   },
 
   8081: {
@@ -60,12 +75,13 @@ export const contractAddress = {
     uftToken: '0x06f483894d1c5fD23B999CaC46Fdd325209d2DB4',
     uftgToken: '0x516a7501C2E8655DbD58dFe2500844A3A02E4b4b',
   },
-  1: {
-    // uftToken : '0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1',
-    // uftgToken: '0x43EAbB2706deC026C844161D5Bdb1773161D3D7c',
-    // timeLock:'0x596DEb3c6B99970b18DDa0F567e9d39DD70B1caa',
-    // delegate: '0x96AA92388db80469A242514068A6B83ebEe22861',
-    // delegator: '0x2e93bc7dEA58B0F577a3c9DDbd29ca5939d74145'
+  '1':{
+    helperAddress: '0xAE84B51a1ee35275542Dd99df0F107d4F4e32A63',
+    coreAddress: '0xFf5a76B24e6A3F01E8FcA19661CFD2B69A88BE59',
+    positionAddress: '0xeE607AFC0A1b5cf67B5AAe1Be3E7A154E2B162c7',
+    poolAddress: '0x465d5F2bF568821B1CFE5A4D8A7634445863e1C0',
+    unilendOracle: '0x4B5ba9C61dC797A41835F766e077984a1f17ae10',
+    interestModal:'0x7EA548de9A2086cD6a9Ae91aA2610EE023210981',
 
     uftToken: '0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1',
     uftgToken: '0xcc0fA3eABaEB7b4a7B852159a7c2C6B6b1a0a876',
