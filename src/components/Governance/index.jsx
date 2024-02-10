@@ -37,7 +37,6 @@ export default function GovernanceComponent() {
   };
 
   const handleShowCancelled = (checked) => {
-    console.log("IS_CHECKED", checked);
   };
 
   const handleShowActionModal = (visible) => {

@@ -155,7 +155,6 @@ export function fixed2Decimals18(amount, decimals = 18) {
 export function reduceLastDecimalByOne(number) {
 
 const a = BigNumber(number).minus(1)
-console.log("result", number, a.toString());
     return a.toString();
 }
 
@@ -186,7 +185,6 @@ export function totLiqFull(token, localDB) {
 }
 
 export function getBorrowMax(selectedToken, collateralToken, ltv) {
-  // console.log("borrow", collateralToken.lendBalanceFixed, collateralToken.price, (Number(ltv) / 100));
   const result =
     Number(collateralToken.lendBalanceFixed * collateralToken.price) *
       (Number(ltv) / 100) -

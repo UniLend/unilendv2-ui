@@ -208,7 +208,6 @@ export const getTokenPrice = async (
           ? getTabs(pool.token1).filter((v) => v !== "borrow")
           : getTabs(pool.token1);
 
-          console.log("Pool Data:", pool);
       return pool;
     } catch (error) {
       throw error;
@@ -345,7 +344,6 @@ export const getPoolBasicData = async (
     const data =  await readContracts(contracts.helperContract.address, helperAbi, 'getPoolData', [poolAddress] )
    
       //const data = await helperContractInstance.getPoolData(poolAddress);
-      console.log("result", data, fromBigNumber(50));
       pool = {
         ...poolData,
         _address: poolAddress,

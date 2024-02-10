@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 
 const DonutChart = memo(function DonutChartMemo({ data }) {
   const theme = useSelector((state) => state.theme);
-  console.log("DONOUT_DATA", data);
   const G = G2.getEngine("canvas");
 
   // show first 5 data and remaining are in others;
@@ -16,7 +15,6 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
         .slice(4)
         .reduce((acc, curr) => acc + curr.value, 0);
       const others = { type: "OTHERS", value: othersValue };
-      console.log("OTHERS_DATA", [...firstFive, others]);
       return [...firstFive, others];
     } else {
       return data;

@@ -98,7 +98,6 @@ function App() {
 
       const { coreAddress, helperAddress, positionAddress } =
         contractAddress[chain?.id || user?.network?.id || 1442];
-      // console.log('contractAddres',coreAddress, helperAddress, positionAddress);
       const preparedData = [
         { abi: coreAbi, address: coreAddress },
         { abi: helperAbi, address: helperAddress },
@@ -231,9 +230,7 @@ function App() {
   useEffect(() => {
     if (data?.assetOracles) {
       getTokenPrice();
-    } else {
-      console.log("Failed to fetch Graph data");
-    }
+    } 
   }, [data]);
 
   useEffect(() => {
