@@ -20,7 +20,7 @@ import {
   setApproval,
 } from "../../services/governance";
 import { fetchUserAddressByDomain, fetchUserDomain } from "../../utils/axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getEtherContract } from "../../lib/fun/wagmi";
 import useWalletHook from "../../lib/hooks/useWallet";
 import { waitForTransactionLib } from "../../lib/fun/functions";
@@ -32,15 +32,16 @@ const unWrap = "unWrap";
 const update = "update";
 
 export default function VoteComponent() {
-  const { address, chain } = useWalletHook();
+  const { address, chain, isConnected } = useWalletHook();
   const [userAddress, setUserAddress] = useState(address);
   const [tokenBalance, setTokenBalance] = useState({ uft: "", uftg: "" });
   const [activeTab, setActiveTab] = useState(wrap);
   const [allowanceValue, setAllowanceValue] = useState("");
-  const [delegate, setDelegate] = useState("0x000000000000000");
+  const [delegate, setDelegate] = useState(address);
   const [votingPower, setVotingPower] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(false)
+  const navigate = useNavigate();
 
   const provider = useMemo(() => {
     const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -149,6 +150,9 @@ export default function VoteComponent() {
   const { domainDetail, handleDomain } = useDomainHandling(delegate, provider);
 
   useEffect(() => {
+    if (!isConnected) {
+      navigate("/");
+    }
     handleDomain(delegate);
   }, [delegate]);
 
