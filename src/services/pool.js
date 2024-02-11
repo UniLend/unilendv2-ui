@@ -429,15 +429,15 @@ export const getPoolAllData = async (
           healthFactor18: fromBigNumber(data._healthFactor0),
           healthFactorFixed: fixed2Decimals(
             data._healthFactor0,
-            poolData.token0._decimals
+            18
           ),
           healthFactor: greaterThan(
-            fixed2Decimals(data._healthFactor0, poolData.token0._decimals),
+            fixed2Decimals(data._healthFactor0, 18),
             100
           )
             ? "100"
             : Number(
-                fixed2Decimals(data._healthFactor0, poolData.token0._decimals)
+                fixed2Decimals(data._healthFactor0, 18)
               ).toFixed(2),
 
           interest: fromBigNumber(data._interest0),
@@ -505,15 +505,15 @@ export const getPoolAllData = async (
           healthFactor18: fromBigNumber(data._healthFactor1),
           healthFactorFixed: fixed2Decimals(
             data._healthFactor1,
-            poolData.token1._decimals
+            18
           ),
           healthFactor: greaterThan(
-            fixed2Decimals(data._healthFactor1, poolData.token1._decimals),
+            fixed2Decimals(data._healthFactor1, 18),
             100
           )
             ? "100"
             : Number(
-                fixed2Decimals(data._healthFactor1, poolData.token1._decimals)
+                fixed2Decimals(data._healthFactor1, 18)
               ).toFixed(2),
 
           interest: fromBigNumber(data._interest1),
