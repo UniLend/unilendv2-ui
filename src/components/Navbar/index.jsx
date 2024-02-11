@@ -25,7 +25,6 @@ import ethlogo from "../../assets/eth.svg";
 import sun from "../../assets/sun.svg";
 import moon from "../../assets/moon.svg";
 import metamaskicon from "../../assets/metamaskicon.svg";
-import walletconnecticon from "../../assets/walletconnecticon.png";
 import walletconnect from "../../assets/walletconnect.svg";
 import polyMainlogo from "../../assets/polygon.svg";
 import shardeumLogo from "../../assets/shardeumLogo.png";

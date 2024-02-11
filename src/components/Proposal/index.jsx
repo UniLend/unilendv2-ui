@@ -7,10 +7,7 @@ import "./styles/index.scss";
 export default function ProposalComponent() {
   const { proposalId } = useParams();
   const navigate = useNavigate();
-  console.log("PROPOSAL_ID", proposalId);
-
   const [markupText, setMarkupText] = useState("");
-
   const mdText = `
 ### Details
 

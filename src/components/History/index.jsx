@@ -88,9 +88,6 @@ function HistoryComponent() {
           ...data.repays,
         ];
         const sorted = sortByKey(newArray, "blockTimestamp", 1);
-
-        console.log("history", sorted);
-
         setGraphHistory(sorted);
         setGraphHistoryBackup(sorted);
         setIsPageLoading(false);
