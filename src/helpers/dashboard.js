@@ -611,7 +611,7 @@ export const userDashBoardQuery = (address) => {
       pools {
             token0 {
       symbol
-      priceUSD
+      
       poolCount
       lentCount
       borrowCount
@@ -623,7 +623,7 @@ export const userDashBoardQuery = (address) => {
     }
         token1 {
       symbol
-      priceUSD
+      
       poolCount
       lentCount
       borrowCount
@@ -686,11 +686,11 @@ export const userDashBoardQuery0 = (address) => {
           token0 {
             id
             symbol
-            priceUSD
+            
           }
           token1 {
             id
-            priceUSD
+            
             symbol
           }
         }
@@ -717,7 +717,7 @@ export const userDashBoardQuery0 = (address) => {
         transactionHash
         token {
           id
-          priceUSD
+          
           symbol
         }
         pool {
@@ -743,7 +743,7 @@ export const userDashBoardQuery0 = (address) => {
         positionId
         token {
           id
-          priceUSD
+          
           symbol
         }
         pool {
@@ -768,7 +768,7 @@ export const userDashBoardQuery0 = (address) => {
         positionId
         token {
           id
-          priceUSD
+          
           symbol
         }
         pool {
@@ -793,7 +793,7 @@ export const userDashBoardQuery0 = (address) => {
         positionId
         token {
           id
-          priceUSD
+          
           symbol
         }
         pool {
@@ -852,7 +852,7 @@ export const getHistoryGraphQuery = (address) => {
       transactionHash
       token {
         id
-        priceUSD
+        
         symbol
         decimals
       }
@@ -882,7 +882,7 @@ export const getHistoryGraphQuery = (address) => {
       positionId
       token {
         id
-        priceUSD
+        
         symbol
         decimals
       }
@@ -909,7 +909,7 @@ export const getHistoryGraphQuery = (address) => {
       positionId
       token {
         id
-        priceUSD
+        
         symbol
         decimals
       }
@@ -936,7 +936,7 @@ export const getHistoryGraphQuery = (address) => {
       positionId
       token {
         id
-        priceUSD
+        
         symbol
         decimals
       }
@@ -977,7 +977,7 @@ export const getPoolCreatedGraphQueryTestnet = (address) => {
             token0 {
       symbol
       name
-      priceUSD
+      
       poolCount
       lentCount
       borrowCount
@@ -990,7 +990,7 @@ export const getPoolCreatedGraphQueryTestnet = (address) => {
         token1 {
       symbol
       name
-      priceUSD
+      
       poolCount
       lentCount
       borrowCount
@@ -1049,7 +1049,7 @@ export const getPoolCreatedGraphQuery = (address) => {
             token0 {
       symbol
       name
-      priceUSD
+      
       poolCount
       lentCount
       borrowCount
@@ -1062,7 +1062,7 @@ export const getPoolCreatedGraphQuery = (address) => {
         token1 {
       symbol
       name
-      priceUSD
+      
       poolCount
       lentCount
       borrowCount
