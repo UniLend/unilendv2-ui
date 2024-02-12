@@ -192,7 +192,7 @@ export default function Navbar() {
   const NoAccessModalBody = () => {
     return (
       <div className="walletModel">
-        <h1>No Access</h1>
+        <h1>Restricted</h1>
         <p>
       UnilendV2 dApp is not available in your country
         </p>
