@@ -91,7 +91,14 @@ export default function Navbar() {
 
   const getLocation = async () => {
    const location = await getGeoInfo(); 
-   console.log("location", location);
+
+// "+1"
+// "United States"
+   if(location?.countryCode === '+1' && location.countryName =='United States'){
+     setIsHaveAccess(false)
+   }else{
+    setIsHaveAccess(true)
+   }
   }
 
   useEffect(() => {
@@ -179,6 +186,17 @@ export default function Navbar() {
             <p>Shardeum</p>
           </div> */}
         </div>
+      </div>
+    );
+  };
+  const NoAccessModalBody = () => {
+    return (
+      <div className="walletModel">
+        <h1>No Access</h1>
+        <p>
+      UnilendV2 dApp is not available in your country
+        </p>
+ 
       </div>
     );
   };
@@ -472,10 +490,18 @@ export default function Navbar() {
           <img src={moon} onClick={() => handleTheme("dark")} alt="moon" />
         )}
       </div>
-
       <Modal
         className="antd_modal_overlaywrong"
-        open={wrongNetworkModal}
+        open={!isHaveAccess}
+        centered
+        footer={null}
+        closable={false}
+      >
+        <NoAccessModalBody />
+      </Modal>
+      <Modal
+        className="antd_modal_overlaywrong"
+        open={wrongNetworkModal }
         centered
         footer={null}
         closable={false}
