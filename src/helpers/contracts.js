@@ -255,14 +255,15 @@ const minimumValue = selectedToken?._decimals == 18 ? 0.000000000000000001 : 0.0
 
 const countDecimals = String(amount).split('.')[1]?.length
 
- 
+
   if (amount <= minimumValue  && Number(decimalAmount) <= 1 ) {
     return { text: "Enter Amount", disable: true };
   } else if (amount && activeOperation === lend) {
     if (
-      fixed2Decimals18(selectedToken?.allowance, selectedToken?._decimals) <
-      amount
+      Number(fixed2Decimals18(selectedToken?.allowance, selectedToken?._decimals)) <
+      Number(amount)
     ) {
+ 
       return { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.balanceFixed)) {
       return { text: "Low Balance in Wallet", disable: true };

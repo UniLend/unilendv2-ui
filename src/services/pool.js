@@ -207,7 +207,7 @@ export const getTokenPrice = async (
         pool.token1.price == "Infinity" || pool.token1.price == "0"
           ? getTabs(pool.token1).filter((v) => v !== "borrow")
           : getTabs(pool.token1);
-
+console.log("Pool Data", pool);
       return pool;
     } catch (error) {
       throw error;

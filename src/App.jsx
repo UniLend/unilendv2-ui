@@ -76,7 +76,7 @@ function App() {
     .map((net) => net.chainId);
 
   const { data, loading, error, refetch } = useQuery("pools", async () => {
-    const fetchedDATA = await fetchGraphQlData(chain?.id || 1,  query);
+    const fetchedDATA = await fetchGraphQlData(chain?.id || 1,  chain.id == 80001? testnetQuery: query);
     return fetchedDATA;
   });
 
