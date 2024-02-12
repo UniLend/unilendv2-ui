@@ -102,3 +102,21 @@ export const getEthToUsd = async () => {
     console.error(`Failed to retrieve USD data. Error: ${error.message}`);
   }
 };
+
+export const getGeoInfo = async () => {
+  const url = 'ttps://ipapi.co/json/';
+  try {
+   const response = await axios.get("https://ipapi.co/json/")
+    let data = response.data;
+    const location = {
+      ip: data.ip,
+      countryName: data.country_name,
+      countryCode: data.country_calling_code,
+      city: data.city,
+      timezone: data.timezone
+    };
+    return location;
+  } catch (error) {
+     throw error
+  }
+};

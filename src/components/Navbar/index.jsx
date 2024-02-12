@@ -37,7 +37,7 @@ import "./styles/index.scss";
 import Sider from "antd/lib/layout/Sider";
 import { useDispatch, useSelector } from "react-redux";
 import { setTheme, setUser } from "../../store/Action";
-import { fetchUserDomain } from "../../utils/axios";
+import { fetchUserDomain, getGeoInfo } from "../../utils/axios";
 import { useConnectModal, ConnectButton } from "@rainbow-me/rainbowkit";
 import { ChangeNetwork, supportedNetworks } from "../../core/networks/networks";
 import useWalletHook from "../../lib/hooks/useWallet";
@@ -55,6 +55,7 @@ export default function Navbar() {
     domain: shortenAddress(user?.address),
   });
   const [visible, setVisible] = useState(false);
+  const [isHaveAccess, setIsHaveAccess] = useState(true)
   const [isNetworkVisible, setIsNetworkVisible] = useState(false);
   const [isNavigateAllow, setIsNavigateAllow] = useState(false);
   const dispatch = useDispatch();
@@ -88,6 +89,11 @@ export default function Navbar() {
     setWrongNetworkModal(false);
   };
 
+  const getLocation = async () => {
+   const location = await getGeoInfo(); 
+   console.log("location", location);
+  }
+
   useEffect(() => {
     if (window.ethereum) {
       window.ethereum.on("chainChanged", async (chainId) => {
@@ -105,6 +111,7 @@ export default function Navbar() {
         }, 1000);
       });
     }
+    getLocation()
   }, []);
 
   useEffect(() => {
