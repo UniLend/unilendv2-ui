@@ -263,8 +263,9 @@ function App() {
           hide: hidePools.includes(pool?.pool),
 
             totalLiquidity:
-            fixed2Decimals(pool.liquidity0, pool.token0.decimals ) * tokenPrice[pool?.token0?.id] +
-            fixed2Decimals(pool.liquidity1, pool.token1.decimals ) * tokenPrice[pool?.token1?.id],
+            (fixed2Decimals(pool.liquidity0, pool.token0.decimals ) * tokenPrice[pool?.token0?.id] +
+            fixed2Decimals(pool.liquidity1, pool.token1.decimals ) * tokenPrice[pool?.token1?.id]) + (fixed2Decimals(pool.totalBorrow0, pool.token0.decimals) * tokenPrice[pool?.token0?.id] +
+            fixed2Decimals(pool.totalBorrow1,  pool.token1.decimals) * tokenPrice[pool?.token1?.id]),
 
           totalBorrowed:
           fixed2Decimals(pool.totalBorrow0, pool.token0.decimals) * tokenPrice[pool?.token0?.id] +
