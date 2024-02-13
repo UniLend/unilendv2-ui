@@ -1,0 +1,227 @@
+@charset "UTF-8";
+.heading01 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.2;
+}
+.heading02 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.2;
+}
+.heading03 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1.2;
+}
+.heading04 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.2;
+}
+.heading05 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.2;
+}
+.paragraph01 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.2;
+}
+.paragraph02 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.2;
+}
+.paragraph03 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.2;
+}
+.paragraph04 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.2;
+}
+.paragraph05 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.2;
+}
+.paragraph06 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.2;
+}
+.primary-btn {
+  width: 512px;
+  height: 48px;
+  background-color: var(--main);
+  border: none;
+  outline: none;
+}
+.secondary-btn {
+  width: 124px;
+  height: 40px;
+  border: 2px solid var(--button-border);
+  background-color: var(--dark-button);
+  color: var(--main-light);
+}
+.sort_dropDown {
+  top: 479px;
+}
+.sort_dropDown .ant-popover-arrow {
+  display: none;
+}
+.sort_dropDown .ant-popover-content {
+  padding: 0px;
+  width: 100%;
+  color: var(--always-white);
+  background: var(--popup-back-color);
+  background-clip: padding-box; /* !importanté */
+  border: solid 1px transparent; /* !importanté */
+  border-radius: 12px;
+}
+.sort_dropDown .ant-popover-content:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  margin: -1px; /* !importanté */
+  border-radius: inherit; /* !importanté */
+  background: var(--popup-border);
+}
+.sort_dropDown .ant-popover-content .ant-popover-inner-content {
+  padding: 15px;
+  border-radius: 11px;
+  background-color: var(--popup-back-color);
+  box-shadow: var(--popup-shadow);
+}
+.sort_dropDown .ant-popover-content .ant-popover-inner {
+  border-radius: 11px;
+  background: var(--popup-back-color);
+}
+.sort_dropDown .ant-popover-content .sort_popover {
+  width: max-content;
+  min-width: 130px;
+}
+.sort_dropDown .ant-popover-content .sort_popover p {
+  width: 100%;
+  font-size: 14px;
+  line-height: 10px;
+  padding: 10px;
+  color: var(--pure-black);
+  margin: 5px 0px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  background-color: var(--popup-back-color);
+}
+.sort_dropDown .ant-popover-content .sort_popover p span:first-child {
+  width: 25px;
+  display: flex;
+  justify-content: left;
+}
+.sort_dropDown .ant-popover-content .sort_popover p span:last-child {
+  width: max-content;
+  text-align: left;
+}
+.sort_dropDown .ant-popover-content .sort_popover p:hover {
+  background-color: var(--main);
+  color: var(--always-white) !important;
+}
+.sort_dropDown .ant-popover-content .sort_popover .activeSort {
+  color: var(--always-white) !important;
+  background-color: var(--main);
+}
+.sortBy {
+  display: flex;
+  width: 152px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 16px;
+  border: 1px solid var(--main);
+  color: var(--always-white);
+  place-items: center center;
+  justify-content: center;
+  gap: 24px;
+  padding: 12px;
+  background-color: var(--main);
+}
+.sortBy p {
+  margin: 0px 0px;
+}
+@media (max-width: 600px) {
+  .sortBy {
+    width: 80px;
+    height: 33px;
+    gap: 8px;
+    padding: 4px 8px;
+  }
+  .sortBy p {
+    font-size: 10px;
+  }
+  .sortBy svg {
+    width: 8px;
+    height: 8px;
+  }
+}

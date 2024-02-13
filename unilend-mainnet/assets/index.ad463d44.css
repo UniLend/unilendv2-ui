@@ -1,0 +1,285 @@
+.heading01 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.2;
+}
+
+.heading02 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.2;
+}
+
+.heading03 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1.2;
+}
+
+.heading04 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.2;
+}
+
+.heading05 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.paragraph01 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.paragraph02 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.paragraph03 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.paragraph04 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.paragraph05 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.paragraph06 {
+  color: var(--pure-black);
+  text-align: left;
+  letter-spacing: unset;
+  margin: unset;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.primary-btn {
+  width: 512px;
+  height: 48px;
+  background-color: var(--main);
+  border: none;
+  outline: none;
+}
+
+.secondary-btn {
+  width: 124px;
+  height: 40px;
+  border: 2px solid var(--button-border);
+  background-color: var(--dark-button);
+  color: var(--main-light);
+}
+
+.dark .app_container {
+  background: unset;
+}
+
+.dark .app_container .hallofpools_container {
+  background: url("/assets/large-bg.04017f03.svg");
+  background-position: top 35% right 50%;
+  background-repeat: no-repeat;
+}
+
+.light .app_container {
+  background: unset;
+}
+
+.light .app_container .hallofpools_container {
+  background: url("/assets/light-bg-pool.c0de175c.svg");
+  background-position: top 35% right 50%;
+  background-repeat: no-repeat;
+}
+
+.banner {
+  width: 80%;
+  margin: 50px auto;
+}
+
+.banner img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  object-position: 0% 100%;
+}
+
+.analytics_container {
+  background-color: var(--main);
+  height: 255px;
+  position: relative;
+  margin-bottom: 50px;
+}
+
+.analytics_container .analytics {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.analytics_container .analytics img {
+  width: 100%;
+  object-fit: cover;
+}
+
+@media (600px < width <= 900px) {
+  .analytics_container {
+    margin-bottom: 100px;
+  }
+}
+
+@media (max-width: 600px) {
+  .analytics_container {
+    margin-bottom: 100px;
+  }
+  .analytics_container .analytics img {
+    object-fit: none;
+  }
+}
+
+.managepool_container {
+  position: relative;
+  top: 220px;
+}
+
+.managepool_container .manage_token_component {
+  box-shadow: var(--box-shadow);
+}
+
+.pool_filter_container {
+  box-sizing: border-box;
+  display: flex;
+  width: 80%;
+  margin: 0 auto 48px;
+  padding-top: 48px;
+  justify-content: space-between;
+}
+
+.pool_filter_container .pool_tans .pool_btn {
+  margin: 10px;
+  background-color: var(--main);
+  color: var(--always-white);
+  border: 1px solid var(--button-border);
+  border-radius: 12px;
+  font-size: 14px;
+  height: 35px;
+  margin: 0;
+}
+
+.pool_filter_container .pool_tans .active_btn {
+  background-color: var(--main);
+  color: var(--always-white);
+}
+
+@media (600px < width <= 900px) {
+  .pool_filter_container {
+    margin: 0 auto 48px;
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .pool_filter_container {
+    margin: 0 auto 24px;
+    padding-top: 0;
+  }
+}
+
+.poolcard_container {
+  width: 80%;
+  margin: auto;
+  padding-bottom: 48px;
+  display: grid;
+  row-gap: 36px;
+  grid-template-columns: repeat(5, 20%);
+  justify-items: center;
+}
+
+@media only screen and (max-width: 1800px) {
+  .poolcard_container {
+    grid-template-columns: repeat(4, 25%);
+  }
+}
+
+@media only screen and (max-width: 1480px) {
+  .poolcard_container {
+    grid-template-columns: repeat(3, 33.3333333333%);
+  }
+}
+
+@media only screen and (max-width: 1080px) {
+  .poolcard_container {
+    grid-template-columns: repeat(2, 50%);
+  }
+}
+
+@media (max-width: 600px) {
+  .poolcard_container {
+    grid-template-columns: repeat(1, 100%);
+  }
+}

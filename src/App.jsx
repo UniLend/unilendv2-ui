@@ -68,7 +68,7 @@ function App() {
   const { address, isConnected, chain } = useWalletHook();
   const user = useSelector((state) => state.user);
   const query = getPoolCreatedGraphQuery(address);
-  const testnetQuery = getPoolCreatedGraphQueryTestnet(address)
+  const testnetQuery = getPoolCreatedGraphQueryTestnet(address);
   const [tokenPrice, setTokenPrice] = useState({});
 
   const networksWithGraph = Object.values(supportedNetworks)
@@ -76,7 +76,10 @@ function App() {
     .map((net) => net.chainId);
 
   const { data, loading, error, refetch } = useQuery("pools", async () => {
-    const fetchedDATA = await fetchGraphQlData(chain?.id || 1,  chain.id == 80001? testnetQuery: query);
+    const fetchedDATA = await fetchGraphQlData(
+      chain?.id || 1,
+      chain?.id == 80001 ? testnetQuery : query
+    );
     return fetchedDATA;
   });
 
@@ -122,7 +125,7 @@ function App() {
               positionContract: res[2],
             };
             dispatch(setContracts(payload));
-             //loadPoolsFromContract(payload);
+            //loadPoolsFromContract(payload);
             loadPoolsWithGraph();
           })
           .catch((err) => {
@@ -223,6 +226,8 @@ function App() {
         result[key] = (temp[key] / 10 ** 18) * usdPrice;
       }
     }
+    result["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"] =
+      result["0xae7ab96520de3a18e5e111b5eaab095312d7fe84"];
     setTokenPrice(result);
     return result;
   };
@@ -230,7 +235,7 @@ function App() {
   useEffect(() => {
     if (data?.assetOracles) {
       getTokenPrice();
-    } 
+    }
   }, [data]);
 
   useEffect(() => {
@@ -262,14 +267,21 @@ function App() {
           poolAddress: pool?.pool,
           hide: hidePools.includes(pool?.pool),
 
-            totalLiquidity:
-            (fixed2Decimals(pool.liquidity0, pool.token0.decimals ) * tokenPrice[pool?.token0?.id] +
-            fixed2Decimals(pool.liquidity1, pool.token1.decimals ) * tokenPrice[pool?.token1?.id]) + (fixed2Decimals(pool.totalBorrow0, pool.token0.decimals) * tokenPrice[pool?.token0?.id] +
-            fixed2Decimals(pool.totalBorrow1,  pool.token1.decimals) * tokenPrice[pool?.token1?.id]),
+          totalLiquidity:
+            fixed2Decimals(pool.liquidity0, pool.token0.decimals) *
+              tokenPrice[pool?.token0?.id] +
+            fixed2Decimals(pool.liquidity1, pool.token1.decimals) *
+              tokenPrice[pool?.token1?.id] +
+            (fixed2Decimals(pool.totalBorrow0, pool.token0.decimals) *
+              tokenPrice[pool?.token0?.id] +
+              fixed2Decimals(pool.totalBorrow1, pool.token1.decimals) *
+                tokenPrice[pool?.token1?.id]),
 
           totalBorrowed:
-          fixed2Decimals(pool.totalBorrow0, pool.token0.decimals) * tokenPrice[pool?.token0?.id] +
-          fixed2Decimals(pool.totalBorrow1,  pool.token1.decimals) * tokenPrice[pool?.token1?.id],
+            fixed2Decimals(pool.totalBorrow0, pool.token0.decimals) *
+              tokenPrice[pool?.token0?.id] +
+            fixed2Decimals(pool.totalBorrow1, pool.token1.decimals) *
+              tokenPrice[pool?.token1?.id],
 
           openPosition:
             openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
@@ -277,7 +289,7 @@ function App() {
             ...pool.token0,
             address: pool?.token0?.id,
             logo: getTokenLogo(pool.token0.symbol),
-            priceUSD: tokenPrice[pool?.token0?.id] *  pool.token0.decimals,
+            priceUSD: tokenPrice[pool?.token0?.id] * pool.token0.decimals,
             pricePerToken: tokenPrice[pool?.token0?.id],
           },
           token1: {
@@ -292,7 +304,7 @@ function App() {
           ...pool.token0,
           address: pool?.token0?.id,
           logo: getTokenLogo(pool.token0.symbol),
-          priceUSD: tokenPrice[pool?.token0?.id] *  pool.token0.decimals,
+          priceUSD: tokenPrice[pool?.token0?.id] * pool.token0.decimals,
           pricePerToken: tokenPrice[pool?.token0?.id],
         };
         tokenList[String(pool.token1.id).toUpperCase()] = {
