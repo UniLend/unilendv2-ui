@@ -121,12 +121,13 @@ export const setAllowance = async (
 ) => {
   var maxAllow =
     "115792089237316195423570985008687907853269984665640564039457584007913129639935";
+    let Amount = decimal2Fixed(amount, token._decimals)
   try {
     const instance = await getEtherContract(token._address, erc20Abi);
 
     const { hash } = await instance.approve(
       contracts.coreContract.address,
-      maxAllow
+      Amount
     );
 
     const txn = {
