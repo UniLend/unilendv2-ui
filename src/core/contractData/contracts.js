@@ -62,11 +62,11 @@ export const contractAddress = {
   },
   '1':{
     helperAddress: '0xAE84B51a1ee35275542Dd99df0F107d4F4e32A63',
-    coreAddress: '0xfcC475f6c889F8dB4B78E8fB8A55a98a6f996f83',
-    positionAddress: '0xEaC34370EE142F9F11F8211bA1c5a4c838ceBCE3',
-    poolAddress: '0x9Ce9f513a63d7519537502223A66F7e47647cdDd',
-    unilendOracle: '0x1Be1AC4b3cB73094Fb092017AFb311fE0ef88F71',
-    interestModal:'0x01e4bE82dbcfeC3Aa01Cf84B8033abd70f098170',
+    coreAddress: "0x7f2E24D2394f2bdabb464B888cb02EbA6d15B958",
+    positionAddress: "0xc45e4aE09c772D143677280f0a764f34F497677a",
+    poolAddress: "0xc86D2555F8c360D3C5E8e4364F42c1f2d169330E",
+    unilendOracle: "0x6cEF3FbE3F7Bb676fEB764bb2477f7A525dE9c42",
+    interestModal: "0xBdC5eB4eE2B05511023A73aad9dEc357774364eD",
 
     uftToken : '0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1',
     uftgToken: '0x7Fe9706F0081F7a2091459F224eE21A31BeC1816',

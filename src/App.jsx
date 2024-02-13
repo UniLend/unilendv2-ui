@@ -76,7 +76,7 @@ function App() {
     .map((net) => net.chainId);
 
   const { data, loading, error, refetch } = useQuery("pools", async () => {
-    const fetchedDATA = await fetchGraphQlData(chain?.id || 1,  chain.id == 80001? testnetQuery: query);
+    const fetchedDATA = await fetchGraphQlData(chain?.id || 1,  chain?.id == 80001? testnetQuery: query);
     return fetchedDATA;
   });
 
@@ -223,6 +223,7 @@ function App() {
         result[key] = (temp[key] / 10 ** 18) * usdPrice;
       }
     }
+    result["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"] = usdPrice;
     setTokenPrice(result);
     return result;
   };
