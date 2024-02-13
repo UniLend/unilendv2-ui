@@ -122,22 +122,23 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (user?.network?.id == undefined && user?.network?.id) {
+    if (chain?.id == undefined && chain?.id) {
       const wallet = localStorage.getItem("wallet");
       handleConnect(wallet);
     }
     if (
-      user?.network?.id == 80001 ||
-      user?.network?.id == 137 ||
-      user?.network?.id == 1442 ||
-      user?.network?.id == 1
+      chain?.id == 80001 ||
+      chain?.id == 137 ||
+      chain?.id == 1442 ||
+      chain?.id == 1
     ) {
       setIsNavigateAllow(true);
     } else {
       setIsNavigateAllow(false);
     }
     // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
-    if (user?.network?.id && !availableChain.includes(user?.network?.id)) {
+    console.log("user", user, chain);
+    if (chain?.id && !availableChain.includes(chain?.id)) {
       setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);
@@ -233,7 +234,7 @@ export default function Navbar() {
           >
             <div
               className={
-                currentUser?.network.id == chainId ? "activeChain" : ""
+                chain?.id == chainId ? "activeChain" : ""
               }
             >
               <img
@@ -332,7 +333,7 @@ export default function Navbar() {
           </div>
           <a
             href={`${
-              supportedNetworks[user?.network?.id].blockExplorerUrls[0]
+              supportedNetworks[chain?.id].blockExplorerUrls[0]
             }/address/${user.address}`}
             target="_blank"
           >
@@ -428,9 +429,9 @@ export default function Navbar() {
                 <div className="network_chamber">
                   <div>
                     <img
-                      src={supportedNetworks[currentUser?.network?.id]?.logoUrl}
+                      src={supportedNetworks[chain.id]?.logoUrl}
                       alt={`${
-                        supportedNetworks[currentUser?.network?.id]?.chainName
+                        supportedNetworks[chain?.id]?.chainName
                       } Logo`}
                     />
                     <p>{currentUser?.network?.name}</p>
