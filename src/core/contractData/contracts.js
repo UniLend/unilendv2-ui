@@ -1,30 +1,16 @@
-<<<<<<< HEAD
 export const contractAddress = { 
-  '137': {
+  137: {
+
     helperAddress: '0x4F57c40D3dAA7BF2EC970Dd157B1268982158720',
   
-    coreAddress: '0x26883aD38ef58f4E33ce533f64E16c61319c99f6',
-    positionAddress: '0x4B915E92a80498ca5e13c2f2715706A56C05659c',
+    coreAddress: '0x17dad892347803551CeEE2D377d010034df64347',
+    positionAddress: '0x77B6569F0dbC4F265a575a84540c2A0Cae116a90',
   
-    poolAddress: '0xB69Ad3b0e874DDEfC885fe7BeDA015D108F35D82 ',
-    unilendOracle: '0x86148E1eF9D102b3Cf1345FBb8456329C3dEEd29',
-    interestRateModal: '0x5a3A1562f245Da7B2Dfa068547351BD0f2199be5 ',
+    poolAddress: '0x895C8BbAB2418FC96CE3808b1Edf513658532b05 ',
+    unilendOracle: '0x4C6E05732b84907B6FE4228EcCa926B557BB9C27',
+    interestRateModal: '0x6A73048C3FacFD17C345c6C82340Aa4536AcBAA6 ',
     uftToken : '0x5B4CF2C120A9702225814E18543ee658c5f8631e',
     uftgToken: '0x6CbFa51AF1C1B8940f823DA4C58877E409d6da25'
-=======
-export const contractAddress = {
-  137: {
-    helperAddress: import.meta.env.VITE_POLYGON_HELPER,
-
-    coreAddress: import.meta.env.VITE_POLYGON_CORE,
-    positionAddress: import.meta.env.VITE_POLYGON_POSITION,
-
-    poolAddress: import.meta.env.VITE_POLYGON_POOL,
-    unilendOracle: import.meta.env.VITE_POLYGON_ORACLE,
-    interestRateModal: import.meta.env.VITE_POLYGON_INTERESTRATEMODAL,
-    uftToken: '0x5B4CF2C120A9702225814E18543ee658c5f8631e',
-    uftgToken: '0x6CbFa51AF1C1B8940f823DA4C58877E409d6da25',
->>>>>>> fe9de39f76cf1b2af31b9f8cc5a28ac64f9f0439
   },
 
   8081: {
