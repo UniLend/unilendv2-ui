@@ -592,8 +592,8 @@ export const handleLend = async (
 
   try {
     if (
-      fixed2Decimals18(selectedToken.allowance, selectedToken._decimals) >=
-      amount
+      Number(fixed2Decimals18(selectedToken.allowance, selectedToken._decimals)) >=
+      Number(amount)
     ) {
       const instance = await getEtherContract(
         contracts.coreContract.address,
