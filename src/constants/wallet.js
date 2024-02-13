@@ -5,7 +5,7 @@
 
 // const provider = await detectEthereumProvider()
 
-const infuraAPI =  import.meta.env.VITE_INFURA_ID;
+const infuraAPI = import.meta.env.VITE_INFURA_ID;
 
 export const providerOptions = {
   // coinbasewallet: {
@@ -24,6 +24,5 @@ export const providerOptions = {
   //     },
   //     infuraId: infuraAPI,
   //   },
-  // }, 
+  // },
 };
-

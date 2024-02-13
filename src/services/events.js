@@ -1,12 +1,12 @@
-import { poolAbi, positionAbi, coreAbi } from "../core/contractData/abi";
-import { fromBigNumber } from "../helpers/contracts";
-import { getEtherContract, getEthersProvider } from "../lib/fun/wagmi";
-import { getPastEvents, readContractLib } from "../lib/fun/functions";
+import { poolAbi, positionAbi, coreAbi } from '../core/contractData/abi';
+import { fromBigNumber } from '../helpers/contracts';
+import { getEtherContract, getEthersProvider } from '../lib/fun/wagmi';
+import { getPastEvents, readContractLib } from '../lib/fun/functions';
 
 export const getEventsWithFilter = async (contract, event, filter) => {
   const events = await getEventData(contract, event);
   const filtered = events.filter(
-    (event) => fromBigNumber(event.args._positionID) == filter._positionID
+    (event) => fromBigNumber(event.args._positionID) == filter._positionID,
   );
 
   return filtered;
@@ -15,7 +15,7 @@ export const getEventsWithFilter = async (contract, event, filter) => {
 export const positionId = async (
   positionContract,
   poolAddress,
-  userAddress
+  userAddress,
 ) => {
   // const id = await positionContract.methods
   //   .getNftId(poolAddress, userAddress)
@@ -23,7 +23,7 @@ export const positionId = async (
   const id = await readContractLib({
     address: positionContract.address,
     abi: positionAbi,
-    functionName: "getNftId",
+    functionName: 'getNftId',
     args: [poolAddress, userAddress],
   });
   return id;
@@ -65,9 +65,9 @@ export const allTransaction = async (
   userAddress,
   poollist,
   setTxtData,
-  setIsPageLoading
+  setIsPageLoading,
 ) => {
-  const data = await getPastEvents(coreContract, "PoolCreated");
+  const data = await getPastEvents(coreContract, 'PoolCreated');
 
   // array of all pools address
   const newData = data.map((event) => event.args.pool);
@@ -78,14 +78,14 @@ export const allTransaction = async (
     const position = await positionId(
       positionContract,
       newData[i],
-      userAddress
+      userAddress,
     );
 
     const poolInfo = poollist[newData[i]];
 
     const poolContract = await getEtherContract(newData[i], poolAbi, 11155111);
 
-    const eventNames = ["Borrow", "Lend", "Redeem", "RepayBorrow"];
+    const eventNames = ['Borrow', 'Lend', 'Redeem', 'RepayBorrow'];
     //const eventNames = ["Borrow"];
     const IspositionId = fromBigNumber(position);
     if (IspositionId != 0) {
@@ -99,8 +99,8 @@ export const allTransaction = async (
             (el = {
               ...el,
               poolInfo: poolInfo,
-              event: el.event === "RepayBorrow" ? "Repay" : el.event,
-            })
+              event: el.event === 'RepayBorrow' ? 'Repay' : el.event,
+            }),
         );
 
         array.push(...eventsWithPoolInfo);

@@ -1,4 +1,4 @@
-@import "/src/core/theme";
+@import '/src/core/theme';
 
 .nav_container {
   height: 60px;
@@ -45,12 +45,12 @@
         &:hover {
           // color: var(--main-light);
           color: var(--always-white);
-          background-color: var(--main)
+          background-color: var(--main);
         }
       }
       .active {
         color: var(--always-white);
-        background-color: var(--main)
+        background-color: var(--main);
       }
       .disable_route {
         color: var(--light-gray);
@@ -316,7 +316,7 @@
     border-radius: 12px;
 
     &:before {
-      content: "";
+      content: '';
       position: absolute;
       top: 0;
       right: 0;
@@ -359,7 +359,7 @@
       max-width: 120px;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: "nowrap";
+      white-space: 'nowrap';
       color: var(--pure-black);
     }
     div {
@@ -436,7 +436,7 @@
     border-radius: 16px;
 
     &:before {
-      content: "";
+      content: '';
       position: absolute;
       top: 0;
       right: 0;
@@ -687,7 +687,7 @@
       border-radius: 10px;
 
       &:before {
-        content: "";
+        content: '';
         position: absolute;
         top: 0;
         right: 0;
@@ -782,7 +782,7 @@
     border-radius: 12px;
 
     &:before {
-      content: "";
+      content: '';
       position: absolute;
       top: 0;
       right: 0;

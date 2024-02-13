@@ -11,7 +11,7 @@ import {
   switchNetwork,
   waitForTransaction,
   fetchBlockNumber,
-} from "wagmi/actions";
+} from 'wagmi/actions';
 // import { getEthersProvider } from "./wagmi";
 
 export const getNetworkLib = (props) => {
@@ -41,7 +41,7 @@ export const getContractLib = async ({ address, abi }) => {
   const publicClient = getPublicClient();
 
   const contract = getContract({
-    address: address || "",
+    address: address || '',
     abi: abi,
     walletClient: walletClient,
     publicClient: publicClient,

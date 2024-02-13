@@ -1,5 +1,5 @@
-import { getTokenLogo } from "../utils";
-import { coreAbi, erc20Abi, helperAbi } from "../core/contractData/abi";
+import { getTokenLogo } from '../utils';
+import { coreAbi, erc20Abi, helperAbi } from '../core/contractData/abi';
 import {
   add,
   decimal2Fixed,
@@ -9,11 +9,11 @@ import {
   greaterThan,
   mul,
   toAPY,
-} from "./contracts";
-import { getEtherContractWithProvider } from "../lib/fun/wagmi";
-import { fetchGraphQlData } from "../utils/axios";
-import { contractAddress } from "../core/contractData/contracts";
-import { Alchemy, Network } from "alchemy-sdk";
+} from './contracts';
+import { getEtherContractWithProvider } from '../lib/fun/wagmi';
+import { fetchGraphQlData } from '../utils/axios';
+import { contractAddress } from '../core/contractData/contracts';
+import { Alchemy, Network } from 'alchemy-sdk';
 
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const mumbai = import.meta.env.VITE_ALCHEMY_MUMBAI;
@@ -55,7 +55,7 @@ export const getChartData = (data, tokenList) => {
 
   for (const key in data) {
     if (Object.hasOwnProperty.call(data, key)) {
-      const actions = ["lends", "borrows", "redeems", "repays"];
+      const actions = ['lends', 'borrows', 'redeems', 'repays'];
       for (const item of actions) {
         const actionObjects = data[item];
         let total = 0;
@@ -67,7 +67,7 @@ export const getChartData = (data, tokenList) => {
           total = total + fixedToShort(action.amount);
         }
         chart[item] = sub;
-        chart[item]["total"] = total;
+        chart[item]['total'] = total;
       }
     }
   }
@@ -77,7 +77,7 @@ export const getChartData = (data, tokenList) => {
   const donutLends = [];
   const donutBorrows = [];
   for (const action in chart) {
-    if (action == "redeems") {
+    if (action == 'redeems') {
       const lendsObj = chart.lends;
       const redeemObj = chart.redeems;
       for (const token in lendsObj) {
@@ -86,7 +86,7 @@ export const getChartData = (data, tokenList) => {
         // lendValues['total'] = value > 0 ? Number(value) : 0;
       }
     }
-    if (action == "repayBorrows") {
+    if (action == 'repayBorrows') {
       const borrowObj = chart.borrows;
       const repayObj = chart.repayBorrows;
       for (const token in borrowObj) {
@@ -108,9 +108,9 @@ export const getChartData = (data, tokenList) => {
   for (const lend in sortedLend) {
     const payload = {
       type: lend,
-      value: getPercent(sortedLend[lend], sortedLend["total"]),
+      value: getPercent(sortedLend[lend], sortedLend['total']),
     };
-    if (lend !== "total" && sortedLend[lend] > 0) {
+    if (lend !== 'total' && sortedLend[lend] > 0) {
       donutLends.push(payload);
     }
   }
@@ -118,9 +118,9 @@ export const getChartData = (data, tokenList) => {
   for (const borrow in sortedBorrow) {
     const payload = {
       type: borrow,
-      value: getPercent(sortedBorrow[borrow], sortedBorrow["total"]),
+      value: getPercent(sortedBorrow[borrow], sortedBorrow['total']),
     };
-    if (borrow !== "total" && sortedBorrow[borrow] > 0) {
+    if (borrow !== 'total' && sortedBorrow[borrow] > 0) {
       donutBorrows.push(payload);
     }
   }
@@ -145,8 +145,8 @@ export const getPieChartValues = (positions) => {
     lendValues[action.tokenSymbol] =
       (lendValues[action.tokenSymbol] || 0) +
       Number(action.LendBalance) * convertPrice(action.token.priceUSD);
-    lendValues["total"] =
-      (lendValues["total"] || 0) +
+    lendValues['total'] =
+      (lendValues['total'] || 0) +
       Number(action.LendBalance) * convertPrice(action.token.priceUSD);
   }
 
@@ -154,8 +154,8 @@ export const getPieChartValues = (positions) => {
     borrowValues[action.tokenSymbol] =
       (borrowValues[action.tokenSymbol] || 0) +
       Number(action.borrowBalance) * convertPrice(action.token.priceUSD);
-    borrowValues["total"] =
-      (borrowValues["total"] || 0) +
+    borrowValues['total'] =
+      (borrowValues['total'] || 0) +
       Number(action.borrowBalance) * convertPrice(action.token.priceUSD);
   }
 
@@ -170,9 +170,9 @@ export const getPieChartValues = (positions) => {
   for (const lend in sortedLend) {
     const payload = {
       type: lend,
-      value: getPercent(sortedLend[lend], sortedLend["total"]),
+      value: getPercent(sortedLend[lend], sortedLend['total']),
     };
-    if (lend !== "total" && sortedLend[lend] > 0) {
+    if (lend !== 'total' && sortedLend[lend] > 0) {
       donutLends.push(payload);
     }
   }
@@ -180,9 +180,9 @@ export const getPieChartValues = (positions) => {
   for (const borrow in sortedBorrow) {
     const payload = {
       type: borrow,
-      value: getPercent(sortedBorrow[borrow], sortedBorrow["total"]),
+      value: getPercent(sortedBorrow[borrow], sortedBorrow['total']),
     };
-    if (borrow !== "total" && sortedBorrow[borrow] > 0) {
+    if (borrow !== 'total' && sortedBorrow[borrow] > 0) {
       donutBorrows.push(payload);
     }
   }
@@ -213,7 +213,7 @@ export const getUserData = async (chainId, query, tokenList, ValidAddress) => {
 
   const analytics = {};
   if (position?.borrowArray.length > 0) {
-    const borrowAPY = getAverage(position.borrowArray, "apy", "borrowBalance");
+    const borrowAPY = getAverage(position.borrowArray, 'apy', 'borrowBalance');
     analytics.borrowAPY = borrowAPY;
   }
   if (position?.lendArray.length > 0) {
@@ -221,7 +221,7 @@ export const getUserData = async (chainId, query, tokenList, ValidAddress) => {
       .map((el) => el.interestEarned)
       .reduce((ac, el) => ac + el);
     analytics.interestEarned = earned;
-    const lendAPY = getAverage(position.lendArray, "apy", "LendBalance");
+    const lendAPY = getAverage(position.lendArray, 'apy', 'LendBalance');
     analytics.lendAPY = lendAPY;
     const powerUsed = getBorrowedPowerUsed(position.lendArray);
     analytics.powerUsed = powerUsed;
@@ -234,7 +234,7 @@ export const getUserData = async (chainId, query, tokenList, ValidAddress) => {
   const tokens = await getTokensFromUserWallet(
     tokenList,
     chainId,
-    ValidAddress
+    ValidAddress,
   );
   return { position, pieChart, analytics, tokens };
 };
@@ -247,7 +247,7 @@ export const getUserTokens = async (address, chainId, tokenList) => {
 };
 
 export const getPositionData = async (data, chainId) => {
-  const position = data["positions"];
+  const position = data['positions'];
 
   const lendArray = [];
   const borrowArray = [];
@@ -263,8 +263,8 @@ export const getPositionData = async (data, chainId) => {
   // const provider = getEthersProvider({ chainId });
   const [helperContract, coreContract] = await Promise.all(
     preparedData.map((item) =>
-      getEtherContractWithProvider(item.address, item.abi, chainId)
-    )
+      getEtherContractWithProvider(item.address, item.abi, chainId),
+    ),
   );
 
   const allPositionAPoolddrs =
@@ -278,7 +278,7 @@ export const getPositionData = async (data, chainId) => {
       coreContract.getOraclePrice(
         pool.token0.id,
         pool.token1.id,
-        decimal2Fixed(1, 18)
+        decimal2Fixed(1, 18),
       ),
       helperContract.getPoolData(pool.pool),
     ];
@@ -322,12 +322,12 @@ export const getPositionData = async (data, chainId) => {
     const decimals1 = fromBigNumber(poolBasicData._decimals1);
     const totLiqFull0 = add(
       div(mul(token0Liq, 100), fromBigNumber(poolBasicData.rf)),
-      fromBigNumber(realTimePoolData._totalBorrow0)
+      fromBigNumber(realTimePoolData._totalBorrow0),
     );
 
     const totLiqFull1 = add(
       div(mul(token1Liq, 100), fromBigNumber(poolBasicData.rf)),
-      fromBigNumber(realTimePoolData._totalBorrow1)
+      fromBigNumber(realTimePoolData._totalBorrow1),
     );
 
     const price0 = Number(fixed2Decimals(priceInBigNumber, 18));
@@ -337,10 +337,10 @@ export const getPositionData = async (data, chainId) => {
       const BorrowObj = {};
 
       BorrowObj.borrowBalance = fixedToShort(
-        fromBigNumber(realTimePoolData._borrowBalance0)
+        fromBigNumber(realTimePoolData._borrowBalance0),
       );
       BorrowObj.LendBalance = fixedToShort(
-        fromBigNumber(realTimePoolData._lendBalance1)
+        fromBigNumber(realTimePoolData._lendBalance1),
       );
       BorrowObj.tokenSymbol = object.pool.token0.symbol;
       BorrowObj.token = object.pool.token0;
@@ -348,16 +348,16 @@ export const getPositionData = async (data, chainId) => {
       BorrowObj.apy = toAPY(fixed2Decimals(realTimePoolData._interest0, 18)); //object.pool.borrowApy0;
       BorrowObj.healthFactor = greaterThan(
         fixed2Decimals(realTimePoolData._healthFactor0, 18),
-        100
+        100,
       )
-        ? "100"
+        ? '100'
         : Number(fixed2Decimals(realTimePoolData._healthFactor0, 18)).toFixed(
-            2
+            2,
           );
       BorrowObj.currentLTV = calculateCurrentLTV(
         fixedToShort(fromBigNumber(realTimePoolData._borrowBalance0)),
         fixedToShort(fromBigNumber(realTimePoolData._lendBalance1)),
-        price1
+        price1,
       );
       BorrowObj.poolInfo = {
         token0Symbol: object.pool.token0.symbol,
@@ -371,10 +371,10 @@ export const getPositionData = async (data, chainId) => {
     if (fromBigNumber(realTimePoolData._borrowBalance1) > 0) {
       const BorrowObj = {};
       BorrowObj.borrowBalance = fixedToShort(
-        fromBigNumber(realTimePoolData._borrowBalance1)
+        fromBigNumber(realTimePoolData._borrowBalance1),
       );
       BorrowObj.LendBalance = fixedToShort(
-        fromBigNumber(realTimePoolData._lendBalance0)
+        fromBigNumber(realTimePoolData._lendBalance0),
       );
       BorrowObj.tokenSymbol = object.pool.token1.symbol;
       BorrowObj.token = object.pool.token1;
@@ -388,16 +388,16 @@ export const getPositionData = async (data, chainId) => {
       BorrowObj.apy = toAPY(fixed2Decimals(realTimePoolData._interest1, 18));
       BorrowObj.healthFactor = greaterThan(
         fixed2Decimals(realTimePoolData._healthFactor1, 18),
-        100
+        100,
       )
-        ? "100"
+        ? '100'
         : Number(fixed2Decimals(realTimePoolData._healthFactor1, 18)).toFixed(
-            2
+            2,
           );
       BorrowObj.currentLTV = calculateCurrentLTV(
         fixedToShort(fromBigNumber(realTimePoolData._borrowBalance1)),
         fixedToShort(fromBigNumber(realTimePoolData._lendBalance0)),
-        price0
+        price0,
       );
       borrowArray.push(BorrowObj);
     }
@@ -405,31 +405,31 @@ export const getPositionData = async (data, chainId) => {
     if (fromBigNumber(realTimePoolData._lendBalance0) > 0) {
       const LendObj = {};
       LendObj.LendBalance = fixedToShort(
-        fromBigNumber(realTimePoolData._lendBalance0)
+        fromBigNumber(realTimePoolData._lendBalance0),
       );
       LendObj.tokenSymbol = object.pool.token0.symbol;
       LendObj.token = object.pool.token0;
       LendObj.pool = object.pool;
       LendObj.apy = div(
         toAPY(fixed2Decimals(realTimePoolData._interest0, 18)),
-        div(totLiqFull0, fromBigNumber(realTimePoolData._totalBorrow0))
+        div(totLiqFull0, fromBigNumber(realTimePoolData._totalBorrow0)),
       );
       LendObj.currentLTV = calculateCurrentLTV(
         fixedToShort(fromBigNumber(realTimePoolData._borrowBalance1)),
         fixedToShort(fromBigNumber(realTimePoolData._lendBalance0)),
-        price0
+        price0,
       );
       LendObj.healthFactor = greaterThan(
         fixed2Decimals(realTimePoolData._healthFactor0, 18),
-        100
+        100,
       )
-        ? "100"
+        ? '100'
         : Number(fixed2Decimals(realTimePoolData._healthFactor0, 18)).toFixed(
-            2
+            2,
           );
 
       LendObj.interestEarned = fixedToShort(
-        fromBigNumber(realTimePoolData._interest0)
+        fromBigNumber(realTimePoolData._interest0),
       );
       LendObj.poolInfo = {
         token0Symbol: object.pool.token0.symbol,
@@ -444,27 +444,27 @@ export const getPositionData = async (data, chainId) => {
       const LendObj = {};
 
       LendObj.LendBalance = fixedToShort(
-        fromBigNumber(realTimePoolData._lendBalance1)
+        fromBigNumber(realTimePoolData._lendBalance1),
       );
       LendObj.tokenSymbol = object.pool.token1.symbol;
       LendObj.pool = object.pool;
       LendObj.token = object.pool.token1;
       LendObj.apy = div(
         toAPY(fixed2Decimals(realTimePoolData._interest1, 18)),
-        div(totLiqFull1, fromBigNumber(realTimePoolData._totalBorrow1))
+        div(totLiqFull1, fromBigNumber(realTimePoolData._totalBorrow1)),
       );
       LendObj.currentLTV = calculateCurrentLTV(
         fixedToShort(fromBigNumber(realTimePoolData._borrowBalance0)),
         fixedToShort(fromBigNumber(realTimePoolData._lendBalance1)),
-        price1
+        price1,
       );
       LendObj.healthFactor = greaterThan(
         fixed2Decimals(realTimePoolData._healthFactor1, 18),
-        100
+        100,
       )
-        ? "100"
+        ? '100'
         : Number(fixed2Decimals(realTimePoolData._healthFactor1, 18)).toFixed(
-            2
+            2,
           );
 
       LendObj.poolInfo = {
@@ -474,7 +474,7 @@ export const getPositionData = async (data, chainId) => {
         token1Logo: getTokenLogo(object.pool.token1.symbol),
       };
       LendObj.interestEarned = fixedToShort(
-        fromBigNumber(realTimePoolData._interest1)
+        fromBigNumber(realTimePoolData._interest1),
       );
       lendArray.push(LendObj);
     }
@@ -524,15 +524,15 @@ export const getTokensFromUserWallet = async (data, chainId, address) => {
   const tokensObject = Object.values(data) || [];
 
   const ERC20Instancees = tokensArray.map((address) =>
-    getEtherContractWithProvider(address, erc20Abi, chainId)
+    getEtherContractWithProvider(address, erc20Abi, chainId),
   );
   const tokensObj = [];
   const balances = await Promise.all(
-    ERC20Instancees.map((instance) => instance.balanceOf(address))
+    ERC20Instancees.map((instance) => instance.balanceOf(address)),
   );
 
   const names = await Promise.all(
-    ERC20Instancees.map((instance) => instance.name())
+    ERC20Instancees.map((instance) => instance.name()),
   );
 
   const tokens = tokensObject.map(
@@ -541,14 +541,14 @@ export const getTokensFromUserWallet = async (data, chainId, address) => {
         ...token,
         name: names[index],
         balance: Number(
-          fixed2Decimals(balances[index], token.decimals)
+          fixed2Decimals(balances[index], token.decimals),
         ).toFixed(4),
 
         value: (
           Number(fixed2Decimals(balances[index], token.decimals)) *
           token.pricePerToken
         ).toFixed(4),
-      })
+      }),
   );
   return tokens;
 
@@ -962,7 +962,7 @@ export const getPoolCreatedGraphQuery = (address) => {
   const query = `
   {
       positions(where: {owner: "${
-        address || "0x0000000000000000000000000000000000000000"
+        address || '0x0000000000000000000000000000000000000000'
       }"}) {
         id
         owner

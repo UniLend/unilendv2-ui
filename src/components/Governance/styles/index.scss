@@ -1,9 +1,9 @@
-@import "/src/core/theme";
+@import '/src/core/theme';
 
 .dark {
   .app_container {
     background: unset;
-    background: url("/src/assets/blue-bg.svg");
+    background: url('/src/assets/blue-bg.svg');
     // background: url("/src/assets/large-bg.svg");
     background-position: center;
     background-repeat: no-repeat;
@@ -13,7 +13,7 @@
 .light {
   .app_container {
     background: unset;
-    background: url("/src/assets/light-bg.svg");
+    background: url('/src/assets/light-bg.svg');
     // background: url("/src/assets/light-bg-pool.svg");
     background-position: center;
     background-repeat: no-repeat;
@@ -456,7 +456,7 @@
     border-radius: 12px;
 
     &:before {
-      content: "";
+      content: '';
       position: absolute;
       top: 0;
       right: 0;

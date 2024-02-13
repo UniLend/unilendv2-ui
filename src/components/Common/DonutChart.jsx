@@ -1,12 +1,12 @@
-import React, { useState, useEffect, memo } from "react";
-import ReactDOM from "react-dom";
-import { Pie, G2 } from "@ant-design/plots";
-import { useSelector } from "react-redux";
+import React, { useState, useEffect, memo } from 'react';
+import ReactDOM from 'react-dom';
+import { Pie, G2 } from '@ant-design/plots';
+import { useSelector } from 'react-redux';
 
 const DonutChart = memo(function DonutChartMemo({ data }) {
   const theme = useSelector((state) => state.theme);
-  console.log("DONOUT_DATA", data);
-  const G = G2.getEngine("canvas");
+  console.log('DONOUT_DATA', data);
+  const G = G2.getEngine('canvas');
 
   // show first 5 data and remaining are in others;
   const selectedData = (data) => {
@@ -15,8 +15,8 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
       const othersValue = data
         .slice(4)
         .reduce((acc, curr) => acc + curr.value, 0);
-      const others = { type: "OTHERS", value: othersValue };
-      console.log("OTHERS_DATA", [...firstFive, others]);
+      const others = { type: 'OTHERS', value: othersValue };
+      console.log('OTHERS_DATA', [...firstFive, others]);
       return [...firstFive, others];
     } else {
       return data;
@@ -28,8 +28,8 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
     appendPadding: 20,
     data: selectedData(data),
     // data,
-    angleField: "value",
-    colorField: "type",
+    angleField: 'value',
+    colorField: 'type',
     radius: 0.8,
     innerRadius: 0.4,
     // legend: {
@@ -56,12 +56,12 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
     // },
     legend: false,
     label: {
-      type: "spider",
+      type: 'spider',
       labelHeight: 40,
       formatter: (data, mappingData) => {
         const group = new G.Group({});
         group.addShape({
-          type: "circle",
+          type: 'circle',
           attrs: {
             x: 0,
             y: 0,
@@ -72,7 +72,7 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
           },
         });
         group.addShape({
-          type: "text",
+          type: 'text',
           attrs: {
             x: 10,
             y: 6,
@@ -82,12 +82,12 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
           },
         });
         group.addShape({
-          type: "text",
+          type: 'text',
           attrs: {
             x: 6,
             y: 20,
             text: `${data.value}%`,
-            fill: `${theme === "dark" ? "#fff" : "#99959c"}`,
+            fill: `${theme === 'dark' ? '#fff' : '#99959c'}`,
             // fill: "#99959c",
           },
         });
@@ -96,36 +96,36 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
     },
     theme: {
       colors10: [
-        "#0045FF",
-        "#F5AC37",
-        "#8F00FF",
-        "#76523B",
-        "#0E8E89",
-        "#818BA1",
-        "#DAD5B5",
-        "#E19348",
-        "#F383A2",
-        "#247FEA",
+        '#0045FF',
+        '#F5AC37',
+        '#8F00FF',
+        '#76523B',
+        '#0E8E89',
+        '#818BA1',
+        '#DAD5B5',
+        '#E19348',
+        '#F383A2',
+        '#247FEA',
       ],
     },
     interactions: [
       {
-        type: "element-selected",
+        type: 'element-selected',
       },
       {
-        type: "element-active",
+        type: 'element-active',
       },
     ],
     statistic: {
       title: false,
       content: {
         style: {
-          whiteSpace: "pre-wrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
+          whiteSpace: 'pre-wrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
           fontWeight: 800,
         },
-        content: "",
+        content: '',
       },
     },
   };

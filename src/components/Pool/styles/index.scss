@@ -1,8 +1,8 @@
-@import "/src/core/theme";
+@import '/src/core/theme';
 
 .dark {
   .app_container {
-    background: url("/src/assets/blue-bg.svg");
+    background: url('/src/assets/blue-bg.svg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -10,7 +10,7 @@
 }
 .light {
   .app_container {
-    background: url("/src/assets/light-BG.svg");
+    background: url('/src/assets/light-BG.svg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -228,8 +228,8 @@
         &::placeholder {
           color: var(--light-gray);
         }
-        @media ($mobile){
-          width:67%;
+        @media ($mobile) {
+          width: 67%;
         }
       }
 
@@ -518,7 +518,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 .ant-message-notice-content {

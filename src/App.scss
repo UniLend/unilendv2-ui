@@ -1,12 +1,12 @@
 // @use "./core/theme/theme.scss" as *;
-@import "/src/core/theme";
+@import '/src/core/theme';
 
 @font-face {
-  font-family: "Helvetica Neue LT Pro";
+  font-family: 'Helvetica Neue LT Pro';
   font-weight: normal;
   font-style: normal;
   font-display: block;
-  src: url("/src/fonts/HELVETICANEUELTPROEX.OTF") format("opentype");
+  src: url('/src/fonts/HELVETICANEUELTPROEX.OTF') format('opentype');
   // src: url("/src/fonts/HelveticaNeueLTPro-Lt.otf") format("opentype");
   ascent-override: 90%;
   vertical-align: text-bottom;
@@ -35,7 +35,7 @@ body {
   padding: 0px;
 }
 body {
-  font-family: "Helvetica Neue LT Pro" !important;
+  font-family: 'Helvetica Neue LT Pro' !important;
   background-color: var(--bg-color);
   font-stretch: normal !important;
 }
@@ -109,7 +109,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 

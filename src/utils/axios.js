@@ -12,7 +12,7 @@ export const fetchCoinGeckoTokens = async () => {
 export const fetchTokenPriceInUSD = async () => {
   return axios
     .get(
-      'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/usd.json'
+      'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/usd.json',
     )
     .then((res) => res.data);
 };
@@ -69,10 +69,9 @@ export const fetchUserAddressByDomain = async (domain) => {
 export const fetchGraphQlData = async (chainId, FILMS_QUERY) => {
   const graphURL = {
     80001: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend',
-    137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
-
-    1442: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-zkevm",
-    1: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-mainnet'
+    137: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon',
+    1442: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-zkevm',
+    1: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-mainnet',
   };
 
   if (Object.keys(graphURL).includes(String(chainId))) {
