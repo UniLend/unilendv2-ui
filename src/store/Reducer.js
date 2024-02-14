@@ -1,4 +1,4 @@
-import { getFromSessionStorage } from "../utils";
+import { getFromSessionStorage } from '../utils';
 import {
   SET_CONTRACTS,
   SET_ERROR,
@@ -7,9 +7,9 @@ import {
   SET_THEME,
   SET_USER,
   SET_WEB3,
-} from "./ActionTypes";
+} from './ActionTypes';
 const user = {
-  address: "0x",
+  address: '0x',
   balance: null,
   symbol: {},
   network: {
@@ -28,8 +28,8 @@ const init = {
   },
   isLoading: false,
   isError: false,
-  user: getFromSessionStorage("user") ? getFromSessionStorage("user") : user,
-  theme: getFromSessionStorage("unilendV2Theme") || "dark",
+  user: getFromSessionStorage('user') ? getFromSessionStorage('user') : user,
+  theme: getFromSessionStorage('unilendV2Theme') || 'dark',
   poolList: {},
   tokenList: {},
   isLoadingPoolData: false,

@@ -1,16 +1,16 @@
-import { useState, useEffect, useMemo } from "react";
-import { ethers } from "ethers";
-import { fetchUserAddressByDomain, fetchUserDomain } from "../../utils/axios";
+import { useState, useEffect, useMemo } from 'react';
+import { ethers } from 'ethers';
+import { fetchUserAddressByDomain, fetchUserDomain } from '../../utils/axios';
 
 const useDomainHandling = (address, provider) => {
   const [domainDetail, setDomainDetail] = useState({
-    value: "",
+    value: '',
     isAddress: false,
   });
 
   const handleDomain = async () => {
     setDomainDetail({
-      value: "",
+      value: '',
       isAddress: false,
     });
 
@@ -37,7 +37,7 @@ const useDomainHandling = (address, provider) => {
         });
       }
     } catch (error) {
-      console.error("Error handling domain:", error);
+      console.error('Error handling domain:', error);
     }
   };
 

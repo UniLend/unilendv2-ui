@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { FiArrowLeft, FiChevronDown, FiChevronUp } from "react-icons/fi";
-import ReactMarkdown from "react-markdown";
-import "./styles/index.scss";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { FiArrowLeft, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import ReactMarkdown from 'react-markdown';
+import './styles/index.scss';
 
 export default function ProposalComponent() {
   const { proposalId } = useParams();
   const navigate = useNavigate();
-  console.log("PROPOSAL_ID", proposalId);
+  console.log('PROPOSAL_ID', proposalId);
 
-  const [markupText, setMarkupText] = useState("");
+  const [markupText, setMarkupText] = useState('');
 
   const mdText = `
 ### Details
@@ -42,7 +42,7 @@ decentralize Scroll sequencers and provers.
 `;
 
   const handleMoveToProposal = () => {
-    navigate("/vote");
+    navigate('/vote');
   };
 
   useEffect(() => {
@@ -53,27 +53,27 @@ decentralize Scroll sequencers and provers.
     // setMarkupText(text);
   }, []);
   return (
-    <main className="proposal_component">
-      <div className="proposal_nav">
-        <div role="presentation" onClick={handleMoveToProposal}>
+    <main className='proposal_component'>
+      <div className='proposal_nav'>
+        <div role='presentation' onClick={handleMoveToProposal}>
           <FiArrowLeft />
-          <p className="paragraph04">All Proposals</p>
+          <p className='paragraph04'>All Proposals</p>
         </div>
-        <p className="executed">Executed</p>
+        <p className='executed'>Executed</p>
       </div>
 
-      <div className="proposal_title">
+      <div className='proposal_title'>
         <h2>Deploy Uniswap V3 on Scroll</h2>
-        <p className="paragraph04">
+        <p className='paragraph04'>
           Voting ended November 7, 2023 at 11:09 AM GMT+5:30
         </p>
       </div>
 
-      <div className="voting_data">
-        <p className="paragraph04 voting_for">
+      <div className='voting_data'>
+        <p className='paragraph04 voting_for'>
           <span>For</span> <span>52,273,199 / 40,000,000</span>
         </p>
-        <p className="paragraph04 voting_against">
+        <p className='paragraph04 voting_against'>
           <span>Against</span> <span>190</span>
         </p>
       </div>

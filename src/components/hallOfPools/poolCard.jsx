@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { Avatar, message } from "antd";
-import { HomeOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-import { imgError } from "../../utils";
-import "./styles/poolCard.scss";
-import { useSelector } from "react-redux";
-import { useState } from "react";
-import bunnytheme from "../../assets/bunnytheme.svg";
-import useWalletHook from "../../lib/hooks/useWallet";
+import React, { useEffect } from 'react';
+import { Avatar, message } from 'antd';
+import { HomeOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { imgError } from '../../utils';
+import './styles/poolCard.scss';
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
+import bunnytheme from '../../assets/bunnytheme.svg';
+import useWalletHook from '../../lib/hooks/useWallet';
 
 function PoolCard({ pool }) {
   const { poolAddress, token0, token1, totalLiquidity, totalBorrowed } = pool;
@@ -20,12 +20,12 @@ function PoolCard({ pool }) {
     if (address && isConnected) {
       navigate(`/pool/${poolAddress}`);
     } else {
-      message.info("Please Connect to the Wallet");
+      message.info('Please Connect to the Wallet');
     }
   };
 
   useEffect(() => {
-    if (token0?.symbol == "BUNNY" && token1?.symbol == "EGG") {
+    if (token0?.symbol == 'BUNNY' && token1?.symbol == 'EGG') {
       setPoolTheme(true);
     }
   }, []);
@@ -33,7 +33,7 @@ function PoolCard({ pool }) {
   return (
     <div
       onClick={handleNavigate}
-      className={`${poolTheme ? "pool_theme" : ""} poolcard`}
+      className={`${poolTheme ? 'pool_theme' : ''} poolcard`}
     >
       <div className='pool_icons'>
         {/* <div>
@@ -58,8 +58,8 @@ function PoolCard({ pool }) {
           ) : (
             <h5 className='paragraph06'>
               {totalLiquidity !== undefined
-                ? "$ " + Number(totalLiquidity).toFixed(2)
-                : "$162,000"}{" "}
+                ? '$ ' + Number(totalLiquidity).toFixed(2)
+                : '$162,000'}{' '}
             </h5>
           )}
           {/* <h5 className='paragraph06'>
@@ -82,8 +82,8 @@ function PoolCard({ pool }) {
           ) : (
             <h5 className='paragraph06'>
               {totalBorrowed !== undefined
-                ? "$ " + Number(totalBorrowed).toFixed(2)
-                : "$162,000"}{" "}
+                ? '$ ' + Number(totalBorrowed).toFixed(2)
+                : '$162,000'}{' '}
             </h5>
           )}
           {/* <h5 className='paragraph06'>

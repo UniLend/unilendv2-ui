@@ -1,23 +1,27 @@
-import React, { useEffect, useMemo, useState } from "react";
-import "./styles/index.scss";
-import { Popover, Pagination, Tooltip } from "antd";
-import { useNavigate } from "react-router-dom";
-import { FaChevronDown, FaSearch } from "react-icons/fa";
-import { shortenAddress, imgError } from "../../utils";
-import { allTransaction } from "../../services/events";
-import txIcon from "../../assets/tx.svg";
-import noTxt from "../../assets/notxt.svg";
-import { fixed2Decimals, fromBigNumber, truncateToDecimals } from "../../helpers/contracts";
-import HistorySkeleton from "../Loader/HistorySkeleton";
-import { getHistoryGraphQuery, sortByKey } from "../../helpers/dashboard";
-import DropDown from "../Common/DropDown";
-import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
-import loader from "../../assets/Eclipse-loader.gif";
-import { useSelector } from "react-redux";
-import { useQuery } from "react-query";
-import { fetchGraphQlData } from "../../utils/axios";
-import useWalletHook from "../../lib/hooks/useWallet";
-import { supportedNetworks } from "../../core/networks/networks";
+import React, { useEffect, useMemo, useState } from 'react';
+import './styles/index.scss';
+import { Popover, Pagination, Tooltip } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { FaChevronDown, FaSearch } from 'react-icons/fa';
+import { shortenAddress, imgError } from '../../utils';
+import { allTransaction } from '../../services/events';
+import txIcon from '../../assets/tx.svg';
+import noTxt from '../../assets/notxt.svg';
+import {
+  fixed2Decimals,
+  fromBigNumber,
+  truncateToDecimals,
+} from '../../helpers/contracts';
+import HistorySkeleton from '../Loader/HistorySkeleton';
+import { getHistoryGraphQuery, sortByKey } from '../../helpers/dashboard';
+import DropDown from '../Common/DropDown';
+import { ImArrowDown2, ImArrowUp2 } from 'react-icons/im';
+import loader from '../../assets/Eclipse-loader.gif';
+import { useSelector } from 'react-redux';
+import { useQuery } from 'react-query';
+import { fetchGraphQlData } from '../../utils/axios';
+import useWalletHook from '../../lib/hooks/useWallet';
+import { supportedNetworks } from '../../core/networks/networks';
 
 function HistoryComponent() {
   const contracts = useSelector((state) => state?.contracts);
@@ -38,7 +42,7 @@ function HistoryComponent() {
   const [sortIndex, setSortIndex] = useState(1);
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [isPolygon, setIsPolygon] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [poolsData, setPoolsData] = useState({});
   const query = getHistoryGraphQuery(user?.address);
   const [called, setIsCalled] = useState(false);
@@ -47,10 +51,10 @@ function HistoryComponent() {
     .filter((network) => network.graphAvailable && network.chainId)
     .map((net) => net.chainId);
 
-  const { data, loading, error, refetch } = useQuery("history", async () => {
+  const { data, loading, error, refetch } = useQuery('history', async () => {
     const fetchedDATA = await fetchGraphQlData(
       chain?.id || user?.network?.id || 137,
-      query
+      query,
     );
     return fetchedDATA;
   });
@@ -67,7 +71,7 @@ function HistoryComponent() {
 
   useEffect(() => {
     if (!user.isConnected) {
-      navigate("/");
+      navigate('/');
     }
 
     if (data && networksWithGraph.includes(user?.network.id)) {
@@ -87,9 +91,9 @@ function HistoryComponent() {
           ...data.redeems,
           ...data.repays,
         ];
-        const sorted = sortByKey(newArray, "blockTimestamp", 1);
+        const sorted = sortByKey(newArray, 'blockTimestamp', 1);
 
-        console.log("history", sorted);
+        console.log('history', sorted);
 
         setGraphHistory(sorted);
         setGraphHistoryBackup(sorted);
@@ -134,9 +138,9 @@ function HistoryComponent() {
           String(txt.tokenSymbol).toUpperCase().includes(value) ||
           String(txt.__typename).toUpperCase().includes(value) ||
           String(txt.id).toUpperCase().includes(value) ||
-          String(txt.token.symbol).toUpperCase().includes(value)
+          String(txt.token.symbol).toUpperCase().includes(value),
       );
-      if (value == "") {
+      if (value == '') {
         searched = graphHistoryBackup;
       }
       setGraphHistory(searched);
@@ -157,7 +161,7 @@ function HistoryComponent() {
           user.address,
           poolList,
           setTxtData,
-          setIsPageLoading
+          setIsPageLoading,
         );
 
         if (txtArray.length > 0) {
@@ -173,7 +177,7 @@ function HistoryComponent() {
         }
         setIsPageLoading(false);
       } catch (error) {
-        console.log("history data: error", error);
+        console.log('history data: error', error);
         setIsPageLoading(false);
         setHistoryLoading(false);
       }
@@ -182,7 +186,7 @@ function HistoryComponent() {
 
   useEffect(() => {
     if (!user.isConnected) {
-      navigate("/");
+      navigate('/');
     }
     if (user.address && contracts?.coreContract?.address && !called) {
       getTransactionData();
@@ -192,12 +196,12 @@ function HistoryComponent() {
 
   const dropdownlist = [
     {
-      text: "Transaction",
+      text: 'Transaction',
       fun: () => handleSort(1),
       icon: <ImArrowUp2 />,
     },
     {
-      text: "Transaction",
+      text: 'Transaction',
       fun: () => handleSort(2),
       icon: <ImArrowDown2 />,
     },
@@ -275,7 +279,7 @@ function HistoryComponent() {
                     </div>
                     <a href={`pool/${txt.pool.pool}`}>
                       <p className='hide_for_mobile hide_for_tab'>
-                        {txt.pool.token0.symbol + "/" + txt.pool.token1.symbol}
+                        {txt.pool.token0.symbol + '/' + txt.pool.token1.symbol}
                       </p>
                     </a>
                   </div>
@@ -286,12 +290,19 @@ function HistoryComponent() {
                     <p>{txt?.__typename}</p>
                   </div>
                   <div>
-                    <Tooltip title={Number(txt?.amount) / 10** Number(txt.token.decimals)} >
-                    <p>
-                      {truncateToDecimals(Number(txt?.amount) / 10** Number(txt.token.decimals),6)}
-                      {/* {(Number(txt.returnValues._amount) / 10 ** 18).toFixed(4)} */}
-                     
-                    </p>
+                    <Tooltip
+                      title={
+                        Number(txt?.amount) / 10 ** Number(txt.token.decimals)
+                      }
+                    >
+                      <p>
+                        {truncateToDecimals(
+                          Number(txt?.amount) /
+                            10 ** Number(txt.token.decimals),
+                          6,
+                        )}
+                        {/* {(Number(txt.returnValues._amount) / 10 ** 18).toFixed(4)} */}
+                      </p>
                     </Tooltip>
                   </div>
                   <div className='hide_for_mobile'>
@@ -313,7 +324,7 @@ function HistoryComponent() {
                     </p>
                   </div>
                   <div className='tx_icon'>
-                    {" "}
+                    {' '}
                     <a
                       href={`${
                         supportedNetworks[user?.network?.id]
@@ -321,7 +332,7 @@ function HistoryComponent() {
                       }/tx/${txt?.id}`}
                       target='_blank'
                     >
-                      <img src={txIcon} alt='' />{" "}
+                      <img src={txIcon} alt='' />{' '}
                     </a>
                   </div>
                 </div>
@@ -357,7 +368,7 @@ function HistoryComponent() {
                     </div>
                     <p className='hide_for_mobile hide_for_tab'>
                       {poolList[txt.address]?.token0?.symbol +
-                        "/" +
+                        '/' +
                         poolList[txt.address]?.token1?.symbol}
                     </p>
                   </div>
@@ -370,7 +381,7 @@ function HistoryComponent() {
                   <div>
                     <p>
                       {Number(
-                        fromBigNumber(txt?.args?._amount) / 10 ** 18
+                        fromBigNumber(txt?.args?._amount) / 10 ** 18,
                       ).toFixed(2)}
                       {/* {(Number(txt.returnValues._amount) / 10 ** 18).toFixed(4)} */}
                     </p>
@@ -399,7 +410,7 @@ function HistoryComponent() {
                       }/tx/${txt?.id}`}
                       target='_blank'
                     >
-                      <img src={txIcon} alt='' />{" "}
+                      <img src={txIcon} alt='' />{' '}
                     </a>
                   </div>
                 </div>

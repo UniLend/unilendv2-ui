@@ -1,21 +1,20 @@
-import React from "react";
-import App from "./App";
+import React from 'react';
+import App from './App';
 import {
   useQuery,
   useMutation,
   useQueryClient,
   QueryClient,
   QueryClientProvider,
-} from "react-query";
-import Navbar from "./components/Navbar";
+} from 'react-query';
+import Navbar from './components/Navbar';
 
 const graphURL = {
-  80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
-  137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
+  80001: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend',
+  137: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon',
 };
 
 export default function AppWrapper() {
-  
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -23,7 +22,6 @@ export default function AppWrapper() {
         refetchOnMount: false,
         refetchOnReconnect: false,
         retry: false,
-        
       },
     },
   });

@@ -1,23 +1,23 @@
-import React from "react";
-import { notification } from "antd";
-import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
-import "./styles/notificationMessage.scss";
+import React from 'react';
+import { notification } from 'antd';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import './styles/notificationMessage.scss';
 
 export default function NotificationMessage(result, msg) {
   return notification.open({
     mesage: { result },
-    description: result === "success" ? msg : msg,
+    description: result === 'success' ? msg : msg,
     onClick: () => {
-      console.log("Notification Clicked!");
+      console.log('Notification Clicked!');
     },
-    className: "notification_class",
+    className: 'notification_class',
     closeIcon: false,
     duration: 5,
     icon:
-      result == "success" ? (
-        <CheckCircleOutlined style={{ color: "green" }} />
+      result == 'success' ? (
+        <CheckCircleOutlined style={{ color: 'green' }} />
       ) : (
-        <CloseCircleOutlined style={{ color: "red" }} />
+        <CloseCircleOutlined style={{ color: 'red' }} />
       ),
   });
 }
