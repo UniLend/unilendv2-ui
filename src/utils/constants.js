@@ -148,6 +148,30 @@ const tokensBYSymbol = {
   FLOKI:{
     logo: "https://i.imgur.com/JYTPKWf.jpg",
     symbol: "FLOKI",
+  },
+  IND:{
+    logo:'https://i.postimg.cc/zG0sGQnW/India.png',
+    symbol:"IND"
+  },
+  AUS:{
+    logo:'https://i.postimg.cc/zfv9bkjQ/australia-1.png',
+    symbol:"AUS"
+  },
+  PAK:{
+    logo:'https://i.postimg.cc/YSg1HnHc/Pakistan.png',
+    symbol:"PAK"
+  },
+  ENG:{
+    logo:'https://i.postimg.cc/hPy8bQrY/england.png',
+    symbol:"ENG"
+  },
+  SA:{
+    logo:'https://i.postimg.cc/52XBP9K2/south-africa.png',
+    symbol:"SA"
+  },
+  NZ:{
+    logo:'https://i.postimg.cc/FHwjwtwg/New-Zealand.png',
+    symbol:"NZ"
   }
 };
 

@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 dist
+coverage
 dist-ssr
 .env
 *.local
@@ -30,3 +31,4 @@ package-lock.json
 .netlify
 dist.zip
 .vercel
+coverage

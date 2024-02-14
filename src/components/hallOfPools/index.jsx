@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import ManageToken from "../ManageTokens/ManageToken";
 import PoolCard from "./poolCard";
-import banner from "../../assets/banner.svg";
+import banner from "../../assets/poolbannermainnet.svg";
 import { FaChevronDown } from "react-icons/fa";
 import "./styles/index.scss";
 import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
 import { useSelector } from "react-redux";
-import { getAllEvents } from "../../services/events";
 import { erc20Abi } from "../../core/contractData/abi";
-import { getContract, getERC20Logo } from "../../services/contracts";
 import NoPoolFound from "../NoPoolFound";
 import { fetchCoinLogo } from "../../utils/axios";
 import PoolListSkeleton from "../Loader/PoolListSkeleton";
@@ -18,28 +16,25 @@ import DropDown from "../Common/DropDown";
 import { sortByKey } from "../../helpers/dashboard";
 import { handleCreatePool } from "../../services/pool";
 
-export default function HallOfPoolsComponent(props) {
-  const state = useSelector((state) => state);
+export default function HallOfPoolsComponent() {
+  const poolList = useSelector((state) => state.poolList);
+  const isLoadingPoolData = useSelector((state) => state.isLoadingPoolData);
   const [token1, setToken1] = useState({});
   const [token2, setToken2] = useState({});
   const [pools, setPools] = useState([]);
   const [myPoolTab, setMyPoolTab] = useState(false);
   const [poolBackup, setPoolBackup] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-  const { contracts, web3, poolList, isLoadingPoolData, user } = state;
 
   useEffect(() => {
     if (Object.values(poolList).length > 0) {
       const toArray = Object.values(poolList).filter(
         (pool) => pool.hide == false
       );
-   
+
       setPools(toArray);
       setPoolBackup(toArray);
     }
-  
   }, [poolList]);
-
 
   const handleSort = (key, order) => {
     const sorted = sortByKey(pools, key, order);
@@ -72,7 +67,6 @@ export default function HallOfPoolsComponent(props) {
 
   useEffect(() => {
     if (token1?.symbol && !token2?.symbol) {
-    
       const filtered =
         Array.isArray(poolBackup) &&
         poolBackup.filter(
@@ -101,37 +95,49 @@ export default function HallOfPoolsComponent(props) {
     } else if (token1?.symbol && token2?.symbol) {
       const filtered =
         Array.isArray(poolBackup) &&
-        poolBackup.filter(
-          (pool) =>
-            String(pool?.token0.symbol)
-              .toUpperCase()
-              .includes(String(token1.symbol)) ||
-            String(pool?.token1.symbol)
-              .toUpperCase()
-              .includes(String(token1.symbol))
-        ).filter(
-          (pool) =>
-            String(pool?.token0.symbol)
-              .toUpperCase()
-              .includes(String(token2.symbol)) ||
-            String(pool?.token1.symbol)
-              .toUpperCase()
-              .includes(String(token2.symbol))
-        );
-        setPools(filtered)
+        poolBackup
+          .filter(
+            (pool) =>
+              String(pool?.token0.symbol)
+                .toUpperCase()
+                .includes(String(token1.symbol)) ||
+              String(pool?.token1.symbol)
+                .toUpperCase()
+                .includes(String(token1.symbol))
+          )
+          .filter(
+            (pool) =>
+              String(pool?.token0.symbol)
+                .toUpperCase()
+                .includes(String(token2.symbol)) ||
+              String(pool?.token1.symbol)
+                .toUpperCase()
+                .includes(String(token2.symbol))
+          );
+      setPools(filtered);
     } else {
-      setPools(poolBackup)
+      setPools(poolBackup);
     }
   }, [token1, token2, poolBackup]);
 
   const createPool = () => {
-    handleCreatePool()
+    handleCreatePool();
+  };
+
+  const updateToken = (token1, token2) => {
+    setToken1(token1);
+    setToken2(token2);
   };
 
   return (
     <div className="hallofpools_container">
+      {/* <div className="banner">
+        <img src={banner} alt="v2-banner" />
+      </div> */}
       <div className="analytics_container">
-        <div className="analytics"></div>
+        <div className="analytics">
+          <img src={banner} alt="v2-banner" />
+        </div>
         <div className="managepool_container">
           <ManageToken
             handleTokens={handleTokens}
@@ -170,7 +176,12 @@ export default function HallOfPoolsComponent(props) {
       ) : isLoadingPoolData ? (
         <PoolListSkeleton />
       ) : (
-        <NoPoolFound token1={token1} token2={token2} createPool={handleCreatePool} />
+        <NoPoolFound
+          token1={token1}
+          token2={token2}
+          updateToken={updateToken}
+          // createPool={handleCreatePool}
+        />
       )}
       {/* <PoolCarousel pools={pools} isLoading={!isLoadingPoolData}/> */}
 

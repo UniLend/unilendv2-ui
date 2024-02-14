@@ -1,27 +1,33 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./styles/index.scss";
-import { Popover, Pagination } from "antd";
-import { useQuery } from "@apollo/client";
+import { Popover, Pagination, Tooltip } from "antd";
 import { useNavigate } from "react-router-dom";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaSearch } from "react-icons/fa";
 import { shortenAddress, imgError } from "../../utils";
 import { allTransaction } from "../../services/events";
 import txIcon from "../../assets/tx.svg";
 import noTxt from "../../assets/notxt.svg";
-import { fixed2Decimals, fromBigNumber } from "../../helpers/contracts";
+import { fixed2Decimals, fromBigNumber, truncateToDecimals } from "../../helpers/contracts";
 import HistorySkeleton from "../Loader/HistorySkeleton";
 import { getHistoryGraphQuery, sortByKey } from "../../helpers/dashboard";
-import { getAccount, getNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
-import {ImArrowDown2, ImArrowUp2} from 'react-icons/im'
-import loader from '../../assets/Eclipse-loader.gif'
+import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
+import loader from "../../assets/Eclipse-loader.gif";
+import { useSelector } from "react-redux";
+import { useQuery } from "react-query";
+import { fetchGraphQlData } from "../../utils/axios";
+import useWalletHook from "../../lib/hooks/useWallet";
+import { supportedNetworks } from "../../core/networks/networks";
 
- function HistoryComponent(props) {
-  const { contracts, user, web3, poolList, tokenList } = props;
+function HistoryComponent() {
+  const contracts = useSelector((state) => state?.contracts);
+  const user = useSelector((state) => state?.user);
+  const tokenList = useSelector((state) => state?.tokenList);
+  const poolList = useSelector((state) => state?.poolList);
+  const web3 = useSelector((state) => state?.web3);
   const navigate = useNavigate();
+  const { chain } = useWalletHook();
 
-  const { address } = getAccount();
-  const newArray = new Array(50).fill(0).map((el, i) => i + 1);
   const [txtData, setTxtData] = useState([]);
   const [graphHistory, setGraphHistory] = useState([]);
   const [graphHistoryBackup, setGraphHistoryBackup] = useState([]);
@@ -35,29 +41,36 @@ import loader from '../../assets/Eclipse-loader.gif'
   const [search, setSearch] = useState("");
   const [poolsData, setPoolsData] = useState({});
   const query = getHistoryGraphQuery(user?.address);
-  const [called, setIsCalled] = useState(false)
-  const [historyLoading, setHistoryLoading] = useState(false)
+  const [called, setIsCalled] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const networksWithGraph = Object.values(supportedNetworks)
+    .filter((network) => network.graphAvailable && network.chainId)
+    .map((net) => net.chainId);
 
- 
-  const { data, loading, error } = useQuery(query);
- 
+  const { data, loading, error, refetch } = useQuery("history", async () => {
+    const fetchedDATA = await fetchGraphQlData(
+      chain?.id || user?.network?.id || 137,
+      query
+    );
+    return fetchedDATA;
+  });
   const handleVisibleChange = (newVisible) => {
     setVisible(newVisible);
   };
 
   const getDateByTimeStamp = (timeStamp) => {
-    const dateInstance = new Date(timeStamp * 1000)
-  const time = dateInstance.toLocaleTimeString()
-  const date = dateInstance.toLocaleDateString()
+    const dateInstance = new Date(timeStamp * 1000);
+    const time = dateInstance.toLocaleTimeString();
+    const date = dateInstance.toLocaleDateString();
     return `${date} : ${time}`;
-  }
+  };
 
   useEffect(() => {
-    if(!user.isConnected){
-      navigate('/')
+    if (!user.isConnected) {
+      navigate("/");
     }
-    const { chain } = getNetwork();
-    if (user?.network.id== 80001) {
+
+    if (data && networksWithGraph.includes(user?.network.id)) {
       const pools = {};
       for (const key in poolList) {
         const pool = poolList[key];
@@ -75,11 +88,10 @@ import loader from '../../assets/Eclipse-loader.gif'
           ...data.repays,
         ];
         const sorted = sortByKey(newArray, "blockTimestamp", 1);
-        
         setGraphHistory(sorted);
         setGraphHistoryBackup(sorted);
         setIsPageLoading(false);
-        setHistoryLoading(false)
+        setHistoryLoading(false);
       }
     } else {
       setIsPolygon(false);
@@ -114,15 +126,17 @@ import loader from '../../assets/Eclipse-loader.gif'
     setSearch(value);
     if (isPolygon) {
       let searched = graphHistoryBackup.filter(
-        (txt) => 
+        (txt) =>
           String(txt.pool).toUpperCase().includes(value) ||
           String(txt.tokenSymbol).toUpperCase().includes(value) ||
-          String(txt.__typename).toUpperCase().includes(value)
+          String(txt.__typename).toUpperCase().includes(value) ||
+          String(txt.id).toUpperCase().includes(value) ||
+          String(txt.token.symbol).toUpperCase().includes(value)
       );
-      if(value == ''){
-        searched = graphHistoryBackup
+      if (value == "") {
+        searched = graphHistoryBackup;
       }
-      setGraphHistory(searched)
+      setGraphHistory(searched);
     } else {
       const newData = txtDataBackup.filter((data) => String(data));
       //setTxtData(newData);
@@ -130,10 +144,10 @@ import loader from '../../assets/Eclipse-loader.gif'
   };
 
   const getTransactionData = async () => {
-    if (user?.network?.id != 80001 && !called) {
+    if (!networksWithGraph.includes(user?.network.id) && !called) {
       try {
         // setIsPageLoading(true);
-        setHistoryLoading(true)
+        setHistoryLoading(true);
         const txtArray = await allTransaction(
           contracts.coreContract,
           contracts.positionContract,
@@ -142,6 +156,7 @@ import loader from '../../assets/Eclipse-loader.gif'
           setTxtData,
           setIsPageLoading
         );
+
         if (txtArray.length > 0) {
           const sort = txtArray.sort(function (a, b) {
             // Compare the 2 dates
@@ -151,64 +166,62 @@ import loader from '../../assets/Eclipse-loader.gif'
           });
           setTxtData(sort);
           setTxtDataBackup(sort);
-          setHistoryLoading(false)
+          setHistoryLoading(false);
         }
         setIsPageLoading(false);
       } catch (error) {
-        console.log("Error", {error});
+        console.log("history data: error", error);
         setIsPageLoading(false);
-        setHistoryLoading(false)
+        setHistoryLoading(false);
       }
     }
   };
 
-  
   useEffect(() => {
-    // if(!user.isConnected){
-    //   navigate('/')
-    // }
+    if (!user.isConnected) {
+      navigate("/");
+    }
     if (user.address && contracts?.coreContract?.address && !called) {
- 
       getTransactionData();
-      setIsCalled(true)
+      setIsCalled(true);
     }
   }, [contracts, user, web3]);
 
   const dropdownlist = [
- {
-  text: 'Transaction',
-  fun: () => handleSort(1),
-  icon: <ImArrowUp2 />
- },
- {
-  text: 'Transaction',
-  fun: () => handleSort(2),
-  icon: <ImArrowDown2 />
- }
-  ]
-
-
+    {
+      text: "Transaction",
+      fun: () => handleSort(1),
+      icon: <ImArrowUp2 />,
+    },
+    {
+      text: "Transaction",
+      fun: () => handleSort(2),
+      icon: <ImArrowDown2 />,
+    },
+  ];
 
   return (
-    <div className="history_table_container">
-      <div className="action_container">
-        <div className="input_container">
+    <div className='history_table_container'>
+      <div className='action_container'>
+        <div className='input_container'>
+          <FaSearch />
           <input
-            type="text"
-            placeholder="Search Txt/Token/Type"
+            type='text'
+            placeholder='Search Txt/Token/Type'
             value={search}
             onChange={handleSearch}
           />
         </div>
-       { !historyLoading?  <DropDown list={dropdownlist}/>:
-        <div className="gif_loader">
-          
-        <span>Loading</span>
-        <img src={loader} alt="" />
-        </div>
-   }
+        {!historyLoading ? (
+          <DropDown list={dropdownlist} />
+        ) : (
+          <div className='gif_loader'>
+            <span>Loading</span>
+            <img src={loader} alt='' />
+          </div>
+        )}
       </div>
-      <div className="table_header">
+      <div className='table_header'>
         <div>
           <p>Pools</p>
         </div>
@@ -221,7 +234,7 @@ import loader from '../../assets/Eclipse-loader.gif'
         <div>
           <p>Amount</p>
         </div>
-        <div className="hide_for_mobile">
+        <div className='hide_for_mobile'>
           <p>Time Stamp</p>
         </div>
         <div>
@@ -229,7 +242,7 @@ import loader from '../../assets/Eclipse-loader.gif'
         </div>
       </div>
       {isPolygon ? (
-        <div className="table_list_container">
+        <div className='table_list_container'>
           {graphHistory.length > 0 &&
           Object.values(poolsData).length > 0 &&
           !isPageLoading &&
@@ -237,86 +250,99 @@ import loader from '../../assets/Eclipse-loader.gif'
             graphHistory
               .slice((currentPage - 1) * itemPerPage, currentPage * itemPerPage)
               .map((txt, i) => (
-                <div key={i} className="table_item">
+                <div key={i} className='table_item'>
                   <div>
                     <div>
                       <img
                         src={
-                          poolsData[String(txt.pool.pool).toUpperCase()].token0.logo
+                          poolsData[String(txt.pool.pool).toUpperCase()].token0
+                            .logo
                         }
                         onError={imgError}
-                        alt="token_icon"
+                        alt='token_icon'
                       />
                       <img
                         src={
-                          poolsData[String(txt.pool.pool).toUpperCase()].token1.logo
+                          poolsData[String(txt.pool.pool).toUpperCase()].token1
+                            .logo
                         }
                         onError={imgError}
-                        alt="token_icon"
+                        alt='token_icon'
                       />
                     </div>
                     <a href={`pool/${txt.pool.pool}`}>
-                    <p className="hide_for_mobile hide_for_tab">
-                   
-                      {txt.pool.token0.symbol +
-                        "/" +
-                        txt.pool.token1.symbol}
-                    </p>
+                      <p className='hide_for_mobile hide_for_tab'>
+                        {txt.pool.token0.symbol + "/" + txt.pool.token1.symbol}
+                      </p>
                     </a>
                   </div>
                   <div>
-                    <p>{txt.token.symbol }</p>
+                    <p>{txt.token.symbol}</p>
                   </div>
                   <div>
-                    <p>
-                        {txt?.__typename}
-                    </p>
+                    <p>{txt?.__typename}</p>
                   </div>
                   <div>
+                    <Tooltip title={Number(txt?.amount) / 10** Number(txt.token.decimals)} >
                     <p>
-                      {Number(fromBigNumber(txt?.amount) / 10 ** 18).toFixed(2)}
+                      {truncateToDecimals(Number(txt?.amount) / 10** Number(txt.token.decimals),6)}
                       {/* {(Number(txt.returnValues._amount) / 10 ** 18).toFixed(4)} */}
+                     
+                    </p>
+                    </Tooltip>
+                  </div>
+                  <div className='hide_for_mobile'>
+                    <p className='success'>
+                      {getDateByTimeStamp(txt?.blockTimestamp)}
                     </p>
                   </div>
-                  <div className="hide_for_mobile">
-                    <p className="success">{getDateByTimeStamp(txt?.blockTimestamp)}</p>
-                  </div>
-                  <div className="hide_for_mobile">
+                  <div className='hide_for_mobile'>
                     <p>
                       <a
-                        href="#"
-                        target="_blank"
+                        href={`${
+                          supportedNetworks[user?.network?.id]
+                            .blockExplorerUrls[0]
+                        }/tx/${txt?.id}`}
+                        target='_blank'
                       >
                         {shortenAddress(txt?.id)}
                       </a>
                     </p>
                   </div>
-                  <div className="tx_icon">
+                  <div className='tx_icon'>
                     {" "}
-                    <img src={txIcon} alt="" />{" "}
+                    <a
+                      href={`${
+                        supportedNetworks[user?.network?.id]
+                          .blockExplorerUrls[0]
+                      }/tx/${txt?.id}`}
+                      target='_blank'
+                    >
+                      <img src={txIcon} alt='' />{" "}
+                    </a>
                   </div>
                 </div>
               ))
           ) : isPageLoading && user.isConnected ? (
             <HistorySkeleton />
           ) : (
-            <div className="no_transaction">
-              <img src={noTxt} alt="" />
+            <div className='no_transaction'>
+              <img src={noTxt} alt='' />
               <h1>No Transactions Found</h1>
             </div>
           )}
         </div>
       ) : (
-        <div className="table_list_container">
+        <div className='table_list_container'>
           {txtData.length > 0 && !isPageLoading && user.isConnected ? (
             txtData
               .slice((currentPage - 1) * itemPerPage, currentPage * itemPerPage)
               .map((txt, i) => (
-                <div key={i} className="table_item">
+                <div key={i} className='table_item'>
                   <div>
                     <div>
                       <img
-                        src={poolList[ txt.address]?.token0?.logo}
+                        src={poolList[txt.address]?.token0?.logo}
                         onError={imgError}
                         alt={poolList[txt.address]?.token0?.symbol}
                       />
@@ -326,8 +352,10 @@ import loader from '../../assets/Eclipse-loader.gif'
                         alt={poolList[txt.address]?.token1?.symbol}
                       />
                     </div>
-                    <p className="hide_for_mobile hide_for_tab">
-                      {poolList[txt.address]?.token0?.symbol + "/" + poolList[txt.address]?.token1?.symbol}
+                    <p className='hide_for_mobile hide_for_tab'>
+                      {poolList[txt.address]?.token0?.symbol +
+                        "/" +
+                        poolList[txt.address]?.token1?.symbol}
                     </p>
                   </div>
                   <div>
@@ -344,41 +372,51 @@ import loader from '../../assets/Eclipse-loader.gif'
                       {/* {(Number(txt.returnValues._amount) / 10 ** 18).toFixed(4)} */}
                     </p>
                   </div>
-                  <div className="hide_for_mobile">
-                    <p className="success">-</p>
+                  <div className='hide_for_mobile'>
+                    <p className='success'>-</p>
                   </div>
-                  <div className="hide_for_mobile">
+                  <div className='hide_for_mobile'>
                     <p>
                       <a
-                        href={`https://sepolia.etherscan.io/tx/${txt.transactionHash}`}
-                        target="_blank"
+                        href={`${
+                          supportedNetworks[user?.network?.id]
+                            .blockExplorerUrls[0]
+                        }/tx/${txt?.id}`}
+                        target='_blank'
                       >
                         {shortenAddress(txt.transactionHash)}
                       </a>
                     </p>
                   </div>
-                  <div className="tx_icon">
-                    {" "}
-                    <img src={txIcon} alt="" />{" "}
+                  <div className='tx_icon'>
+                    <a
+                      href={`${
+                        supportedNetworks[user?.network?.id]
+                          .blockExplorerUrls[0]
+                      }/tx/${txt?.id}`}
+                      target='_blank'
+                    >
+                      <img src={txIcon} alt='' />{" "}
+                    </a>
                   </div>
                 </div>
               ))
           ) : isPageLoading && user.isConnected ? (
             <HistorySkeleton />
           ) : (
-            <div className="no_transaction">
-              <img src={noTxt} alt="" />
+            <div className='no_transaction'>
+              <img src={noTxt} alt='' />
               <h1>No Transactions Found</h1>
             </div>
           )}
         </div>
       )}
-      <div className="pagination">
+      <div className='pagination'>
         <Pagination
           current={currentPage}
           onChange={(el) => setCurrentPage(el)}
           pageSize={itemPerPage}
-          size="small"
+          size='small'
           total={isPolygon ? graphHistory.length : txtData.length}
           showSizeChanger={false}
           hideOnSinglePage={true}
@@ -388,4 +426,4 @@ import loader from '../../assets/Eclipse-loader.gif'
   );
 }
 
-export default HistoryComponent
+export default HistoryComponent;

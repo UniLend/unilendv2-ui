@@ -1,8 +1,6 @@
 import BigNumber from "bignumber.js";
-import { store } from "../store/Store";
-import { ethers } from "ethers";
 
-const { contracts, user } = store.getState();
+import { ethers } from "ethers";
 
 // function timestamp() {
 //     return Math.round(new Date().getTime()/1000);
@@ -103,19 +101,61 @@ export function toDecimals(x, po) {
 }
 
 export function decimal2Fixed(amount, decimals) {
+  // let newNum = new BigNumber(amount).multipliedBy(10 ** decimals).toFixed();
+  let newNum = BigInt(Math.trunc(Number(amount) * 10 ** decimals));
+  // return bigint.toString();
+  // if (newNum.indexOf(".") > -1) {
+  //   newNum = newNum.split(".")[0];
+  // }
+  // if(newNum.toString().length > decimals){
+  //   console.log("decimal2Fixed", newNum.toString(), decimals, amount, newNum);
+  //   return '0'
+  // }
+
+  return newNum.toString();
+}
+
+export function decimal2Fixed2(amount, decimals){
   let newNum = new BigNumber(amount).multipliedBy(10 ** decimals).toFixed();
+  //let newNum = BigInt(Math.trunc(Number(amount) * 10 ** decimals));
+  // return bigint.toString();
   if (newNum.indexOf(".") > -1) {
     newNum = newNum.split(".")[0];
   }
-  return newNum;
+
+  return newNum.toString();
 }
 
+export function fixedTrunc(numberString){
+  let truncatedNumber = numberString;
+    if (numberString.indexOf(".") > -1) {
+    truncatedNumber = numberString.split(".")[0];
+  }
+  return truncatedNumber;
+}
+
+//Truncate Number 
+export function truncateToDecimals(number, decimal) {
+  const powerOf10 = Math.pow(10, decimal);
+  const truncatedNumber = Math.floor(number * powerOf10) / powerOf10;
+  return truncatedNumber;
+}
+
+
 export function fixed2Decimals(amount, decimals = 18) {
-  return new BigNumber(amount?._hex).dividedBy(10 ** decimals).toFixed();
+  const amt = amount?._hex ? amount?._hex : amount
+  const dec = fromBigNumber(decimals)
+  return new BigNumber(amt).dividedBy(10 ** dec).toFixed();
 }
 
 export function fixed2Decimals18(amount, decimals = 18) {
   return new BigNumber(amount).dividedBy(10 ** decimals).toFixed();
+}
+
+export function reduceLastDecimalByOne(number) {
+
+const a = BigNumber(number).minus(1)
+    return a.toString();
 }
 
 export function fromBigNumber(bignumber) {
@@ -201,23 +241,40 @@ export const getActionBtn = (
     text: `${activeOperation} ${selectedToken?._symbol}`,
     disable: false,
   };
-   if(reFetching){
+  if (reFetching) {
     return { text: "Fetching Data", disable: false };
-   }
-  if (amount <= 0) {
-   return { text: "Enter Amount", disable: true };
+  }
+  let decimalAmount =0
+  let newNum =0
+  if(amount && selectedToken){
+     newNum = BigInt(Math.trunc(Number(amount) * 10 ** selectedToken?._decimals));
+     decimalAmount = newNum.toString().length > selectedToken?._decimals ? 0 : newNum.toString();
+  }
+
+const minimumValue = selectedToken?._decimals == 18 ? 0.000000000000000001 : 0.000001;
+
+const countDecimals = String(amount).split('.')[1]?.length
+
+
+  if (amount <= minimumValue  && Number(decimalAmount) <= 1 ) {
+    return { text: "Enter Amount", disable: true };
   } else if (amount && activeOperation === lend) {
-    if (fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals) < amount) {
-      return  { text: "Approve " + selectedToken?._symbol };
+    if (
+      Number(fixed2Decimals18(selectedToken?.allowance, selectedToken?._decimals)) <
+      Number(amount)
+    ) {
+ 
+      return { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.balanceFixed)) {
-      return  { text: "Low Balance in Wallet", disable: true };
+      return { text: "Low Balance in Wallet", disable: true };
     }
   } else if (amount && activeOperation === borrow) {
     if (
       collateral > 0 &&
-      fixed2Decimals18(collateralToken?.allowance, collateralToken._decimals) <= collateral
+      fixed2Decimals18(collateralToken?.allowance, collateralToken._decimals) <=
+        collateral
     ) {
-      return  { text: "Approve " + collateralToken?._symbol };
+      return { text: "Approve " + collateralToken?._symbol };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
       return { text: "Not Enough Liquidity", disable: true };
     } else if (collateral > Number(collateralToken?.balanceFixed)) {
@@ -227,7 +284,6 @@ export const getActionBtn = (
       };
     }
   } else if (amount && activeOperation === redeem) {
-  
     if (amount > Number(selectedToken.lendBalanceFixed)) {
       return { text: "Not Enough Amount Lent", disable: true };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
@@ -236,8 +292,11 @@ export const getActionBtn = (
       return { text: "Exceeds Redeemable Amount", disable: true };
     }
   } else if (amount && activeOperation === repay) {
-   
-    if (fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals) < amount) {
+    if (
+      Number(
+        fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals)
+      ) < Number(amount)
+    ) {
       return { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.borrowBalanceFixed)) {
       return { text: "Exceeds Borrowed Amount", disable: true };

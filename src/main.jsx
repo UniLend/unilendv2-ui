@@ -2,35 +2,103 @@ import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import App from "./App";
+import "./polyfils";
 import { store } from "./store/Store";
 import "./index.css";
 import Ring from "./components/Loader/Ring";
 import AppWrapper from "./appWrapper";
-//uri: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend_mumbai",
+import "@rainbow-me/rainbowkit/styles.css";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+// Custom theme
+import { myCustomTheme } from "./core/theme/customWalletTheme";
+import { configureChains, createConfig, WagmiConfig } from "wagmi";
+import { mainnet, polygon } from "wagmi/chains";
+import { publicProvider } from "wagmi/providers/public";
+import { connectorsForWallets } from "@rainbow-me/rainbowkit";
+import {
+  injectedWallet,
+  walletConnectWallet,
+  metaMaskWallet,
+  coinbaseWallet,
+  ledgerWallet,
+  okxWallet,
+  trustWallet,
+  coin98Wallet,
+} from "@rainbow-me/rainbowkit/wallets";
 
 
-const activeAcount = JSON.parse(localStorage.getItem('wagmi.store'))?.state?.data
+//infinity wallet integration 
+// import { InfinityWalletConnector, openInfinityWallet } from '@infinitywallet/infinity-connector';
 
-const activeChainID = activeAcount?.chain?.id || 80001
+import { alchemyProvider } from "wagmi/providers/alchemy";
+import { infuraProvider } from 'wagmi/providers/infura'
 
-// console.log("activeChain", activeAcount, activeChainID, activeChainID);
+// import ends here
+const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
+const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
+const infuraID = import.meta.env.VITE_INFURA_ID;
 
-const graphURL = {
-  80001:  "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
-  137:"https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon"
-}
+import { mumbaiTestnet } from "./core/networks/Chains";
+
+
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  [mainnet],
+  [
+    publicProvider(),
+    alchemyProvider({ apiKey: alchemyId }),
+    infuraProvider({ apiKey: infuraID }),
+  ]
+);
+
+
+const connectors = connectorsForWallets([
+  {
+    groupName: "Recommended",
+    wallets: [
+      metaMaskWallet({ chains, projectId }),
+      injectedWallet({ chains, projectId }),
+      coinbaseWallet({ appName: "UnilendV2", chains, projectId }),
+      walletConnectWallet({ chains, projectId }),
+      coin98Wallet({ chains, projectId }),
+      okxWallet({ chains, projectId }),
+      // infintyWallet({chains})
+    ],
+  },
+  {
+    groupName: "Other",
+    wallets: [
+      injectedWallet({ chains, projectId }),
+      // argentWallet({ projectId, chains }),
+      trustWallet({ projectId, chains }),
+      ledgerWallet({ projectId, chains }),
+    ],
+  },
+]);
+
+const wagmiConfig = createConfig({
+  autoConnect: true,
+  connectors,
+  publicClient,
+  webSocketPublicClient,
+});
 
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-      <Suspense fallback={<Ring />}>
-        <Provider store={store}>
-          <BrowserRouter>
-            {/* <App /> */}
-            <AppWrapper/>
-          </BrowserRouter>
-        </Provider>
-      </Suspense>
+    <Suspense fallback={<Ring />}>
+      <Provider store={store}>
+        <WagmiConfig config={wagmiConfig}>
+          <RainbowKitProvider
+            chains={chains}
+            modalSize="compact"
+            theme={myCustomTheme}
+          >
+            <BrowserRouter>
+              <AppWrapper />
+            </BrowserRouter>
+          </RainbowKitProvider>
+        </WagmiConfig>
+      </Provider>
+    </Suspense>
   </React.StrictMode>
 );

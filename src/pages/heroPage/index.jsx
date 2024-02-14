@@ -1,8 +1,8 @@
 import React from 'react'
 import HeroComponent from '../../components/Hero'
 
-export default function HeroPage(props) {
+export default function HeroPage() {
   return (
-    <div> <HeroComponent {...props}/> </div>
+    <div> <HeroComponent /> </div>
   )
 }

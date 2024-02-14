@@ -1,8 +1,8 @@
 import React from 'react'
 import HallOfPoolsComponent from '../../components/hallOfPools'
 
-export default function HallOfPools(props) {
+export default function HallOfPools() {
   return (
-    <div> <HallOfPoolsComponent {...props}/> </div>
+    <div> <HallOfPoolsComponent /> </div>
   )
 }

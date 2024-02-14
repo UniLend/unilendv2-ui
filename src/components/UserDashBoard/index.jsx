@@ -1,82 +1,54 @@
 import React, { useState } from "react";
-// import { useQuery } from "@apollo/client";
 import Lottie from "react-lottie";
 import "./styles/index.scss";
 import { FiPercent } from "react-icons/fi";
-import { BsCheckLg, BsXLg } from "react-icons/bs";
 import { VscGraph } from "react-icons/vsc";
 import { GiReceiveMoney } from "react-icons/gi";
 import { ImStack } from "react-icons/im";
-import { Alchemy, Network } from "alchemy-sdk";
 import { FaWallet, FaSearch } from "react-icons/fa";
 import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
-import banner from "../../assets/dashboardbanner2.svg";
 import userIcon from "../../assets/userIcon.png";
-import { SearchOutlined } from "@ant-design/icons";
 import { Input, Button, Pagination } from "antd";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DonutChart from "../Common/DonutChart";
-import { useQuery, useQueryClient} from "react-query";
+import { useQuery } from "react-query";
 import {
-  getAverage,
-  getBorrowedPowerUsed,
-  getChartData,
-  getNetHealthFactor,
-  getPieChartValues,
   getPoolCreatedGraphQuery,
-  getPositionData,
-  getTokensFromUserWallet,
+  getUserData,
   sortByKey,
-  userDashBoardQuery,
   userDashBoardQuery0,
 } from "../../helpers/dashboard";
-import { getAccount, getNetwork } from "@wagmi/core";
 import DropDown from "../Common/DropDown";
 import { imgError } from "../../utils";
-import { fetchGraphQlData, fetchTokenPriceInUSD } from "../../utils/axios";
+import { fetchGraphQlData } from "../../utils/axios";
 import empty from "../../assets/searchEmpty.json";
 import { ethers } from "ethers";
+import { useSelector } from "react-redux";
+import useWalletHook from "../../lib/hooks/useWallet";
 
 //const endpoint = "https://api.spacex.land/graphql/";
-const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
-const config = {
-  apiKey: alchemyId,
-  network: Network.MATIC_MUMBAI,
-};
-const alchemy = new Alchemy(config);
+const mumbai = import.meta.env.VITE_ALCHEMY_Mumbai;
+const polygon = import.meta.env.VITE_ALCHEMY_Mumbai;
 
-
-const graphURL = {
-  80001: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend",
-  137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
-};
-
-
-export default function UserDashboardComponent(props) {
-  const { contracts, user, web3, isError, poolList, tokenList } = props;
-  const { chain } = getNetwork();
+export default function UserDashboardComponent() {
+  const user = useSelector((state) => state.user);
+  const tokenList = useSelector((state) => state.tokenList);
+  const { chain, address } = useWalletHook();
   const navigate = useNavigate();
   // if (chain?.id !== 80001) {
   //   navigate("/");
   // }
-  const { address } = getAccount();
-  const queryClient = useQueryClient()
+
   const [userAddress, setUserAddress] = useState();
-  const [verifiedAddress, setVerifiedAddress] = useState(address ||user?.address );
+  const [verifiedAddress, setVerifiedAddress] = useState(
+    address || user?.address
+  );
   const query = userDashBoardQuery0(verifiedAddress || address);
-  const [lendingVisible, setLendingVisible] = useState(false);
-  const [borrowingVisible, setBorrowingVisible] = useState(false);
   const [isLendTab, setIsLentab] = useState(true);
   const [pieChartInputs, setPieChartInputs] = useState({});
-  const query0 = getPoolCreatedGraphQuery(user?.address);
   const [positionData, setPositionData] = useState({});
   const [positionDataBackup, setPositionDataBackup] = useState();
-  // const { data, loading, error } = useQuery(query);
-  const { data, loading, error, refetch } = useQuery('userDashboard', async () => {
-    const fetchedDATA = await fetchGraphQlData(graphURL[chain?.id || user?.network?.id || 137], query)
-    return fetchedDATA;
-    });
 
   const [headerAnalytics, setHeaderAnalytics] = useState({
     healthFactor: 0,
@@ -89,13 +61,9 @@ export default function UserDashboardComponent(props) {
   const [positionLoading, setPositionLoading] = useState(true);
   const [walletCurrentPage, setWalletCurrentPage] = useState(1);
   const [positionCurrentPage, setPositionCurrentPage] = useState({
-    lending:1,
-    borrowing: 1
-  })
-
-  const handleLendingVisibleChange = (visible) => {
-    setLendingVisible(visible);
-  };
+    lending: 1,
+    borrowing: 1,
+  });
 
   const handleSearchAddress = (addr) => {
     setUserAddress(addr);
@@ -217,100 +185,62 @@ export default function UserDashboardComponent(props) {
   ];
 
   useEffect(() => {
-    setUserAddress(user.address);
-    handleSearchAddress(user.address);
-  }, [user]);
+    setUserAddress(address);
+    handleSearchAddress(address);
+  }, [address]);
+
+  const getDashBoardData = async (chainId) => {
+    try {
+      setPositionLoading(true);
+      setWalletTokenLoading(true);
+      const ValidAddress = verifiedAddress || address;
+      // query,
+      // tokenList,
+      // ValidAddress);
+      const { position, pieChart, analytics, tokens } = await getUserData(
+        chainId,
+        query,
+        tokenList,
+        ValidAddress
+      );
+      setPositionLoading(false);
+      setWalletTokens(tokens);
+      setPositionData(position);
+      setPositionDataBackup(position);
+      setPieChartInputs(pieChart);
+      setHeaderAnalytics(analytics);
+
+      return position, pieChart, analytics, tokens;
+    } catch (error) {
+      console.log("getDashboard error", error);
+    }
+  };
 
   useEffect(() => {
-    if (data && contracts) {
-   
-
-      (async () => {
-        setPositionLoading(true);
-        const position = await getPositionData(data, contracts);
-      
-
-        if (position) {
-          setPositionData(position);
-          setPositionDataBackup(position);
-          const pieChart = getPieChartValues(position); //getChartData(data, tokenList);
-
-          setPieChartInputs(pieChart);
-          const analytics = {};
-          if (position?.borrowArray.length > 0) {
-            const borrowAPY = getAverage(
-              position.borrowArray,
-              "apy",
-              "borrowBalance"
-            );
-            analytics.borrowAPY = borrowAPY;
-          }
-          if (position?.lendArray.length > 0) {
-            const earned = position.lendArray
-              .map((el) => el.interestEarned)
-              .reduce((ac, el) => ac + el);
-            analytics.interestEarned = earned;
-            const lendAPY = getAverage(
-              position.lendArray,
-              "apy",
-              "LendBalance"
-            );
-            analytics.lendAPY = lendAPY;
-            const powerUsed = getBorrowedPowerUsed(position.lendArray);
-            analytics.powerUsed = powerUsed;
-          }
-          if (data?.positions) {
-            const HF = getNetHealthFactor(data.positions);
-            analytics.healthFactor = isNaN(HF) ? 0 : HF;
-          }
-          setHeaderAnalytics(analytics);
-        }
-        setPositionLoading(false);
-      })();
+    if (address) {
+      getDashBoardData(chain?.id);
     }
-  }, [data, tokenList, contracts]);
+  }, [query, tokenList]);
 
-  const getUserTokens = async (address) => {
-    setWalletTokenLoading(true);
-    setWalletTokens([]);
-
-    alchemy.core.getTokenBalances(`${address}`).then(async (bal) => {
-      // const tokenPrices = await fetchTokenPriceInUSD()
-      const tokens = await getTokensFromUserWallet(bal, tokenList);
-      setWalletTokens(tokens);
-      setWalletTokenLoading(false);
-    });
-  };
+  useEffect(() => {
+    if (walletTokens.length !== 0) setWalletTokenLoading(false);
+  }, [walletTokens]);
 
   const checkNaN = (value) => {
     return isNaN(value) ? 0 : value;
   };
 
-  useEffect(() => {
-    const account = getAccount();
-    refetch()
-    if (verifiedAddress) {
-      getUserTokens(verifiedAddress || account.address);
-    } else if (userAddress == "" || verifiedAddress == "") {
-      getUserTokens(account.address);
-    }
-  }, [verifiedAddress, userAddress, user]);
-
   return (
     <div className="user_dashboard_component">
-      <div className="dashboardbanner">
+      {/* <div className="dashboardbanner">
         <img src={banner} alt="" />
-      </div>
+      </div> */}
       <div className="user_portfolio">
         <img src={userIcon} alt="icon" className="usericon" />
         <div className="user_tittle">
           <h1>User Overview</h1>
           <Input
-            addonBefore={
-            
-                <FaSearch className="search_icon" />
-              
-            }
+            addonBefore={<FaSearch className="search_icon" />}
             className={`search_address ${
               userAddress
                 ? verifiedAddress
@@ -330,12 +260,12 @@ export default function UserDashboardComponent(props) {
             <div className="analytics_tabs">
               <div className="analytic_box">
                 <div className="icon_box">
-                  {" "}
-                  <GiReceiveMoney />{" "}
+                  <GiReceiveMoney />
                 </div>
                 <div className="values">
                   <p>Net Worth</p>
                   <h5>
+                    ${" "}
                     {checkNaN(
                       Number(
                         pieChartInputs?.lendValues?.total -
@@ -347,8 +277,7 @@ export default function UserDashboardComponent(props) {
               </div>
               <div className="analytic_box">
                 <div className="icon_box">
-                  {" "}
-                  <VscGraph />{" "}
+                  <VscGraph />
                 </div>
                 <div className="values">
                   <p>Lend APY</p>
@@ -359,8 +288,7 @@ export default function UserDashboardComponent(props) {
               </div>
               <div className="analytic_box">
                 <div className="icon_box">
-                  {" "}
-                  <FiPercent />{" "}
+                  <FiPercent />
                 </div>
                 <div className="values">
                   <p>Borrow APY</p>
@@ -410,6 +338,7 @@ export default function UserDashboardComponent(props) {
                 <div>
                   <p>Total Lend</p>
                   <h5>
+                    ${" "}
                     {checkNaN(
                       Number(pieChartInputs?.lendValues?.total).toFixed(4)
                     ) || 0}
@@ -424,7 +353,7 @@ export default function UserDashboardComponent(props) {
                   {" "}
                   <p> Interest Earned </p>
                   <h5>
-                    {Number(headerAnalytics.interestEarned || 0).toFixed(8)}
+                    $ {Number(headerAnalytics.interestEarned || 0).toFixed(8)}
                   </h5>
                 </div>
               </div>
@@ -452,6 +381,7 @@ export default function UserDashboardComponent(props) {
                 <div>
                   <p>Total Borrow</p>
                   <h5>
+                    ${" "}
                     {checkNaN(
                       Number(pieChartInputs?.borrowValues?.total).toFixed(4)
                     ) || 0}
@@ -491,37 +421,39 @@ export default function UserDashboardComponent(props) {
             </div>
             <div className="tbody">
               {!walletTokenLoading &&
-                (walletTokens.length > 0 ? (
-                  walletTokens
-                    .slice((walletCurrentPage - 1) * 7, walletCurrentPage * 7)
-                    .map((token, i) => {
-                      return (
-                        <div key={i} className="tbody_row">
-                          <span>
-                            <img
-                              onError={imgError}
-                              src={token?.logo}
-                              alt="uft"
-                            />
-                            <p className="hide_for_mobile">
-                              {" "}
-                              {token?.name} / {token?.symbol}
-                            </p>
-                            <p className="hide_for_monitor">{token?.symbol}</p>
-                          </span>
-                          <span>-</span>
-                          <span>{token?.balance}</span>
-                          <span>-</span>
-                        </div>
-                      );
-                    })
-                ) : (
-                  <Lottie
-                    options={defaultOptionsLotti}
-                    height={350}
-                    width={350}
-                  />
-                ))}
+                (walletTokens?.length > 0
+                  ? walletTokens
+                      .slice((walletCurrentPage - 1) * 7, walletCurrentPage * 7)
+                      .map((token, i) => {
+                        return (
+                          <div key={i} className="tbody_row">
+                            <span>
+                              <img
+                                onError={imgError}
+                                src={token?.logo}
+                                alt="uft"
+                              />
+                              <p className="hide_for_mobile">
+                                {/* {token?.name} / {token?.symbol} */}
+                                {token?.name}
+                              </p>
+                              <p className="hide_for_monitor">
+                                {token?.symbol}
+                              </p>
+                            </span>
+                            <span>{token?.pricePerToken}</span>
+                            <span>{token?.balance}</span>
+                            <span>{token?.value}</span>
+                          </div>
+                        );
+                      })
+                  : walletTokens?.length == 0 && (
+                      <Lottie
+                        options={defaultOptionsLotti}
+                        height={350}
+                        width={350}
+                      />
+                    ))}
               {walletTokenLoading &&
                 new Array(7).fill(0).map((_, i) => {
                   return (
@@ -573,6 +505,7 @@ export default function UserDashboardComponent(props) {
               <div>
                 <div className="action_container">
                   <div className="input_container">
+                    <FaSearch />
                     <input
                       onChange={handleOpenPosition}
                       type="text"
@@ -598,97 +531,120 @@ export default function UserDashboardComponent(props) {
                   <span>Max LTV</span>
                 </div>
                 <div className="tbody">
-                  {positionData?.lendArray?.length > 0 && !positionLoading
-                    ? positionData?.lendArray.slice((positionCurrentPage.lending - 1) * 5, positionCurrentPage.lending * 5)
-                    .map((pool, i) => {
-                        return (
-                          <div key={i} className="tbody_row">
-                            <span
-                              onClick={() => navigateToPool(pool?.pool?.pool)}
-                            >
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token0Logo}
-                                alt="uft"
-                              />
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token1Logo}
-                                alt="uft"
-                              />
-                              <p className="hide_for_mobile">
-                                {" "}
-                                {pool.poolInfo.token0Symbol} /{" "}
-                                {pool.poolInfo.token1Symbol}{" "}
-                              </p>
-                            </span>
-                            <span>{pool?.tokenSymbol}</span>
-                            <span>{Number(pool?.LendBalance).toFixed(2)}</span>
-                            <span>{Number(pool?.apy).toFixed(2)}%</span>
-                            <span>{pool.pool.maxLTV}%</span>
-                            <span>
-                              {Number(pool?.interestEarned).toFixed(8)}
-                            </span>
-                            <span>
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token0Logo}
-                                alt="uft"
-                              />
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token1Logo}
-                                alt="uft"
-                              />
-                            </span>
-                            <span>
-                              {pool?.tokenSymbol} <br />{" "}
-                              {Number(pool?.LendBalance).toFixed(2)}{" "}
-                            </span>
-                            <span>
-                              {Number(pool?.apy).toFixed(2)}% <br />{" "}
-                              {Number(pool?.interestEarned).toFixed(6)}{" "}
-                            </span>
-                            <span>{pool.pool.maxLTV}%</span>
-                          </div>
-                        );
-                      })
-                    : !positionLoading && (
-                        <Lottie
-                          options={defaultOptionsLotti}
-                          height={350}
-                          width={350}
-                        />
-                      )}
+                  {!positionLoading &&
+                    (positionData?.lendArray?.length > 0
+                      ? positionData?.lendArray
+                          .slice(
+                            (positionCurrentPage.lending - 1) * 5,
+                            positionCurrentPage.lending * 5
+                          )
+                          .map((pool, i) => {
+                            return (
+                              <div key={i} className="tbody_row">
+                                <span
+                                  onClick={() =>
+                                    navigateToPool(pool?.pool?.pool)
+                                  }
+                                >
+                                  <div>
+                                    <img
+                                      onError={imgError}
+                                      src={pool.poolInfo.token0Logo}
+                                      alt="uft"
+                                    />
+                                    <img
+                                      onError={imgError}
+                                      src={pool.poolInfo.token1Logo}
+                                      alt="uft"
+                                    />
+                                  </div>
+                                  <p className="hide_for_mobile">
+                                    {" "}
+                                    {pool.poolInfo.token0Symbol} /{" "}
+                                    {pool.poolInfo.token1Symbol}{" "}
+                                  </p>
+                                </span>
+                                <span>{pool?.tokenSymbol}</span>
+                                <span>
+                                  {Number(pool?.LendBalance).toFixed(2)}
+                                </span>
+                                <span>{Number(pool?.apy).toFixed(2)}%</span>
+                                <span>{pool.pool.maxLTV}%</span>
+                                <span>
+                                  {Number(pool?.interestEarned).toFixed(8)}
+                                </span>
+                                <span>
+                                  <img
+                                    onError={imgError}
+                                    src={pool.poolInfo.token0Logo}
+                                    alt="uft"
+                                  />
+                                  <img
+                                    onError={imgError}
+                                    src={pool.poolInfo.token1Logo}
+                                    alt="uft"
+                                  />
+                                </span>
+                                <span>
+                                  <strong>{pool?.tokenSymbol}</strong>
+                                  <br /> {Number(pool?.LendBalance).toFixed(
+                                    2
+                                  )}{" "}
+                                </span>
+                                <span>
+                                  <strong>
+                                    {Number(pool?.apy).toFixed(2)}%
+                                  </strong>
+                                  <br />{" "}
+                                  {Number(pool?.interestEarned).toFixed(6)}{" "}
+                                </span>
+                                <span>
+                                  <strong>{pool.pool.maxLTV}%</strong>
+                                </span>
+                              </div>
+                            );
+                          })
+                      : !positionLoading && (
+                          <Lottie
+                            options={defaultOptionsLotti}
+                            height={350}
+                            width={350}
+                          />
+                        ))}
                   {positionLoading &&
-                    new Array(8).fill(0).map((_, i) => {
+                    new Array(5).fill(0).map((_, i) => {
                       return (
                         <div
                           key={i}
-                          className="tbody_row row_skeleton skeleton"
+                          className="tbody_skelton_row row_skeleton skeleton"
                         ></div>
                       );
                     })}
                 </div>
-              {
-                positionData?.lendArray?.length > 0 && !positionLoading &&
-               <div className="pagination">
-                  <Pagination
-                    current={positionCurrentPage.lending}
-                    onChange={(el) => setPositionCurrentPage({...positionCurrentPage, lending: el})}
-                    pageSize={5}
-                    size="small"
-                    total={positionData?.lendArray?.length}
-                    showSizeChanger={false}
-                    hideOnSinglePage={true}
-                  />
-                </div>
-            }
+                {positionData?.lendArray?.length > 0 && !positionLoading && (
+                  <div className="pagination">
+                    <Pagination
+                      current={positionCurrentPage.lending}
+                      onChange={(el) =>
+                        setPositionCurrentPage({
+                          ...positionCurrentPage,
+                          lending: el,
+                        })
+                      }
+                      pageSize={5}
+                      size="small"
+                      total={positionData?.lendArray?.length}
+                      showSizeChanger={false}
+                      hideOnSinglePage={true}
+                    />
+                  </div>
+                )}
               </div>
             ) : (
               <div>
                 <div className="action_container">
                   <div className="input_container">
+                    <FaSearch />
                     <input
                       onChange={handleOpenPosition}
                       type="text"
@@ -715,60 +671,72 @@ export default function UserDashboardComponent(props) {
                 </div>
                 <div className="tbody">
                   {positionData?.borrowArray?.length > 0 && !positionLoading
-                    ? positionData?.borrowArray.slice((positionCurrentPage.borrowing - 1) * 5, positionCurrentPage.borrowing * 5)
-                    .map((pool, i) => {
-                        return (
-                          <div key={i} className="tbody_row">
-                            <span
-                              onClick={() => navigateToPool(pool?.pool?.pool)}
-                            >
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token0Logo}
-                                alt="uft"
-                              />
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token1Logo}
-                                alt="uft"
-                              />
-                              <p className="hide_for_mobile">
-                                {" "}
-                                {pool.poolInfo.token0Symbol} /{" "}
-                                {pool.poolInfo.token1Symbol}
-                              </p>
-                            </span>
-                            <span>{pool?.tokenSymbol}</span>
-                            <span>
-                              {Number(pool?.borrowBalance).toFixed(2)}
-                            </span>
-                            <span>{Number(pool?.apy).toFixed(3)}%</span>
-                            <span>{Number(pool?.currentLTV).toFixed(2)}%</span>
-                            <span>{Number(pool?.healthFactor)}</span>
-                            <span>
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token0Logo}
-                                alt="uft"
-                              />
-                              <img
-                                onError={imgError}
-                                src={pool.poolInfo.token1Logo}
-                                alt="uft"
-                              />
-                            </span>
-                            <span>
-                              {pool?.tokenSymbol} <br />{" "}
-                              {Number(pool?.borrowBalance).toFixed(2)}{" "}
-                            </span>
-                            <span>
-                              {Number(pool?.apy).toFixed(3)}% <br />{" "}
-                              {Number(pool?.healthFactor)}
-                            </span>
-                            <span>{Number(pool?.currentLTV).toFixed(2)}%</span>
-                          </div>
-                        );
-                      })
+                    ? positionData?.borrowArray
+                        .slice(
+                          (positionCurrentPage.borrowing - 1) * 5,
+                          positionCurrentPage.borrowing * 5
+                        )
+                        .map((pool, i) => {
+                          return (
+                            <div key={i} className="tbody_row">
+                              <span
+                                onClick={() => navigateToPool(pool?.pool?.pool)}
+                              >
+                                <div>
+                                  <img
+                                    onError={imgError}
+                                    src={pool.poolInfo.token0Logo}
+                                    alt="uft"
+                                  />
+                                  <img
+                                    onError={imgError}
+                                    src={pool.poolInfo.token1Logo}
+                                    alt="uft"
+                                  />
+                                </div>
+                                <p className="hide_for_mobile">
+                                  {" "}
+                                  {pool.poolInfo.token0Symbol} /{" "}
+                                  {pool.poolInfo.token1Symbol}
+                                </p>
+                              </span>
+                              <span>{pool?.tokenSymbol}</span>
+                              <span>
+                                {Number(pool?.borrowBalance).toFixed(2)}
+                              </span>
+                              <span>{Number(pool?.apy).toFixed(3)}%</span>
+                              <span>
+                                {Number(pool?.currentLTV).toFixed(2)}%
+                              </span>
+                              <span>{Number(pool?.healthFactor)}</span>
+                              <span>
+                                <img
+                                  onError={imgError}
+                                  src={pool.poolInfo.token0Logo}
+                                  alt="uft"
+                                />
+                                <img
+                                  onError={imgError}
+                                  src={pool.poolInfo.token1Logo}
+                                  alt="uft"
+                                />
+                              </span>
+                              <span>
+                                <strong>{pool?.tokenSymbol}</strong> <br />{" "}
+                                {Number(pool?.borrowBalance).toFixed(2)}{" "}
+                              </span>
+                              <span>
+                                <strong>{Number(pool?.apy).toFixed(3)}%</strong>
+                                <br /> {Number(pool?.healthFactor)}
+                              </span>
+                              <span>
+                                <strong>
+                                  {Number(pool?.currentLTV).toFixed(2)}%
+                                </strong>
+                              </span>
+                            </div>
+                          );
+                        })
                     : !positionLoading && (
                         <Lottie
                           options={defaultOptionsLotti}
@@ -777,29 +745,33 @@ export default function UserDashboardComponent(props) {
                         />
                       )}
                   {positionLoading &&
-                    new Array(8).fill(0).map((_, i) => {
+                    new Array(5).fill(0).map((_, i) => {
                       return (
                         <div
                           key={i}
-                          className="tbody_row row_skeleton skeleton"
+                          className="tbody_skelton_row row_skeleton skeleton"
                         ></div>
                       );
                     })}
                 </div>
-                {
-                positionData?.borrowArray?.length > 0 && !positionLoading &&
-               <div className="pagination">
-                  <Pagination
-                    current={positionCurrentPage.borrowing}
-                    onChange={(el) => setPositionCurrentPage({...positionCurrentPage, borrowing: el})}
-                    pageSize={5}
-                    size="small"
-                    total={positionData?.borrowArray?.length}
-                    showSizeChanger={false}
-                    hideOnSinglePage={true}
-                  />
-                </div>
-            }
+                {positionData?.borrowArray?.length > 0 && !positionLoading && (
+                  <div className="pagination">
+                    <Pagination
+                      current={positionCurrentPage.borrowing}
+                      onChange={(el) =>
+                        setPositionCurrentPage({
+                          ...positionCurrentPage,
+                          borrowing: el,
+                        })
+                      }
+                      pageSize={5}
+                      size="small"
+                      total={positionData?.borrowArray?.length}
+                      showSizeChanger={false}
+                      hideOnSinglePage={true}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>

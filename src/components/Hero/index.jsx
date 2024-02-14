@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ManageToken from "../ManageTokens/ManageToken";
-import banner from "../../assets/banner.svg";
+import banner from "../../assets/bannermainnet.svg";
 import darkbanner from "../../assets/darkBanner.svg";
 import "./styles/index.scss";
 import { useSelector } from "react-redux";
@@ -9,15 +9,15 @@ import PoolCard from "../hallOfPools/poolCard";
 import PoolListSkeleton from "../Loader/PoolListSkeleton";
 import NoPoolFound from "../NoPoolFound";
 
-export default function HeroComponent(props) {
-  const state = useSelector((state) => state);
+export default function HeroComponent() {
+  const theme = useSelector((state) => state.theme);
+  const poolList = useSelector((state) => state.poolList);
+  const isLoadingPoolData = useSelector((state) => state.isLoadingPoolData);
   const [token1, setToken1] = useState({});
   const [token2, setToken2] = useState({});
   const [pools, setPools] = useState({});
   const [filteredPools, setFilteredPools] = useState([]);
   const [poolBackup, setPoolBackup] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-  const { contracts, web3, poolList, isLoadingPoolData, user } = state;
 
   useEffect(() => {
     if (Object.values(poolList).length > 0) {
@@ -81,8 +81,6 @@ export default function HeroComponent(props) {
     } else {
       setFilteredPools([]);
     }
-
-  
   }, [token1, token2]);
 
   const handleTokens = (token, selectedToken) => {
@@ -96,12 +94,18 @@ export default function HeroComponent(props) {
     }
   };
 
+  const updateToken = (token1, token2) => {
+    setToken1(token1);
+    setToken2(token2);
+  };
+
   const createPool = () => {};
 
   return (
     <div className="hallofpools_container">
       <div className="banner">
-       { state.theme == 'dark' ? <img src={darkbanner} alt="v2-banner" /> : <img src={banner} alt="v2-banner" /> } 
+        {/* { theme == 'dark' ? <img src={darkbanner} alt="v2-banner" /> : <img src={banner} alt="v2-banner" /> }  */}
+        {<img src={banner} alt="v2-banner" />}
       </div>
 
       <ManageToken
@@ -125,7 +129,11 @@ export default function HeroComponent(props) {
         </div>
       ) : token1.symbol || token2.symbol ? (
         <div className="no_pool_container">
-          <NoPoolFound token1={token1} token2={token2}/>
+          <NoPoolFound
+            token1={token1}
+            token2={token2}
+            updateToken={updateToken}
+          />
         </div>
       ) : (
         <PoolCarousel pools={pools} isLoading={!isLoadingPoolData} />
