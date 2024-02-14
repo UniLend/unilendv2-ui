@@ -1,6 +1,6 @@
-import React, { Suspense } from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
-import { openRoutes } from "./routes";
+import React, { Suspense } from 'react';
+import { Route, Routes, Navigate } from 'react-router-dom';
+import { openRoutes } from './routes';
 
 export default function MainRoutes(props) {
   return (
@@ -15,7 +15,7 @@ export default function MainRoutes(props) {
           />
         );
       })}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path='*' element={<Navigate to='/' replace />} />
     </Routes>
   );
 }

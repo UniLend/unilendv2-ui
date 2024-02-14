@@ -1,25 +1,25 @@
-import { getEthersProvider } from "../lib/fun/wagmi";
-import { tokensBYSymbol, tokensByAddress } from "./constants";
-import { ethers } from "ethers";
-import { Avatar } from "antd";
-import { aggregatorV3InterfaceABI } from "../core/contractData/abi";
+import { getEthersProvider } from '../lib/fun/wagmi';
+import { tokensBYSymbol, tokensByAddress } from './constants';
+import { ethers } from 'ethers';
+import { Avatar } from 'antd';
+import { aggregatorV3InterfaceABI } from '../core/contractData/abi';
 
 export const fromWei = (web3, val) => {
-  const result = web3.utils.fromWei(val, "ether");
+  const result = web3.utils.fromWei(val, 'ether');
   return result;
 };
 
 export function getTokenLogo(address) {
   if (tokensBYSymbol[address]) {
-    return tokensBYSymbol[address]["logo"];
+    return tokensBYSymbol[address]['logo'];
   } else {
-    return "https://e7.pngegg.com/pngimages/407/710/png-clipart-ethereum-cryptocurrency-bitcoin-cash-smart-contract-bitcoin-blue-angle-thumbnail.png";
+    return 'https://e7.pngegg.com/pngimages/407/710/png-clipart-ethereum-cryptocurrency-bitcoin-cash-smart-contract-bitcoin-blue-angle-thumbnail.png';
   }
 }
 
 export function getTokenSymbol(address) {
   if (tokensBYSymbol[address]) {
-    return tokensBYSymbol[address]["symbol"];
+    return tokensBYSymbol[address]['symbol'];
   } else {
     return `Token`;
   }
@@ -37,9 +37,9 @@ export function getTokenByAddress(addr) {
     return tokensByAddress[addr];
   } else {
     const token = {
-      logo: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNHB4IiBoZWlnaHQ9IjI0cHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ic2MtMWZ2bmFkei0xIGhxdFlVTyIgc3R5bGU9ImNvbG9yOiByZ2IoODYsIDkwLCAxMDUpOyI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjxsaW5lIHgxPSI0LjkzIiB5MT0iNC45MyIgeDI9IjE5LjA3IiB5Mj0iMTkuMDciPjwvbGluZT48L3N2Zz4=",
-      address: "",
-      symbol: "",
+      logo: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNHB4IiBoZWlnaHQ9IjI0cHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ic2MtMWZ2bmFkei0xIGhxdFlVTyIgc3R5bGU9ImNvbG9yOiByZ2IoODYsIDkwLCAxMDUpOyI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiPjwvY2lyY2xlPjxsaW5lIHgxPSI0LjkzIiB5MT0iNC45MyIgeDI9IjE5LjA3IiB5Mj0iMTkuMDciPjwvbGluZT48L3N2Zz4=',
+      address: '',
+      symbol: '',
     };
     return token;
   }
@@ -74,7 +74,7 @@ export const removeFromSessionStorage = (key) => {
 //'https://assets.coingecko.com/coins/images/12591/large/binance-coin-logo.png'
 export function imgError(source) {
   source.target.src =
-    "https://e7.pngegg.com/pngimages/407/710/png-clipart-ethereum-cryptocurrency-bitcoin-cash-smart-contract-bitcoin-blue-angle-thumbnail.png";
+    'https://e7.pngegg.com/pngimages/407/710/png-clipart-ethereum-cryptocurrency-bitcoin-cash-smart-contract-bitcoin-blue-angle-thumbnail.png';
   source.onerror = null;
   return true;
 }
@@ -100,7 +100,7 @@ export const fetchEthRateForAddresses = async (addresses, chainId) => {
         const priceFeed = new ethers.Contract(
           addr.source,
           aggregatorV3InterfaceABI,
-          provider
+          provider,
         );
 
         try {
@@ -111,20 +111,20 @@ export const fetchEthRateForAddresses = async (addresses, chainId) => {
           };
         } catch (error) {
           console.error(
-            `Error fetching round data for address ${addr}: ${error.message}`
+            `Error fetching round data for address ${addr}: ${error.message}`,
           );
           return null;
         }
-      })
+      }),
     );
 
     // Use reduce to filter out null results and create the final object
     return tokensObject.reduce(
       (acc, obj) => (obj ? { ...acc, ...obj } : acc),
-      {}
+      {},
     );
   } catch (error) {
-    console.error("Error fetching round data:", error.message);
+    console.error('Error fetching round data:', error.message);
     throw error;
   }
 };

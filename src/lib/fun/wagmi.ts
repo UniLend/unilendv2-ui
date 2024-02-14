@@ -1,12 +1,16 @@
-import * as React from "react";
-import { type WalletClient, type PublicClient, useWalletClient } from "wagmi";
+import * as React from 'react';
+import { type WalletClient, type PublicClient, useWalletClient } from 'wagmi';
 
-import { getPublicClient, getWalletClient, getNetwork, readContract } from "wagmi/actions";
-import { providers, ethers } from "ethers";
-import { type HttpTransport } from "viem";
-import { wagmiConfig } from "../../main";
-import { helperAbi } from "../../core/contractData/abi";
-
+import {
+  getPublicClient,
+  getWalletClient,
+  getNetwork,
+  readContract,
+} from 'wagmi/actions';
+import { providers, ethers } from 'ethers';
+import { type HttpTransport } from 'viem';
+import { wagmiConfig } from '../../main';
+import { helperAbi } from '../../core/contractData/abi';
 
 export function publicClientToProvider(publicClient: PublicClient) {
   const { chain, transport } = publicClient;
@@ -15,11 +19,11 @@ export function publicClientToProvider(publicClient: PublicClient) {
     name: chain.name,
     ensAddress: chain.contracts?.ensRegistry?.address,
   };
-  if (transport.type === "fallback")
+  if (transport.type === 'fallback')
     return new providers.FallbackProvider(
       (transport.transports as ReturnType<HttpTransport>[]).map(
-        ({ value }) => new providers.JsonRpcProvider(value?.url, network)
-      )
+        ({ value }) => new providers.JsonRpcProvider(value?.url, network),
+      ),
     );
   return new providers.JsonRpcProvider(transport.url, network);
 }
@@ -55,12 +59,16 @@ export async function getEthersSigner({ chainId }: { chainId?: number } = {}) {
 export async function getEtherContract(
   address: any,
   abi: any,
-  chainId?: number
+  chainId?: number,
 ) {
   const signer = await getEthersSigner({ chainId });
   const provider = getEthersProvider({ chainId });
 
-  const contract = new ethers.Contract(address, abi, signer? signer: provider);
+  const contract = new ethers.Contract(
+    address,
+    abi,
+    signer ? signer : provider,
+  );
 
   return contract;
 }
@@ -68,19 +76,24 @@ export async function getEtherContract(
 export const getEtherContractWithProvider = (
   address: any,
   abi: any,
-  chainId: number
+  chainId: number,
 ) => {
   const pro = getEthersProvider({ chainId: chainId });
   const contract = new ethers.Contract(address, abi, pro);
   return contract;
 };
 
-export const readContracts = async (address: any, abi: any, functionName: string, args: Array<String>) => { 
+export const readContracts = async (
+  address: any,
+  abi: any,
+  functionName: string,
+  args: Array<String>,
+) => {
   const result = await readContract({
     abi,
     address: address,
     functionName: functionName,
-    args: args
-  })
+    args: args,
+  });
   return result;
-} 
+};

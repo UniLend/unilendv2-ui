@@ -1,3 +1,3 @@
-import CopyIcon from "./copy";
+import CopyIcon from './copy';
 
 export { CopyIcon };

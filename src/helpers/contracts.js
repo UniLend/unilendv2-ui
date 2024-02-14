@@ -1,17 +1,17 @@
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js';
 
-import { ethers } from "ethers";
+import { ethers } from 'ethers';
 
 // function timestamp() {
 //     return Math.round(new Date().getTime()/1000);
 // }
-const lend = "lend";
-const borrow = "borrow";
-const redeem = "redeem";
-const repay = "repay";
+const lend = 'lend';
+const borrow = 'borrow';
+const redeem = 'redeem';
+const repay = 'repay';
 
 export function count_leading_zeros(x) {
-  let splitted = x.split("");
+  let splitted = x.split('');
   let i = 0;
   while (splitted.shift() == 0) {
     i += 1;
@@ -20,7 +20,7 @@ export function count_leading_zeros(x) {
 }
 
 export function numberFormat(x, po) {
-  var parts = x.toString().split(".");
+  var parts = x.toString().split('.');
   if (parts.length > 1) {
     if (parseInt(parts[0]) > 1000) {
       parts[1] = parts[1].substring(0, 0);
@@ -36,18 +36,18 @@ export function numberFormat(x, po) {
     }
   }
 
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   if (parts[1]) {
     if (po > 0) {
       parts[1] = parts[1].substring(0, po);
     } else if (parts[1].length == 1) {
-      parts[1] = parts[1] + "0";
+      parts[1] = parts[1] + '0';
     }
-    return parts.join(".");
+    return parts.join('.');
   } else {
-    parts[1] = "00";
-    return parts.join(".");
+    parts[1] = '00';
+    return parts.join('.');
   }
 }
 
@@ -88,14 +88,14 @@ export const shortNumber = (num) => {
 };
 
 export function toDecimals(x, po) {
-  var parts = x.toString().split(".");
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  var parts = x.toString().split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   if (parts[1]) {
     parts[1] = parts[1].substring(0, po);
-    return parts.join(".");
+    return parts.join('.');
   } else {
-    parts[1] = "00";
+    parts[1] = '00';
     return parts[0];
   }
 }
@@ -115,36 +115,35 @@ export function decimal2Fixed(amount, decimals) {
   return newNum.toString();
 }
 
-export function decimal2Fixed2(amount, decimals){
+export function decimal2Fixed2(amount, decimals) {
   let newNum = new BigNumber(amount).multipliedBy(10 ** decimals).toFixed();
   //let newNum = BigInt(Math.trunc(Number(amount) * 10 ** decimals));
   // return bigint.toString();
-  if (newNum.indexOf(".") > -1) {
-    newNum = newNum.split(".")[0];
+  if (newNum.indexOf('.') > -1) {
+    newNum = newNum.split('.')[0];
   }
 
   return newNum.toString();
 }
 
-export function fixedTrunc(numberString){
+export function fixedTrunc(numberString) {
   let truncatedNumber = numberString;
-    if (numberString.indexOf(".") > -1) {
-    truncatedNumber = numberString.split(".")[0];
+  if (numberString.indexOf('.') > -1) {
+    truncatedNumber = numberString.split('.')[0];
   }
   return truncatedNumber;
 }
 
-//Truncate Number 
+//Truncate Number
 export function truncateToDecimals(number, decimal) {
   const powerOf10 = Math.pow(10, decimal);
   const truncatedNumber = Math.floor(number * powerOf10) / powerOf10;
   return truncatedNumber;
 }
 
-
 export function fixed2Decimals(amount, decimals = 18) {
-  const amt = amount?._hex ? amount?._hex : amount
-  const dec = fromBigNumber(decimals)
+  const amt = amount?._hex ? amount?._hex : amount;
+  const dec = fromBigNumber(decimals);
   return new BigNumber(amt).dividedBy(10 ** dec).toFixed();
 }
 
@@ -163,7 +162,7 @@ export function fromBigNumber(bignumber) {
 }
 
 export function toFixed(num, fixed) {
-  var re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
+  var re = new RegExp('^-?\\d+(?:.\\d{0,' + (fixed || -1) + '})?');
   return num.toString().match(re)[0];
 }
 
@@ -180,7 +179,7 @@ export function utilRate() {}
 export function totLiqFull(token, localDB) {
   return add(
     div(mul(token.tokenLiquidity, 100), localDB.rf),
-    token.totalBorrow
+    token.totalBorrow,
   );
 }
 
@@ -196,7 +195,7 @@ export function getSelectLTV(
   selectedToken,
   collateralToken,
   inputBorrow,
-  poolData
+  poolData,
 ) {
   const MaxLTV = poolData.ltv / 100;
 
@@ -235,25 +234,31 @@ export const getActionBtn = (
   selectedToken,
   collateralToken,
   collateral,
-  reFetching
+  reFetching,
 ) => {
   let btn = {
     text: `${activeOperation} ${selectedToken?._symbol}`,
     disable: false,
   };
   if (reFetching) {
-    return { text: "Fetching Data", disable: false };
+    return { text: 'Fetching Data', disable: false };
   }
-  let decimalAmount =0
-  let newNum =0
-  if(amount && selectedToken){
-     newNum = BigInt(Math.trunc(Number(amount) * 10 ** selectedToken?._decimals));
-     decimalAmount = newNum.toString().length > selectedToken?._decimals ? 0 : newNum.toString();
+  let decimalAmount = 0;
+  let newNum = 0;
+  if (amount && selectedToken) {
+    newNum = BigInt(
+      Math.trunc(Number(amount) * 10 ** selectedToken?._decimals),
+    );
+    decimalAmount =
+      newNum.toString().length > selectedToken?._decimals
+        ? 0
+        : newNum.toString();
   }
 
-const minimumValue = selectedToken?._decimals == 18 ? 0.000000000000000001 : 0.000001;
+  const minimumValue =
+    selectedToken?._decimals == 18 ? 0.000000000000000001 : 0.000001;
 
-const countDecimals = String(amount).split('.')[1]?.length
+  const countDecimals = String(amount).split('.')[1]?.length;
 
 
   if (amount <= minimumValue  && Number(decimalAmount) <= 1 ) {
@@ -266,7 +271,7 @@ const countDecimals = String(amount).split('.')[1]?.length
  
       return { text: "Approve " + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.balanceFixed)) {
-      return { text: "Low Balance in Wallet", disable: true };
+      return { text: 'Low Balance in Wallet', disable: true };
     }
   } else if (amount && activeOperation === borrow) {
     if (
@@ -274,34 +279,34 @@ const countDecimals = String(amount).split('.')[1]?.length
       fixed2Decimals18(collateralToken?.allowance, collateralToken._decimals) <=
         collateral
     ) {
-      return { text: "Approve " + collateralToken?._symbol };
+      return { text: 'Approve ' + collateralToken?._symbol };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
-      return { text: "Not Enough Liquidity", disable: true };
+      return { text: 'Not Enough Liquidity', disable: true };
     } else if (collateral > Number(collateralToken?.balanceFixed)) {
       return {
-        text: "Low Balance in Wallet " + collateralToken?._symbol,
+        text: 'Low Balance in Wallet ' + collateralToken?._symbol,
         disable: true,
       };
     }
   } else if (amount && activeOperation === redeem) {
     if (amount > Number(selectedToken.lendBalanceFixed)) {
-      return { text: "Not Enough Amount Lent", disable: true };
+      return { text: 'Not Enough Amount Lent', disable: true };
     } else if (amount > Number(selectedToken.liquidityFixed)) {
-      return { text: "Not Enough Liquidity", disable: true };
+      return { text: 'Not Enough Liquidity', disable: true };
     } else if (amount > Number(selectedToken.redeemBalanceFixed)) {
-      return { text: "Exceeds Redeemable Amount", disable: true };
+      return { text: 'Exceeds Redeemable Amount', disable: true };
     }
   } else if (amount && activeOperation === repay) {
     if (
       Number(
-        fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals)
+        fixed2Decimals18(selectedToken?.allowance, selectedToken._decimals),
       ) < Number(amount)
     ) {
-      return { text: "Approve " + selectedToken?._symbol };
+      return { text: 'Approve ' + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.borrowBalanceFixed)) {
-      return { text: "Exceeds Borrowed Amount", disable: true };
+      return { text: 'Exceeds Borrowed Amount', disable: true };
     } else if (amount > Number(selectedToken.balanceFixed)) {
-      return { text: "Low Balance in Wallet", disable: true };
+      return { text: 'Low Balance in Wallet', disable: true };
     }
   }
 

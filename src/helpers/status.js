@@ -1,4 +1,4 @@
-export const checkTxnStatus =  (hash, txnData, web3, methodCallBack) => {
+export const checkTxnStatus = (hash, txnData, web3, methodCallBack) => {
   if (web3) {
     web3.eth.getTransactionReceipt(hash, function (err, receipt) {
       if (receipt) {
@@ -16,10 +16,9 @@ export const checkTxnStatus =  (hash, txnData, web3, methodCallBack) => {
 
         // setLoading(false);
 
-        if(methodCallBack){
-          methodCallBack("checkTxnStatus", {})
+        if (methodCallBack) {
+          methodCallBack('checkTxnStatus', {});
         }
-      
       } else {
         setTimeout(function () {
           checkTxnStatus(hash, txnData, web3);
@@ -30,6 +29,6 @@ export const checkTxnStatus =  (hash, txnData, web3, methodCallBack) => {
 };
 
 export const checkTxnError = (error) => {
-    setLoading(false);
-    setAmount('');
-  };
+  setLoading(false);
+  setAmount('');
+};

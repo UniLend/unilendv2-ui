@@ -1,35 +1,35 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { useQuery } from "react-query";
-import "antd/dist/antd.css";
-import { Buffer } from "buffer";
+import { useQuery } from 'react-query';
+import 'antd/dist/antd.css';
+import { Buffer } from 'buffer';
 import {
   setUser,
   setContracts,
   setLoading,
   setPools,
   setError,
-} from "./store/Action";
-import MainRoutes from "./routes";
-import { connectWallet } from "./services/wallet";
+} from './store/Action';
+import MainRoutes from './routes';
+import { connectWallet } from './services/wallet';
 import {
   coreAbi,
   helperAbi,
   positionAbi,
   erc20Abi,
-} from "./core/contractData/abi";
-import { contractAddress } from "./core/contractData/contracts";
+} from './core/contractData/abi';
+import { contractAddress } from './core/contractData/contracts';
 // import { getContract } from './services/contracts';
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import "./App.scss";
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import './App.scss';
 import {
   fetchEthRateForAddresses,
   getFromSessionStorage,
   getTokenLogo,
-} from "./utils";
-import { fetchCoinLogo, fetchGraphQlData, getEthToUsd } from "./utils/axios";
+} from './utils';
+import { fetchCoinLogo, fetchGraphQlData, getEthToUsd } from './utils/axios';
 import {
   checkOpenPosition,
   fixedToShort,
@@ -49,9 +49,9 @@ import { supportedNetworks } from "./core/networks/networks";
 
 const shardeumPools = [
   {
-    pool: "0x665ACEc556dC92C2E504beFA061d5f65Cd9493e2",
-    token1: "0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1",
-    token0: "0x11f13ad374e79b466a36eb835747e431fbbe3890",
+    pool: '0x665ACEc556dC92C2E504beFA061d5f65Cd9493e2',
+    token1: '0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1',
+    token0: '0x11f13ad374e79b466a36eb835747e431fbbe3890',
   },
   // {
   //   pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
@@ -81,7 +81,7 @@ function App() {
   });
 
   document.body.className = `body ${
-    getFromSessionStorage("unilendV2Theme") || "dark"
+    getFromSessionStorage('unilendV2Theme') || 'dark'
   }`;
 
   useEffect(() => {
@@ -94,7 +94,7 @@ function App() {
   const createContract = async (withProvider = false) => {
     try {
       dispatch(setLoading(true));
-      const walletconnect = JSON.parse(localStorage.getItem("wagmi.connected"));
+      const walletconnect = JSON.parse(localStorage.getItem('wagmi.connected'));
 
       const { coreAddress, helperAddress, positionAddress } =
         contractAddress[chain?.id || user?.network?.id || 1442];
@@ -112,8 +112,8 @@ function App() {
           preparedData.map((item) =>
             withProvider
               ? getEtherContractWithProvider(item.address, item.abi, chain?.id)
-              : getEtherContract(item.address, item.abi, chain?.id)
-          )
+              : getEtherContract(item.address, item.abi, chain?.id),
+          ),
         )
           .then((res) => {
             const payload = {
@@ -122,7 +122,7 @@ function App() {
               positionContract: res[2],
             };
             dispatch(setContracts(payload));
-             //loadPoolsFromContract(payload);
+            //loadPoolsFromContract(payload);
             loadPoolsWithGraph();
           })
           .catch((err) => {
@@ -132,7 +132,7 @@ function App() {
         loadPoolsWithGraph();
       }
     } catch (error) {
-      console.log("ContractError", error);
+      console.log('ContractError', error);
       loadPoolsWithGraph();
       dispatch(setError(error));
     }
@@ -149,7 +149,7 @@ function App() {
         if (networkID == 8081) {
           result = shardeumPools;
         } else {
-          result = await getPastEvents(v2Contracts.coreContract, "PoolCreated");
+          result = await getPastEvents(v2Contracts.coreContract, 'PoolCreated');
 
           result = result.map((item) => item.args);
         }
@@ -164,14 +164,14 @@ function App() {
         if (isConnected) {
           const ercTokens = await Promise.all(
             poolTokens.map((contract, i) =>
-              fetchTokenLib({ address: contract })
-            )
+              fetchTokenLib({ address: contract }),
+            ),
           );
           ercTokens.forEach(
-            (token, i) => (tokenList[poolTokens[i]] = { symbol: token.symbol })
+            (token, i) => (tokenList[poolTokens[i]] = { symbol: token.symbol }),
           );
           const logos = await Promise.all(
-            ercTokens.map((token, i) => fetchCoinLogo(token.symbol))
+            ercTokens.map((token, i) => fetchCoinLogo(token.symbol)),
           );
 
           logos.forEach(
@@ -180,7 +180,7 @@ function App() {
                 ...tokenList[poolTokens[i]],
                 address: poolTokens[i],
                 logo,
-              })
+              }),
           );
 
           const reverseResult = result.reverse();
@@ -256,7 +256,7 @@ function App() {
         //   fixedToShort(pool.liquidity0) * Number(pool.token0.priceUSD) +
         //   fixedToShort(pool.liquidity1) * Number(pool.token1.priceUSD);
         const openPosiions = allPositions.filter(
-          (el) => el?.pool?.pool == pool.pool
+          (el) => el?.pool?.pool == pool.pool,
         );
         const poolInfo = {
           ...pool,

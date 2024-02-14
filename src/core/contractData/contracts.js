@@ -60,7 +60,7 @@ export const contractAddress = {
     uftToken: '0x06f483894d1c5fD23B999CaC46Fdd325209d2DB4',
     uftgToken: '0x516a7501C2E8655DbD58dFe2500844A3A02E4b4b',
   },
-  '1':{
+  1: {
     helperAddress: '0xAE84B51a1ee35275542Dd99df0F107d4F4e32A63',
     coreAddress: "0x7f2E24D2394f2bdabb464B888cb02EbA6d15B958",
     positionAddress: "0xc45e4aE09c772D143677280f0a764f34F497677a",

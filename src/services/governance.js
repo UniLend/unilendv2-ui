@@ -1,10 +1,6 @@
+import { decimal2Fixed } from '../helpers/contracts';
 
-import {
-
-  decimal2Fixed,
-} from "../helpers/contracts";
-
-import { getEtherContract } from "../lib/fun/wagmi";
+import { getEtherContract } from '../lib/fun/wagmi';
 
 export const handleWrapAndDelegate = async (
   governanceAddress,
@@ -12,22 +8,19 @@ export const handleWrapAndDelegate = async (
   delegateAddress,
   amount,
   checkTxnStatus,
-  checkTxnError
+  checkTxnError,
 ) => {
   const fixedAmount = decimal2Fixed(amount, 18);
 
   try {
-
     const instance = await getEtherContract(governanceAddress, govABI);
     const txs = await instance.wrap(delegateAddress, fixedAmount);
     const txtData = {
-        message: `Wrap and Delegate ${amount} UFT `
-    }
+      message: `Wrap and Delegate ${amount} UFT `,
+    };
     checkTxnStatus(txs?.hash, txtData);
-
   } catch (error) {
-
-    checkTxnError(error)
+    checkTxnError(error);
   }
 };
 
@@ -36,45 +29,55 @@ export const checkAllowance = async (tokenAddress, abi, owner, spender) => {
     const instance = await getEtherContract(tokenAddress, abi);
     // const delegatesAddress = await instance.delegates(owner)
     const allowance = await instance.allowance(owner, spender);
-    return {allowance};
+    return { allowance };
   } catch (error) {
-    throw error
+    throw error;
   }
 };
 
-export const setApproval = async (contractAddress, abi, userAddress, checkTxnStatus, checkTxnError) => {
+export const setApproval = async (
+  contractAddress,
+  abi,
+  userAddress,
+  checkTxnStatus,
+  checkTxnError,
+) => {
   try {
     var maxAllow =
-      "115792089237316195423570985008687907853269984665640564039457584007913129639935";
+      '115792089237316195423570985008687907853269984665640564039457584007913129639935';
     const instance = await getEtherContract(contractAddress, abi);
 
     const txs = await instance.approve(userAddress, maxAllow);
     const txtData = {
-        message: `Approval Successfull! `,
-        fn: 'approve'
-    }
+      message: `Approval Successfull! `,
+      fn: 'approve',
+    };
     checkTxnStatus(txs?.hash, txtData);
-
   } catch (error) {
-    checkTxnError(error)
+    checkTxnError(error);
   }
 };
 
-export const handleUnWrap = async (governanceAddress, govABI, amount, checkTxnStatus, checkTxnError) => {
-    try {
-        const fixedAmount = decimal2Fixed(amount, 18)
-        const instance = await getEtherContract(governanceAddress, govABI);
+export const handleUnWrap = async (
+  governanceAddress,
+  govABI,
+  amount,
+  checkTxnStatus,
+  checkTxnError,
+) => {
+  try {
+    const fixedAmount = decimal2Fixed(amount, 18);
+    const instance = await getEtherContract(governanceAddress, govABI);
 
-        const txs = await instance.unwrap(fixedAmount);
-        
-        const txtData = {
-            message: `Unwrap ${amount} UFTG `
-        }
-        checkTxnStatus(txs?.hash, txtData);
-    } catch (error) {
-  
-        checkTxnError(error)
-    }
+    const txs = await instance.unwrap(fixedAmount);
+
+    const txtData = {
+      message: `Unwrap ${amount} UFTG `,
+    };
+    checkTxnStatus(txs?.hash, txtData);
+  } catch (error) {
+    checkTxnError(error);
+  }
 };
 
 export const handleUpdateDelegate = async (
@@ -82,20 +85,17 @@ export const handleUpdateDelegate = async (
   govABI,
   delegateAddress,
   checkTxnStatus,
-  checkTxnError
+  checkTxnError,
 ) => {
+  try {
+    const instance = await getEtherContract(governanceAddress, govABI);
 
-    try {
-        const instance = await getEtherContract(governanceAddress, govABI);
-     
-        const txs = await instance.delegate(delegateAddress);
-        const txtData = {
-           message: `Delegation Updated to ${delegateAddress} `
-        }
-        checkTxnStatus(txs?.hash, txtData);
-    } catch (error) {
-        checkTxnError(error)
-    }
-
-
+    const txs = await instance.delegate(delegateAddress);
+    const txtData = {
+      message: `Delegation Updated to ${delegateAddress} `,
+    };
+    checkTxnStatus(txs?.hash, txtData);
+  } catch (error) {
+    checkTxnError(error);
+  }
 };

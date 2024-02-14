@@ -24,14 +24,15 @@ import {
   okxWallet,
   trustWallet,
   coin98Wallet,
-} from "@rainbow-me/rainbowkit/wallets";
+} from '@rainbow-me/rainbowkit/wallets';
+
 
 
 //infinity wallet integration 
 // import { InfinityWalletConnector, openInfinityWallet } from '@infinitywallet/infinity-connector';
 
-import { alchemyProvider } from "wagmi/providers/alchemy";
-import { infuraProvider } from 'wagmi/providers/infura'
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { infuraProvider } from 'wagmi/providers/infura';
 
 // import ends here
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
@@ -49,7 +50,6 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     infuraProvider({ apiKey: infuraID }),
   ]
 );
-
 
 const connectors = connectorsForWallets([
   {
@@ -83,14 +83,14 @@ const wagmiConfig = createConfig({
 });
 
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Suspense fallback={<Ring />}>
       <Provider store={store}>
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider
             chains={chains}
-            modalSize="compact"
+            modalSize='compact'
             theme={myCustomTheme}
           >
             <BrowserRouter>
@@ -100,5 +100,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </WagmiConfig>
       </Provider>
     </Suspense>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
