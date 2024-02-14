@@ -43,7 +43,7 @@ import { mumbaiTestnet } from "./core/networks/Chains";
 
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet],
+  [mainnet, mumbaiTestnet],
   [
     publicProvider(),
     alchemyProvider({ apiKey: alchemyId }),
