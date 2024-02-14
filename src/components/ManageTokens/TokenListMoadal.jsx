@@ -12,7 +12,8 @@ export default function TokenListMoadal({
   handlePoolAndTokenSelect,
   selectedTokens,
 }) {
-  const { tokenList, poolList } = useSelector((state) => state);
+  const  tokenList = useSelector((state) => state.tokenList);
+  const  poolList  = useSelector((state) => state.poolList);
   const container = React.useRef(null);
   const [selectedToken, setSelectedToken] = useState('');
   const [page, setPage] = React.useState(1);
