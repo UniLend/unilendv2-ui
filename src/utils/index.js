@@ -92,39 +92,70 @@ export function fixFormatNumber(number) {
     : Number(number).toFixed(6);
 }
 
-export const fetchEthRateForAddresses = async (addresses, chainId) => {
-  const provider = getEthersProvider(chainId);
-  try {
-    const tokensObject = await Promise.all(
-      addresses?.map(async (addr) => {
-        const priceFeed = new ethers.Contract(
-          addr.source,
-          aggregatorV3InterfaceABI,
-          provider
-        );
+// export const fetchEthRateForAddresses = async (addresses, chainId) => {
+//   const provider = getEthersProvider(chainId);
+//   try {
+//     const tokensObject = await Promise.all(
+//       addresses?.map(async (addr) => {
+//         const priceFeed = new ethers.Contract(
+//           addr.source,
+//           aggregatorV3InterfaceABI,
+//           provider
+//         );
 
+//         try {
+//           const roundData = await priceFeed.latestRoundData();
+//           // return ETH price of each token
+//           return {
+//             [addr.id]: roundData.answer.toString(),
+//           };
+//         } catch (error) {
+//           console.error(
+//             `Error fetching round data for address ${addr}: ${error.message}`
+//           );
+//           return null;
+//         }
+//       })
+//     );
+
+//     // Use reduce to filter out null results and create the final object
+//     return tokensObject.reduce(
+//       (acc, obj) => (obj ? { ...acc, ...obj } : acc),
+//       {}
+//     );
+//   } catch (error) {
+//     console.error("Error fetching round data:", error.message);
+//     throw error;
+//   }
+// }
+
+//new fetching code 
+export const fetchEthRateForAddresses = async (addresses, chainId) => {
+  const balances = {};
+  try {
+    const ERC20Instances = addresses.map((addr) =>
+      getEtherContractWithProvider(addr.source, aggregatorV3InterfaceABI, chainId)
+    );
+
+    await Promise.all(
+      ERC20Instances.map(async (instance, index) => {
         try {
-          const roundData = await priceFeed.latestRoundData();
-          // return ETH price of each token
-          return {
-            [addr.id]: roundData.answer.toString(),
-          };
+          const roundData = await instance.latestRoundData();
+          balances[addresses[index].id] = roundData.answer.toString();
         } catch (error) {
-          console.error(
-            `Error fetching round data for address ${addr}: ${error.message}`
-          );
-          return null;
+          balances[addresses[index].id] = null;
         }
       })
     );
-
-    // Use reduce to filter out null results and create the final object
-    return tokensObject.reduce(
-      (acc, obj) => (obj ? { ...acc, ...obj } : acc),
-      {}
-    );
   } catch (error) {
-    console.error("Error fetching round data:", error.message);
+    console.error("Error fetching balances:", error.message);
     throw error;
   }
+
+  // Filter out null values
+  const filteredBalances = Object.fromEntries(
+    Object.entries(balances).filter(([key, value]) => value !== null)
+  );
+  return filteredBalances;
 };
+
