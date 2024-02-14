@@ -583,7 +583,7 @@
   .networks {
     padding-top: 30px;
     display: grid;
-    grid-template-columns: repeat(2, 180px);
+    //grid-template-columns: repeat(2, 180px);
     justify-content: space-around;
     gap: 20px;
     margin: 0px 20px;
@@ -615,7 +615,7 @@
       display: inline;
     }
     @media ($tablet) {
-      grid-template-columns: repeat(2, 150px);
+      //grid-template-columns: repeat(2, 150px);
     }
   }
 }

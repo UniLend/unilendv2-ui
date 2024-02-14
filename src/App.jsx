@@ -34,17 +34,18 @@ import {
   checkOpenPosition,
   fixedToShort,
   getPoolCreatedGraphQuery,
-} from './helpers/dashboard';
-import { hidePools } from './utils/constants';
-import { fetchTokenLib, getPastEvents } from './lib/fun/functions';
+  getPoolCreatedGraphQueryTestnet,
+} from "./helpers/dashboard";
+import { hidePools } from "./utils/constants";
+import { fetchTokenLib, getPastEvents } from "./lib/fun/functions";
 import {
   getEtherContract,
   getEtherContractWithProvider,
-} from './lib/fun/wagmi';
-import { ethers } from 'ethers';
-import { getTokenUSDPrice } from './helpers/contracts';
-import useWalletHook from './lib/hooks/useWallet';
-import { supportedNetworks } from './core/networks/networks';
+} from "./lib/fun/wagmi";
+import { ethers } from "ethers";
+import { fixed2Decimals, getTokenUSDPrice } from "./helpers/contracts";
+import useWalletHook from "./lib/hooks/useWallet";
+import { supportedNetworks } from "./core/networks/networks";
 
 const shardeumPools = [
   {
@@ -65,17 +66,17 @@ window.Buffer = window.Buffer ?? Buffer;
 function App() {
   const dispatch = useDispatch();
   const { address, isConnected, chain } = useWalletHook();
-  const contracts = useSelector((state) => state.contracts);
   const user = useSelector((state) => state.user);
   const query = getPoolCreatedGraphQuery(address);
+  const testnetQuery = getPoolCreatedGraphQueryTestnet(address)
   const [tokenPrice, setTokenPrice] = useState({});
 
   const networksWithGraph = Object.values(supportedNetworks)
     .filter((network) => network.graphAvailable && network.chainId)
     .map((net) => net.chainId);
 
-  const { data, loading, error, refetch } = useQuery('pools', async () => {
-    const fetchedDATA = await fetchGraphQlData(chain?.id || 1, query);
+  const { data, loading, error, refetch } = useQuery("pools", async () => {
+    const fetchedDATA = await fetchGraphQlData(chain?.id || 1,  chain?.id == 80001? testnetQuery: query);
     return fetchedDATA;
   });
 
@@ -97,7 +98,6 @@ function App() {
 
       const { coreAddress, helperAddress, positionAddress } =
         contractAddress[chain?.id || user?.network?.id || 1442];
-      // console.log('contractAddres',coreAddress, helperAddress, positionAddress);
       const preparedData = [
         { abi: coreAbi, address: coreAddress },
         { abi: helperAbi, address: helperAddress },
@@ -223,6 +223,7 @@ function App() {
         result[key] = (temp[key] / 10 ** 18) * usdPrice;
       }
     }
+    result["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"] = usdPrice;
     setTokenPrice(result);
     return result;
   };
@@ -230,9 +231,7 @@ function App() {
   useEffect(() => {
     if (data?.assetOracles) {
       getTokenPrice();
-    } else {
-      console.log('Failed to fetch Graph data');
-    }
+    } 
   }, [data]);
 
   useEffect(() => {
@@ -242,7 +241,7 @@ function App() {
   }, [tokenPrice]);
 
   const loadPoolsWithGraph = async () => {
-    const networkID = chain?.id || 1442;
+    const networkID = chain?.id || 1;
     if (data && networksWithGraph.includes(networkID)) {
       const allPositions = data?.positions;
       const poolData = {};
@@ -264,13 +263,14 @@ function App() {
           poolAddress: pool?.pool,
           hide: hidePools.includes(pool?.pool),
 
-          totalLiquidity:
-            fixedToShort(pool.liquidity0) * tokenPrice[pool?.token0?.id] +
-            fixedToShort(pool.liquidity1) * tokenPrice[pool?.token1?.id],
+            totalLiquidity:
+            (fixed2Decimals(pool.liquidity0, pool.token0.decimals ) * tokenPrice[pool?.token0?.id] +
+            fixed2Decimals(pool.liquidity1, pool.token1.decimals ) * tokenPrice[pool?.token1?.id]) + (fixed2Decimals(pool.totalBorrow0, pool.token0.decimals) * tokenPrice[pool?.token0?.id] +
+            fixed2Decimals(pool.totalBorrow1,  pool.token1.decimals) * tokenPrice[pool?.token1?.id]),
 
           totalBorrowed:
-            fixedToShort(pool.totalBorrow0) * tokenPrice[pool?.token0?.id] +
-            fixedToShort(pool.totalBorrow1) * tokenPrice[pool?.token1?.id],
+          fixed2Decimals(pool.totalBorrow0, pool.token0.decimals) * tokenPrice[pool?.token0?.id] +
+          fixed2Decimals(pool.totalBorrow1,  pool.token1.decimals) * tokenPrice[pool?.token1?.id],
 
           openPosition:
             openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
@@ -278,14 +278,14 @@ function App() {
             ...pool.token0,
             address: pool?.token0?.id,
             logo: getTokenLogo(pool.token0.symbol),
-            priceUSD: tokenPrice[pool?.token0?.id] * 10 ** 18,
+            priceUSD: tokenPrice[pool?.token0?.id] *  pool.token0.decimals,
             pricePerToken: tokenPrice[pool?.token0?.id],
           },
           token1: {
             ...pool.token1,
             address: pool?.token1?.id,
             logo: getTokenLogo(pool.token1.symbol),
-            priceUSD: tokenPrice[pool?.token1?.id] * 10 ** 18,
+            priceUSD: tokenPrice[pool?.token1?.id] * pool.token1.decimals,
             pricePerToken: tokenPrice[pool?.token1?.id],
           },
         };
@@ -293,14 +293,14 @@ function App() {
           ...pool.token0,
           address: pool?.token0?.id,
           logo: getTokenLogo(pool.token0.symbol),
-          priceUSD: tokenPrice[pool?.token0?.id] * 10 ** 18,
+          priceUSD: tokenPrice[pool?.token0?.id] *  pool.token0.decimals,
           pricePerToken: tokenPrice[pool?.token0?.id],
         };
         tokenList[String(pool.token1.id).toUpperCase()] = {
           ...pool.token1,
           address: pool?.token1?.id,
           logo: getTokenLogo(pool.token1.symbol),
-          priceUSD: tokenPrice[pool?.token1?.id] * 10 ** 18,
+          priceUSD: tokenPrice[pool?.token1?.id] * pool.token1.decimals,
           pricePerToken: tokenPrice[pool?.token1?.id],
         };
         poolData[pool?.pool] = poolInfo;

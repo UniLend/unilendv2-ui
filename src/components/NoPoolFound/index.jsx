@@ -193,9 +193,10 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
         setIsFetching(true);
         fetchCoinGeckoTokens()
           .then((data) => {
-            setCoinGeckoToken(data.tokens);
-            setTokenBackup(data.tokens); //
-            setAvailableToken([...data.token, ...Object.values(tokenList)]);
+            const tokensArray = Array.isArray(data?.tokens) && data?.tokens
+            setCoinGeckoToken(tokensArray.concat(Object.values(tokenList)));
+            setTokenBackup(tokensArray.concat(Object.values(tokenList))); 
+            setAvailableToken( tokensArray.concat(Object.values(tokenList)) );
           })
           .finally(() => setIsFetching(false));
       } else {

@@ -8,7 +8,6 @@ export default function NotificationMessage(result, msg) {
     mesage: { result },
     description: result === 'success' ? msg : msg,
     onClick: () => {
-      console.log('Notification Clicked!');
     },
     className: 'notification_class',
     closeIcon: false,

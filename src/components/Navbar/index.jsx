@@ -15,34 +15,33 @@ import {
 } from '../../utils';
 import { connectWallet, handleDisconnect } from '../../services/wallet';
 
-import logo from '../../assets/logo.svg';
-import gitbook from '../../assets/gitbook.svg';
-import faq from '../../assets/faq.svg';
-import copyIcon from '../../assets/copyIcon.svg';
-import doc from '../../assets/document.svg';
-import career from '../../assets/career.svg';
-import ethlogo from '../../assets/eth.svg';
-import sun from '../../assets/sun.svg';
-import moon from '../../assets/moon.svg';
-import metamaskicon from '../../assets/metamaskicon.svg';
-import walletconnecticon from '../../assets/walletconnecticon.png';
-import walletconnect from '../../assets/walletconnect.svg';
-import polyMainlogo from '../../assets/polygon.svg';
-import shardeumLogo from '../../assets/shardeumLogo.png';
-import bscnew from '../../assets/bscnew.svg';
-import coinbase from '../../assets/coinbase.svg';
-import zengo from '../../assets/zengo.svg';
-import viewExplorer from '../../assets/viewExplorerIcon.svg';
-import viewExplorerLight from '../../assets/viewExplorerIconLight.svg';
-import './styles/index.scss';
-import Sider from 'antd/lib/layout/Sider';
-import { useDispatch, useSelector } from 'react-redux';
-import { setTheme, setUser } from '../../store/Action';
-import { fetchUserDomain } from '../../utils/axios';
-import { useConnectModal, ConnectButton } from '@rainbow-me/rainbowkit';
-import { ChangeNetwork, supportedNetworks } from '../../core/networks/networks';
-import useWalletHook from '../../lib/hooks/useWallet';
-import { switchNetworkLib } from '../../lib/fun/functions';
+import logo from "../../assets/logo.svg";
+import gitbook from "../../assets/gitbook.svg";
+import faq from "../../assets/faq.svg";
+import copyIcon from "../../assets/copyIcon.svg";
+import doc from "../../assets/document.svg";
+import career from "../../assets/career.svg";
+import ethlogo from "../../assets/eth.svg";
+import sun from "../../assets/sun.svg";
+import moon from "../../assets/moon.svg";
+import metamaskicon from "../../assets/metamaskicon.svg";
+import walletconnect from "../../assets/walletconnect.svg";
+import polyMainlogo from "../../assets/polygon.svg";
+import shardeumLogo from "../../assets/shardeumLogo.png";
+import bscnew from "../../assets/bscnew.svg";
+import coinbase from "../../assets/coinbase.svg";
+import zengo from "../../assets/zengo.svg";
+import viewExplorer from "../../assets/viewExplorerIcon.svg";
+import viewExplorerLight from "../../assets/viewExplorerIconLight.svg";
+import "./styles/index.scss";
+import Sider from "antd/lib/layout/Sider";
+import { useDispatch, useSelector } from "react-redux";
+import { setTheme, setUser } from "../../store/Action";
+import { fetchUserDomain, getGeoInfo } from "../../utils/axios";
+import { useConnectModal, ConnectButton } from "@rainbow-me/rainbowkit";
+import { ChangeNetwork, supportedNetworks } from "../../core/networks/networks";
+import useWalletHook from "../../lib/hooks/useWallet";
+import { switchNetworkLib } from "../../lib/fun/functions";
 
 export default function Navbar() {
   const user = useSelector((state) => state.user);
@@ -56,8 +55,9 @@ export default function Navbar() {
     domain: shortenAddress(user?.address),
   });
   const [visible, setVisible] = useState(false);
+  const [isHaveAccess, setIsHaveAccess] = useState(true)
   const [isNetworkVisible, setIsNetworkVisible] = useState(false);
-  const [isPolygon, setIsPolygon] = useState(false);
+  const [isNavigateAllow, setIsNavigateAllow] = useState(false);
   const dispatch = useDispatch();
   const [currentTheme, setCurrentTheme] = useState(theme);
   const { chain, isConnected } = useWalletHook();
@@ -89,6 +89,18 @@ export default function Navbar() {
     setWrongNetworkModal(false);
   };
 
+  const getLocation = async () => {
+   const location = await getGeoInfo(); 
+
+// "+1"
+// "United States"
+   if(location?.countryCode === '+1' && location.countryName =='United States'){
+     setIsHaveAccess(false)
+   }else{
+    setIsHaveAccess(true)
+   }
+  }
+
   useEffect(() => {
     if (window.ethereum) {
       window.ethereum.on('chainChanged', async (chainId) => {
@@ -106,24 +118,27 @@ export default function Navbar() {
         }, 1000);
       });
     }
+    getLocation()
   }, []);
 
   useEffect(() => {
-    if (user?.network?.id == undefined && user?.network?.id) {
-      const wallet = localStorage.getItem('wallet');
+    if (chain?.id == undefined && chain?.id) {
+      const wallet = localStorage.getItem("wallet");
       handleConnect(wallet);
     }
     if (
-      user?.network?.id == 80001 ||
-      user?.network?.id == 137 ||
-      user?.network?.id == 1442
+      chain?.id == 80001 ||
+      chain?.id == 137 ||
+      chain?.id == 1442 ||
+      chain?.id == 1
     ) {
-      setIsPolygon(true);
+      setIsNavigateAllow(true);
     } else {
-      setIsPolygon(false);
+      setIsNavigateAllow(false);
     }
     // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
-    if (user?.network?.id && !availableChain.includes(user?.network?.id)) {
+
+    if (chain?.id && !availableChain.includes(chain?.id)) {
       setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);
@@ -156,23 +171,33 @@ export default function Navbar() {
       <div className='walletModel'>
         <h1>Wrong Network</h1>
         <p>
-          UniLend V2 is in Testnet Phase.
-          <br /> Please Connect to the Below Networks.
+        UniLend V2 is on Ethereum Mainnet only. Please Switch Network.
         </p>
-        <div className='networks'>
-          <div onClick={() => handleSwitchNetwork(11155111)}>
-            <img src={ethlogo} alt='Etherium' />
-            <p>Sepolia</p>
+        <div className="networks">
+          <div onClick={() => handleSwitchNetwork(1)}>
+            <img src={ethlogo} alt="Etherium" />
+            <p>Ethereum</p>
           </div>
-          <div onClick={() => handleSwitchNetwork(1442)}>
-            <img src={ethlogo} alt='Etherium' />
+          {/* <div onClick={() => handleSwitchNetwork(1442)}>
+            <img src={ethlogo} alt="Etherium" />
             <p>zkEVM</p>
-          </div>
+          </div> */}
           {/* <div onClick={() => handleSwitchNetwork(8081)}>
             <img src={shardeumLogo} alt="Etherium" />
             <p>Shardeum</p>
           </div> */}
         </div>
+      </div>
+    );
+  };
+  const NoAccessModalBody = () => {
+    return (
+      <div className="walletModel">
+        <h1>Restricted</h1>
+        <p>
+      UnilendV2 dApp is not available in your country
+        </p>
+ 
       </div>
     );
   };
@@ -209,7 +234,7 @@ export default function Navbar() {
           >
             <div
               className={
-                currentUser?.network.id == chainId ? 'activeChain' : ''
+                chain?.id == chainId ? "activeChain" : ""
               }
             >
               <img
@@ -308,7 +333,7 @@ export default function Navbar() {
           </div>
           <a
             href={`${
-              supportedNetworks[user?.network?.id].blockExplorerUrls[0]
+              supportedNetworks[chain?.id].blockExplorerUrls[0]
             }/address/${user.address}`}
             target='_blank'
           >
@@ -342,7 +367,7 @@ export default function Navbar() {
             >
               Pools
             </a>
-            {isPolygon ? (
+            {isNavigateAllow ? (
               <>
                 <a href='#' className='disable_route'>
                   Dashboard
@@ -372,7 +397,7 @@ export default function Navbar() {
               Rewards
               <LockOutlined style={{ marginLeft: '5px' }} />
             </a>
-            {true && (
+            {isNavigateAllow  && (
               <a
                 href='/history'
                 className={`${pathname === '/history' ? 'active' : ''}`}
@@ -380,12 +405,12 @@ export default function Navbar() {
                 History
               </a>
             )}
-            <a
-              href='https://chaindrop.org/?chainid=11155111&token=0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-              target='_blank'
+            {/* <a
+              href="https://chaindrop.org/?chainid=11155111&token=0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+              target="_blank"
             >
               Faucet
-            </a>
+            </a> */}
           </nav>
         </div>
       </div>
@@ -404,9 +429,9 @@ export default function Navbar() {
                 <div className='network_chamber'>
                   <div>
                     <img
-                      src={supportedNetworks[currentUser?.network?.id]?.logoUrl}
+                      src={supportedNetworks[chain.id]?.logoUrl}
                       alt={`${
-                        supportedNetworks[currentUser?.network?.id]?.chainName
+                        supportedNetworks[chain?.id]?.chainName
                       } Logo`}
                     />
                     <p>{currentUser?.network?.name}</p>
@@ -466,10 +491,18 @@ export default function Navbar() {
           <img src={moon} onClick={() => handleTheme('dark')} alt='moon' />
         )}
       </div>
-
       <Modal
-        className='antd_modal_overlaywrong'
-        open={wrongNetworkModal}
+        className="antd_modal_overlaywrong"
+        open={!isHaveAccess}
+        centered
+        footer={null}
+        closable={false}
+      >
+        <NoAccessModalBody />
+      </Modal>
+      <Modal
+        className="antd_modal_overlaywrong"
+        open={wrongNetworkModal }
         centered
         footer={null}
         closable={false}

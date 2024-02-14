@@ -890,10 +890,14 @@ export default function PoolComponent() {
                 </p>
                 <p>
                   <span>Oracle</span>
-                  <span>
-                    1 {poolData.token0._symbol} ={' '}
-                    {Number(poolData.token0.price)} {poolData.token1._symbol}{' '}
-                  </span>
+                  {isNaN(poolData.token0.price) ? (
+                    <span className='skeleton loader'></span>
+                  ) : (
+                    <span>
+                      1 {poolData.token0._symbol} ={" "}
+                      {Number(poolData.token0.price)} {poolData.token1._symbol}{" "}
+                    </span>
+                  )}
                 </p>
               </div>
             )}

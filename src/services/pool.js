@@ -120,13 +120,14 @@ export const setAllowance = async (
   contracts,
 ) => {
   var maxAllow =
-    '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+    "115792089237316195423570985008687907853269984665640564039457584007913129639935";
+    let Amount = decimal2Fixed(amount, token._decimals)
   try {
     const instance = await getEtherContract(token._address, erc20Abi);
 
     const { hash } = await instance.approve(
       contracts.coreContract.address,
-      maxAllow,
+      Amount
     );
 
     const txn = {
@@ -212,8 +213,7 @@ export const getTokenPrice = async (
         pool.token1.price == 'Infinity' || pool.token1.price == '0'
           ? getTabs(pool.token1).filter((v) => v !== 'borrow')
           : getTabs(pool.token1);
-
-      console.log('Pool Data:', pool);
+console.log("Pool Data", pool);
       return pool;
     } catch (error) {
       throw error;
@@ -387,7 +387,6 @@ export const getPoolBasicData = async (
       );
 
       //const data = await helperContractInstance.getPoolData(poolAddress);
-      console.log('result', data, fromBigNumber(50));
       pool = {
         ...poolData,
         _address: poolAddress,
@@ -474,15 +473,15 @@ export const getPoolAllData = async (
           healthFactor18: fromBigNumber(data._healthFactor0),
           healthFactorFixed: fixed2Decimals(
             data._healthFactor0,
-            poolData.token0._decimals,
+            18
           ),
           healthFactor: greaterThan(
-            fixed2Decimals(data._healthFactor0, poolData.token0._decimals),
-            100,
+            fixed2Decimals(data._healthFactor0, 18),
+            100
           )
             ? '100'
             : Number(
-                fixed2Decimals(data._healthFactor0, poolData.token0._decimals),
+                fixed2Decimals(data._healthFactor0, 18)
               ).toFixed(2),
 
           interest: fromBigNumber(data._interest0),
@@ -550,15 +549,15 @@ export const getPoolAllData = async (
           healthFactor18: fromBigNumber(data._healthFactor1),
           healthFactorFixed: fixed2Decimals(
             data._healthFactor1,
-            poolData.token1._decimals,
+            18
           ),
           healthFactor: greaterThan(
-            fixed2Decimals(data._healthFactor1, poolData.token1._decimals),
-            100,
+            fixed2Decimals(data._healthFactor1, 18),
+            100
           )
             ? '100'
             : Number(
-                fixed2Decimals(data._healthFactor1, poolData.token1._decimals),
+                fixed2Decimals(data._healthFactor1, 18)
               ).toFixed(2),
 
           interest: fromBigNumber(data._interest1),
@@ -639,8 +638,8 @@ export const handleLend = async (
 
   try {
     if (
-      fixed2Decimals18(selectedToken.allowance, selectedToken._decimals) >=
-      amount
+      Number(fixed2Decimals18(selectedToken.allowance, selectedToken._decimals)) >=
+      Number(amount)
     ) {
       const instance = await getEtherContract(
         contracts.coreContract.address,

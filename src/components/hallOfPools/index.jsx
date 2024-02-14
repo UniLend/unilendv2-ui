@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import ManageToken from '../ManageTokens/ManageToken';
-import PoolCard from './poolCard';
-import banner from '../../assets/poolbanner.svg';
-import { FaChevronDown } from 'react-icons/fa';
-import './styles/index.scss';
-import { ImArrowDown2, ImArrowUp2 } from 'react-icons/im';
-import { useSelector } from 'react-redux';
-import { erc20Abi } from '../../core/contractData/abi';
-import NoPoolFound from '../NoPoolFound';
-import { fetchCoinLogo } from '../../utils/axios';
-import PoolListSkeleton from '../Loader/PoolListSkeleton';
-import PoolCarousel from '../PoolsCarousel';
-import { Button } from 'antd';
-import DropDown from '../Common/DropDown';
-import { sortByKey } from '../../helpers/dashboard';
-import { handleCreatePool } from '../../services/pool';
+import React, { useState, useEffect } from "react";
+import ManageToken from "../ManageTokens/ManageToken";
+import PoolCard from "./poolCard";
+import banner from "../../assets/poolbannermainnet.svg";
+import { FaChevronDown } from "react-icons/fa";
+import "./styles/index.scss";
+import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
+import { useSelector } from "react-redux";
+import { erc20Abi } from "../../core/contractData/abi";
+import NoPoolFound from "../NoPoolFound";
+import { fetchCoinLogo } from "../../utils/axios";
+import PoolListSkeleton from "../Loader/PoolListSkeleton";
+import PoolCarousel from "../PoolsCarousel";
+import { Button } from "antd";
+import DropDown from "../Common/DropDown";
+import { sortByKey } from "../../helpers/dashboard";
+import { handleCreatePool } from "../../services/pool";
 
 export default function HallOfPoolsComponent() {
   const poolList = useSelector((state) => state.poolList);
