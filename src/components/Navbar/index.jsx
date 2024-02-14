@@ -137,7 +137,7 @@ export default function Navbar() {
       setIsNavigateAllow(false);
     }
     // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
-    console.log("user", user, chain);
+
     if (chain?.id && !availableChain.includes(chain?.id)) {
       setWrongNetworkModal(true);
     } else {
