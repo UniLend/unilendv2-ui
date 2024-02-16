@@ -32,7 +32,7 @@ import {
 //infinity wallet integration 
 import { InfinityWalletConnector, openInfinityWallet } from '@infinitywallet/infinity-connector';
 import { InjectedConnector } from 'wagmi/connectors/injected'
-import infinityLogo from "./assets/infinity-logo.png"
+import infinityLogo from "./assets/infinity-logo.svg"
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { infuraProvider } from 'wagmi/providers/infura';
 
