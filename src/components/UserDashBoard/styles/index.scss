@@ -191,6 +191,10 @@
                 font-size: $font-size-md;
                 color: var(--pure-black);
               }
+              .loader{
+                width: 72px;
+                height: 20px;
+              }
             }
           }
           .heath_factor {

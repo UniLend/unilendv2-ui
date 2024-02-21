@@ -8,6 +8,8 @@ import { ImStack } from "react-icons/im";
 import { FaWallet, FaSearch } from "react-icons/fa";
 import { ImArrowDown2, ImArrowUp2 } from "react-icons/im";
 import userIcon from "../../assets/userIcon.png";
+import { Tooltip } from "antd";
+import { truncateToDecimals } from "../../helpers/contracts";
 import { Input, Button, Pagination } from "antd";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -82,6 +84,7 @@ export default function UserDashboardComponent() {
 
   const positionSorting = (operation, key, order) => {
     if (operation == "lend") {
+      console.log(positionData.lendArray);
       const sorted = sortByKey(positionData.lendArray, key, order);
       setPositionData({ ...positionData, lendArray: sorted });
     } else if (operation == "borrow") {
@@ -93,6 +96,7 @@ export default function UserDashboardComponent() {
   const handleOpenPosition = (e) => {
     const searched = String(e.target.value).toUpperCase();
     const lendPosition = positionDataBackup.lendArray;
+    console.log(lendPosition);
     const BorrowPosition = positionDataBackup.borrowArray;
 
     const afterSearchedLend = lendPosition.filter(
@@ -203,6 +207,9 @@ export default function UserDashboardComponent() {
         tokenList,
         ValidAddress
       );
+      console.log(tokens);
+      console.log(pieChart);
+      console.log("position", position);
       setPositionLoading(false);
       setWalletTokens(tokens);
       setPositionData(position);
@@ -264,8 +271,21 @@ export default function UserDashboardComponent() {
                 </div>
                 <div className="values">
                   <p>Net Worth</p>
+                  {/* {isNaN(pieChartInputs?.lendValues?.total) ? (
+                    <h5 className="skeleton loader"></h5>
+                  ) : (
+                    <h5>
+                      $
+                      {checkNaN(
+                        Number(
+                          pieChartInputs?.lendValues?.total -
+                            pieChartInputs?.borrowValues?.total
+                        ).toFixed(2)
+                      ) || 0}
+                    </h5>
+                  )} */}
                   <h5>
-                    ${" "}
+                    $
                     {checkNaN(
                       Number(
                         pieChartInputs?.lendValues?.total -
@@ -281,6 +301,13 @@ export default function UserDashboardComponent() {
                 </div>
                 <div className="values">
                   <p>Lend APY</p>
+                  {/* {isNaN(headerAnalytics?.lendAPY || 0) ? (
+                    <h5 className="skeleton loader"></h5>
+                  ) : (
+                    <h5>
+                    {Number(headerAnalytics?.lendAPY || 0).toFixed(2) || 0}%
+                  </h5>
+                  )} */}
                   <h5>
                     {Number(headerAnalytics?.lendAPY || 0).toFixed(2) || 0}%
                   </h5>
@@ -317,28 +344,37 @@ export default function UserDashboardComponent() {
 
           <div className="content">
             <div className="lend_container">
-              {!positionLoading ? (
-                <div>
-                  {pieChartInputs?.donutLends?.length > 0 ? (
+              {!positionLoading && pieChartInputs?.donutLends?.length > 0 ? (
+                pieChartInputs?.donutLends?.length > 0 ? (
+                  <div>
                     <DonutChart data={pieChartInputs?.donutLends} />
-                  ) : (
-                    <Lottie
-                      options={defaultOptionsLotti}
-                      height={300}
-                      width={300}
-                    />
-                  )}
+                  </div>
+                ) : (
+                  <Lottie
+                    options={defaultOptionsLotti}
+                    height={300}
+                    width={300}
+                  />
+                )
+              ) : pieChartInputs?.donutLends?.length < 0 ? (
+                <div>
+                  <Lottie
+                    options={defaultOptionsLotti}
+                    height={300}
+                    width={300}
+                  />
                 </div>
               ) : (
                 <div className="pieChart_loader">
                   <p className="circle skeleton"></p>
                 </div>
               )}
+
               <div>
                 <div>
                   <p>Total Lend</p>
                   <h5>
-                    ${" "}
+                    $
                     {checkNaN(
                       Number(pieChartInputs?.lendValues?.total).toFixed(4)
                     ) || 0}
@@ -359,7 +395,7 @@ export default function UserDashboardComponent() {
               </div>
             </div>
             <div className="borrow_container">
-              {!positionLoading ? (
+              {/* {!positionLoading && pieChartInputs?.donutBorrows?.length > 0 ? (
                 <div>
                   {pieChartInputs?.donutBorrows?.length > 0 ? (
                     <DonutChart data={pieChartInputs?.donutBorrows} />
@@ -370,6 +406,31 @@ export default function UserDashboardComponent() {
                       width={300}
                     />
                   )}
+                </div>
+              ) : (
+                <div className="pieChart_loader">
+                  <p className="circle skeleton"></p>
+                </div>
+              )} */}
+              {!positionLoading && pieChartInputs?.donutBorrows?.length > 0 ? (
+                pieChartInputs?.donutBorrows?.length > 0 ? (
+                  <div>
+                    <DonutChart data={pieChartInputs?.donutBorrows} />
+                  </div>
+                ) : (
+                  <Lottie
+                    options={defaultOptionsLotti}
+                    height={300}
+                    width={300}
+                  />
+                )
+              ) : pieChartInputs?.donutBorrows?.length < 0 ? (
+                <div>
+                  <Lottie
+                    options={defaultOptionsLotti}
+                    height={300}
+                    width={300}
+                  />
                 </div>
               ) : (
                 <div className="pieChart_loader">
@@ -403,14 +464,14 @@ export default function UserDashboardComponent() {
         </div>
 
         {/* Wallet Section */}
-        <div className="wallet_container">
+        {/* <div className="wallet_container">
           <div className="title_div">
             <span>
               {" "}
               <FaWallet className="react_icons" /> <h2>Wallet</h2>{" "}
-            </span>
-            {/* <h2>$130,000,500</h2> */}
-          </div>
+            </span> */}
+        {/* <h2>$130,000,500</h2> */}
+        {/* </div>
 
           <div className="wallet_table">
             <div className="thead">
@@ -433,9 +494,9 @@ export default function UserDashboardComponent() {
                                 src={token?.logo}
                                 alt="uft"
                               />
-                              <p className="hide_for_mobile">
-                                {/* {token?.name} / {token?.symbol} */}
-                                {token?.name}
+                              <p className="hide_for_mobile"> */}
+        {/* {token?.name} / {token?.symbol} */}
+        {/* {token?.name}
                               </p>
                               <p className="hide_for_monitor">
                                 {token?.symbol}
@@ -476,7 +537,7 @@ export default function UserDashboardComponent() {
               />
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Lending Table */}
 
@@ -565,9 +626,14 @@ export default function UserDashboardComponent() {
                                   </p>
                                 </span>
                                 <span>{pool?.tokenSymbol}</span>
-                                <span>
-                                  {Number(pool?.LendBalance).toFixed(2)}
-                                </span>
+                                <Tooltip title={Number(pool?.LendBalance)}>
+                                  <span>
+                                    {truncateToDecimals(
+                                      Number(pool?.LendBalance),
+                                      6
+                                    )}
+                                  </span>
+                                </Tooltip>
                                 <span>{Number(pool?.apy).toFixed(2)}%</span>
                                 <span>{pool.pool.maxLTV}%</span>
                                 <span>
@@ -701,9 +767,15 @@ export default function UserDashboardComponent() {
                                 </p>
                               </span>
                               <span>{pool?.tokenSymbol}</span>
-                              <span>
-                                {Number(pool?.borrowBalance).toFixed(2)}
-                              </span>
+                              <Tooltip title={Number(pool?.borrowBalance)}>
+                                  <span>
+                                    {truncateToDecimals(
+                                      Number(pool?.borrowBalance),
+                                      6
+                                    )}
+                                  </span>
+                                </Tooltip>
+                            
                               <span>{Number(pool?.apy).toFixed(3)}%</span>
                               <span>
                                 {Number(pool?.currentLTV).toFixed(2)}%
