@@ -22,6 +22,7 @@ import copyIcon from "../../assets/copyIcon.svg";
 import doc from "../../assets/document.svg";
 import career from "../../assets/career.svg";
 import ethlogo from "../../assets/eth.svg";
+import arblogo from "../../assets/arbitrum-logo.svg"
 import sun from "../../assets/sun.svg";
 import moon from "../../assets/moon.svg";
 import metamaskicon from "../../assets/metamaskicon.svg";
@@ -177,6 +178,10 @@ export default function Navbar() {
           <div onClick={() => handleSwitchNetwork(1)}>
             <img src={ethlogo} alt="Etherium" />
             <p>Ethereum</p>
+          </div>
+          <div onClick={() => handleSwitchNetwork(42161)}>
+            <img src={arblogo} alt="Etherium" />
+            <p>Arbitrum</p>
           </div>
           {/* <div onClick={() => handleSwitchNetwork(1442)}>
             <img src={ethlogo} alt="Etherium" />
