@@ -120,14 +120,14 @@ export const setAllowance = async (
   contracts,
 ) => {
   var maxAllow =
-    "115792089237316195423570985008687907853269984665640564039457584007913129639935";
-    let Amount = decimal2Fixed(amount, token._decimals)
+    '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+  let Amount = decimal2Fixed(amount, token._decimals);
   try {
     const instance = await getEtherContract(token._address, erc20Abi);
 
     const { hash } = await instance.approve(
       contracts.coreContract.address,
-      Amount
+      Amount,
     );
 
     const txn = {
@@ -213,7 +213,7 @@ export const getTokenPrice = async (
         pool.token1.price == 'Infinity' || pool.token1.price == '0'
           ? getTabs(pool.token1).filter((v) => v !== 'borrow')
           : getTabs(pool.token1);
-console.log("Pool Data", pool);
+      console.log('Pool Data', pool);
       return pool;
     } catch (error) {
       throw error;
@@ -471,18 +471,13 @@ export const getPoolAllData = async (
           ),
 
           healthFactor18: fromBigNumber(data._healthFactor0),
-          healthFactorFixed: fixed2Decimals(
-            data._healthFactor0,
-            18
-          ),
+          healthFactorFixed: fixed2Decimals(data._healthFactor0, 18),
           healthFactor: greaterThan(
             fixed2Decimals(data._healthFactor0, 18),
-            100
+            100,
           )
             ? '100'
-            : Number(
-                fixed2Decimals(data._healthFactor0, 18)
-              ).toFixed(2),
+            : Number(fixed2Decimals(data._healthFactor0, 18)).toFixed(2),
 
           interest: fromBigNumber(data._interest0),
           interestFixed: fixed2Decimals(
@@ -547,18 +542,13 @@ export const getPoolAllData = async (
           ),
 
           healthFactor18: fromBigNumber(data._healthFactor1),
-          healthFactorFixed: fixed2Decimals(
-            data._healthFactor1,
-            18
-          ),
+          healthFactorFixed: fixed2Decimals(data._healthFactor1, 18),
           healthFactor: greaterThan(
             fixed2Decimals(data._healthFactor1, 18),
-            100
+            100,
           )
             ? '100'
-            : Number(
-                fixed2Decimals(data._healthFactor1, 18)
-              ).toFixed(2),
+            : Number(fixed2Decimals(data._healthFactor1, 18)).toFixed(2),
 
           interest: fromBigNumber(data._interest1),
           interestFixed: fixed2Decimals(
@@ -638,8 +628,9 @@ export const handleLend = async (
 
   try {
     if (
-      Number(fixed2Decimals18(selectedToken.allowance, selectedToken._decimals)) >=
-      Number(amount)
+      Number(
+        fixed2Decimals18(selectedToken.allowance, selectedToken._decimals),
+      ) >= Number(amount)
     ) {
       const instance = await getEtherContract(
         contracts.coreContract.address,
@@ -888,7 +879,7 @@ export const createCustomToken = async (
         symbol,
         logo,
         chainId,
-        tokenAddress,
+        address: tokenAddress,
       });
     } else {
       const isTokenAdded = customTokensList.findIndex(
@@ -901,7 +892,7 @@ export const createCustomToken = async (
           symbol,
           logo,
           chainId,
-          tokenAddress,
+          address: tokenAddress,
         });
         setTokenAddress('');
         setAddedCustomtokens([
@@ -912,7 +903,7 @@ export const createCustomToken = async (
             symbol,
             logo,
             chainId,
-            tokenAddress,
+            address: tokenAddress,
           },
         ]);
       } else {
@@ -923,7 +914,7 @@ export const createCustomToken = async (
             symbol,
             logo,
             chainId,
-            tokenAddress,
+            address: tokenAddress,
           },
         ]);
       }
