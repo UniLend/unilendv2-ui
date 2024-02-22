@@ -10,7 +10,7 @@ import {
   mul,
   toAPY,
   toFixed,
-  fixed2Decimals18
+  fixed2Decimals18,
 } from "./contracts";
 import { getEtherContractWithProvider, readContracts } from "../lib/fun/wagmi";
 import { fetchGraphQlData } from "../utils/axios";
@@ -40,7 +40,6 @@ export const findTokenPrice = (list, address) => {
   const price = list[String(address).toUpperCase()]
     ? list[String(address).toUpperCase()].pricePerToken
     : 1;
-    console.log('price', price)
   return Number(price);
 };
 
@@ -113,7 +112,6 @@ export const getChartData = (data, tokenList) => {
       type: lend,
       value: getPercent(sortedLend[lend], sortedLend["total"]),
     };
-    console.log(payload)
     if (lend !== "total" && sortedLend[lend] > 0) {
       donutLends.push(payload);
     }
@@ -136,9 +134,6 @@ export const convertPrice = (price) => {
   return Number(price) == 1 ? Number(price) : Number(price) / 10 ** 8;
 };
 
-
-
-
 // export const getPieChartValues = (positions, tokenList) => {
 //   console.log("positionData",tokenList, positions)
 //   const lendValues = {
@@ -160,8 +155,6 @@ export const convertPrice = (price) => {
 //     lendValues[action.token.symbol] = (lendValues[action.tokenSymbol] || 0) + Number(action.LendBalance) * priceUsd[action.token.symbol];
 //     lendValues["total"] =(lendValues["total"] || 0) + Number(action.LendBalance) * priceUsd[action.token.symbol];
 //   }
-
-
 
 //   for (const action of positions.borrowArray) {
 //     borrowValues[action.tokenSymbol] =
@@ -202,47 +195,77 @@ export const convertPrice = (price) => {
 //   return { lendValues, borrowValues, donutLends, donutBorrows };
 // };
 export const getPieChartValues = (positions, tokenList) => {
+console.log(tokenList)
+  const priceUsd = Object.fromEntries(
+    Object.values(tokenList).map((token) => [
+      token.symbol,
+      Number(token.pricePerToken),
+    ])
+  );
 
- 
+if(priceUsd != isNaN && priceUsd != ''){
   const lendValues = { total: 0 };
   const borrowValues = { total: 0 };
   const donutLends = [];
   const donutBorrows = [];
-  const priceUsd = Object.fromEntries(Object.values(tokenList).map(token => [token.symbol, Number(token.pricePerToken)]));
-  if (tokenList && Object.keys(tokenList).length > 0) {
-    positions.lendArray.forEach(action => {
+
+
+    positions.lendArray.forEach((action) => {
       const price = priceUsd[action.token.symbol];
+      console.log(price)
       if (price) {
-        lendValues[action.token.symbol] = (lendValues[action.token.symbol] || 0) + Number(action.LendBalance) * price;
+        lendValues[action.token.symbol] =
+          (lendValues[action.token.symbol] || 0) +
+          Number(action.LendBalance) * price;
         lendValues.total += Number(action.LendBalance) * price;
       }
     });
-  
-    positions.borrowArray.forEach(action => {
+
+    positions.borrowArray.forEach((action) => {
       const price = priceUsd[action.token.symbol];
       if (price) {
-        borrowValues[action.token.symbol] = (borrowValues[action.token.symbol] || 0) + Number(action.borrowBalance) * price;
+        borrowValues[action.token.symbol] =
+          (borrowValues[action.token.symbol] || 0) +
+          Number(action.borrowBalance) * price;
         borrowValues.total += Number(action.borrowBalance) * price;
       }
     });
-  
-    const sortedLend = Object.fromEntries(Object.entries(lendValues).sort(([, a], [, b]) => b - a));
-    const sortedBorrow = Object.fromEntries(Object.entries(borrowValues).sort(([, a], [, b]) => b - a));
-  
-    Object.keys(sortedLend).forEach(lend => {
+
+    const sortedLend = Object.fromEntries(
+      Object.entries(lendValues).sort(([, a], [, b]) => b - a)
+    );
+    const sortedBorrow = Object.fromEntries(
+      Object.entries(borrowValues).sort(([, a], [, b]) => b - a)
+    );
+
+    Object.keys(sortedLend).forEach((lend) => {
       if (lend !== "total" && sortedLend[lend] > 0) {
-        donutLends.push({ type: lend, value: getPercent(sortedLend[lend], sortedLend.total) });
+        donutLends.push({
+          type: lend,
+          value: getPercent(sortedLend[lend], sortedLend.total),
+        });
       }
     });
-  
-    Object.keys(sortedBorrow).forEach(borrow => {
+
+    Object.keys(sortedBorrow).forEach((borrow) => {
       if (borrow !== "total" && sortedBorrow[borrow] > 0) {
-        donutBorrows.push({ type: borrow, value: getPercent(sortedBorrow[borrow], sortedBorrow.total) });
+        donutBorrows.push({
+          type: borrow,
+          value: getPercent(sortedBorrow[borrow], sortedBorrow.total),
+        });
       }
     });
-    
-  return { lendValues: sortedLend, borrowValues: sortedBorrow, donutLends, donutBorrows };
-  } 
+
+    return {
+      lendValues: sortedLend,
+      borrowValues: sortedBorrow,
+      donutLends,
+      donutBorrows,
+    };
+
+
+}
+
 };
 
 const getPercent = (x, y) => {
@@ -261,11 +284,8 @@ const calculateCurrentLTV = (borrow0, lend1, price1) => {
 
 export const getUserData = async (chainId, query, tokenList, ValidAddress) => {
   const fetchedDATA = await fetchGraphQlData(chainId || 137, query);
-  console.log("fetched", fetchedDATA);
   const position = await getPositionData(fetchedDATA, chainId);
-console.log("positionData", position)
   const pieChart = getPieChartValues(position, tokenList); //getChartData(data, tokenList);
-  console.log("pieChartvalue", pieChart)
   const analytics = {};
   if (position?.borrowArray.length > 0) {
     const borrowAPY = getAverage(position.borrowArray, "apy", "borrowBalance");
@@ -303,67 +323,52 @@ export const getUserTokens = async (address, chainId, tokenList) => {
 
 export const getPositionData = async (data, chainId) => {
   const position = data["positions"];
-console.log("data", position)
   const lendArray = [];
   const borrowArray = [];
 
   const { coreAddress, helperAddress, positionAddress } =
     contractAddress[chainId];
 
-  const preparedData = [
-    { abi: helperAbi, address: helperAddress },
-    { abi: coreAbi, address: coreAddress },
-  ];
+  // const preparedData = [
+  //   { abi: helperAbi, address: helperAddress },
+  //   { abi: coreAbi, address: coreAddress },
+  // ];
 
   // const provider = getEthersProvider({ chainId });
-  const [helperContract, coreContract] = await Promise.all(
-    preparedData.map((item) =>
-      getEtherContractWithProvider(item.address, item.abi, chainId)
-    )
-  );
+  // const [helperContract, coreContract] = await Promise.all(
+  //   preparedData.map((item) =>
+  //     getEtherContractWithProvider(item.address, item.abi, chainId)
+  //   )
+  // );
 
-
-
-
-
-  const allPositionAPoolddrs = Array.isArray(position) &&  position.map(function (pool) {
+  const allPositionAPoolddrs =
+    Array.isArray(position) &&
+    position.map(function (pool) {
       return { owner: pool.owner, ...pool.pool };
     });
 
-
-
-
-
-
-
   const arrayPromise = allPositionAPoolddrs.map(function (pool) {
     let promises = [
-      helperContract.getPoolFullData(positionAddress, pool.pool, pool.owner),
-
-
-      coreContract.getOraclePrice(
+      readContracts(helperAddress, helperAbi, "getPoolFullData", [
+        positionAddress,
+        pool.pool,
+        pool.owner,
+      ]),
+      readContracts(coreAddress, coreAbi, "getOraclePrice", [
         pool.token0.id,
         pool.token1.id,
-        decimal2Fixed(1, 18)
-      ),
-      // readContracts(contracts.helperContract.address, helperAbi, 'getPoolData', [poolAddress] )
-      helperContract.getPoolData(pool.pool),
-
+        decimal2Fixed(1, 18),
+      ]),
+      readContracts(helperAddress, helperAbi, "getPoolData", [pool.pool]),
     ];
-    console.log("promise", promises)
     return promises;
   });
 
   const flatArray = [].concat(...arrayPromise);
-  console.log('flatArray', flatArray)
   const PromiseData = await Promise.all(flatArray);
-
   var counter = 0;
-
   for (const object of position) {
     const positionPoolAddress = object.pool.pool;
-
-    console.log('object', positionPoolAddress)
     // const [ realTimePoolData, priceInBigNumber , poolBasicData] = await Promise.all([
     //   contracts.helperContract.getPoolFullData(
     //     contracts.positionContract.address,
@@ -382,18 +387,12 @@ console.log("data", position)
     const realTimePoolData = PromiseData[counter];
     const priceInBigNumber = PromiseData[counter + 1];
     const poolBasicData = PromiseData[counter + 2];
-
-    console.log(realTimePoolData)
-    console.log(priceInBigNumber)
-    console.log(poolBasicData)
     counter = counter + 3;
 
     const token0Liq = fromBigNumber(poolBasicData._token0Liquidity);
     const token1Liq = fromBigNumber(poolBasicData._token1Liquidity);
     const decimals0 = fromBigNumber(poolBasicData._decimals0);
-    console.log("decimal0", decimals0)
     const decimals1 = fromBigNumber(poolBasicData._decimals1);
-    console.log("decimal1", decimals1)
     const totLiqFull0 = add(
       div(mul(token0Liq, 100), fromBigNumber(poolBasicData.rf)),
       fromBigNumber(realTimePoolData._totalBorrow0)
@@ -410,17 +409,17 @@ console.log("data", position)
     if (fromBigNumber(realTimePoolData._borrowBalance0) > 0) {
       const BorrowObj = {};
 
-      BorrowObj.borrowBalance = fixedToShort(
-        fromBigNumber(realTimePoolData._borrowBalance0)
+      BorrowObj.borrowBalance = fixedToShortdecimal(
+        fromBigNumber(realTimePoolData._borrowBalance0),
+        decimals0
       );
-      BorrowObj.LendBalance = fixedToShort(
-        fromBigNumber(realTimePoolData._lendBalance1)
+      BorrowObj.LendBalance = fixedToShortdecimal(
+        fromBigNumber(realTimePoolData._lendBalance1),
+        decimals1
       );
       BorrowObj.tokenSymbol = object.pool.token0.symbol;
       BorrowObj.token = object.pool.token0;
       BorrowObj.pool = object.pool;
-      console.log('decimals0',decimals0)
-      console.log("real", realTimePoolData)
       BorrowObj.apy = toAPY(fixed2Decimals(realTimePoolData._interest0, 18)); //object.pool.borrowApy0;
       BorrowObj.healthFactor = greaterThan(
         fixed2Decimals(realTimePoolData._healthFactor0, 18),
@@ -480,8 +479,9 @@ console.log("data", position)
 
     if (fromBigNumber(realTimePoolData._lendBalance0) > 0) {
       const LendObj = {};
-      LendObj.LendBalance = fixedToShort(
-        fromBigNumber(realTimePoolData._lendBalance0)
+      LendObj.LendBalance = fixedToShortdecimal(
+        fromBigNumber(realTimePoolData._lendBalance0),
+        decimals0
       );
       LendObj.tokenSymbol = object.pool.token0.symbol;
       LendObj.token = object.pool.token0;
@@ -519,8 +519,9 @@ console.log("data", position)
     if (fromBigNumber(realTimePoolData._lendBalance1) > 0) {
       const LendObj = {};
 
-      LendObj.LendBalance = fixedToShort(
-        fromBigNumber(realTimePoolData._lendBalance1)
+      LendObj.LendBalance = fixedToShortdecimal(
+        fromBigNumber(realTimePoolData._lendBalance1),
+        decimals1
       );
       LendObj.tokenSymbol = object.pool.token1.symbol;
       LendObj.pool = object.pool;
@@ -563,8 +564,8 @@ export const fixedToShort = (value) => {
   return Number(value) / 10 ** 18;
 };
 
-export const fixedToShort18 = (value) => {
-  return Number(value) / 10 ** 18;
+export const fixedToShortdecimal = (value, decimals) => {
+  return Number(value) / 10 ** decimals;
 };
 
 export const getAverage = (data, percent, balance) => {

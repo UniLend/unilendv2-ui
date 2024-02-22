@@ -84,7 +84,6 @@ export default function UserDashboardComponent() {
 
   const positionSorting = (operation, key, order) => {
     if (operation == "lend") {
-      console.log(positionData.lendArray);
       const sorted = sortByKey(positionData.lendArray, key, order);
       setPositionData({ ...positionData, lendArray: sorted });
     } else if (operation == "borrow") {
@@ -96,7 +95,6 @@ export default function UserDashboardComponent() {
   const handleOpenPosition = (e) => {
     const searched = String(e.target.value).toUpperCase();
     const lendPosition = positionDataBackup.lendArray;
-    console.log(lendPosition);
     const BorrowPosition = positionDataBackup.borrowArray;
 
     const afterSearchedLend = lendPosition.filter(
@@ -344,7 +342,26 @@ export default function UserDashboardComponent() {
 
           <div className="content">
             <div className="lend_container">
-              {!positionLoading && pieChartInputs?.donutLends?.length > 0 ? (
+            {!positionLoading ? (
+                <div>
+                  {pieChartInputs?.donutLends?.length > 0 ? (
+                    <DonutChart data={pieChartInputs?.donutLends} />
+                  ) : (
+                    <Lottie
+                      options={defaultOptionsLotti}
+                      height={300}
+                      width={300}
+                    />
+                  )}
+                </div>
+              ) : (
+                <div className="pieChart_loader">
+                  <p className="circle skeleton"></p>
+                </div>
+              )}
+
+{/* 
+              {!positionLoading  ? (
                 pieChartInputs?.donutLends?.length > 0 ? (
                   <div>
                     <DonutChart data={pieChartInputs?.donutLends} />
@@ -356,7 +373,8 @@ export default function UserDashboardComponent() {
                     width={300}
                   />
                 )
-              ) : pieChartInputs?.donutLends?.length < 0 ? (
+                
+              ) : pieChartInputs?.donutLends != NaN && pieChartInputs?.donutLends!= null ? (
                 <div>
                   <Lottie
                     options={defaultOptionsLotti}
@@ -368,7 +386,10 @@ export default function UserDashboardComponent() {
                 <div className="pieChart_loader">
                   <p className="circle skeleton"></p>
                 </div>
-              )}
+              )} */}
+
+              
+              
 
               <div>
                 <div>

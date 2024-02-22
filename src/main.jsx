@@ -38,11 +38,11 @@ const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID;
 
-import { mumbaiTestnet } from "./core/networks/Chains";
+import { mumbaiTestnet, polygonMainnet } from "./core/networks/Chains";
 
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet, polygon, mumbaiTestnet],
+  [mainnet, polygonMainnet, mumbaiTestnet],
   [
     publicProvider(),
     alchemyProvider({ apiKey: alchemyId }),
