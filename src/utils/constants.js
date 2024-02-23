@@ -246,6 +246,21 @@ const tokensByAddress = {
     symbol: 'BUSD',
     logo: 'https://assets.coingecko.com/coins/images/9576/thumb/BUSD.png?1568947766',
   },
+  '0xd4d42f0b6def4ce0383636770ef773390d85c61a': {
+    address: '0xd4d42f0b6def4ce0383636770ef773390d85c61a',
+    symbol: 'SUSHI',
+    logo: 'https://assets.coingecko.com/coins/images/12271/large/512x512_Logo_no_chop.png?1606986688',
+  },
+  '0x11cdb42b0eb46d95f990bedd4695a6e3fa034978': {
+    address: '0x11cdb42b0eb46d95f990bedd4695a6e3fa034978',
+    symbol: 'CRV',
+    logo: 'https://assets.coingecko.com/coins/images/12124/large/Curve.png?1597369484',
+  },
+  '0xaf88d065e77c8cc2239327c5edb3a432268e5831': {
+    address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+    symbol: 'USDC',
+    logo: 'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png?1547042389',
+  },
   ...tokensbyaddress,
 };
 

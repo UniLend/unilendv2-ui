@@ -1,6 +1,7 @@
 import eth from '../../assets/eth_nav.svg';
 import polygon from '../../assets/polygon_nav.svg';
 import shardeum from '../../assets/shardeum_nav.svg';
+import arb from '../../assets/arbitrum-logo.svg';
 export const networks = {
   1: {
     chainId: `0x${Number(1).toString(16)}`,
@@ -159,20 +160,37 @@ export const supportedNetworks = {
     ],
     blockExplorerUrls: ['https://etherscan.io'],
     graphAvailable: true,
+    baseCurrency: 'ETH',
   },
-  137: {
-    chainId: 137,
-    chainName: "Polygon Mainnet",
+  42161: {
+    chainId: 42161,
+    chainName: 'Arbitrum One',
     nativeCurrency: {
-      name: "MATIC",
-      symbol: "MATIC",
+      name: 'Ether',
+      symbol: 'ETH',
       decimals: 18,
     },
-    logoUrl: polygon,
-    rpcUrls: ["https://polygon-rpc.com/"],
-    blockExplorerUrls: ["https://polygonscan.com/"],
-    graphAvailable: true
+    logoUrl: arb,
+    rpcUrls: ['https://arb-mainnet.g.alchemy.com/v2/${VITE_ALCHEMY_ID}'],
+    blockExplorerUrls: ['https://arbiscan.io'],
+    graphAvailable: true,
+    baseCurrency: 'USD',
   },
+
+  // 137: {
+  //   chainId: 137,
+  //   chainName: "Polygon Mainnet",
+  //   nativeCurrency: {
+  //     name: "MATIC",
+  //     symbol: "MATIC",
+  //     decimals: 18,
+  //   },
+  //   logoUrl: polygon,
+  //   rpcUrls: ["https://polygon-rpc.com/"],
+  //   blockExplorerUrls: ["https://polygonscan.com/"],
+  //   graphAvailable: true
+  //   baseCurrency: 'ETH',
+  // },
 
   // 11155111: {
   //   chainId: 11155111,
