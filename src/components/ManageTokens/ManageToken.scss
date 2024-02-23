@@ -346,11 +346,15 @@
     align-items: center;
     margin: 0 10px;
     .switch {
-      background-color: var(--light-green);
+      background-color: var(--low-gray);
+
       span,
       svg {
         color: var(--main);
       }
+    }
+    .ant-switch-checked {
+      background-color: var(--light-green);
     }
   }
 
@@ -519,8 +523,23 @@
       margin-top: 12px;
     }
   }
+  .api_token_list {
+    overflow-y: scroll;
+    height: 432px;
+    margin: 10px auto;
+    padding: 30px;
+    padding-top: 0px;
+  }
   .customTokens_list {
     margin-top: 0px;
+  }
+
+  .go_back {
+    text-align: center;
+    cursor: pointer;
+    &:hover {
+      color: var(--main-light);
+    }
   }
 }
 

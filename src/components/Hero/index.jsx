@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import ManageToken from "../ManageTokens/ManageToken";
-import banner from "../../assets/bannermainnet.svg";
-import darkbanner from "../../assets/darkBanner.svg";
-import "./styles/index.scss";
-import { useSelector } from "react-redux";
-import PoolCarousel from "../PoolsCarousel";
-import PoolCard from "../hallOfPools/poolCard";
-import PoolListSkeleton from "../Loader/PoolListSkeleton";
-import NoPoolFound from "../NoPoolFound";
+import React, { useState, useEffect } from 'react';
+import ManageToken from '../ManageTokens/ManageToken';
+import banner from '../../assets/bannermainnet.svg';
+import darkbanner from '../../assets/darkBanner.svg';
+import './styles/index.scss';
+import { useSelector } from 'react-redux';
+import PoolCarousel from '../PoolsCarousel';
+import PoolCard from '../hallOfPools/poolCard';
+import PoolListSkeleton from '../Loader/PoolListSkeleton';
+import NoPoolFound from '../NoPoolFound';
 
 export default function HeroComponent() {
   const theme = useSelector((state) => state.theme);
@@ -36,10 +36,10 @@ export default function HeroComponent() {
           (pool) =>
             String(pool?.token0.symbol)
               .toUpperCase()
-              .includes(String(token1.symbol)) ||
+              .includes(String(token1.symbol).toUpperCase()) ||
             String(pool?.token1.symbol)
               .toUpperCase()
-              .includes(String(token1.symbol)),
+              .includes(String(token1.symbol).toUpperCase()),
         );
       setFilteredPools(filtered);
     } else if (token2?.symbol && !token1?.symbol) {
@@ -49,10 +49,10 @@ export default function HeroComponent() {
           (pool) =>
             String(pool?.token0.symbol)
               .toUpperCase()
-              .includes(String(token2.symbol)) ||
+              .includes(String(token2.symbol).toUpperCase()) ||
             String(pool?.token1.symbol)
               .toUpperCase()
-              .includes(String(token2.symbol)),
+              .includes(String(token2.symbol).toUpperCase()),
         );
       setFilteredPools(filtered);
     } else if (token1?.symbol && token2?.symbol) {
@@ -63,19 +63,19 @@ export default function HeroComponent() {
             (pool) =>
               String(pool?.token0.symbol)
                 .toUpperCase()
-                .includes(String(token1.symbol)) ||
+                .includes(String(token1.symbol).toUpperCase()) ||
               String(pool?.token1.symbol)
                 .toUpperCase()
-                .includes(String(token1.symbol)),
+                .includes(String(token1.symbol).toUpperCase()),
           )
           .filter(
             (pool) =>
               String(pool?.token0.symbol)
                 .toUpperCase()
-                .includes(String(token2.symbol)) ||
+                .includes(String(token2.symbol).toUpperCase()) ||
               String(pool?.token1.symbol)
                 .toUpperCase()
-                .includes(String(token2.symbol)),
+                .includes(String(token2.symbol).toUpperCase()),
           );
       setFilteredPools(filtered);
     } else {
