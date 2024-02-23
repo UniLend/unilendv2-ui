@@ -28,7 +28,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   const [currentToken, setCurrentToken] = React.useState('');
   const [coinGeckoToken, setCoinGeckoToken] = React.useState([]);
   const [tokenBackup, setTokenBackup] = React.useState([]);
-  const customTokensList = getFromLocalStorage('customTokensList');
+  const customTokensList = getFromLocalStorage('customTokensList') || [];
   const initialTokens = [
     ...new Set([...Object.values(tokenList), ...customTokensList]),
   ];

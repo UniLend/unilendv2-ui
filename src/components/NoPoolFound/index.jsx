@@ -33,7 +33,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
   const [token02, setToken02] = React.useState(token2);
   const [coinGeckoToken, setCoinGeckoToken] = React.useState([]);
   const [tokenBackup, setTokenBackup] = React.useState([]);
-  const customTokensList = getFromLocalStorage('customTokensList');
+  const customTokensList = getFromLocalStorage('customTokensList') || [];
   const initialTokens = [
     ...new Set([...Object.values(tokenList), ...customTokensList]),
   ];
@@ -304,7 +304,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
             </Button>
           ) : (
             <Button onClick={handleOpenModal} className='btn_class' disabled>
-            Coming Soon
+              Coming Soon
             </Button>
           )}
         </div>
