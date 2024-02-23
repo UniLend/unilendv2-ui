@@ -223,11 +223,11 @@ function App() {
 
     for (const key in temp) {
       if (temp.hasOwnProperty(key)) {
-        if (supportedNetworks[chain?.id].baseCurrency === 'ETH') {
+        if (supportedNetworks[chain?.id].baseCurrency === 'USD') {
+          result[key] = temp[key] / 10 ** 8;
+        } else {
           result[key] = (temp[key] / 10 ** 18) * usdPrice;
           result['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'] = usdPrice;
-        } else {
-          result[key] = temp[key] / 10 ** 8;
         }
       }
     }
