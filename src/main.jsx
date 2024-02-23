@@ -24,6 +24,7 @@ import {
   okxWallet,
   trustWallet,
   coin98Wallet,
+  rabbyWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 
 
@@ -38,12 +39,11 @@ import { infuraProvider } from 'wagmi/providers/infura';
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID;
-
-import { mumbaiTestnet } from "./core/networks/Chains";
+import { mumbaiTestnet,  arbitrum} from "./core/networks/Chains";
 
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet, mumbaiTestnet, polygon],
+  [mainnet, arbitrum],
   [
     publicProvider(),
     alchemyProvider({ apiKey: alchemyId }),
@@ -61,6 +61,7 @@ const connectors = connectorsForWallets([
       walletConnectWallet({ chains, projectId }),
       coin98Wallet({ chains, projectId }),
       okxWallet({ chains, projectId }),
+      rabbyWallet({chains, projectId})
       // infintyWallet({chains})
     ],
   },

@@ -303,8 +303,8 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
               Connect Wallet
             </Button>
           ) : (
-            <Button onClick={handleOpenModal} className='btn_class'>
-              Create Pool
+            <Button onClick={handleOpenModal} className='btn_class' disabled>
+            Coming Soon
             </Button>
           )}
         </div>
