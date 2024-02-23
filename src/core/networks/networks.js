@@ -189,6 +189,7 @@ export const supportedNetworks = {
   //   rpcUrls: ["https://polygon-rpc.com/"],
   //   blockExplorerUrls: ["https://polygonscan.com/"],
   //   graphAvailable: true
+  //   baseCurrency: 'ETH',
   // },
 
   // 11155111: {
@@ -212,19 +213,19 @@ export const supportedNetworks = {
   //   graphAvailable: false,
   // },
 
-  // 80001: {
-  //   chainId: 80001,
-  //   chainName: "Polygon Mumbai",
-  //   nativeCurrency: {
-  //     name: "MATIC",
-  //     symbol: "MATIC",
-  //     decimals: 18,
-  //   },
-  //   logoUrl: polygon,
-  //   rpcUrls: ["https://polygon-rpc.com/"],
-  //   blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
-  //   graphAvailable: true,
-  // },
+  80001: {
+    chainId: 80001,
+    chainName: "Polygon Mumbai",
+    nativeCurrency: {
+      name: "MATIC",
+      symbol: "MATIC",
+      decimals: 18,
+    },
+    logoUrl: polygon,
+    rpcUrls: ["https://polygon-rpc.com/"],
+    blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
+    graphAvailable: true,
+  },
   // 1442: {
   //   chainId: 1442,
   //   chainName: "zkEVM Testnet",
