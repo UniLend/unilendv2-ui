@@ -69,18 +69,19 @@ export const fetchUserAddressByDomain = async (domain) => {
 export const fetchGraphQlData = async (chainId, FILMS_QUERY) => {
   const graphURL = {
     80001: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/my_unilend',
-    // 137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon",
-    137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon-2",
-    1442: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-zkevm",
-    1:'https://api.thegraph.com/subgraphs/name/shubham-rathod1/mainnet-1',
-    42161:'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-arbritrum' 
+    137: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon',
+    // 137: "https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-polygon-2",
+    1442: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-zkevm',
+    1: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/mainnet-1',
+    42161:
+      'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-arbritrum',
   };
 
   if (Object.keys(graphURL).includes(String(chainId))) {
     try {
       const data = await axios({
         url: graphURL[chainId || 1],
-        method: "POST",
+        method: 'POST',
         data: {
           query: FILMS_QUERY,
         },
@@ -107,17 +108,17 @@ export const getEthToUsd = async () => {
 export const getGeoInfo = async () => {
   const url = 'ttps://ipapi.co/json/';
   try {
-   const response = await axios.get("https://ipapi.co/json/")
+    const response = await axios.get('https://ipapi.co/json/');
     let data = response.data;
     const location = {
       ip: data.ip,
       countryName: data.country_name,
       countryCode: data.country_calling_code,
       city: data.city,
-      timezone: data.timezone
+      timezone: data.timezone,
     };
     return location;
   } catch (error) {
-     throw error
+    throw error;
   }
 };
