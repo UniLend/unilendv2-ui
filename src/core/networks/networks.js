@@ -177,20 +177,20 @@ export const supportedNetworks = {
     baseCurrency: 'USD',
   },
 
-  // 137: {
-  //   chainId: 137,
-  //   chainName: "Polygon Mainnet",
-  //   nativeCurrency: {
-  //     name: "MATIC",
-  //     symbol: "MATIC",
-  //     decimals: 18,
-  //   },
-  //   logoUrl: polygon,
-  //   rpcUrls: ["https://polygon-rpc.com/"],
-  //   blockExplorerUrls: ["https://polygonscan.com/"],
-  //   graphAvailable: true
-  //   baseCurrency: 'ETH',
-  // },
+  137: {
+    chainId: 137,
+    chainName: 'Polygon Mainnet',
+    nativeCurrency: {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      decimals: 18,
+    },
+    logoUrl: polygon,
+    rpcUrls: ['https://polygon-rpc.com/'],
+    blockExplorerUrls: ['https://polygonscan.com/'],
+    graphAvailable: true,
+    baseCurrency: 'ETH',
+  },
 
   // 11155111: {
   //   chainId: 11155111,
@@ -215,15 +215,15 @@ export const supportedNetworks = {
 
   80001: {
     chainId: 80001,
-    chainName: "Polygon Mumbai",
+    chainName: 'Polygon Mumbai',
     nativeCurrency: {
-      name: "MATIC",
-      symbol: "MATIC",
+      name: 'MATIC',
+      symbol: 'MATIC',
       decimals: 18,
     },
     logoUrl: polygon,
-    rpcUrls: ["https://polygon-rpc.com/"],
-    blockExplorerUrls: ["https://mumbai.polygonscan.com/"],
+    rpcUrls: ['https://polygon-rpc.com/'],
+    blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
     graphAvailable: true,
   },
   // 1442: {
