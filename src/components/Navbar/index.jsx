@@ -130,7 +130,7 @@ export default function Navbar() {
       const wallet = localStorage.getItem('wallet');
       handleConnect(wallet);
     }
-    if (supportedNetworks[chain?.id].graphAvailable) {
+    if (supportedNetworks[chain?.id]?.graphAvailable) {
       setIsNavigateAllow(true);
     } else {
       setIsNavigateAllow(false);
