@@ -27,9 +27,12 @@ import {
   rabbyWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 
-//infinity wallet integration
-// import { InfinityWalletConnector, openInfinityWallet } from '@infinitywallet/infinity-connector';
 
+
+//infinity wallet integration 
+import { InfinityWalletConnector, openInfinityWallet } from '@infinitywallet/infinity-connector';
+import { InjectedConnector } from 'wagmi/connectors/injected'
+import infinityLogo from "./assets/infinity-logo.svg"
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { infuraProvider } from 'wagmi/providers/infura';
 
@@ -48,6 +51,32 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
   ],
 );
 
+//check for the condition if Dapp is Open on web Browser or infinity web3 browser
+function shouldShowInfinityWallet() {
+  return window.ethereum && window.ethereum.isInfinityWallet;
+}
+
+//connector for infinity wallet
+const infinityWallet = ({ chains, projectId }) => ({
+  id: 'Infinity',
+  name: 'Infinity Wallet',
+  iconUrl: infinityLogo,
+  iconBackground: '#fff',
+  createConnector: () => {
+    const connector = new InjectedConnector({
+      chains: chains,
+      options: {
+        name: 'Injected',
+        shimDisconnect: true,
+      },
+    });
+    return {
+      connector,
+    };
+  },
+});
+
+
 const connectors = connectorsForWallets([
   {
     groupName: 'Recommended',
@@ -59,8 +88,8 @@ const connectors = connectorsForWallets([
       coin98Wallet({ chains, projectId }),
       okxWallet({ chains, projectId }),
       rabbyWallet({ chains, projectId }),
-      // infintyWallet({chains})
-    ],
+      shouldShowInfinityWallet() ? infinityWallet({ chains, projectId }) : null,
+    ].filter(wallet => wallet !== null), 
   },
   {
     groupName: 'Other',
@@ -72,6 +101,8 @@ const connectors = connectorsForWallets([
     ],
   },
 ]);
+
+
 
 const wagmiConfig = createConfig({
   autoConnect: true,
