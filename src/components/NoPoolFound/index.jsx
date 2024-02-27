@@ -10,7 +10,7 @@ import { FaSearch } from 'react-icons/fa';
 import { handleCreatePool } from '../../services/pool';
 import { fetchCoinGeckoTokens, fetchGraphQlData } from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
-import { imgError } from '../../utils';
+import { getFromLocalStorage, imgError } from '../../utils';
 import { waitForBlockConfirmation } from '../../lib/fun/functions';
 import NotificationMessage from '../Common/NotificationMessage';
 import { fromBigNumber } from '../../helpers/contracts';
@@ -33,9 +33,11 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
   const [token02, setToken02] = React.useState(token2);
   const [coinGeckoToken, setCoinGeckoToken] = React.useState([]);
   const [tokenBackup, setTokenBackup] = React.useState([]);
-  const [availableToken, setAvailableToken] = React.useState([
-    ...Object.values(tokenList),
-  ]);
+  const customTokensList = getFromLocalStorage('customTokensList') || [];
+  const initialTokens = [
+    ...new Set([...Object.values(tokenList), ...customTokensList]),
+  ];
+  const [availableToken, setAvailableToken] = React.useState(initialTokens);
   const [isFetching, setIsFetching] = React.useState(false);
   const [serachTokenFromList, setSerachTokenFromList] = React.useState('');
   const [fetchFrom, setFetchFrom] = React.useState({
@@ -193,21 +195,23 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
         setIsFetching(true);
         fetchCoinGeckoTokens()
           .then((data) => {
-            const tokensArray = Array.isArray(data?.tokens) && data?.tokens
-            setCoinGeckoToken(tokensArray.concat(Object.values(tokenList)));
-            setTokenBackup(tokensArray.concat(Object.values(tokenList))); 
-            setAvailableToken( tokensArray.concat(Object.values(tokenList)) );
+            const tokensArray = Array.isArray(data?.tokens) && data?.tokens;
+            setCoinGeckoToken(tokensArray.concat(initialTokens));
+            setTokenBackup(tokensArray.concat(initialTokens));
+            setAvailableToken(tokensArray.concat(initialTokens));
           })
           .finally(() => setIsFetching(false));
       } else {
         setCoinGeckoToken([]);
+        setAvailableToken(initialTokens);
+        setTokenBackup(initialTokens);
       }
     } else {
       // TODO fetch tokens as per selected chain for non-mainnet
-      setAvailableToken([...Object.values(tokenList)]);
-      setTokenBackup([...Object.values(tokenList)]);
+      setAvailableToken(initialTokens);
+      setTokenBackup(initialTokens);
     }
-  }, [fetchFrom, isMainNet]);
+  }, [fetchFrom, isMainNet, customTokensList.length]);
 
   const TokenCard = React.memo(({ token, index }) => {
     const handleTokensList = () => {
@@ -300,7 +304,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
             </Button>
           ) : (
             <Button onClick={handleOpenModal} className='btn_class' disabled>
-            Coming Soon
+              Coming Soon
             </Button>
           )}
         </div>

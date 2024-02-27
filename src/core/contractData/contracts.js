@@ -1,15 +1,15 @@
-export const contractAddress = { 
-  '137': {
+export const contractAddress = {
+  137: {
     helperAddress: '0x4F57c40D3dAA7BF2EC970Dd157B1268982158720',
-  
-    coreAddress: '0x26883aD38ef58f4E33ce533f64E16c61319c99f6',
-    positionAddress: '0x4B915E92a80498ca5e13c2f2715706A56C05659c',
-  
-    poolAddress: '0xB69Ad3b0e874DDEfC885fe7BeDA015D108F35D82 ',
-    unilendOracle: '0x86148E1eF9D102b3Cf1345FBb8456329C3dEEd29',
-    interestRateModal: '0x5a3A1562f245Da7B2Dfa068547351BD0f2199be5 ',
-    uftToken : '0x5B4CF2C120A9702225814E18543ee658c5f8631e',
-    uftgToken: '0x6CbFa51AF1C1B8940f823DA4C58877E409d6da25'
+
+    coreAddress: '0x17dad892347803551CeEE2D377d010034df64347',
+    positionAddress: '0x77B6569F0dbC4F265a575a84540c2A0Cae116a90',
+
+    poolAddress: '0x895C8BbAB2418FC96CE3808b1Edf513658532b05 ',
+    unilendOracle: '0x4C6E05732b84907B6FE4228EcCa926B557BB9C27',
+    interestRateModal: '0x6A73048C3FacFD17C345c6C82340Aa4536AcBAA6 ',
+    uftToken: '0x5B4CF2C120A9702225814E18543ee658c5f8631e',
+    uftgToken: '0x6CbFa51AF1C1B8940f823DA4C58877E409d6da25',
   },
 
   8081: {
@@ -62,17 +62,17 @@ export const contractAddress = {
   },
   1: {
     helperAddress: '0xAE84B51a1ee35275542Dd99df0F107d4F4e32A63',
-    coreAddress: "0x7f2E24D2394f2bdabb464B888cb02EbA6d15B958",
-    positionAddress: "0xc45e4aE09c772D143677280f0a764f34F497677a",
-    poolAddress: "0xc86D2555F8c360D3C5E8e4364F42c1f2d169330E",
-    unilendOracle: "0x6cEF3FbE3F7Bb676fEB764bb2477f7A525dE9c42",
-    interestModal: "0xBdC5eB4eE2B05511023A73aad9dEc357774364eD",
+    coreAddress: '0x7f2E24D2394f2bdabb464B888cb02EbA6d15B958',
+    positionAddress: '0xc45e4aE09c772D143677280f0a764f34F497677a',
+    poolAddress: '0xc86D2555F8c360D3C5E8e4364F42c1f2d169330E',
+    unilendOracle: '0x6cEF3FbE3F7Bb676fEB764bb2477f7A525dE9c42',
+    interestModal: '0xBdC5eB4eE2B05511023A73aad9dEc357774364eD',
 
-    uftToken : '0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1',
+    uftToken: '0x0202Be363B8a4820f3F4DE7FaF5224fF05943AB1',
     uftgToken: '0x7Fe9706F0081F7a2091459F224eE21A31BeC1816',
-    timeLock:'0x1Fc3a90dFFd68882C09C65896e9A0E510F6cEC11',
+    timeLock: '0x1Fc3a90dFFd68882C09C65896e9A0E510F6cEC11',
     delegate: '0x83C45d562Cff213C5E8045F861F48FFFfb235f61',
-    delegator: '0x9d0A908b3eA07E735BE2aE5Ed3CCC1ad80a16f16'
+    delegator: '0x9d0A908b3eA07E735BE2aE5Ed3CCC1ad80a16f16',
   },
   1422: {
     helperAddress: '0xAe7a2D9C86fc387432Cd619379ee1c96Aa5E6a0a',
@@ -96,6 +96,15 @@ export const contractAddress = {
     poolAddress: '0x93EB029Bf6Cdb7c8d7D1a75DDb0bB90dCC3f9D00',
     unilendOracle: '0x9D2157cBf3060B2B87995b423178098d75696206',
     interestModal: '0x530dccDcbc730D76ACbA0334Dfca99dCfAaeba30',
+  },
+
+  42161: {
+    helperAddress: '0xF757745E7781642804A3d333506b57BE8adea256',
+    coreAddress: '0xBBDF4e0E4FDa0842599921Be429faA3d4faa3956',
+    positionAddress: '0x55da4F6C98B1217095004F69e304F853663D1C11',
+    poolAddress: '0x01F22912a66aDaB2C943cEb2a097Dc9FE8e92CCf',
+    unilendOracle: '0x4ae8a7d2C2A0fB7C98f8af49Bd2f8A5523fed35d',
+    interestModal: '0x36e05f096C03D38A548C082E2B5bb095b6e668F1',
   },
 };
 

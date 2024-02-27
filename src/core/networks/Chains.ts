@@ -206,3 +206,36 @@ export const holeskyTestnet = {
   },
   testnet: true,
 } as Chain;
+
+export const arbitrum = {
+  id: 42161,
+  name: 'Arbitrum One',
+  network: 'Arbitrum',
+  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+  rpcUrls: {
+    default: {
+      http: [
+        'https://arb-mainnet.g.alchemy.com/v2/_vEjJjw0LdVci7UvXV2G66_oIxPtbnJT',
+      ],
+      webSocket: [
+        'wss://arb-mainnet.g.alchemy.com/v2/_vEjJjw0LdVci7UvXV2G66_oIxPtbnJT',
+      ],
+    },
+    public: {
+      http: [
+        'https://arb-mainnet.g.alchemy.com/v2/_vEjJjw0LdVci7UvXV2G66_oIxPtbnJT',
+      ],
+      webSocket: [
+        'wss://arb-mainnet.g.alchemy.com/v2/_vEjJjw0LdVci7UvXV2G66_oIxPtbnJT',
+      ],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: 'arbscan',
+      url: 'https://arbiscan.io',
+    },
+  },
+  testnet: true,
+} as Chain;
+

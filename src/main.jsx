@@ -1,20 +1,20 @@
-import React, { Suspense } from "react";
-import ReactDOM from "react-dom/client";
-import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
-import "./polyfils";
-import { store } from "./store/Store";
-import "./index.css";
-import Ring from "./components/Loader/Ring";
-import AppWrapper from "./appWrapper";
-import "@rainbow-me/rainbowkit/styles.css";
-import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import React, { Suspense } from 'react';
+import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import './polyfils';
+import { store } from './store/Store';
+import './index.css';
+import Ring from './components/Loader/Ring';
+import AppWrapper from './appWrapper';
+import '@rainbow-me/rainbowkit/styles.css';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 // Custom theme
-import { myCustomTheme } from "./core/theme/customWalletTheme";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, polygon } from "wagmi/chains";
-import { publicProvider } from "wagmi/providers/public";
-import { connectorsForWallets } from "@rainbow-me/rainbowkit";
+import { myCustomTheme } from './core/theme/customWalletTheme';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { mainnet, polygon } from 'wagmi/chains';
+import { publicProvider } from 'wagmi/providers/public';
+import { connectorsForWallets } from '@rainbow-me/rainbowkit';
 import {
   injectedWallet,
   walletConnectWallet,
@@ -40,17 +40,15 @@ import { infuraProvider } from 'wagmi/providers/infura';
 const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID;
-
-import { mumbaiTestnet } from "./core/networks/Chains";
-
+import { mumbaiTestnet, arbitrum } from './core/networks/Chains';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet],
+  [mainnet, arbitrum, polygon, mumbaiTestnet],
   [
     publicProvider(),
     alchemyProvider({ apiKey: alchemyId }),
     infuraProvider({ apiKey: infuraID }),
-  ]
+  ],
 );
 
 //check for the condition if Dapp is Open on web Browser or infinity web3 browser
@@ -81,11 +79,11 @@ const infinityWallet = ({ chains, projectId }) => ({
 
 const connectors = connectorsForWallets([
   {
-    groupName: "Recommended",
+    groupName: 'Recommended',
     wallets: [
       metaMaskWallet({ chains, projectId }),
       injectedWallet({ chains, projectId }),
-      coinbaseWallet({ appName: "UnilendV2", chains, projectId }),
+      coinbaseWallet({ appName: 'UnilendV2', chains, projectId }),
       walletConnectWallet({ chains, projectId }),
       coin98Wallet({ chains, projectId }),
       okxWallet({ chains, projectId }),
@@ -94,7 +92,7 @@ const connectors = connectorsForWallets([
     ].filter(wallet => wallet !== null), 
   },
   {
-    groupName: "Other",
+    groupName: 'Other',
     wallets: [
       injectedWallet({ chains, projectId }),
       // argentWallet({ projectId, chains }),
@@ -112,7 +110,6 @@ const wagmiConfig = createConfig({
   publicClient,
   webSocketPublicClient,
 });
-
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -22,14 +22,17 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   const theme = useSelector((state) => state.theme);
   const [isOpenTokenList, setIsOpenTokenList] = React.useState(false);
   const [isOpenMangeToken, setIsOpenMangeToken] = React.useState(false);
+  const [isBackButton, setIsBackButton] = React.useState(false);
   const [token1, setToken1] = React.useState('');
   const [token2, setToken2] = React.useState('');
   const [currentToken, setCurrentToken] = React.useState('');
   const [coinGeckoToken, setCoinGeckoToken] = React.useState([]);
   const [tokenBackup, setTokenBackup] = React.useState([]);
-  const [availableToken, setAvailableToken] = React.useState(
-    Object.values(tokenList),
-  );
+  const customTokensList = getFromLocalStorage('customTokensList') || [];
+  const initialTokens = [
+    ...new Set([...Object.values(tokenList), ...customTokensList]),
+  ];
+  const [availableToken, setAvailableToken] = React.useState(initialTokens);
   const [isFetching, setIsFetching] = React.useState(false);
   const [serachTokenFromList, setSerachTokenFromList] = React.useState('');
   const [fetchFrom, setFetchFrom] = React.useState({
@@ -43,7 +46,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
     setSerachTokenFromList(e.target.value);
     const filtered = tokenBackup.filter(
       (el) =>
-        // el.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        el.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
         el.symbol.toLowerCase().includes(e.target.value.toLowerCase()) ||
         el.address.toLowerCase().includes(e.target.value.toLowerCase()),
     );
@@ -79,26 +82,28 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   }, [tokens]);
 
   useEffect(() => {
-    if (true) {
+    if (isMainNet) {
       if (fetchFrom.coinGecko) {
         setIsFetching(true);
         fetchCoinGeckoTokens()
           .then((data) => {
-            const tokensArray = Array.isArray(data?.tokens) && data?.tokens
-            setCoinGeckoToken(tokensArray.concat(Object.values(tokenList)));
-            setTokenBackup(tokensArray.concat(Object.values(tokenList))); 
-            setAvailableToken( tokensArray.concat(Object.values(tokenList)) );
+            const tokensArray = Array.isArray(data?.tokens) && data?.tokens;
+            setCoinGeckoToken(tokensArray.concat(initialTokens));
+            setTokenBackup(tokensArray.concat(initialTokens));
+            setAvailableToken(tokensArray.concat(initialTokens));
           })
           .finally(() => setIsFetching(false));
       } else {
         setCoinGeckoToken([]);
+        setAvailableToken(initialTokens);
+        setTokenBackup(initialTokens);
       }
     } else {
       // TODO fetch tokens as per selected chain for non-mainnet
-      setAvailableToken([...Object.values(tokenList)]);
-      setTokenBackup([...Object.values(tokenList)]);
+      setAvailableToken(initialTokens);
+      setTokenBackup(initialTokens);
     }
-  }, [fetchFrom, isMainNet, tokenList]);
+  }, [fetchFrom, isMainNet, tokenList, customTokensList.length]);
 
   const TokenCard = React.memo(
     ({ token, render, index, handleDeleteToken }) => {
@@ -129,7 +134,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
           )}
           {render === 'apiTokenList' && (
             <div
-              className={`token-card apitokenlist 
+              className={`token-card apitokenlist
               ${fetchFrom.coinGecko && 'active_apiToken'}
               `}
             >
@@ -225,8 +230,10 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   const TokenListModalBody = React.memo(() => {
     const container = React.useRef(null);
     const [page, setPage] = useState(1);
+    const customTokensList = getFromLocalStorage('customTokensList');
 
     const handleGoToMangeToken = () => {
+      setIsBackButton(true);
       setIsOpenTokenList(false);
       setIsOpenMangeToken(true);
     };
@@ -262,7 +269,6 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
           {!isFetching && availableToken?.length === 0 && (
             <h2>Tokens not listed</h2>
           )}
-
           {isOpenTokenList &&
             availableToken?.map(
               (token, i) =>
@@ -286,7 +292,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
     );
   });
 
-  const ManageTokenModalBody = () => {
+  const ManageTokenModalBody = ({ isBackButton = false }) => {
     const [active, setActive] = useState('list');
     const [tokenAddress, setTokenAddress] = useState('');
     const [isTokenAvailable, setIsTokenAvailable] = useState(false);
@@ -298,32 +304,49 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
       const inputValue = event.target.value;
       setTokenAddress(inputValue);
 
-      const isValid = ethers.utils.isAddress(inputValue);
-      if (isValid) {
-        const isTokenAvailable = availableToken?.some(
-          (item) => item.address.toLowerCase() === inputValue.toLowerCase(),
-        );
-        if (isTokenAvailable) {
-          setIsTokenAvailable(true);
-        } else {
-          await createCustomToken(
-            inputValue,
-            user.address,
-            user.network.id,
-            setAddedCustomtokens,
-            setTokenAddress,
+      const processInput = async (value) => {
+        const isValid = ethers.utils.isAddress(value);
+        if (isValid) {
+          const isTokenAvailable = availableToken?.some(
+            (item) => item.address.toLowerCase() === value.toLowerCase(),
           );
+          if (isTokenAvailable) {
+            setIsTokenAvailable(true);
+          } else {
+            await createCustomToken(
+              value,
+              user.address,
+              user.network.id,
+              setAddedCustomtokens,
+              setTokenAddress,
+            );
+          }
+        } else {
+          const customTokenList = getFromLocalStorage('customTokensList');
+          const filtered = customTokenList?.filter(
+            (item) =>
+              item.name.toLowerCase().includes(value.toLowerCase()) ||
+              item.symbol.toLowerCase().includes(value.toLowerCase()) ||
+              item.tokenAddress.toLowerCase().includes(value.toLowerCase()),
+          );
+          setAddedCustomtokens(filtered);
+          setIsTokenAvailable(false);
         }
-      } else {
-        const customTokenList = getFromLocalStorage('customTokensList');
-        const filtered = customTokenList?.filter(
-          (item) =>
-            item.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-            item.symbol.toLowerCase().includes(inputValue.toLowerCase()) ||
-            item.tokenAddress.toLowerCase().includes(inputValue.toLowerCase()),
+      };
+
+      // Handle both input and paste events
+      const handleInput = () => processInput(inputValue);
+      const handlePaste = (e) => {
+        const pastedValue = (e.clipboardData || window.clipboardData).getData(
+          'text',
         );
-        setAddedCustomtokens(filtered);
-        setIsTokenAvailable(false);
+        processInput(pastedValue);
+      };
+
+      if (event.type === 'input') {
+        handleInput();
+      } else if (event.type === 'paste') {
+        handlePaste(event);
       }
     };
 
@@ -335,23 +358,27 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
       saveToLocalStorage('customTokensList', tokens);
     };
 
+    const handleBack = () => {
+      setIsOpenTokenList(true);
+    };
+
     const coingecko = {
       logoURI: coinGeckoLogo,
       name: 'CoinGecko',
-      total: 4000,
+      total: coinGeckoToken.length,
     };
     return (
       <div className='manage_token_modal'>
         <div className='token_tabs'>
           <h3
             onClick={() => setActive('list')}
-            className={active == 'list' && 'active'}
+            className={active == 'list' ? 'active' : ''}
           >
             List
           </h3>
           <h3
             onClick={() => setActive('customTokens')}
-            className={active == 'customTokens' && 'active'}
+            className={active == 'customTokens' ? 'active' : ''}
           >
             Tokens
           </h3>
@@ -360,7 +387,8 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
           <div className='search_token'>
             <FaSearch />
             <input
-              onChange={handleAddToken}
+              onInput={handleAddToken}
+              onPaste={handleAddToken}
               value={tokenAddress}
               type='text'
               placeholder='Search Tokens'
@@ -392,6 +420,11 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
               />
             ))}
           </div>
+        )}
+        {isBackButton && (
+          <p onClick={handleBack} className='paragraph04 go_back'>
+            Back
+          </p>
         )}
       </div>
     );
@@ -431,7 +464,15 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
             pools.length === 0 ? (
               <h5 onClick={clearTokens}> Clear Tokens</h5>
             ) : (
-              <h5 onClick={() => setIsOpenMangeToken(true)}> Manage Tokens</h5>
+              <h5
+                onClick={() => {
+                  setIsOpenMangeToken(true);
+                  setIsBackButton(false);
+                }}
+              >
+                {' '}
+                Manage Tokens
+              </h5>
             )}
           </div>
         </div>
@@ -456,7 +497,7 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
         footer={null}
         closable={false}
       >
-        {<ManageTokenModalBody />}
+        {<ManageTokenModalBody isBackButton={isBackButton} />}
       </Modal>
     </>
   );
