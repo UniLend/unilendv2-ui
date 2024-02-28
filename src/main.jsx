@@ -43,7 +43,7 @@ const infuraID = import.meta.env.VITE_INFURA_ID;
 import { mumbaiTestnet, arbitrum } from './core/networks/Chains';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet, arbitrum, polygon, mumbaiTestnet],
+  [mainnet],
   [
     publicProvider(),
     alchemyProvider({ apiKey: alchemyId }),
