@@ -15,34 +15,34 @@ import {
 } from '../../utils';
 import { connectWallet, handleDisconnect } from '../../services/wallet';
 
-import logo from "../../assets/logo.svg";
-import gitbook from "../../assets/gitbook.svg";
-import faq from "../../assets/faq.svg";
-import copyIcon from "../../assets/copyIcon.svg";
-import doc from "../../assets/document.svg";
-import career from "../../assets/career.svg";
-import ethlogo from "../../assets/eth.svg";
-import arblogo from "../../assets/arbitrum-logo.svg"
-import sun from "../../assets/sun.svg";
-import moon from "../../assets/moon.svg";
-import metamaskicon from "../../assets/metamaskicon.svg";
-import walletconnect from "../../assets/walletconnect.svg";
-import polyMainlogo from "../../assets/polygon.svg";
-import shardeumLogo from "../../assets/shardeumLogo.png";
-import bscnew from "../../assets/bscnew.svg";
-import coinbase from "../../assets/coinbase.svg";
-import zengo from "../../assets/zengo.svg";
-import viewExplorer from "../../assets/viewExplorerIcon.svg";
-import viewExplorerLight from "../../assets/viewExplorerIconLight.svg";
-import "./styles/index.scss";
-import Sider from "antd/lib/layout/Sider";
-import { useDispatch, useSelector } from "react-redux";
-import { setTheme, setUser } from "../../store/Action";
-import { fetchUserDomain, getGeoInfo } from "../../utils/axios";
-import { useConnectModal, ConnectButton } from "@rainbow-me/rainbowkit";
-import { ChangeNetwork, supportedNetworks } from "../../core/networks/networks";
-import useWalletHook from "../../lib/hooks/useWallet";
-import { switchNetworkLib } from "../../lib/fun/functions";
+import logo from '../../assets/logo.svg';
+import gitbook from '../../assets/gitbook.svg';
+import faq from '../../assets/faq.svg';
+import copyIcon from '../../assets/copyIcon.svg';
+import doc from '../../assets/document.svg';
+import career from '../../assets/career.svg';
+import ethlogo from '../../assets/eth.svg';
+import arblogo from '../../assets/arbitrum-logo.svg';
+import sun from '../../assets/sun.svg';
+import moon from '../../assets/moon.svg';
+import metamaskicon from '../../assets/metamaskicon.svg';
+import walletconnect from '../../assets/walletconnect.svg';
+import polyMainlogo from '../../assets/polygon.svg';
+import shardeumLogo from '../../assets/shardeumLogo.png';
+import bscnew from '../../assets/bscnew.svg';
+import coinbase from '../../assets/coinbase.svg';
+import zengo from '../../assets/zengo.svg';
+import viewExplorer from '../../assets/viewExplorerIcon.svg';
+import viewExplorerLight from '../../assets/viewExplorerIconLight.svg';
+import './styles/index.scss';
+import Sider from 'antd/lib/layout/Sider';
+import { useDispatch, useSelector } from 'react-redux';
+import { setTheme, setUser } from '../../store/Action';
+import { fetchUserDomain, getGeoInfo } from '../../utils/axios';
+import { useConnectModal, ConnectButton } from '@rainbow-me/rainbowkit';
+import { ChangeNetwork, supportedNetworks } from '../../core/networks/networks';
+import useWalletHook from '../../lib/hooks/useWallet';
+import { switchNetworkLib } from '../../lib/fun/functions';
 
 export default function Navbar() {
   const user = useSelector((state) => state.user);
@@ -56,7 +56,7 @@ export default function Navbar() {
     domain: shortenAddress(user?.address),
   });
   const [visible, setVisible] = useState(false);
-  const [isHaveAccess, setIsHaveAccess] = useState(true)
+  const [isHaveAccess, setIsHaveAccess] = useState(true);
   const [isNetworkVisible, setIsNetworkVisible] = useState(false);
   const [isNavigateAllow, setIsNavigateAllow] = useState(false);
   const dispatch = useDispatch();
@@ -91,16 +91,19 @@ export default function Navbar() {
   };
 
   const getLocation = async () => {
-   const location = await getGeoInfo(); 
+    const location = await getGeoInfo();
 
-// "+1"
-// "United States"
-   if(location?.countryCode === '+1' && location.countryName =='United States'){
-     setIsHaveAccess(false)
-   }else{
-    setIsHaveAccess(true)
-   }
-  }
+    // "+1"
+    // "United States"
+    if (
+      location?.countryCode === '+1' &&
+      location.countryName == 'United States'
+    ) {
+      setIsHaveAccess(false);
+    } else {
+      setIsHaveAccess(true);
+    }
+  };
 
   useEffect(() => {
     if (window.ethereum) {
@@ -119,20 +122,15 @@ export default function Navbar() {
         }, 1000);
       });
     }
-    getLocation()
+    getLocation();
   }, []);
 
   useEffect(() => {
     if (chain?.id == undefined && chain?.id) {
-      const wallet = localStorage.getItem("wallet");
+      const wallet = localStorage.getItem('wallet');
       handleConnect(wallet);
     }
-    if (
-      chain?.id == 80001 ||
-      chain?.id == 137 ||
-      chain?.id == 1442 ||
-      chain?.id == 1
-    ) {
+    if (supportedNetworks[chain?.id]?.graphAvailable) {
       setIsNavigateAllow(true);
     } else {
       setIsNavigateAllow(false);
@@ -171,16 +169,14 @@ export default function Navbar() {
     return (
       <div className='walletModel'>
         <h1>Wrong Network</h1>
-        <p>
-        UniLend V2 is on Ethereum Mainnet only. Please Switch Network.
-        </p>
-        <div className="networks">
+        <p>UniLend V2 is on Ethereum Mainnet only. Please Switch Network.</p>
+        <div className='networks'>
           <div onClick={() => handleSwitchNetwork(1)}>
-            <img src={ethlogo} alt="Etherium" />
+            <img src={ethlogo} alt='Etherium' />
             <p>Ethereum</p>
           </div>
           <div onClick={() => handleSwitchNetwork(42161)}>
-            <img src={arblogo} alt="Etherium" />
+            <img src={arblogo} alt='Etherium' />
             <p>Arbitrum</p>
           </div>
           {/* <div onClick={() => handleSwitchNetwork(1442)}>
@@ -197,12 +193,9 @@ export default function Navbar() {
   };
   const NoAccessModalBody = () => {
     return (
-      <div className="walletModel">
+      <div className='walletModel'>
         <h1>Restricted</h1>
-        <p>
-      UnilendV2 dApp is not available in your country
-        </p>
- 
+        <p>UnilendV2 dApp is not available in your country</p>
       </div>
     );
   };
@@ -237,11 +230,7 @@ export default function Navbar() {
             className='network_box'
             onClick={() => handleSwitchNetwork(chainId)}
           >
-            <div
-              className={
-                chain?.id == chainId ? "activeChain" : ""
-              }
-            >
+            <div className={chain?.id == chainId ? 'activeChain' : ''}>
               <img
                 src={supportedNetworks[chainId].logoUrl}
                 alt={`${supportedNetworks[chainId].chainName} Logo`}
@@ -402,7 +391,7 @@ export default function Navbar() {
               Rewards
               <LockOutlined style={{ marginLeft: '5px' }} />
             </a>
-            {isNavigateAllow  && (
+            {isNavigateAllow && (
               <a
                 href='/history'
                 className={`${pathname === '/history' ? 'active' : ''}`}
@@ -435,9 +424,7 @@ export default function Navbar() {
                   <div>
                     <img
                       src={supportedNetworks[chain.id]?.logoUrl}
-                      alt={`${
-                        supportedNetworks[chain?.id]?.chainName
-                      } Logo`}
+                      alt={`${supportedNetworks[chain?.id]?.chainName} Logo`}
                     />
                     <p>{currentUser?.network?.name}</p>
                     <FaChevronDown />
@@ -497,7 +484,7 @@ export default function Navbar() {
         )}
       </div>
       <Modal
-        className="antd_modal_overlaywrong"
+        className='antd_modal_overlaywrong'
         open={!isHaveAccess}
         centered
         footer={null}
@@ -506,8 +493,8 @@ export default function Navbar() {
         <NoAccessModalBody />
       </Modal>
       <Modal
-        className="antd_modal_overlaywrong"
-        open={wrongNetworkModal }
+        className='antd_modal_overlaywrong'
+        open={wrongNetworkModal}
         centered
         footer={null}
         closable={false}
