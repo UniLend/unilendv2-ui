@@ -141,6 +141,12 @@ export function truncateToDecimals(number, decimal) {
   return truncatedNumber;
 }
 
+export function toConvertDecimal(balance, decimals) {
+  const trun=  Number(balance) / Math.pow(10, decimals);
+  return trun;
+}
+
+
 
 export function fixed2Decimals(amount, decimals = 18) {
   const amt = amount?._hex ? amount?._hex : amount

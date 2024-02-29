@@ -9,7 +9,8 @@ export const contractAddress = {
     unilendOracle: '0x86148E1eF9D102b3Cf1345FBb8456329C3dEEd29',
     interestRateModal: '0x5a3A1562f245Da7B2Dfa068547351BD0f2199be5 ',
     uftToken : '0x5B4CF2C120A9702225814E18543ee658c5f8631e',
-    uftgToken: '0x6CbFa51AF1C1B8940f823DA4C58877E409d6da25'
+    uftgToken: '0x6CbFa51AF1C1B8940f823DA4C58877E409d6da25',
+    aavePriceContract:'0xBc790382B3686abffE4be14A030A96aC6154023a',
   },
 
   8081: {
@@ -48,6 +49,7 @@ export const contractAddress = {
     timeLock: '0xEC8283E65557Fc4E17AA75C56144eFb8eFA3B9e2', //old
     delegate: '0xE0555dBE41dA929d6cEbe0b92c4f85679a37ED87', //old
     delegator: '0xDdF869E44BD3d5877777f59058F738F4A916fC26', //old
+    aavePriceContract:'0xD8A70FC58BC069CFE6529EBF0c1Db067f2b5347E'
   },
 
   1442: {
@@ -72,7 +74,8 @@ export const contractAddress = {
     uftgToken: '0x7Fe9706F0081F7a2091459F224eE21A31BeC1816',
     timeLock:'0x1Fc3a90dFFd68882C09C65896e9A0E510F6cEC11',
     delegate: '0x83C45d562Cff213C5E8045F861F48FFFfb235f61',
-    delegator: '0x9d0A908b3eA07E735BE2aE5Ed3CCC1ad80a16f16'
+    delegator: '0x9d0A908b3eA07E735BE2aE5Ed3CCC1ad80a16f16',
+    aavePriceContract:'0xC7be5307ba715ce89b152f3Df0658295b3dbA8E2'
   },
   1422: {
     helperAddress: '0xAe7a2D9C86fc387432Cd619379ee1c96Aa5E6a0a',

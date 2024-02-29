@@ -9,7 +9,7 @@ const DonutChart = memo(function DonutChartMemo({ data }) {
 
   // show first 5 data and remaining are in others;
   const selectedData = (data) => {
-    if (data.length > 4) {
+    if (data?.length > 4) {
       const firstFive = data.slice(0, 4);
       const othersValue = data
         .slice(4)

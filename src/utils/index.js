@@ -2,8 +2,9 @@ import { getEthersProvider } from "../lib/fun/wagmi";
 import { tokensBYSymbol, tokensByAddress } from "./constants";
 import { ethers } from "ethers";
 import { Avatar } from "antd";
-import { aggregatorV3InterfaceABI } from "../core/contractData/abi";
-
+import { aggregatorV3InterfaceABI, priceABI } from "../core/contractData/abi";
+import {readContracts} from "../lib/fun/wagmi"
+import { contractAddress } from "../core/contractData/contracts";
 export const fromWei = (web3, val) => {
   const result = web3.utils.fromWei(val, "ether");
   return result;
@@ -93,6 +94,7 @@ export function fixFormatNumber(number) {
 }
 
 export const fetchEthRateForAddresses = async (addresses, chainId) => {
+  const assetAddresses = addresses.map(item => item.asset);
   const provider = getEthersProvider(chainId);
   try {
     const tokensObject = await Promise.all(
@@ -128,3 +130,26 @@ export const fetchEthRateForAddresses = async (addresses, chainId) => {
     throw error;
   }
 };
+
+
+
+export const fetchUserBalance = async (addresses, chainId, address) => {
+  const user_address = [address];
+  const assetAddresses = addresses.map(item => item.asset);
+  const { aavePriceContract } = contractAddress[chainId];
+  let balance = {};
+  
+  try {
+    const balances = await readContracts(aavePriceContract, priceABI, "batchBalanceOf", [
+      user_address,
+      assetAddresses
+    ]);
+    balance = Object.fromEntries(assetAddresses.map((address, index) => [address, Number(balances[index])]));
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
+  
+  return balance;
+};
+

@@ -26,6 +26,7 @@ import Footer from "./components/Footer";
 import "./App.scss";
 import {
   fetchEthRateForAddresses,
+  fetchUserBalance,
   getFromSessionStorage,
   getTokenLogo,
 } from "./utils";
@@ -43,7 +44,7 @@ import {
   getEtherContractWithProvider,
 } from "./lib/fun/wagmi";
 import { ethers } from "ethers";
-import { fixed2Decimals, getTokenUSDPrice } from "./helpers/contracts";
+import { fixed2Decimals, getTokenUSDPrice, toConvertDecimal } from "./helpers/contracts";
 import useWalletHook from "./lib/hooks/useWallet";
 import { supportedNetworks } from "./core/networks/networks";
 
@@ -70,7 +71,7 @@ function App() {
   const query = getPoolCreatedGraphQuery(address);
   const testnetQuery = getPoolCreatedGraphQueryTestnet(address)
   const [tokenPrice, setTokenPrice] = useState({});
-
+  const [userBalance, setUserBalance] = useState({});
   const networksWithGraph = Object.values(supportedNetworks)
     .filter((network) => network.graphAvailable && network.chainId)
     .map((net) => net.chainId);
@@ -217,7 +218,6 @@ function App() {
     const usdPrice = await getEthToUsd();
     const temp = await fetchEthRateForAddresses(data?.assetOracles, chain?.id);
     const result = {};
-
     for (const key in temp) {
       if (temp.hasOwnProperty(key)) {
         result[key] = (temp[key] / 10 ** 18) * usdPrice;
@@ -227,9 +227,22 @@ function App() {
     return result;
   };
 
+  const getUserBalance = async () => {
+    const temp = await fetchUserBalance(data?.assetOracles, chain?.id, address);
+    const result = {};
+    for (const key in temp) {
+      if (temp.hasOwnProperty(key)) {
+        result[key] = (temp[key]);
+      }
+    }
+    setUserBalance(result);
+    return result;
+  };
+
   useEffect(() => {
     if (data?.assetOracles) {
       getTokenPrice();
+      getUserBalance();
     } 
   }, [data]);
 
@@ -278,6 +291,7 @@ function App() {
             logo: getTokenLogo(pool.token0.symbol),
             priceUSD: tokenPrice[pool?.token0?.id] *  pool.token0.decimals,
             pricePerToken: tokenPrice[pool?.token0?.id],
+            balance: toConvertDecimal(userBalance?.[pool?.token0?.id], pool?.token0?.decimals),
           },
           token1: {
             ...pool.token1,
@@ -285,6 +299,7 @@ function App() {
             logo: getTokenLogo(pool.token1.symbol),
             priceUSD: tokenPrice[pool?.token1?.id] * pool.token1.decimals,
             pricePerToken: tokenPrice[pool?.token1?.id],
+            balance:toConvertDecimal(userBalance?.[pool?.token1?.id], pool?.token1?.decimals),
           },
         };
         tokenList[String(pool.token0.id).toUpperCase()] = {
@@ -293,6 +308,7 @@ function App() {
           logo: getTokenLogo(pool.token0.symbol),
           priceUSD: tokenPrice[pool?.token0?.id] *  pool.token0.decimals,
           pricePerToken: tokenPrice[pool?.token0?.id],
+          balance: toConvertDecimal(userBalance?.[pool?.token0?.id], pool?.token0?.decimals),
         };
         tokenList[String(pool.token1.id).toUpperCase()] = {
           ...pool.token1,
@@ -300,6 +316,7 @@ function App() {
           logo: getTokenLogo(pool.token1.symbol),
           priceUSD: tokenPrice[pool?.token1?.id] * pool.token1.decimals,
           pricePerToken: tokenPrice[pool?.token1?.id],
+          balance: toConvertDecimal(userBalance?.[pool?.token1?.id], pool?.token1?.decimals),
         };
         poolData[pool?.pool] = poolInfo;
       }

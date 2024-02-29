@@ -1,5 +1,10 @@
 import { getTokenLogo } from "../utils";
-import { coreAbi, erc20Abi, helperAbi } from "../core/contractData/abi";
+import {
+  coreAbi,
+  erc20Abi,
+  helperAbi,
+  priceABI,
+} from "../core/contractData/abi";
 import {
   add,
   decimal2Fixed,
@@ -195,77 +200,72 @@ export const convertPrice = (price) => {
 //   return { lendValues, borrowValues, donutLends, donutBorrows };
 // };
 export const getPieChartValues = (positions, tokenList) => {
-console.log(tokenList)
+  if (!tokenList) {
+    return;
+  }
+
+  const lendValues = { total: 0 };
+  const borrowValues = { total: 0 };
+  const donutLends = [];
+  const donutBorrows = [];
+
   const priceUsd = Object.fromEntries(
     Object.values(tokenList).map((token) => [
       token.symbol,
       Number(token.pricePerToken),
     ])
   );
+  positions.lendArray.forEach((action) => {
+    const price = priceUsd[action.token.symbol];
+    if (price) {
+      lendValues[action.token.symbol] =
+        (lendValues[action.token.symbol] || 0) +
+        Number(action.LendBalance) * price;
+      lendValues.total += Number(action.LendBalance) * price;
+    }
+  });
 
-if(priceUsd != isNaN && priceUsd != ''){
-  const lendValues = { total: 0 };
-  const borrowValues = { total: 0 };
-  const donutLends = [];
-  const donutBorrows = [];
+  positions.borrowArray.forEach((action) => {
+    const price = priceUsd[action.token.symbol];
+    if (price) {
+      borrowValues[action.token.symbol] =
+        (borrowValues[action.token.symbol] || 0) +
+        Number(action.borrowBalance) * price;
+      borrowValues.total += Number(action.borrowBalance) * price;
+    }
+  });
 
+  const sortedLend = Object.fromEntries(
+    Object.entries(lendValues).sort(([, a], [, b]) => b - a)
+  );
+  const sortedBorrow = Object.fromEntries(
+    Object.entries(borrowValues).sort(([, a], [, b]) => b - a)
+  );
 
-    positions.lendArray.forEach((action) => {
-      const price = priceUsd[action.token.symbol];
-      console.log(price)
-      if (price) {
-        lendValues[action.token.symbol] =
-          (lendValues[action.token.symbol] || 0) +
-          Number(action.LendBalance) * price;
-        lendValues.total += Number(action.LendBalance) * price;
-      }
-    });
+  Object.keys(sortedLend).forEach((lend) => {
+    if (lend !== "total" && sortedLend[lend] > 0) {
+      donutLends.push({
+        type: lend,
+        value: getPercent(sortedLend[lend], sortedLend.total),
+      });
+    }
+  });
 
-    positions.borrowArray.forEach((action) => {
-      const price = priceUsd[action.token.symbol];
-      if (price) {
-        borrowValues[action.token.symbol] =
-          (borrowValues[action.token.symbol] || 0) +
-          Number(action.borrowBalance) * price;
-        borrowValues.total += Number(action.borrowBalance) * price;
-      }
-    });
+  Object.keys(sortedBorrow).forEach((borrow) => {
+    if (borrow !== "total" && sortedBorrow[borrow] > 0) {
+      donutBorrows.push({
+        type: borrow,
+        value: getPercent(sortedBorrow[borrow], sortedBorrow.total),
+      });
+    }
+  });
 
-    const sortedLend = Object.fromEntries(
-      Object.entries(lendValues).sort(([, a], [, b]) => b - a)
-    );
-    const sortedBorrow = Object.fromEntries(
-      Object.entries(borrowValues).sort(([, a], [, b]) => b - a)
-    );
-
-    Object.keys(sortedLend).forEach((lend) => {
-      if (lend !== "total" && sortedLend[lend] > 0) {
-        donutLends.push({
-          type: lend,
-          value: getPercent(sortedLend[lend], sortedLend.total),
-        });
-      }
-    });
-
-    Object.keys(sortedBorrow).forEach((borrow) => {
-      if (borrow !== "total" && sortedBorrow[borrow] > 0) {
-        donutBorrows.push({
-          type: borrow,
-          value: getPercent(sortedBorrow[borrow], sortedBorrow.total),
-        });
-      }
-    });
-
-    return {
-      lendValues: sortedLend,
-      borrowValues: sortedBorrow,
-      donutLends,
-      donutBorrows,
-    };
-
-
-}
-
+  return {
+    lendValues: sortedLend,
+    borrowValues: sortedBorrow,
+    donutLends,
+    donutBorrows,
+  };
 };
 
 const getPercent = (x, y) => {
@@ -311,6 +311,7 @@ export const getUserData = async (chainId, query, tokenList, ValidAddress) => {
     chainId,
     ValidAddress
   );
+
   return { position, pieChart, analytics, tokens };
 };
 
@@ -600,27 +601,57 @@ export const getNetHealthFactor = (positions) => {
   return (value / counter).toFixed(2);
 };
 
+const checkNaN = (value) => {
+  return isNaN(value) ? 0 : value;
+};
+
 export const getTokensFromUserWallet = async (data, chainId, address) => {
+  if (!data) return [];
+  const { aavePriceContract } = contractAddress[chainId];
+  const tokensArray = Object.values(data).map(({ address }) => address);
+  const tokensObject = Object.values(data);
+
+  const users = [address];
+  const balances = await readContracts(
+    aavePriceContract,
+    priceABI,
+    "batchBalanceOf",
+    [users, tokensArray]
+  );
+
+  return tokensObject.map((token, index) => {
+    const { decimals, pricePerToken } = token;
+    const balance = Number(balances[index]) / Math.pow(10, decimals);
+    const value = checkNaN((balance * pricePerToken).toFixed(4));
+
+    return {
+      ...token,
+      balance,
+      value,
+    };
+  });
+};
+
+
+export const getTokensFromUserWalletold = async (data, chainId, address) => {
   const tokensArray = Object.values(data).map((token) => token.address);
   const tokensObject = Object.values(data) || [];
 
   const ERC20Instancees = tokensArray.map((address) =>
     getEtherContractWithProvider(address, erc20Abi, chainId)
   );
+  console.log("ERC20Instancees", ERC20Instancees);
+
   const tokensObj = [];
   const balances = await Promise.all(
     ERC20Instancees.map((instance) => instance.balanceOf(address))
   );
-
-  const names = await Promise.all(
-    ERC20Instancees.map((instance) => instance.name())
-  );
+  console.log("balances", balances);
 
   const tokens = tokensObject.map(
     (token, index) =>
       (token = {
         ...token,
-        name: names[index],
         balance: Number(
           fixed2Decimals(balances[index], token.decimals)
         ).toFixed(4),
@@ -631,6 +662,7 @@ export const getTokensFromUserWallet = async (data, chainId, address) => {
         ).toFixed(4),
       })
   );
+  console.log("tokens", tokens);
   return tokens;
 
   //const provider = getProvider();

@@ -24,6 +24,7 @@ import {
   okxWallet,
   trustWallet,
   coin98Wallet,
+  tokenPocketWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 
 
@@ -61,6 +62,7 @@ const connectors = connectorsForWallets([
       walletConnectWallet({ chains, projectId }),
       coin98Wallet({ chains, projectId }),
       okxWallet({ chains, projectId }),
+      tokenPocketWallet({ chains, projectId })
       // infintyWallet({chains})
     ],
   },

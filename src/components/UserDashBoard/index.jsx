@@ -34,8 +34,8 @@ const mumbai = import.meta.env.VITE_ALCHEMY_Mumbai;
 const polygon = import.meta.env.VITE_ALCHEMY_Mumbai;
 
 export default function UserDashboardComponent() {
-  const user = useSelector((state) => state.user);
-  const tokenList = useSelector((state) => state.tokenList);
+  const user = useSelector((state) => state?.user);
+  const tokenList = useSelector((state) => state?.tokenList);
   const { chain, address } = useWalletHook();
   const navigate = useNavigate();
   // if (chain?.id !== 80001) {
@@ -51,7 +51,7 @@ export default function UserDashboardComponent() {
   const [pieChartInputs, setPieChartInputs] = useState({});
   const [positionData, setPositionData] = useState({});
   const [positionDataBackup, setPositionDataBackup] = useState();
-
+  const [isdataLoading, setIsDataLoading] = useState(true);
   const [headerAnalytics, setHeaderAnalytics] = useState({
     healthFactor: 0,
     powerUsed: 0,
@@ -66,6 +66,15 @@ export default function UserDashboardComponent() {
     lending: 1,
     borrowing: 1,
   });
+
+useEffect(() => {
+  if(!positionData.hasOwnProperty("lendArray")){
+    setIsDataLoading(true)
+  } else{
+    setIsDataLoading(false)
+  }
+ 
+}, [ positionData.hasOwnProperty("lendArray")]);
 
   const handleSearchAddress = (addr) => {
     setUserAddress(addr);
@@ -205,16 +214,21 @@ export default function UserDashboardComponent() {
         tokenList,
         ValidAddress
       );
-      console.log(tokens);
-      console.log(pieChart);
-      console.log("position", position);
+      // console.log(pieChart);
+      // console.log("position", position);
+      // console.log("positionLoading", positionLoading);
       setPositionLoading(false);
       setWalletTokens(tokens);
+
       setPositionData(position);
       setPositionDataBackup(position);
       setPieChartInputs(pieChart);
       setHeaderAnalytics(analytics);
-
+      console.log("keycheck", positionData.hasOwnProperty("lendArray"));
+      console.log("piechartdata", pieChartInputs);
+      console.log("walletTokens", walletTokens);
+      console.log("positionData", positionData);
+      console.log("position data length", positionData?.lendArray?.length);
       return position, pieChart, analytics, tokens;
     } catch (error) {
       console.log("getDashboard error", error);
@@ -269,19 +283,6 @@ export default function UserDashboardComponent() {
                 </div>
                 <div className="values">
                   <p>Net Worth</p>
-                  {/* {isNaN(pieChartInputs?.lendValues?.total) ? (
-                    <h5 className="skeleton loader"></h5>
-                  ) : (
-                    <h5>
-                      $
-                      {checkNaN(
-                        Number(
-                          pieChartInputs?.lendValues?.total -
-                            pieChartInputs?.borrowValues?.total
-                        ).toFixed(2)
-                      ) || 0}
-                    </h5>
-                  )} */}
                   <h5>
                     $
                     {checkNaN(
@@ -299,13 +300,6 @@ export default function UserDashboardComponent() {
                 </div>
                 <div className="values">
                   <p>Lend APY</p>
-                  {/* {isNaN(headerAnalytics?.lendAPY || 0) ? (
-                    <h5 className="skeleton loader"></h5>
-                  ) : (
-                    <h5>
-                    {Number(headerAnalytics?.lendAPY || 0).toFixed(2) || 0}%
-                  </h5>
-                  )} */}
                   <h5>
                     {Number(headerAnalytics?.lendAPY || 0).toFixed(2) || 0}%
                   </h5>
@@ -342,54 +336,44 @@ export default function UserDashboardComponent() {
 
           <div className="content">
             <div className="lend_container">
-            {!positionLoading ? (
+              {/* { positionData === null || positionData?.lendArray?.length === undefined ? ( */}
+            {  console.log("isdataLoading", isdataLoading)}
+              { isdataLoading  ? (
+                <div className="pieChart_loader">
+                  <p className="circle skeleton"></p>
+                </div>
+              ) : positionData?.lendArray?.length > 0 ? (
                 <div>
-                  {pieChartInputs?.donutLends?.length > 0 ? (
-                    <DonutChart data={pieChartInputs?.donutLends} />
+                  <DonutChart data={pieChartInputs?.donutLends} />
+                </div>
+              ) : (
+                <Lottie
+                  options={defaultOptionsLotti}
+                  height={270}
+                  width={300}
+                />
+              )}
+
+           
+
+              {/* {!positionLoading &&
+                (pieChartInputs?.donutLends ? (
+                  pieChartInputs?.donutLends?.length > 0 ? (
+                    <div>
+                      <DonutChart data={pieChartInputs?.donutLends} />
+                    </div>
                   ) : (
                     <Lottie
                       options={defaultOptionsLotti}
-                      height={300}
+                      height={270}
                       width={300}
                     />
-                  )}
-                </div>
-              ) : (
-                <div className="pieChart_loader">
-                  <p className="circle skeleton"></p>
-                </div>
-              )}
-
-{/* 
-              {!positionLoading  ? (
-                pieChartInputs?.donutLends?.length > 0 ? (
-                  <div>
-                    <DonutChart data={pieChartInputs?.donutLends} />
-                  </div>
+                  )
                 ) : (
-                  <Lottie
-                    options={defaultOptionsLotti}
-                    height={300}
-                    width={300}
-                  />
-                )
-                
-              ) : pieChartInputs?.donutLends != NaN && pieChartInputs?.donutLends!= null ? (
-                <div>
-                  <Lottie
-                    options={defaultOptionsLotti}
-                    height={300}
-                    width={300}
-                  />
-                </div>
-              ) : (
-                <div className="pieChart_loader">
-                  <p className="circle skeleton"></p>
-                </div>
-              )} */}
-
-              
-              
+                  <div className="pieChart_loader">
+                    <p className="circle skeleton"></p>
+                  </div>
+                ))} */}
 
               <div>
                 <div>
@@ -433,8 +417,35 @@ export default function UserDashboardComponent() {
                   <p className="circle skeleton"></p>
                 </div>
               )} */}
-              {!positionLoading && pieChartInputs?.donutBorrows?.length > 0 ? (
-                pieChartInputs?.donutBorrows?.length > 0 ? (
+              {!positionLoading &&
+              positionData?.donutBorrows?.length === null ? (
+                positionData?.lendArray?.length > 0 ? (
+                  <div>
+                    <DonutChart data={pieChartInputs?.donutBorrows} />
+                  </div>
+                ) : (
+                  <Lottie
+                    options={defaultOptionsLotti}
+                    height={270}
+                    width={300}
+                  />
+                )
+              ) : pieChartInputs?.donutBorrows?.length < 0 ? (
+                <div>
+                  <Lottie
+                    options={defaultOptionsLotti}
+                    height={270}
+                    width={300}
+                  />
+                </div>
+              ) : (
+                <div className="pieChart_loader">
+                  <p className="circle skeleton"></p>
+                </div>
+              )}
+              {/* {!positionLoading &&
+                tokenList &&
+                (positionData?.lendArray?.length > 0 ? (
                   <div>
                     <DonutChart data={pieChartInputs?.donutBorrows} />
                   </div>
@@ -444,20 +455,12 @@ export default function UserDashboardComponent() {
                     height={300}
                     width={300}
                   />
-                )
-              ) : pieChartInputs?.donutBorrows?.length < 0 ? (
-                <div>
-                  <Lottie
-                    options={defaultOptionsLotti}
-                    height={300}
-                    width={300}
-                  />
-                </div>
-              ) : (
+                ))}
+              {positionLoading && (
                 <div className="pieChart_loader">
                   <p className="circle skeleton"></p>
                 </div>
-              )}
+              )} */}
 
               <div>
                 <div>
@@ -485,14 +488,14 @@ export default function UserDashboardComponent() {
         </div>
 
         {/* Wallet Section */}
-        {/* <div className="wallet_container">
+        <div className="wallet_container">
           <div className="title_div">
             <span>
               {" "}
               <FaWallet className="react_icons" /> <h2>Wallet</h2>{" "}
-            </span> */}
-        {/* <h2>$130,000,500</h2> */}
-        {/* </div>
+            </span>
+            {/* <h2>$130,000,500</h2> */}
+          </div>
 
           <div className="wallet_table">
             <div className="thead">
@@ -503,39 +506,44 @@ export default function UserDashboardComponent() {
             </div>
             <div className="tbody">
               {!walletTokenLoading &&
-                (walletTokens?.length > 0
-                  ? walletTokens
-                      .slice((walletCurrentPage - 1) * 7, walletCurrentPage * 7)
-                      .map((token, i) => {
-                        return (
-                          <div key={i} className="tbody_row">
-                            <span>
-                              <img
-                                onError={imgError}
-                                src={token?.logo}
-                                alt="uft"
-                              />
-                              <p className="hide_for_mobile"> */}
-        {/* {token?.name} / {token?.symbol} */}
-        {/* {token?.name}
-                              </p>
-                              <p className="hide_for_monitor">
-                                {token?.symbol}
-                              </p>
-                            </span>
-                            <span>{token?.pricePerToken}</span>
-                            <span>{token?.balance}</span>
-                            <span>{token?.value}</span>
-                          </div>
-                        );
-                      })
-                  : walletTokens?.length == 0 && (
-                      <Lottie
-                        options={defaultOptionsLotti}
-                        height={350}
-                        width={350}
-                      />
-                    ))}
+                (Object.keys(tokenList).length > 0 ? (
+                  Object.keys(tokenList)
+                    .slice((walletCurrentPage - 1) * 7, walletCurrentPage * 7)
+                    .map((key, i) => {
+                      const token = tokenList[key];
+                      return (
+                        <div key={i} className="tbody_row">
+                          <span>
+                            <img
+                              onError={imgError}
+                              src={token?.logo}
+                              alt="uft"
+                            />
+                            <p className="hide_for_mobile">
+                              {/* {token?.name} / {token?.symbol} */}
+                              {token?.name}
+                            </p>
+                            <p className="hide_for_monitor">{token?.symbol}</p>
+                          </span>
+                          <span>
+                            {checkNaN(token?.pricePerToken).toFixed(8)}
+                          </span>
+                          <span>{checkNaN(token?.balance).toFixed(6)}</span>
+                          <span>
+                            {checkNaN(
+                              token?.pricePerToken * token?.balance
+                            ).toFixed(4)}
+                          </span>
+                        </div>
+                      );
+                    })
+                ) : (
+                  <Lottie
+                    options={defaultOptionsLotti}
+                    height={350}
+                    width={350}
+                  />
+                ))}
               {walletTokenLoading &&
                 new Array(7).fill(0).map((_, i) => {
                   return (
@@ -552,13 +560,13 @@ export default function UserDashboardComponent() {
                 onChange={(el) => setWalletCurrentPage(el)}
                 pageSize={7}
                 size="small"
-                total={walletTokens.length}
+                total={Object.keys(tokenList).length}
                 showSizeChanger={false}
                 hideOnSinglePage={true}
               />
             </div>
           </div>
-        </div> */}
+        </div>
 
         {/* Lending Table */}
 
@@ -789,14 +797,14 @@ export default function UserDashboardComponent() {
                               </span>
                               <span>{pool?.tokenSymbol}</span>
                               <Tooltip title={Number(pool?.borrowBalance)}>
-                                  <span>
-                                    {truncateToDecimals(
-                                      Number(pool?.borrowBalance),
-                                      6
-                                    )}
-                                  </span>
-                                </Tooltip>
-                            
+                                <span>
+                                  {truncateToDecimals(
+                                    Number(pool?.borrowBalance),
+                                    6
+                                  )}
+                                </span>
+                              </Tooltip>
+
                               <span>{Number(pool?.apy).toFixed(3)}%</span>
                               <span>
                                 {Number(pool?.currentLTV).toFixed(2)}%
