@@ -382,7 +382,7 @@ export default function Navbar() {
               Rewards
               <LockOutlined style={{ marginLeft: "5px" }} />
             </a>
-            { chain.id != 195 && (
+            { chain?.id != 195 && (
               <a
                 href="/history"
                 className={`${pathname === "/history" ? "active" : ""}`}
