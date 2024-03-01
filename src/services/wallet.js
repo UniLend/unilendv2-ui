@@ -3,24 +3,24 @@ import {
   fromWei,
   removeFromSessionStorage,
   saveToSessionStorage,
-} from "../utils";
-import { networks } from "../core/networks/networks";
+} from '../utils';
+import { networks } from '../core/networks/networks';
 import {
   getAccountLib,
   getNetworkLib,
   fetchBalanceLib,
   disconnectLib,
-} from "../lib/fun/functions";
-import { getEthersProvider } from "../lib/fun/wagmi";
+} from '../lib/fun/functions';
+import { getEthersProvider } from '../lib/fun/wagmi';
 // import { MetaMaskconnector, WalletConnector } from '../App';
 
 const API = import.meta.env.VITE_INFURA_ID;
 
 export const handleDisconnect = async () => {
   await disconnectLib();
-  removeFromSessionStorage("user");
+  removeFromSessionStorage('user');
   localStorage.clear();
-  localStorage.removeItem("walletconnect");
+  localStorage.removeItem('walletconnect');
   window.location.reload();
 };
 
@@ -45,7 +45,7 @@ export const connectWallet = async (wallet, ChangedAccount = null) => {
       network: { id: chainId, name: Currentnetwork },
       isConnected: true,
     };
-    saveToSessionStorage("user", obj);
+    saveToSessionStorage('user', obj);
     return obj;
   } catch (error) {
     throw error;

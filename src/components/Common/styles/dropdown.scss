@@ -1,4 +1,4 @@
-@import "/src/core/theme";
+@import '/src/core/theme';
 .sort_dropDown {
   top: 479px;
   .ant-popover-arrow {
@@ -14,7 +14,7 @@
     border: solid $border transparent; /* !importanté */
     border-radius: 12px;
     &:before {
-      content: "";
+      content: '';
       position: absolute;
       top: 0;
       right: 0;

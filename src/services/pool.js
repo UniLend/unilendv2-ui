@@ -1,4 +1,4 @@
-import { coreAbi, erc20Abi, helperAbi } from "../core/contractData/abi";
+import { coreAbi, erc20Abi, helperAbi } from '../core/contractData/abi';
 import {
   add,
   decimal2Fixed,
@@ -15,12 +15,12 @@ import {
   decimal2Fixed2,
   truncateToDecimals,
   reduceLastDecimalByOne,
-} from "../helpers/contracts";
-import BigNumber from "bignumber.js";
+} from '../helpers/contracts';
+import BigNumber from 'bignumber.js';
 
-import { getEtherContract, readContracts } from "../lib/fun/wagmi";
-import { getFromLocalStorage, saveToLocalStorage } from "../utils";
-import { tokensBYSymbol } from "../utils/constants";
+import { getEtherContract, readContracts } from '../lib/fun/wagmi';
+import { getFromLocalStorage, saveToLocalStorage } from '../utils';
+import { tokensBYSymbol } from '../utils/constants';
 /*
 @dev 
 redeem function here;
@@ -35,7 +35,7 @@ export const handleRedeem = async (
   userAddr,
   contracts,
   checkTxnStatus,
-  checkTxnError
+  checkTxnError,
 ) => {
   let Amount = decimal2Fixed(amount, selectedToken._decimals);
   let maxAmount = selectedToken.lendShare;
@@ -51,11 +51,11 @@ export const handleRedeem = async (
   try {
     const instance = await getEtherContract(
       contracts.coreContract.address,
-      coreAbi
+      coreAbi,
     );
 
     if (max) {
-      if (selectedToken.collateralBalance > "0") {
+      if (selectedToken.collateralBalance > '0') {
         if (
           Number(selectedToken.redeemBalance) > Number(selectedToken.liquidity)
         ) {
@@ -69,7 +69,7 @@ export const handleRedeem = async (
         const txn = await instance.redeemUnderlying(
           poolAddress,
           fixedTrunc(maxAmount),
-          userAddr
+          userAddr,
         );
 
         hash = txn?.hash;
@@ -77,7 +77,7 @@ export const handleRedeem = async (
         const txn = await instance.redeem(
           poolAddress,
           fixedTrunc(maxAmount),
-          userAddr
+          userAddr,
         );
 
         hash = txn?.hash;
@@ -86,18 +86,18 @@ export const handleRedeem = async (
       const txn = await instance.redeemUnderlying(
         poolAddress,
         Amount,
-        userAddr
+        userAddr,
       );
       hash = txn?.hash;
     }
 
     const txnData = {
-      method: "redeem",
+      method: 'redeem',
       amount: amount,
       tokenAddress: selectedToken._address,
       tokenSymbol: selectedToken._symbol,
       poolAddress: poolAddress,
-      chainId: "",
+      chainId: '',
     };
     checkTxnStatus(hash, txnData);
   } catch (error) {
@@ -117,26 +117,26 @@ export const setAllowance = async (
   web3,
   checkTxnStatus,
   checkTxnError,
-  contracts
+  contracts,
 ) => {
   var maxAllow =
-    "115792089237316195423570985008687907853269984665640564039457584007913129639935";
-    let Amount = decimal2Fixed(amount, token._decimals)
+    '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+  let Amount = decimal2Fixed(amount, token._decimals);
   try {
     const instance = await getEtherContract(token._address, erc20Abi);
 
     const { hash } = await instance.approve(
       contracts.coreContract.address,
-      Amount
+      Amount,
     );
 
     const txn = {
-      method: "approval",
+      method: 'approval',
       amount: amount,
       tokenAddress: token._address,
       tokenSymbol: token._symbol,
       poolAddress: poolAddress,
-      chainId: "",
+      chainId: '',
     };
     checkTxnStatus(hash, txn);
   } catch (error) {
@@ -147,22 +147,22 @@ export const setAllowance = async (
 
 export const getTabs = (token) => {
   if (token.lendBalance && token.lendBalance > 0 && token.borrowBalance <= 0) {
-    return ["lend", "redeem", "borrow"];
+    return ['lend', 'redeem', 'borrow'];
   } else if (
     token.borrowBalance &&
     token.borrowBalance > 0 &&
     token.lendBalance <= 0
   ) {
-    return ["borrow", "repay", "lend"];
+    return ['borrow', 'repay', 'lend'];
   } else if (
     token.borrowBalance &&
     token.borrowBalance > 0 &&
     token.lendBalance &&
     token.lendBalance > 0
   ) {
-    return ["borrow", "repay", "lend", "redeem"];
+    return ['borrow', 'repay', 'lend', 'redeem'];
   } else {
-    return ["lend", "borrow"];
+    return ['lend', 'borrow'];
   }
 };
 
@@ -174,41 +174,46 @@ export const getTokenPrice = async (
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      const data =  await readContracts(contracts.helperContract.address, helperAbi, 'getPoolTokensData', [ poolAddress, userAddr] )
+      const data = await readContracts(
+        contracts.helperContract.address,
+        helperAbi,
+        'getPoolTokensData',
+        [poolAddress, userAddr],
+      );
 
       const pool = { ...poolData };
       pool.token0.balance = fromBigNumber(data[2]);
       pool.token0.balanceFixed = fixed2Decimals(
         data[2],
-        poolData.token0._decimals
+        poolData.token0._decimals,
       );
 
       pool.token1.balance = fromBigNumber(data[3]);
       pool.token1.balanceFixed = fixed2Decimals(
         data[3],
-        poolData.token1._decimals
+        poolData.token1._decimals,
       );
       pool.token0.allowance = fromBigNumber(data[0]);
       pool.token0.allowanceFixed = fixed2Decimals(
         data[0],
-        poolData.token0._decimals
+        poolData.token0._decimals,
       );
 
       pool.token1.allowance = fromBigNumber(data[1]);
       pool.token1.allowanceFixed = fixed2Decimals(
         data[1],
-        poolData.token1._decimals
+        poolData.token1._decimals,
       );
 
       pool.token0.tabs =
-        pool.token0.price == "0" || pool.token0.price == "Infinity"
-          ? getTabs(pool.token0).filter((v) => v !== "borrow")
+        pool.token0.price == '0' || pool.token0.price == 'Infinity'
+          ? getTabs(pool.token0).filter((v) => v !== 'borrow')
           : getTabs(pool.token0);
       pool.token1.tabs =
-        pool.token1.price == "Infinity" || pool.token1.price == "0"
-          ? getTabs(pool.token1).filter((v) => v !== "borrow")
+        pool.token1.price == 'Infinity' || pool.token1.price == '0'
+          ? getTabs(pool.token1).filter((v) => v !== 'borrow')
           : getTabs(pool.token1);
-console.log("Pool Data", pool);
+      console.log('Pool Data', pool);
       return pool;
     } catch (error) {
       throw error;
@@ -227,96 +232,128 @@ export const getOracleData = async (contracts, poolData) => {
       let data;
       let tmpPrice;
       const pool = { ...poolData };
-      if(poolData.token0._decimals == 6){
-         data =  await readContracts(contracts.coreContract.address, coreAbi, 'getOraclePrice', [   poolData.token1._address,
-          poolData.token0._address,
-          decimal2Fixed(1, poolData.token1._decimals)] )
+      if (poolData.token0._decimals == 6) {
+        data = await readContracts(
+          contracts.coreContract.address,
+          coreAbi,
+          'getOraclePrice',
+          [
+            poolData.token1._address,
+            poolData.token0._address,
+            decimal2Fixed(1, poolData.token1._decimals),
+          ],
+        );
         //  data = await coreContractInstance.getOraclePrice(
         //   poolData.token1._address,
         //   poolData.token0._address,
         //   decimal2Fixed(1, poolData.token1._decimals)
         // );
-         tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
-         pool.token1.price = tmpPrice;
-         pool.token0.price = (1 / tmpPrice).toString();
-      } else if(poolData.token1._decimals == 6) {
-        data =  await readContracts(contracts.coreContract.address, coreAbi, 'getOraclePrice', [  poolData.token1._address,  
-          poolData.token0._address,                 
-          decimal2Fixed(1, poolData.token1._decimals)] )
+        tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
+        pool.token1.price = tmpPrice;
+        pool.token0.price = (1 / tmpPrice).toString();
+      } else if (poolData.token1._decimals == 6) {
+        data = await readContracts(
+          contracts.coreContract.address,
+          coreAbi,
+          'getOraclePrice',
+          [
+            poolData.token1._address,
+            poolData.token0._address,
+            decimal2Fixed(1, poolData.token1._decimals),
+          ],
+        );
         //  data = await coreContractInstance.getOraclePrice(
-        //   poolData.token1._address,  
-        //   poolData.token0._address,                 
+        //   poolData.token1._address,
+        //   poolData.token0._address,
         //   decimal2Fixed(1, poolData.token1._decimals)
         // );
-  
-         tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
-         pool.token1.price = tmpPrice;
-         pool.token0.price = (1 / tmpPrice).toString();
-      }else {
-        data =  await readContracts(contracts.coreContract.address, coreAbi, 'getOraclePrice', [      poolData.token0._address,
-          poolData.token1._address,      
-          decimal2Fixed(1, poolData.token0._decimals)] )
-      //   data = await coreContractInstance.getOraclePrice(
-      //    poolData.token0._address,
-      //    poolData.token1._address,      
-      //    decimal2Fixed(1, poolData.token0._decimals)
-      //  );
- 
+
+        tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
+        pool.token1.price = tmpPrice;
+        pool.token0.price = (1 / tmpPrice).toString();
+      } else {
+        data = await readContracts(
+          contracts.coreContract.address,
+          coreAbi,
+          'getOraclePrice',
+          [
+            poolData.token0._address,
+            poolData.token1._address,
+            decimal2Fixed(1, poolData.token0._decimals),
+          ],
+        );
+        //   data = await coreContractInstance.getOraclePrice(
+        //    poolData.token0._address,
+        //    poolData.token1._address,
+        //    decimal2Fixed(1, poolData.token0._decimals)
+        //  );
+
         tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
         pool.token0.price = tmpPrice;
         pool.token1.price = (1 / tmpPrice).toString();
-     }
+      }
 
-    //  data = await contracts.coreContract.getOraclePrice(
-    //   poolData.token0._address,
-    //   poolData.token1._address,      
-    //   decimal2Fixed(1, poolData.token0._decimals)
-    // );
+      //  data = await contracts.coreContract.getOraclePrice(
+      //   poolData.token0._address,
+      //   poolData.token1._address,
+      //   decimal2Fixed(1, poolData.token0._decimals)
+      // );
 
-    //  tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
-    //  pool.token0.price = tmpPrice;
-    //  pool.token1.price = (1 / tmpPrice).toString();
-     
-    
-      pool.token0.collateralBalance = mul(div(mul(
-        mul(pool.token1.borrowBalance, pool.token1.price) / pool.ltv,
-        100
-      ), 10**pool.token1._decimals), 10**pool.token0._decimals );
+      //  tmpPrice = fixed2Decimals(data, poolData.token0._decimals);
+      //  pool.token0.price = tmpPrice;
+      //  pool.token1.price = (1 / tmpPrice).toString();
+
+      pool.token0.collateralBalance = mul(
+        div(
+          mul(
+            mul(pool.token1.borrowBalance, pool.token1.price) / pool.ltv,
+            100,
+          ),
+          10 ** pool.token1._decimals,
+        ),
+        10 ** pool.token0._decimals,
+      );
 
       pool.token0.collateralBalanceFixed = new BigNumber(
-        pool.token0.collateralBalance
+        pool.token0.collateralBalance,
       )
         .dividedBy(10 ** pool.token0._decimals)
         .toFixed();
 
-      pool.token1.collateralBalance = mul(div(mul(
-        mul(pool.token0.borrowBalance, pool.token0.price) / pool.ltv,
-        100
-      ),10**pool.token0._decimals), 10**pool.token1._decimals );
+      pool.token1.collateralBalance = mul(
+        div(
+          mul(
+            mul(pool.token0.borrowBalance, pool.token0.price) / pool.ltv,
+            100,
+          ),
+          10 ** pool.token0._decimals,
+        ),
+        10 ** pool.token1._decimals,
+      );
       pool.token1.collateralBalanceFixed = new BigNumber(
-        pool.token1.collateralBalance
+        pool.token1.collateralBalance,
       )
         .dividedBy(10 ** pool.token1._decimals)
         .toFixed();
       let redeem0 = sub(
         poolData.token0.lendBalance,
-        poolData.token0.collateralBalance
+        poolData.token0.collateralBalance,
       );
       poolData.token0.redeemBalance = redeem0 >= 0 ? redeem0 : 0;
 
       poolData.token0.redeemBalanceFixed = new BigNumber(
-        poolData.token0.redeemBalance
+        poolData.token0.redeemBalance,
       )
         .dividedBy(10 ** poolData.token0._decimals)
         .toFixed();
 
       let redeem1 = sub(
         poolData.token1.lendBalance,
-        poolData.token1.collateralBalance
+        poolData.token1.collateralBalance,
       );
       poolData.token1.redeemBalance = redeem1 >= 0 ? redeem1 : 0;
       poolData.token1.redeemBalanceFixed = new BigNumber(
-        poolData.token1.redeemBalance
+        poolData.token1.redeemBalance,
       )
         .dividedBy(10 ** poolData.token1._decimals)
         .toFixed();
@@ -342,13 +379,18 @@ export const getPoolBasicData = async (
   let pool;
   if (contracts.helperContract && contracts.coreContract) {
     try {
-    const data =  await readContracts(contracts.helperContract.address, helperAbi, 'getPoolData', [poolAddress] )
-   
+      const data = await readContracts(
+        contracts.helperContract.address,
+        helperAbi,
+        'getPoolData',
+        [poolAddress],
+      );
+
       //const data = await helperContractInstance.getPoolData(poolAddress);
       pool = {
         ...poolData,
         _address: poolAddress,
-        ltv: Number( fromBigNumber(data.ltv) - 0.01),
+        ltv: Number(fromBigNumber(data.ltv) - 0.01),
         lb: fromBigNumber(data.lb),
         rf: fromBigNumber(data.rf),
         token0: {
@@ -358,7 +400,7 @@ export const getPoolBasicData = async (
           liquidity: fromBigNumber(data._token0Liquidity),
           liquidityFixed: fixed2Decimals(
             data._token0Liquidity,
-            data._decimals0
+            data._decimals0,
           ),
           ...poolTokens.token0,
         },
@@ -369,7 +411,7 @@ export const getPoolBasicData = async (
           liquidity: fromBigNumber(data._token1Liquidity),
           liquidityFixed: fixed2Decimals(
             data._token1Liquidity,
-            data._decimals1
+            data._decimals1,
           ),
           ...poolTokens.token1,
         },
@@ -390,9 +432,12 @@ export const getPoolAllData = async (
 ) => {
   if (contracts.helperContract && contracts.coreContract) {
     try {
-      const data =  await readContracts(contracts.helperContract.address, helperAbi, 'getPoolFullData', [ contracts.positionContract.address,
-        poolAddress,
-        userAddr])
+      const data = await readContracts(
+        contracts.helperContract.address,
+        helperAbi,
+        'getPoolFullData',
+        [contracts.positionContract.address, poolAddress, userAddr],
+      );
       // const data = await helperContractInstance.getPoolFullData(
       //   contracts.positionContract.address,
       //   poolAddress,
@@ -401,12 +446,12 @@ export const getPoolAllData = async (
 
       const totLiqFull0 = add(
         div(mul(poolData.token0.liquidity, 100), poolData.rf),
-        fromBigNumber(data._totalBorrow0)
+        fromBigNumber(data._totalBorrow0),
       );
 
       const totLiqFull1 = add(
         div(mul(poolData.token1.liquidity, 100), poolData.rf),
-        fromBigNumber(data._totalBorrow1)
+        fromBigNumber(data._totalBorrow1),
       );
 
       const pool = {
@@ -416,75 +461,70 @@ export const getPoolAllData = async (
           borrowBalance: fromBigNumber(data._borrowBalance0),
           borrowBalanceFixed: fixed2Decimals(
             data._borrowBalance0,
-            poolData.token0._decimals
+            poolData.token0._decimals,
           ),
 
           borrowShare: fromBigNumber(data._borrowShare0),
           borrowShare: fixed2Decimals(
             data._borrowShare0,
-            poolData.token0._decimals
+            poolData.token0._decimals,
           ),
 
           healthFactor18: fromBigNumber(data._healthFactor0),
-          healthFactorFixed: fixed2Decimals(
-            data._healthFactor0,
-            18
-          ),
+          healthFactorFixed: fixed2Decimals(data._healthFactor0, 18),
           healthFactor: greaterThan(
             fixed2Decimals(data._healthFactor0, 18),
-            100
+            100,
           )
-            ? "100"
-            : Number(
-                fixed2Decimals(data._healthFactor0, 18)
-              ).toFixed(2),
+            ? '100'
+            : Number(fixed2Decimals(data._healthFactor0, 18)).toFixed(2),
 
           interest: fromBigNumber(data._interest0),
           interestFixed: fixed2Decimals(
             data._interest0,
-            poolData.token0._decimals
+            poolData.token0._decimals,
           ),
 
           lendBalance: fromBigNumber(data._lendBalance0),
           lendBalanceFixed: fixed2Decimals(
             data._lendBalance0,
-            poolData.token0._decimals
+            poolData.token0._decimals,
           ),
 
           lendShare: fromBigNumber(data._lendShare0),
           lendShareFixed: fixed2Decimals(
             data._lendShare0,
-            poolData.token0._decimals
+            poolData.token0._decimals,
           ),
 
           totalBorrow: fromBigNumber(data._totalBorrow0),
           totalBorrowFixed: fixed2Decimals(
             data._totalBorrow0,
-            poolData.token0._decimals
+            poolData.token0._decimals,
           ),
 
           totalBorrowShare: fromBigNumber(data._totalBorrowShare0),
           totalBorrowShareFixed: fixed2Decimals(
             data._totalBorrowShare0,
-            poolData.token0._decimals
+            poolData.token0._decimals,
           ),
 
           totalLendShare: fromBigNumber(data._totalLendShare0),
           totalLendShareFixed: fixed2Decimals(
             data._totalLendShare0,
-            poolData.token0._decimals
+            poolData.token0._decimals,
           ),
           totalLiqFull: totLiqFull0,
           utilRate: Number(
-            mul(div(fromBigNumber(data._totalBorrow0), totLiqFull0), 100)
+            mul(div(fromBigNumber(data._totalBorrow0), totLiqFull0), 100),
           ).toFixed(2),
           borrowAPY: toAPY(
-            fixed2Decimals(data._interest0, poolData.token0._decimals)
+            fixed2Decimals(data._interest0, poolData.token0._decimals),
           ),
 
           lendAPY: div(
             toAPY(fixed2Decimals(data._interest0, poolData.token0._decimals)),
-            div(totLiqFull0, fromBigNumber(data._totalBorrow0))
+            div(totLiqFull0, fromBigNumber(data._totalBorrow0)),
           ),
         },
         token1: {
@@ -492,74 +532,69 @@ export const getPoolAllData = async (
           borrowBalance: fromBigNumber(data._borrowBalance1),
           borrowBalanceFixed: fixed2Decimals(
             data._borrowBalance1,
-            poolData.token1._decimals
+            poolData.token1._decimals,
           ),
 
           borrowShare: fromBigNumber(data._borrowShare1),
           borrowShare: fixed2Decimals(
             data._borrowShare1,
-            poolData.token1._decimals
+            poolData.token1._decimals,
           ),
 
           healthFactor18: fromBigNumber(data._healthFactor1),
-          healthFactorFixed: fixed2Decimals(
-            data._healthFactor1,
-            18
-          ),
+          healthFactorFixed: fixed2Decimals(data._healthFactor1, 18),
           healthFactor: greaterThan(
             fixed2Decimals(data._healthFactor1, 18),
-            100
+            100,
           )
-            ? "100"
-            : Number(
-                fixed2Decimals(data._healthFactor1, 18)
-              ).toFixed(2),
+            ? '100'
+            : Number(fixed2Decimals(data._healthFactor1, 18)).toFixed(2),
 
           interest: fromBigNumber(data._interest1),
           interestFixed: fixed2Decimals(
             data._interest0,
-            poolData.token0._decimals
+            poolData.token0._decimals,
           ),
 
           lendBalance: fromBigNumber(data._lendBalance1),
           lendBalanceFixed: fixed2Decimals(
             data._lendBalance1,
-            poolData.token1._decimals
+            poolData.token1._decimals,
           ),
 
           lendShare: fromBigNumber(data._lendShare1),
           lendShareFixed: fixed2Decimals(
             data._lendShare1,
-            poolData.token1._decimals
+            poolData.token1._decimals,
           ),
 
           totalBorrow: fromBigNumber(data._totalBorrow1),
           totalBorrowFixed: fixed2Decimals(
             data._totalBorrow1,
-            poolData.token1._decimals
+            poolData.token1._decimals,
           ),
 
           totalBorrowShare: fromBigNumber(data._totalBorrowShare1),
           totalBorrowShareFixed: fixed2Decimals(
             data._totalBorrowShare1,
-            poolData.token1._decimals
+            poolData.token1._decimals,
           ),
 
           totalLendShare: fromBigNumber(data._totalLendShare1),
           totalLendShareFixed: fixed2Decimals(
             data._totalLendShare1,
-            poolData.token1._decimals
+            poolData.token1._decimals,
           ),
           totalLiqFull: totLiqFull1,
           utilRate: Number(
-            mul(div(fromBigNumber(data._totalBorrow1), totLiqFull1), 100)
+            mul(div(fromBigNumber(data._totalBorrow1), totLiqFull1), 100),
           ).toFixed(4),
           borrowAPY: toAPY(
-            fixed2Decimals(data._interest1, poolData.token1._decimals)
+            fixed2Decimals(data._interest1, poolData.token1._decimals),
           ),
           lendAPY: div(
             toAPY(fixed2Decimals(data._interest1, poolData.token1._decimals)),
-            div(totLiqFull1, fromBigNumber(data._totalBorrow1))
+            div(totLiqFull1, fromBigNumber(data._totalBorrow1)),
           ),
         },
       };
@@ -584,7 +619,7 @@ export const handleLend = async (
   poolAddress,
   web3,
   checkTxnStatus,
-  checkTxnError
+  checkTxnError,
 ) => {
   let Amount = decimal2Fixed2(amount, selectedToken._decimals);
   if (selectedToken._address == poolData.token0._address) {
@@ -593,23 +628,24 @@ export const handleLend = async (
 
   try {
     if (
-      Number(fixed2Decimals18(selectedToken.allowance, selectedToken._decimals)) >=
-      Number(amount)
+      Number(
+        fixed2Decimals18(selectedToken.allowance, selectedToken._decimals),
+      ) >= Number(amount)
     ) {
       const instance = await getEtherContract(
         contracts.coreContract.address,
-        coreAbi
+        coreAbi,
       );
 
       const transaction = await instance.lend(poolData._address, Amount);
 
       const txn = {
-        method: "lend",
+        method: 'lend',
         amount: amount,
         tokenAddress: selectedToken._address,
         tokenSymbol: selectedToken._symbol,
         poolAddress: poolAddress,
-        chainId: "",
+        chainId: '',
       }; //will hold the value of the transaction
       checkTxnStatus(transaction?.hash, txn);
     } else {
@@ -621,7 +657,7 @@ export const handleLend = async (
         web3,
         checkTxnStatus,
         checkTxnError,
-        contracts
+        contracts,
       );
     }
   } catch (error) {
@@ -645,7 +681,7 @@ export const handleBorrow = async (
   amount,
   web3,
   checkTxnStatus,
-  checkTxnError
+  checkTxnError,
 ) => {
   let Amount = decimal2Fixed(amount, selectedToken._decimals);
   // const reduceByOneDecimal = reduceLastDecimalByOne(Amount);
@@ -661,22 +697,22 @@ export const handleBorrow = async (
     ) {
       const instance = await getEtherContract(
         contracts.coreContract.address,
-        coreAbi
+        coreAbi,
       );
 
       const transaction = await instance.borrow(
         poolData._address,
         Amount,
         Collateral,
-        userAddr
+        userAddr,
       );
       const txn = {
-        method: "borrow",
+        method: 'borrow',
         amount: amount,
         tokenAddress: selectedToken._address,
         tokenSymbol: selectedToken._symbol,
         poolAddress: poolData._address,
-        chainId: "",
+        chainId: '',
       };
 
       checkTxnStatus(transaction?.hash, txn);
@@ -689,7 +725,7 @@ export const handleBorrow = async (
         web3,
         checkTxnStatus,
         checkTxnError,
-        contracts
+        contracts,
       );
     }
   } catch (error) {
@@ -712,15 +748,15 @@ export const handleRepay = async (
   userAddr,
   web3,
   checkTxnStatus,
-  checkTxnError
+  checkTxnError,
 ) => {
   let Max =
-    "57896044618658097711785492504343953926634992332820282019728792003956564819967";
+    '57896044618658097711785492504343953926634992332820282019728792003956564819967';
   let Amount = decimal2Fixed(amount, selectedToken._decimals);
   if (selectedToken._address == poolData.token0._address) {
     Amount = mul(Amount, -1);
     Max =
-      "-57896044618658097711785492504343953926634992332820282019728792003956564819967";
+      '-57896044618658097711785492504343953926634992332820282019728792003956564819967';
   }
   if (max) {
     Amount = Max;
@@ -728,21 +764,21 @@ export const handleRepay = async (
   try {
     if (
       Number(
-        fixed2Decimals18(selectedToken.allowance, selectedToken._decimals)
+        fixed2Decimals18(selectedToken.allowance, selectedToken._decimals),
       ) >= Number(amount)
     ) {
       const instance = await getEtherContract(
         contracts.coreContract.address,
-        coreAbi
+        coreAbi,
       );
       const { hash } = await instance.repay(poolAddress, Amount, userAddr);
       const txn = {
-        method: "repay",
+        method: 'repay',
         amount: amount,
         tokenAddress: selectedToken._address,
         tokenSymbol: selectedToken._symbol,
         poolAddress: poolAddress,
-        chainId: "",
+        chainId: '',
       };
       checkTxnStatus(hash, txn);
     } else {
@@ -754,7 +790,7 @@ export const handleRepay = async (
         web3,
         checkTxnStatus,
         checkTxnError,
-        contracts
+        contracts,
       );
     }
   } catch (error) {
@@ -805,19 +841,18 @@ export const handleCreatePool = async (
   token0,
   token1,
   checkTxnStatus,
-  checkTxnError
+  checkTxnError,
 ) => {
   try {
     const instance = await getEtherContract(
       contracts.coreContract.address,
-      coreAbi
+      coreAbi,
     );
     //const length = await instance.poolLength();
     const { hash } = await instance.createPool(token0, token1);
     return hash;
   } catch (error) {
     checkTxnError(error);
-
   }
 };
 
@@ -826,7 +861,7 @@ export const createCustomToken = async (
   userAddress,
   chainId,
   setAddedCustomtokens,
-  setTokenAddress
+  setTokenAddress,
 ) => {
   try {
     const instance = await getEtherContract(tokenAddress, erc20Abi);
@@ -836,7 +871,7 @@ export const createCustomToken = async (
     const symbol = await instance.symbol();
     const logo = tokensBYSymbol[symbol].logo;
 
-    const customTokensList = getFromLocalStorage("customTokensList") || [];
+    const customTokensList = getFromLocalStorage('customTokensList') || [];
     if (customTokensList.length == 0) {
       customTokensList.push({
         name,
@@ -844,11 +879,11 @@ export const createCustomToken = async (
         symbol,
         logo,
         chainId,
-        tokenAddress,
+        address: tokenAddress,
       });
     } else {
       const isTokenAdded = customTokensList.findIndex(
-        (item) => item.symbol === symbol
+        (item) => item.symbol === symbol,
       );
       if (isTokenAdded === -1) {
         customTokensList.push({
@@ -857,18 +892,18 @@ export const createCustomToken = async (
           symbol,
           logo,
           chainId,
-          tokenAddress,
+          address: tokenAddress,
         });
-        setTokenAddress("");
+        setTokenAddress('');
         setAddedCustomtokens([
-          ...getFromLocalStorage("customTokensList"),
+          ...getFromLocalStorage('customTokensList'),
           {
             name,
             balance,
             symbol,
             logo,
             chainId,
-            tokenAddress,
+            address: tokenAddress,
           },
         ]);
       } else {
@@ -879,13 +914,13 @@ export const createCustomToken = async (
             symbol,
             logo,
             chainId,
-            tokenAddress,
+            address: tokenAddress,
           },
         ]);
       }
     }
-    saveToLocalStorage("customTokensList", customTokensList);
+    saveToLocalStorage('customTokensList', customTokensList);
   } catch (error) {
-    console.log("createCustomToken", error);
+    console.log('createCustomToken', error);
   }
 };

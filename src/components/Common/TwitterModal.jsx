@@ -12,12 +12,12 @@ const tweet =
 
 export default function TwitterModal() {
   const [modalVisible, setModalVisible] = useState(true);
-  const [copied, setCopied] = useState(true)
+  const [copied, setCopied] = useState(true);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(window.location.origin);
     setCopied(true);
-    message.success('Copied Successfully!')
+    message.success('Copied Successfully!');
   };
   const ModalBody = () => {
     return (
@@ -25,7 +25,7 @@ export default function TwitterModal() {
         <div className='modal-wrapper'>
           <h3>Welcome to the new era of DeFi</h3>
 
-          <div className={`copy-text-container ${copied ? 'text_copy': ''}`}>
+          <div className={`copy-text-container ${copied ? 'text_copy' : ''}`}>
             <p>{window.location.origin}</p>
 
             <img onClick={copyToClipboard} src={copyIcon} alt='' />
@@ -42,7 +42,7 @@ export default function TwitterModal() {
           </div>
           <a
             href={`https://twitter.com/intent/tweet?text=Woohoo! I just tried @UniLend_Finance v2 for permissionless lending and borrowing%0A%0AThis is a new era for ${encodeURIComponent(
-              '#Defi in #Web3'
+              '#Defi in #Web3',
             )}%0A%0ATry out UniLend v2 and get a chance to win up to $5000 in $UFT%0A%0ATestnet: https://testnet.unilend.finance%0A%0AParticipate: https://gleam.io/ABpVU/unilend-v2-launch-5000-in-uft-airdrop
 %0A%0A${encodeURIComponent('#unilendV2')}`}
             target='_blank'

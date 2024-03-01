@@ -1,4 +1,12 @@
-import { SET_CONTRACTS, SET_THEME, SET_USER, SET_WEB3, SET_LOADING, SET_POOLS, SET_ERROR } from './ActionTypes';
+import {
+  SET_CONTRACTS,
+  SET_THEME,
+  SET_USER,
+  SET_WEB3,
+  SET_LOADING,
+  SET_POOLS,
+  SET_ERROR,
+} from './ActionTypes';
 
 export const setTheme = (theme) => {
   return {
@@ -10,16 +18,16 @@ export const setTheme = (theme) => {
 export const setLoading = (bool) => {
   return {
     type: SET_LOADING,
-    payload: bool
-  }
-}
+    payload: bool,
+  };
+};
 
 export const setError = (error) => {
- return {
-  type: SET_ERROR,
-  payload: {isError: true, error}
- }
-}
+  return {
+    type: SET_ERROR,
+    payload: { isError: true, error },
+  };
+};
 
 export const setWeb3 = (web3) => {
   return {

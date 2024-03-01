@@ -28,7 +28,7 @@ export default function HallOfPoolsComponent() {
   useEffect(() => {
     if (Object.values(poolList).length > 0) {
       const toArray = Object.values(poolList).filter(
-        (pool) => pool.hide == false
+        (pool) => pool.hide == false,
       );
 
       setPools(toArray);
@@ -43,23 +43,23 @@ export default function HallOfPoolsComponent() {
 
   const sortList = [
     {
-      text: "TimeStamp",
-      fun: () => handleSort("blockTimestamp", 1),
+      text: 'TimeStamp',
+      fun: () => handleSort('blockTimestamp', 1),
       icon: <ImArrowUp2 />,
     },
     {
-      text: "TimeStamp",
-      fun: () => handleSort("blockTimestamp", 2),
+      text: 'TimeStamp',
+      fun: () => handleSort('blockTimestamp', 2),
       icon: <ImArrowDown2 />,
     },
   ];
 
   const handleTokens = (token, selectedToken) => {
-    if (selectedToken === "token1") {
+    if (selectedToken === 'token1') {
       setToken1(token);
-    } else if (selectedToken === "token2") {
+    } else if (selectedToken === 'token2') {
       setToken2(token);
-    } else if (selectedToken == "clear") {
+    } else if (selectedToken == 'clear') {
       setToken1({});
       setToken2({});
     }
@@ -76,7 +76,7 @@ export default function HallOfPoolsComponent() {
               .includes(String(token1.symbol)) ||
             String(pool?.token1.symbol)
               .toUpperCase()
-              .includes(String(token1.symbol))
+              .includes(String(token1.symbol)),
         );
       setPools(filtered);
     } else if (token2?.symbol && !token1?.symbol) {
@@ -89,7 +89,7 @@ export default function HallOfPoolsComponent() {
               .includes(String(token2.symbol)) ||
             String(pool?.token1.symbol)
               .toUpperCase()
-              .includes(String(token2.symbol))
+              .includes(String(token2.symbol)),
         );
       setPools(filtered);
     } else if (token1?.symbol && token2?.symbol) {
@@ -103,7 +103,7 @@ export default function HallOfPoolsComponent() {
                 .includes(String(token1.symbol)) ||
               String(pool?.token1.symbol)
                 .toUpperCase()
-                .includes(String(token1.symbol))
+                .includes(String(token1.symbol)),
           )
           .filter(
             (pool) =>
@@ -112,7 +112,7 @@ export default function HallOfPoolsComponent() {
                 .includes(String(token2.symbol)) ||
               String(pool?.token1.symbol)
                 .toUpperCase()
-                .includes(String(token2.symbol))
+                .includes(String(token2.symbol)),
           );
       setPools(filtered);
     } else {
@@ -130,15 +130,15 @@ export default function HallOfPoolsComponent() {
   };
 
   return (
-    <div className="hallofpools_container">
+    <div className='hallofpools_container'>
       {/* <div className="banner">
         <img src={banner} alt="v2-banner" />
       </div> */}
-      <div className="analytics_container">
-        <div className="analytics">
-          <img src={banner} alt="v2-banner" />
+      <div className='analytics_container'>
+        <div className='analytics'>
+          <img src={banner} alt='v2-banner' />
         </div>
-        <div className="managepool_container">
+        <div className='managepool_container'>
           <ManageToken
             handleTokens={handleTokens}
             tokens={{ token1, token2 }}
@@ -147,11 +147,11 @@ export default function HallOfPoolsComponent() {
         </div>
       </div>
 
-      <div className="pool_filter_container">
-        <div className="pool_tans">
+      <div className='pool_filter_container'>
+        <div className='pool_tans'>
           <Button
             onClick={() => setMyPoolTab(false)}
-            className={`pool_btn  ${!myPoolTab ? "active_btn" : ""}`}
+            className={`pool_btn  ${!myPoolTab ? 'active_btn' : ''}`}
           >
             All Pools
           </Button>
@@ -166,7 +166,7 @@ export default function HallOfPoolsComponent() {
       </div>
 
       {pools.length > 0 && !isLoadingPoolData ? (
-        <div className="poolcard_container">
+        <div className='poolcard_container'>
           {myPoolTab
             ? pools
                 .filter((pool) => pool.openPosition == true)

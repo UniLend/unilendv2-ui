@@ -1,22 +1,23 @@
-import React from "react";
-import { Modal } from "antd";
-import { tokensBYSymbol } from "../../utils/constants";
-import { FaSearch } from "react-icons/fa";
-import "./ManageToken.scss";
-import { useState } from "react";
-import { useSelector } from "react-redux";
-import { sortByKey } from "../../helpers/dashboard";
+import React from 'react';
+import { Modal } from 'antd';
+import { tokensBYSymbol } from '../../utils/constants';
+import { FaSearch } from 'react-icons/fa';
+import './ManageToken.scss';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { sortByKey } from '../../helpers/dashboard';
 
 export default function TokenListMoadal({
   openToken,
   handlePoolAndTokenSelect,
   selectedTokens,
 }) {
-  const { tokenList, poolList } = useSelector((state) => state);
+  const  tokenList = useSelector((state) => state.tokenList);
+  const  poolList  = useSelector((state) => state.poolList);
   const container = React.useRef(null);
-  const [selectedToken, setSelectedToken] = useState("");
+  const [selectedToken, setSelectedToken] = useState('');
   const [page, setPage] = React.useState(1);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [tokenListBackup, setTokenListBackup] = useState({
     token0: [],
     token1: [],
@@ -33,7 +34,7 @@ export default function TokenListMoadal({
       (el) =>
         el?.name?.toLowerCase().includes(input.toLowerCase()) ||
         el?.symbol?.toLowerCase().includes(input.toLowerCase()) ||
-        el?.address?.toLowerCase().includes(input.toLowerCase())
+        el?.address?.toLowerCase().includes(input.toLowerCase()),
     );
 
     setTokensList({ ...tokenListBackup, [`${selectedToken}`]: filtered });
@@ -65,7 +66,7 @@ export default function TokenListMoadal({
         .filter(
           (pool) =>
             pool.token0.symbol === selectedTokens.token0 ||
-            pool.token1.symbol === selectedTokens.token0
+            pool.token1.symbol === selectedTokens.token0,
         )
         .map((pool) => {
           if (pool.token0.symbol === selectedTokens.token0) {
@@ -86,7 +87,7 @@ export default function TokenListMoadal({
         .filter(
           (pool) =>
             pool.token0.symbol === selectedTokens.token1 ||
-            pool.token1.symbol === selectedTokens.token1
+            pool.token1.symbol === selectedTokens.token1,
         )
         .map((pool) => {
           if (pool.token0.symbol === selectedTokens.token1) {
@@ -111,13 +112,13 @@ export default function TokenListMoadal({
       // setTokensWithCreatedPools(poolsWithToken0);
       const withToken0 = sortByKey(
         Object.values(tokensBySymbolObject0),
-        "withPool",
-        1
+        'withPool',
+        1,
       );
       const withToken1 = sortByKey(
         Object.values(tokensBySymbolObject1),
-        "withPool",
-        1
+        'withPool',
+        1,
       );
       setTokensList({
         token1: withToken0,
@@ -129,7 +130,7 @@ export default function TokenListMoadal({
       });
     }
 
-    container.current.addEventListener("scroll", () => {
+    container.current.addEventListener('scroll', () => {
       if (
         container.current.scrollTop + container.current.clientHeight >=
         container.current.scrollHeight
@@ -139,30 +140,30 @@ export default function TokenListMoadal({
     });
 
     if (openToken.token0) {
-      setSelectedToken("token0");
+      setSelectedToken('token0');
     } else if (openToken.token1) {
-      setSelectedToken("token1");
+      setSelectedToken('token1');
     }
     // cleanup event listener when component unmounts
     // return () => window.removeEventListener("resize", handleResize);
   }, [openToken, selectedTokens]);
 
   return (
-    <div className="select_token_modal">
-      <div className="search_token">
-        <h3 className="paragraph02">Select {selectedToken} </h3>
-        <div className="input_container">
+    <div className='select_token_modal'>
+      <div className='search_token'>
+        <h3 className='paragraph02'>Select {selectedToken} </h3>
+        <div className='input_container'>
           <FaSearch />
           <input
             autoFocus
-            type="text"
+            type='text'
             value={search}
-            placeholder="Search Tokens"
+            placeholder='Search Tokens'
             onChange={handleSearchToken}
           />
         </div>
       </div>
-      <div ref={container} className="token_list">
+      <div ref={container} className='token_list'>
         {/* {isFetching && <h2>Fetching...</h2>}
           {!isFetching && coinGeckoToken.length === 0 && (
             <h2>Tokens not listed</h2>
@@ -175,15 +176,15 @@ export default function TokenListMoadal({
                 <div
                   onClick={() => selectToken(token.symbol)}
                   key={i}
-                  className="token-card"
+                  className='token-card'
                 >
-                  <img src={token?.logo} alt="" />
+                  <img src={token?.logo} alt='' />
                   <div>
                     <h3>{token.symbol}</h3>
-                    <span>{token?.withPool ? "pool Available" : ""}</span>
+                    <span>{token?.withPool ? 'pool Available' : ''}</span>
                   </div>
                 </div>
-              )
+              ),
           )}
       </div>
     </div>

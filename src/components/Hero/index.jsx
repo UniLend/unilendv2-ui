@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import ManageToken from "../ManageTokens/ManageToken";
-import banner from "../../assets/bannermainnet.svg";
-import darkbanner from "../../assets/darkBanner.svg";
-import "./styles/index.scss";
-import { useSelector } from "react-redux";
-import PoolCarousel from "../PoolsCarousel";
-import PoolCard from "../hallOfPools/poolCard";
-import PoolListSkeleton from "../Loader/PoolListSkeleton";
-import NoPoolFound from "../NoPoolFound";
+import React, { useState, useEffect } from 'react';
+import ManageToken from '../ManageTokens/ManageToken';
+import banner from '../../assets/bannermainnet.svg';
+import darkbanner from '../../assets/darkBanner.svg';
+import './styles/index.scss';
+import { useSelector } from 'react-redux';
+import PoolCarousel from '../PoolsCarousel';
+import PoolCard from '../hallOfPools/poolCard';
+import PoolListSkeleton from '../Loader/PoolListSkeleton';
+import NoPoolFound from '../NoPoolFound';
 
 export default function HeroComponent() {
   const theme = useSelector((state) => state.theme);
@@ -36,10 +36,10 @@ export default function HeroComponent() {
           (pool) =>
             String(pool?.token0.symbol)
               .toUpperCase()
-              .includes(String(token1.symbol)) ||
+              .includes(String(token1.symbol).toUpperCase()) ||
             String(pool?.token1.symbol)
               .toUpperCase()
-              .includes(String(token1.symbol))
+              .includes(String(token1.symbol).toUpperCase()),
         );
       setFilteredPools(filtered);
     } else if (token2?.symbol && !token1?.symbol) {
@@ -49,10 +49,10 @@ export default function HeroComponent() {
           (pool) =>
             String(pool?.token0.symbol)
               .toUpperCase()
-              .includes(String(token2.symbol)) ||
+              .includes(String(token2.symbol).toUpperCase()) ||
             String(pool?.token1.symbol)
               .toUpperCase()
-              .includes(String(token2.symbol))
+              .includes(String(token2.symbol).toUpperCase()),
         );
       setFilteredPools(filtered);
     } else if (token1?.symbol && token2?.symbol) {
@@ -63,19 +63,19 @@ export default function HeroComponent() {
             (pool) =>
               String(pool?.token0.symbol)
                 .toUpperCase()
-                .includes(String(token1.symbol)) ||
+                .includes(String(token1.symbol).toUpperCase()) ||
               String(pool?.token1.symbol)
                 .toUpperCase()
-                .includes(String(token1.symbol))
+                .includes(String(token1.symbol).toUpperCase()),
           )
           .filter(
             (pool) =>
               String(pool?.token0.symbol)
                 .toUpperCase()
-                .includes(String(token2.symbol)) ||
+                .includes(String(token2.symbol).toUpperCase()) ||
               String(pool?.token1.symbol)
                 .toUpperCase()
-                .includes(String(token2.symbol))
+                .includes(String(token2.symbol).toUpperCase()),
           );
       setFilteredPools(filtered);
     } else {
@@ -84,9 +84,9 @@ export default function HeroComponent() {
   }, [token1, token2]);
 
   const handleTokens = (token, selectedToken) => {
-    if (selectedToken === "token1") {
+    if (selectedToken === 'token1') {
       setToken1(token);
-    } else if (selectedToken === "token2") {
+    } else if (selectedToken === 'token2') {
       setToken2(token);
     } else {
       setToken1({});
@@ -102,10 +102,10 @@ export default function HeroComponent() {
   const createPool = () => {};
 
   return (
-    <div className="hallofpools_container">
-      <div className="banner">
+    <div className='hallofpools_container'>
+      <div className='banner'>
         {/* { theme == 'dark' ? <img src={darkbanner} alt="v2-banner" /> : <img src={banner} alt="v2-banner" /> }  */}
-        {<img src={banner} alt="v2-banner" />}
+        {<img src={banner} alt='v2-banner' />}
       </div>
 
       <ManageToken
@@ -122,13 +122,13 @@ export default function HeroComponent() {
         </div>
       ) : ( <PoolListSkeleton/>)} */}
       {filteredPools.length > 0 ? (
-        <div className="poolcard_container">
+        <div className='poolcard_container'>
           {filteredPools.map((pool, i) => (
             <PoolCard pool={pool} key={i} />
           ))}
         </div>
       ) : token1.symbol || token2.symbol ? (
-        <div className="no_pool_container">
+        <div className='no_pool_container'>
           <NoPoolFound
             token1={token1}
             token2={token2}

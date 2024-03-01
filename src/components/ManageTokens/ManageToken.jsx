@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { Switch, Modal } from "antd";
-import { ethers } from "ethers";
-import { useSelector } from "react-redux";
-import viewExplorer from "../../assets/viewExplorerIcon.svg";
-import viewExplorerLight from "../../assets/viewExplorerIconLight.svg";
-import { FaChevronDown, FaSearch } from "react-icons/fa";
-import deleteIcon from "../../assets/deleteicon.svg";
-import deleteiconLight from "../../assets/deleteiconLight.svg";
-import downoutline from "../../assets/downoutline.svg";
-import coinGeckoLogo from "../../assets/CoinGecko_Logo.svg";
-import BSC from "../../assets/bsc.svg";
-import { fetchCoinGeckoTokens } from "../../utils/axios";
-import "./ManageToken.scss";
-import { getFromLocalStorage, saveToLocalStorage } from "../../utils";
-import { createCustomToken } from "../../services/pool";
-import { supportedNetworks } from "../../core/networks/networks";
+import React, { useEffect, useState } from 'react';
+import { Switch, Modal } from 'antd';
+import { ethers } from 'ethers';
+import { useSelector } from 'react-redux';
+import viewExplorer from '../../assets/viewExplorerIcon.svg';
+import viewExplorerLight from '../../assets/viewExplorerIconLight.svg';
+import { FaChevronDown, FaSearch } from 'react-icons/fa';
+import deleteIcon from '../../assets/deleteicon.svg';
+import deleteiconLight from '../../assets/deleteiconLight.svg';
+import downoutline from '../../assets/downoutline.svg';
+import coinGeckoLogo from '../../assets/CoinGecko_Logo.svg';
+import BSC from '../../assets/bsc.svg';
+import { fetchCoinGeckoTokens } from '../../utils/axios';
+import './ManageToken.scss';
+import { getFromLocalStorage, saveToLocalStorage } from '../../utils';
+import { createCustomToken } from '../../services/pool';
+import { supportedNetworks } from '../../core/networks/networks';
 
 const ManageToken = ({ handleTokens, tokens, pools }) => {
   const user = useSelector((state) => state?.user);
@@ -22,16 +22,19 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   const theme = useSelector((state) => state.theme);
   const [isOpenTokenList, setIsOpenTokenList] = React.useState(false);
   const [isOpenMangeToken, setIsOpenMangeToken] = React.useState(false);
-  const [token1, setToken1] = React.useState("");
-  const [token2, setToken2] = React.useState("");
-  const [currentToken, setCurrentToken] = React.useState("");
+  const [isBackButton, setIsBackButton] = React.useState(false);
+  const [token1, setToken1] = React.useState('');
+  const [token2, setToken2] = React.useState('');
+  const [currentToken, setCurrentToken] = React.useState('');
   const [coinGeckoToken, setCoinGeckoToken] = React.useState([]);
   const [tokenBackup, setTokenBackup] = React.useState([]);
-  const [availableToken, setAvailableToken] = React.useState(
-    Object.values(tokenList)
-  );
+  const customTokensList = getFromLocalStorage('customTokensList') || [];
+  const initialTokens = [
+    ...new Set([...Object.values(tokenList), ...customTokensList]),
+  ];
+  const [availableToken, setAvailableToken] = React.useState(initialTokens);
   const [isFetching, setIsFetching] = React.useState(false);
-  const [serachTokenFromList, setSerachTokenFromList] = React.useState("");
+  const [serachTokenFromList, setSerachTokenFromList] = React.useState('');
   const [fetchFrom, setFetchFrom] = React.useState({
     coinGecko: true,
   });
@@ -43,9 +46,9 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
     setSerachTokenFromList(e.target.value);
     const filtered = tokenBackup.filter(
       (el) =>
-        // el.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        el.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
         el.symbol.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        el.address.toLowerCase().includes(e.target.value.toLowerCase())
+        el.address.toLowerCase().includes(e.target.value.toLowerCase()),
     );
     setAvailableToken(filtered);
   };
@@ -56,16 +59,16 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   };
 
   const clearTokens = () => {
-    setToken1("");
-    setToken2("");
-    handleTokens({}, "clear");
+    setToken1('');
+    setToken2('');
+    handleTokens({}, 'clear');
   };
 
   const handleCloseModals = () => {
     setIsOpenTokenList(false);
     setIsOpenMangeToken(false);
     setAvailableToken(tokenBackup);
-    setSerachTokenFromList("");
+    setSerachTokenFromList('');
   };
 
   useEffect(() => {
@@ -79,72 +82,74 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
   }, [tokens]);
 
   useEffect(() => {
-    if (true) {
+    if (isMainNet) {
       if (fetchFrom.coinGecko) {
         setIsFetching(true);
         fetchCoinGeckoTokens()
           .then((data) => {
-            const tokensArray = Array.isArray(data?.tokens) && data?.tokens
-            setCoinGeckoToken(tokensArray.concat(Object.values(tokenList)));
-            setTokenBackup(tokensArray.concat(Object.values(tokenList))); 
-            setAvailableToken( tokensArray.concat(Object.values(tokenList)) );
+            const tokensArray = Array.isArray(data?.tokens) && data?.tokens;
+            setCoinGeckoToken(tokensArray.concat(initialTokens));
+            setTokenBackup(tokensArray.concat(initialTokens));
+            setAvailableToken(tokensArray.concat(initialTokens));
           })
           .finally(() => setIsFetching(false));
       } else {
         setCoinGeckoToken([]);
+        setAvailableToken(initialTokens);
+        setTokenBackup(initialTokens);
       }
     } else {
       // TODO fetch tokens as per selected chain for non-mainnet
-      setAvailableToken([...Object.values(tokenList)]);
-      setTokenBackup([...Object.values(tokenList)]);
+      setAvailableToken(initialTokens);
+      setTokenBackup(initialTokens);
     }
-  }, [fetchFrom, isMainNet, tokenList]);
+  }, [fetchFrom, isMainNet, tokenList, customTokensList.length]);
 
   const TokenCard = React.memo(
     ({ token, render, index, handleDeleteToken }) => {
       const handleTokensList = () => {
         handleCloseModals();
-        if (currentToken === "1") {
+        if (currentToken === '1') {
           setToken1(token);
-          handleTokens(token, "token1");
-        } else if (currentToken === "2") {
+          handleTokens(token, 'token1');
+        } else if (currentToken === '2') {
           setToken2(token);
-          handleTokens(token, "token2");
+          handleTokens(token, 'token2');
         } else {
           setToken1(token);
-          handleTokens(token, "token1");
+          handleTokens(token, 'token1');
         }
       };
 
       return (
         <>
-          {render === "tokenlist" && (
-            <div onClick={handleTokensList} className="token-card">
-              <img src={token.logoURI || token.logo} alt="" />
+          {render === 'tokenlist' && (
+            <div onClick={handleTokensList} className='token-card'>
+              <img src={token.logoURI || token.logo} alt='' />
               <div>
                 <h3>{token.name}</h3>
                 <span>{token.symbol}</span>
               </div>
             </div>
           )}
-          {render === "apiTokenList" && (
+          {render === 'apiTokenList' && (
             <div
-              className={`token-card apitokenlist 
-              ${fetchFrom.coinGecko && "active_apiToken"}
+              className={`token-card apitokenlist
+              ${fetchFrom.coinGecko && 'active_apiToken'}
               `}
             >
-              <div className="token_info">
-                <img src={token.logoURI} alt="" />
+              <div className='token_info'>
+                <img src={token.logoURI} alt='' />
                 <div>
                   <h3>{token.name}</h3>
                   <span>{token.total} Tokens</span>
                 </div>
               </div>
-              <div className="radio_Button">
+              <div className='radio_Button'>
                 <Switch
                   loading={isFetching}
-                  className="switch"
-                  size="small"
+                  className='switch'
+                  size='small'
                   checked={fetchFrom.coinGecko}
                   onChange={() =>
                     setFetchFrom({
@@ -156,15 +161,15 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
               </div>
             </div>
           )}
-          {render === "customTokens" && (
-            <div onClick={handleTokensList} className="token-card customtokens">
-              <div className="token_info">
-                <img src={token.logoURI} alt="" />
-                <div className="center_content">
+          {render === 'customTokens' && (
+            <div onClick={handleTokensList} className='token-card customtokens'>
+              <div className='token_info'>
+                <img src={token.logoURI} alt='' />
+                <div className='center_content'>
                   <h3>{token.name}</h3>
                 </div>
               </div>
-              <div className="actionButtons">
+              <div className='actionButtons'>
                 <div>
                   <img
                     src={supportedNetworks[token.chainId].logoUrl}
@@ -173,22 +178,22 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
                   <p>{supportedNetworks[token.chainId].chainName}</p>
                 </div>
                 <div>
-                  <button className="style-active">Add</button>
+                  <button className='style-active'>Add</button>
                 </div>
               </div>
             </div>
           )}
-          {render === "addedCustomTokens" && (
-            <div onClick={handleTokensList} className="token-card customtokens">
-              <div className="token_info">
-                <img src={token.logo} alt="" />
-                <div className="center_content">
+          {render === 'addedCustomTokens' && (
+            <div onClick={handleTokensList} className='token-card customtokens'>
+              <div className='token_info'>
+                <img src={token.logo} alt='' />
+                <div className='center_content'>
                   <h3>{token.name}</h3>
                   {/* <span>{token.symbol}</span> */}
                   {/* <span>{token.balance} Tokens</span> */}
                 </div>
               </div>
-              <div className="actionButtons">
+              <div className='actionButtons'>
                 <div>
                   <img
                     src={supportedNetworks[token.chainId]?.logoUrl}
@@ -196,21 +201,21 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
                   />
                   <p>{supportedNetworks[token.chainId].chainName}</p>
                 </div>
-                <div className="space_between">
+                <div className='space_between'>
                   <img
                     onClick={(event) => handleDeleteToken(event, index)}
-                    src={theme === "dark" ? deleteIcon : deleteiconLight}
-                    alt=""
+                    src={theme === 'dark' ? deleteIcon : deleteiconLight}
+                    alt=''
                   />
                   <a
                     href={`${
                       supportedNetworks[user?.network?.id].blockExplorerUrls[0]
                     }/address/${user.address}`}
-                    target="_blank"
+                    target='_blank'
                   >
                     <img
-                      src={theme === "dark" ? viewExplorer : viewExplorerLight}
-                      alt=""
+                      src={theme === 'dark' ? viewExplorer : viewExplorerLight}
+                      alt=''
                     />
                   </a>
                 </div>
@@ -219,20 +224,22 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
           )}
         </>
       );
-    }
+    },
   );
 
   const TokenListModalBody = React.memo(() => {
     const container = React.useRef(null);
     const [page, setPage] = useState(1);
+    const customTokensList = getFromLocalStorage('customTokensList');
 
     const handleGoToMangeToken = () => {
+      setIsBackButton(true);
       setIsOpenTokenList(false);
       setIsOpenMangeToken(true);
     };
 
     useEffect(() => {
-      container.current.addEventListener("scroll", () => {
+      container.current.addEventListener('scroll', () => {
         if (
           container.current.scrollTop + container.current.clientHeight >=
           container.current.scrollHeight
@@ -243,26 +250,25 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
     }, []);
 
     return (
-      <div className="select_token_modal">
-        <div className="search_token">
-          <h3 className="paragraph02">Select Token {currentToken}</h3>
-          <div className="input_container">
+      <div className='select_token_modal'>
+        <div className='search_token'>
+          <h3 className='paragraph02'>Select Token {currentToken}</h3>
+          <div className='input_container'>
             <FaSearch />
             <input
               autoFocus
-              type="text"
-              placeholder="Search Tokens"
+              type='text'
+              placeholder='Search Tokens'
               value={serachTokenFromList}
               onChange={handleSearchToken}
             />
           </div>
         </div>
-        <div ref={container} className="token_list">
+        <div ref={container} className='token_list'>
           {isFetching && <h2>Fetching...</h2>}
           {!isFetching && availableToken?.length === 0 && (
             <h2>Tokens not listed</h2>
           )}
-
           {isOpenTokenList &&
             availableToken?.map(
               (token, i) =>
@@ -270,15 +276,15 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
                   <TokenCard
                     key={i}
                     token={token}
-                    render="tokenlist"
+                    render='tokenlist'
                     index={i}
                   />
-                )
+                ),
             )}
         </div>
         <p
           onClick={handleGoToMangeToken}
-          className="paragraph04 go_to_manage_token"
+          className='paragraph04 go_to_manage_token'
         >
           Manage Token
         </p>
@@ -286,11 +292,11 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
     );
   });
 
-  const ManageTokenModalBody = () => {
-    const [active, setActive] = useState("list");
-    const [tokenAddress, setTokenAddress] = useState("");
+  const ManageTokenModalBody = ({ isBackButton = false }) => {
+    const [active, setActive] = useState('list');
+    const [tokenAddress, setTokenAddress] = useState('');
     const [isTokenAvailable, setIsTokenAvailable] = useState(false);
-    const customTokensList = getFromLocalStorage("customTokensList");
+    const customTokensList = getFromLocalStorage('customTokensList');
     const [addedCustomTokens, setAddedCustomtokens] =
       React.useState(customTokensList);
 
@@ -298,32 +304,49 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
       const inputValue = event.target.value;
       setTokenAddress(inputValue);
 
-      const isValid = ethers.utils.isAddress(inputValue);
-      if (isValid) {
-        const isTokenAvailable = availableToken?.some(
-          (item) => item.address.toLowerCase() === inputValue.toLowerCase()
-        );
-        if (isTokenAvailable) {
-          setIsTokenAvailable(true);
-        } else {
-          await createCustomToken(
-            inputValue,
-            user.address,
-            user.network.id,
-            setAddedCustomtokens,
-            setTokenAddress
+      const processInput = async (value) => {
+        const isValid = ethers.utils.isAddress(value);
+        if (isValid) {
+          const isTokenAvailable = availableToken?.some(
+            (item) => item.address.toLowerCase() === value.toLowerCase(),
           );
+          if (isTokenAvailable) {
+            setIsTokenAvailable(true);
+          } else {
+            await createCustomToken(
+              value,
+              user.address,
+              user.network.id,
+              setAddedCustomtokens,
+              setTokenAddress,
+            );
+          }
+        } else {
+          const customTokenList = getFromLocalStorage('customTokensList');
+          const filtered = customTokenList?.filter(
+            (item) =>
+              item.name.toLowerCase().includes(value.toLowerCase()) ||
+              item.symbol.toLowerCase().includes(value.toLowerCase()) ||
+              item.tokenAddress.toLowerCase().includes(value.toLowerCase()),
+          );
+          setAddedCustomtokens(filtered);
+          setIsTokenAvailable(false);
         }
-      } else {
-        const customTokenList = getFromLocalStorage("customTokensList");
-        const filtered = customTokenList?.filter(
-          (item) =>
-            item.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-            item.symbol.toLowerCase().includes(inputValue.toLowerCase()) ||
-            item.tokenAddress.toLowerCase().includes(inputValue.toLowerCase())
+      };
+
+      // Handle both input and paste events
+      const handleInput = () => processInput(inputValue);
+      const handlePaste = (e) => {
+        const pastedValue = (e.clipboardData || window.clipboardData).getData(
+          'text',
         );
-        setAddedCustomtokens(filtered);
-        setIsTokenAvailable(false);
+        processInput(pastedValue);
+      };
+
+      if (event.type === 'input') {
+        handleInput();
+      } else if (event.type === 'paste') {
+        handlePaste(event);
       }
     };
 
@@ -332,66 +355,76 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
       const tokens = [...customTokensList];
       tokens.splice(index, 1);
       setAddedCustomtokens(tokens);
-      saveToLocalStorage("customTokensList", tokens);
+      saveToLocalStorage('customTokensList', tokens);
+    };
+
+    const handleBack = () => {
+      setIsOpenTokenList(true);
     };
 
     const coingecko = {
       logoURI: coinGeckoLogo,
-      name: "CoinGecko",
-      total: 4000,
+      name: 'CoinGecko',
+      total: coinGeckoToken.length,
     };
     return (
-      <div className="manage_token_modal">
-        <div className="token_tabs">
+      <div className='manage_token_modal'>
+        <div className='token_tabs'>
           <h3
-            onClick={() => setActive("list")}
-            className={active == "list" && "active"}
+            onClick={() => setActive('list')}
+            className={active == 'list' ? 'active' : ''}
           >
             List
           </h3>
           <h3
-            onClick={() => setActive("customTokens")}
-            className={active == "customTokens" && "active"}
+            onClick={() => setActive('customTokens')}
+            className={active == 'customTokens' ? 'active' : ''}
           >
             Tokens
           </h3>
         </div>
-        {active == "customTokens" && (
-          <div className="search_token">
+        {active == 'customTokens' && (
+          <div className='search_token'>
             <FaSearch />
             <input
-              onChange={handleAddToken}
+              onInput={handleAddToken}
+              onPaste={handleAddToken}
               value={tokenAddress}
-              type="text"
-              placeholder="Search Tokens"
+              type='text'
+              placeholder='Search Tokens'
             />
           </div>
         )}
-        {active == "list" && (
-          <div className="api_token_list">
-            <TokenCard token={coingecko} render="apiTokenList" />
+        {active == 'list' && (
+          <div className='api_token_list'>
+            <TokenCard token={coingecko} render='apiTokenList' />
           </div>
         )}
-        {active == "customTokens" && (
-          <div className="customTokens_list">
+        {active == 'customTokens' && (
+          <div className='customTokens_list'>
             {/* <TokenCard token={coingecko} render="customTokens" /> */}
 
-            <p className="paragraph05">
+            <p className='paragraph05'>
               {isTokenAvailable &&
-                "token name is available in select token list"}
+                'token name is available in select token list'}
             </p>
 
-            <h3 className="custom_token_title">Custom Tokens</h3>
+            <h3 className='custom_token_title'>Custom Tokens</h3>
             {addedCustomTokens?.map((item, idx) => (
               <TokenCard
                 key={idx}
                 token={item}
                 index={idx}
-                render="addedCustomTokens"
+                render='addedCustomTokens'
                 handleDeleteToken={handleDeleteToken}
               />
             ))}
           </div>
+        )}
+        {isBackButton && (
+          <p onClick={handleBack} className='paragraph04 go_back'>
+            Back
+          </p>
         )}
       </div>
     );
@@ -399,12 +432,12 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
 
   return (
     <>
-      <div className="manage_token_container">
-        <div className="manage_token_component">
-          <div onClick={() => handleToken("1")} className="selector section">
+      <div className='manage_token_container'>
+        <div className='manage_token_component'>
+          <div onClick={() => handleToken('1')} className='selector section'>
             {token1 ? (
-              <div className="token_div">
-                <img src={token1.logoURI || token1.logo} alt="" />
+              <div className='token_div'>
+                <img src={token1.logoURI || token1.logo} alt='' />
                 <h3>{token1.symbol}</h3>
               </div>
             ) : (
@@ -413,10 +446,10 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
             <FaChevronDown />
             {/* <img src={downoutline} alt="" /> */}
           </div>
-          <div onClick={() => handleToken("2")} className="selector section">
+          <div onClick={() => handleToken('2')} className='selector section'>
             {token2 ? (
-              <div className="token_div">
-                <img src={token2.logoURI || token2.logo} alt="" />
+              <div className='token_div'>
+                <img src={token2.logoURI || token2.logo} alt='' />
                 <h3>{token2.symbol}</h3>
               </div>
             ) : (
@@ -425,20 +458,28 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
             <FaChevronDown />
             {/* <img src={downoutline} alt="" /> */}
           </div>
-          <div className="section">
+          <div className='section'>
             {tokens.token1?.symbol ||
             tokens.token2?.symbol ||
             pools.length === 0 ? (
               <h5 onClick={clearTokens}> Clear Tokens</h5>
             ) : (
-              <h5 onClick={() => setIsOpenMangeToken(true)}> Manage Tokens</h5>
+              <h5
+                onClick={() => {
+                  setIsOpenMangeToken(true);
+                  setIsBackButton(false);
+                }}
+              >
+                {' '}
+                Manage Tokens
+              </h5>
             )}
           </div>
         </div>
       </div>
       {isOpenTokenList && (
         <Modal
-          className="antd_modal_overlay"
+          className='antd_modal_overlay'
           open={isOpenTokenList}
           centered
           onCancel={handleCloseModals}
@@ -449,14 +490,14 @@ const ManageToken = ({ handleTokens, tokens, pools }) => {
         </Modal>
       )}
       <Modal
-        className="antd_modal_overlay"
+        className='antd_modal_overlay'
         centered
         onCancel={handleCloseModals}
         open={isOpenMangeToken}
         footer={null}
         closable={false}
       >
-        {<ManageTokenModalBody />}
+        {<ManageTokenModalBody isBackButton={isBackButton} />}
       </Modal>
     </>
   );

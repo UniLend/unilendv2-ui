@@ -9,16 +9,16 @@
 //   );
 // }
 
-import React from "react";
-import "./styles/ring.scss";
-import { LoadingOutlined } from "@ant-design/icons";
-import { Spin } from "antd";
+import React from 'react';
+import './styles/ring.scss';
+import { LoadingOutlined } from '@ant-design/icons';
+import { Spin } from 'antd';
 
 export default function Ring() {
   const antIcon = <LoadingOutlined style={{ fontSize: 132 }} spin />;
   return (
-    <div className="ring_loader">
-      <Spin className="loader_main" indicator={antIcon} />
+    <div className='ring_loader'>
+      <Spin className='loader_main' indicator={antIcon} />
     </div>
   );
 }

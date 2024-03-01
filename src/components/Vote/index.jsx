@@ -1,17 +1,17 @@
-import React, { useMemo, useState } from "react";
-import { Popover } from "antd";
-import { Input, Button } from "antd";
-import banner from "../../assets/dashboardbanner.svg";
-import Vote from "../../assets/vote.svg";
-import uftIcon from "../../assets/uft.svg";
-import { FiCopy, FiInfo } from "react-icons/fi";
-import "./styles/index.scss";
-import { shortenAddress } from "../../utils";
-import { contractAddress } from "../../core/contractData/contracts";
-import { useEffect } from "react";
-import { ethers } from "ethers";
-import { erc20Abi, uftgABI } from "../../core/contractData/abi";
-import { decimal2Fixed, div, fromBigNumber } from "../../helpers/contracts";
+import React, { useMemo, useState } from 'react';
+import { Popover } from 'antd';
+import { Input, Button } from 'antd';
+import banner from '../../assets/dashboardbanner.svg';
+import Vote from '../../assets/vote.svg';
+import uftIcon from '../../assets/uft.svg';
+import { FiCopy, FiInfo } from 'react-icons/fi';
+import './styles/index.scss';
+import { shortenAddress } from '../../utils';
+import { contractAddress } from '../../core/contractData/contracts';
+import { useEffect } from 'react';
+import { ethers } from 'ethers';
+import { erc20Abi, uftgABI } from '../../core/contractData/abi';
+import { decimal2Fixed, div, fromBigNumber } from '../../helpers/contracts';
 import {
   checkAllowance,
   handleUnWrap,
@@ -27,14 +27,14 @@ import { waitForTransactionLib } from "../../lib/fun/functions";
 import NotificationMessage from "../Common/NotificationMessage";
 import useDomainHandling from "./useDomainHandling";
 
-const wrap = "wrap";
-const unWrap = "unWrap";
-const update = "update";
+const wrap = 'wrap';
+const unWrap = 'unWrap';
+const update = 'update';
 
 export default function VoteComponent() {
   const { address, chain, isConnected } = useWalletHook();
   const [userAddress, setUserAddress] = useState(address);
-  const [tokenBalance, setTokenBalance] = useState({ uft: "", uftg: "" });
+  const [tokenBalance, setTokenBalance] = useState({ uft: '', uftg: '' });
   const [activeTab, setActiveTab] = useState(wrap);
   const [allowanceValue, setAllowanceValue] = useState("");
   const [delegate, setDelegate] = useState(address);
@@ -54,17 +54,17 @@ export default function VoteComponent() {
       hash,
     })
       .then((receipt) => {
-        if (receipt.status == "success") {
-          if (data?.fn == "approve") {
+        if (receipt.status == 'success') {
+          if (data?.fn == 'approve') {
             setTimeout(() => {
               handleAllowance();
-              NotificationMessage("success", `${data.message}`);
+              NotificationMessage('success', `${data.message}`);
               setIsLoading(false);
             }, 6000);
           } else {
             setTimeout(() => {
               handleAllowance();
-              NotificationMessage("success", `${data.message}`);
+              NotificationMessage('success', `${data.message}`);
               setIsLoading(false);
             }, 3000);
           }
@@ -85,14 +85,14 @@ export default function VoteComponent() {
     setIsLoading(false);
     const errorText = String(error.reason);
     NotificationMessage(
-      "error",
-      error?.message ? errorText : "Error: Transaction Error"
+      'error',
+      error?.message ? errorText : 'Error: Transaction Error',
     );
   };
 
   //
   const getTokenBal = async () => {
-    const contractsAdd = contractAddress[chain?.id || "1"];
+    const contractsAdd = contractAddress[chain?.id || '1'];
     // const provider = getProvider();
     const UFT = await getEtherContract(contractsAdd.uftToken, erc20Abi);
     const UFTG = await getEtherContract(contractsAdd?.uftgToken, uftgABI);
@@ -118,7 +118,7 @@ export default function VoteComponent() {
       contractsAdd?.uftToken,
       erc20Abi,
       address,
-      contractsAdd?.uftgToken
+      contractsAdd?.uftgToken,
     );
 
     const valueFromBigNumber = fromBigNumber(allowance);
@@ -128,19 +128,19 @@ export default function VoteComponent() {
 
   const BalancePopover = () => {
     return (
-      <div className="balance_popover_container">
-        <div className="balance_popover_item">
-          <img src={uftIcon} alt="uftLogo" />
+      <div className='balance_popover_container'>
+        <div className='balance_popover_item'>
+          <img src={uftIcon} alt='uftLogo' />
           <p>
-            <span className="uft_span">UFT:</span>{" "}
-            <span>{Number(tokenBalance.uft).toFixed(2)}</span>{" "}
+            <span className='uft_span'>UFT:</span>{' '}
+            <span>{Number(tokenBalance.uft).toFixed(2)}</span>{' '}
           </p>
         </div>
-        <div className="balance_popover_item">
-          <img src={uftIcon} alt="uftLogo" />
+        <div className='balance_popover_item'>
+          <img src={uftIcon} alt='uftLogo' />
           <p>
-            <span className="uftg_span">UFTG:</span>{" "}
-            <span>{Number(tokenBalance.uftg).toFixed(2)}</span>{" "}
+            <span className='uftg_span'>UFTG:</span>{' '}
+            <span>{Number(tokenBalance.uftg).toFixed(2)}</span>{' '}
           </p>
         </div>
       </div>
@@ -165,14 +165,14 @@ export default function VoteComponent() {
   }, [address]);
 
   return (
-    <div className="vote_container">
+    <div className='vote_container'>
       {/* <div className="vote_banner">
         <img src={banner} alt="banner" />
       </div> */}
 
-      <div className="vote_content">
+      <div className='vote_content'>
         {/* User Info */}
-        <div className="user_info">
+        <div className='user_info'>
           <div>
             {
               isDataLoading ? <h2 className="heading_loader skeleton"></h2> :  <h2 className="heading05">
@@ -184,9 +184,9 @@ export default function VoteComponent() {
               <p className="paragraph03">Total Balance</p>
               <Popover
                 content={<BalancePopover />}
-                overlayClassName="total_balance_popover"
+                overlayClassName='total_balance_popover'
                 // placement="rightTop"
-                placement="bottomLeft"
+                placement='bottomLeft'
               >
                 <FiInfo />
               </Popover>
@@ -202,7 +202,7 @@ export default function VoteComponent() {
               onClick={() => {
                 navigator.clipboard.writeText(delegate);
               }}
-              className="address_with_copy"
+              className='address_with_copy'
             >
               
               <h2 className="heading05">
@@ -211,10 +211,10 @@ export default function VoteComponent() {
                   : shortenAddress(String(delegate))}
               </h2>
               <Popover
-                content="copied"
-                overlayClassName="copy_popover"
-                placement="top"
-                trigger="click"
+                content='copied'
+                overlayClassName='copy_popover'
+                placement='top'
+                trigger='click'
               >
                 <FiCopy />
               </Popover>
@@ -225,23 +225,23 @@ export default function VoteComponent() {
           </div>
         </div>
         {/* Operation Section */}
-        <div className="operation">
-          <div className="tabs">
+        <div className='operation'>
+          <div className='tabs'>
             <div
               onClick={() => setActiveTab(wrap)}
-              className={` ${activeTab === wrap ? "active_tab" : ""}`}
+              className={` ${activeTab === wrap ? 'active_tab' : ''}`}
             >
               <span>Wrap & Delegate</span>
             </div>
             <div
               onClick={() => setActiveTab(unWrap)}
-              className={` ${activeTab === unWrap ? "active_tab" : ""}`}
+              className={` ${activeTab === unWrap ? 'active_tab' : ''}`}
             >
               <span>Unwrap</span>
             </div>
             <div
               onClick={() => setActiveTab(update)}
-              className={` ${activeTab === update ? "active_tab" : ""}`}
+              className={` ${activeTab === update ? 'active_tab' : ''}`}
             >
               <span>Update delegation</span>
             </div>
@@ -277,13 +277,13 @@ export default function VoteComponent() {
             />
           )}
         </div>
-        <div className="vote_info">
+        <div className='vote_info'>
           <div>
-            <img src={Vote} alt="vote info" />
+            <img src={Vote} alt='vote info' />
           </div>
           <div>
-            <h2 className="heading04">Participate In Governance</h2>
-            <p className="paragraph06">
+            <h2 className='heading04'>Participate In Governance</h2>
+            <p className='paragraph06'>
               You can either vote on each proposal yourself or delegate your
               votes to a third party. You can either vote on each proposal
               yourself or delegate your votes to a third party.
@@ -291,8 +291,8 @@ export default function VoteComponent() {
             <Button
               onClick={() =>
                 window.open(
-                  "https://commonwealth.im/unilend-finance/discussions",
-                  "_blank"
+                  'https://commonwealth.im/unilend-finance/discussions',
+                  '_blank',
                 )
               }
             >
@@ -314,7 +314,7 @@ const WrapAndDelegate = ({
   setIsLoading,
   checkTxnError,
 }) => {
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState('');
   const { chain } = useWalletHook();
   const [address, setAddress] = useState(userAddress);
   const provider = useMemo(() => {
@@ -326,7 +326,7 @@ const WrapAndDelegate = ({
   const { domainDetail } = useDomainHandling(address, provider);
 
   const [buttonText, setButtonText] = useState({
-    text: "Enter Amount",
+    text: 'Enter Amount',
     disable: true,
   });
 
@@ -341,32 +341,32 @@ const WrapAndDelegate = ({
 
   useEffect(() => {
     const isValid = ethers.utils.isAddress(
-      domainDetail.isAddress ? domainDetail.value : address
+      domainDetail.isAddress ? domainDetail.value : address,
     );
 
     if (decimal2Fixed(amount, 18) > Number(allowanceValue)) {
       setButtonText({
-        text: "Approve",
+        text: 'Approve',
         disable: false,
       });
     } else if (amount > tokenBalance?.uft) {
       setButtonText({
-        text: "Low Balance",
+        text: 'Low Balance',
         disable: true,
       });
     } else if (!isValid) {
       setButtonText({
-        text: "Enter Valid Address",
+        text: 'Enter Valid Address',
         disable: true,
       });
     } else if (!(amount > 0)) {
       setButtonText({
-        text: "Enter Amount",
+        text: 'Enter Amount',
         disable: true,
       });
     } else {
       setButtonText({
-        text: "Wrap & Delegate",
+        text: 'Wrap & Delegate',
         disable: false,
       });
     }
@@ -382,7 +382,7 @@ const WrapAndDelegate = ({
 
   const handleWrap = async () => {
     const fixedValue = decimal2Fixed(amount, 18);
-    const contracts = contractAddress[chain?.id || "1"];
+    const contracts = contractAddress[chain?.id || '1'];
 
     if (Number(allowanceValue) >= Number(fixedValue)) {
       setIsLoading(true);
@@ -392,7 +392,7 @@ const WrapAndDelegate = ({
         domainDetail.isAddress ? domainDetail.value : address,
         amount,
         checkTxnStatus,
-        checkTxnError
+        checkTxnError,
       );
     } else {
       setIsLoading(true);
@@ -401,61 +401,61 @@ const WrapAndDelegate = ({
         erc20Abi,
         contracts?.uftgToken,
         checkTxnStatus,
-        checkTxnError
+        checkTxnError,
       );
     }
   };
 
   return (
-    <div className="operation_content_container">
-      <div className="info">
-        <h2 className="heading03">Wrap And Delegate</h2>
-        <p className="paragraph06">
+    <div className='operation_content_container'>
+      <div className='info'>
+        <h2 className='heading03'>Wrap And Delegate</h2>
+        <p className='paragraph06'>
           You can either vote on each proposal yourself or delegate your votes
           to a third party. You can either vote on each proposal yourself or
           delegate your votes to a third party.
         </p>
       </div>
-      <div className="action">
-        <div className="amount_input_wraper">
+      <div className='action'>
+        <div className='amount_input_wraper'>
           <Input
-            type="number"
-            placeholder="Amount"
+            type='number'
+            placeholder='Amount'
             onChange={handleAmount}
             value={amount}
           />
           <button
             onClick={() => setAmount(tokenBalance?.uft)}
-            className="max_btn"
+            className='max_btn'
           >
             MAX
           </button>
         </div>
         <Input
-          type="text"
-          placeholder="Address"
+          type='text'
+          placeholder='Address'
           value={address}
           onChange={handleAddress}
         />
         {!domainDetail.isAddress ? (
-          <div className="domain_data">
-            <p className="domain_value">
-              {domainDetail.value ? domainDetail.value : ""}
+          <div className='domain_data'>
+            <p className='domain_value'>
+              {domainDetail.value ? domainDetail.value : ''}
             </p>
           </div>
         ) : (
           <div
             onClick={() => copyAddress(domainDetail.value)}
-            className="domain_data"
+            className='domain_data'
           >
-            <p className="domain_value paragraph05">
-              {domainDetail.value ? shortenAddress(domainDetail.value) : ""}
+            <p className='domain_value paragraph05'>
+              {domainDetail.value ? shortenAddress(domainDetail.value) : ''}
             </p>
             <Popover
-              content={"copied"}
-              overlayClassName="copy_popover"
-              placement="right"
-              trigger="click"
+              content={'copied'}
+              overlayClassName='copy_popover'
+              placement='right'
+              trigger='click'
             >
               {domainDetail.value && <FiCopy />}
             </Popover>
@@ -466,7 +466,7 @@ const WrapAndDelegate = ({
           onClick={handleWrap}
           disabled={buttonText.disable}
         >
-          {buttonText.text}{" "}
+          {buttonText.text}{' '}
         </Button>
       </div>
     </div>
@@ -480,10 +480,10 @@ const UnWrap = ({
   setIsLoading,
   checkTxnError,
 }) => {
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState('');
   const { chain } = useWalletHook();
   const [buttonText, setButtonText] = useState({
-    text: "Enter Amount",
+    text: 'Enter Amount',
     disable: true,
   });
 
@@ -493,74 +493,74 @@ const UnWrap = ({
 
     if (value > tokenBalance?.uftg) {
       setButtonText({
-        text: "Low Balance",
+        text: 'Low Balance',
         disable: true,
       });
     } else if (!(value > 0)) {
       setButtonText({
-        text: "Enter Amount",
+        text: 'Enter Amount',
         disable: true,
       });
     } else {
       setButtonText({
-        text: "Unwrap",
+        text: 'Unwrap',
         disable: false,
       });
     }
   };
 
   const handleUnWrapOperation = async () => {
-    const contracts = contractAddress[chain?.id || "1"];
+    const contracts = contractAddress[chain?.id || '1'];
     setIsLoading(true);
     handleUnWrap(
       contracts?.uftgToken,
       uftgABI,
       amount,
       checkTxnStatus,
-      checkTxnError
+      checkTxnError,
     );
   };
 
   useEffect(() => {
     if (amount > tokenBalance?.uftg) {
       setButtonText({
-        text: "Low Balance",
+        text: 'Low Balance',
         disable: true,
       });
     } else if (!(amount > 0)) {
       setButtonText({
-        text: "Enter Amount",
+        text: 'Enter Amount',
         disable: true,
       });
     } else {
       setButtonText({
-        text: "Unwrap",
+        text: 'Unwrap',
         disable: false,
       });
     }
   }, [amount]);
 
   return (
-    <div className="operation_content_container">
-      <div className="info">
-        <h2 className="heading03">Unwrap</h2>
-        <p className="paragraph06">
+    <div className='operation_content_container'>
+      <div className='info'>
+        <h2 className='heading03'>Unwrap</h2>
+        <p className='paragraph06'>
           You can either vote on each proposal yourself or delegate your votes
           to a third party. You can either vote on each proposal yourself or
           delegate your votes to a third party.
         </p>
       </div>
-      <div className="action">
-        <div className="amount_input_wraper">
+      <div className='action'>
+        <div className='amount_input_wraper'>
           <Input
-            type="number"
-            placeholder="Amount"
+            type='number'
+            placeholder='Amount'
             onChange={handleAmount}
             value={amount}
           />
           <button
             onClick={() => setAmount(tokenBalance?.uftg)}
-            className="max_btn"
+            className='max_btn'
           >
             MAX
           </button>
@@ -570,7 +570,7 @@ const UnWrap = ({
           onClick={handleUnWrapOperation}
           disabled={buttonText?.disable}
         >
-          {" "}
+          {' '}
           {buttonText?.text}
         </Button>
       </div>
@@ -585,10 +585,10 @@ const UpdateDelegation = ({
   setIsLoading,
   checkTxnError,
 }) => {
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState('');
   const { chain } = useWalletHook();
   const [buttonText, setButtonText] = useState({
-    text: "Enter Address",
+    text: 'Enter Address',
     disable: true,
   });
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -614,17 +614,17 @@ const UpdateDelegation = ({
 
   useEffect(() => {
     const isValid = ethers.utils.isAddress(
-      domainDetail.isAddress ? domainDetail.value : address
+      domainDetail.isAddress ? domainDetail.value : address,
     );
 
     if (!isValid) {
       setButtonText({
-        text: "Enter Valid Address",
+        text: 'Enter Valid Address',
         disable: true,
       });
     } else {
       setButtonText({
-        text: "Update Delegation",
+        text: 'Update Delegation',
         disable: false,
       });
     }
@@ -635,53 +635,53 @@ const UpdateDelegation = ({
   };
 
   const handleUpdate = () => {
-    const contracts = contractAddress[chain?.id || "1"];
+    const contracts = contractAddress[chain?.id || '1'];
     setIsLoading(true);
     handleUpdateDelegate(
       contracts?.uftgToken,
       uftgABI,
       domainDetail.isAddress ? domainDetail.value : address,
       checkTxnStatus,
-      checkTxnError
+      checkTxnError,
     );
   };
 
   return (
-    <div className="operation_content_container">
-      <div className="info">
-        <h2 className="heading03">Update Delegation</h2>
-        <p className="paragraph06">
+    <div className='operation_content_container'>
+      <div className='info'>
+        <h2 className='heading03'>Update Delegation</h2>
+        <p className='paragraph06'>
           You can either vote on each proposal yourself or delegate your votes
           to a third party. You can either vote on each proposal yourself or
           delegate your votes to a third party.
         </p>
       </div>
-      <div className="action">
+      <div className='action'>
         <Input
-          type="text"
-          placeholder="Address"
+          type='text'
+          placeholder='Address'
           value={address}
           onChange={handleAddress}
         />
         {!domainDetail.isAddress ? (
-          <div className="domain_data">
-            <p className="domain_value">
-              {domainDetail.value ? domainDetail.value : ""}
+          <div className='domain_data'>
+            <p className='domain_value'>
+              {domainDetail.value ? domainDetail.value : ''}
             </p>
           </div>
         ) : (
           <div
             onClick={() => copyAddress(domainDetail.value)}
-            className="domain_data"
+            className='domain_data'
           >
-            <p className="domain_value">
-              {domainDetail.value ? shortenAddress(domainDetail.value) : ""}
+            <p className='domain_value'>
+              {domainDetail.value ? shortenAddress(domainDetail.value) : ''}
             </p>
             <Popover
-              content={"copied"}
-              overlayClassName="copy_popover"
-              placement="right"
-              trigger="click"
+              content={'copied'}
+              overlayClassName='copy_popover'
+              placement='right'
+              trigger='click'
             >
               {domainDetail.value && <FiCopy />}
             </Popover>

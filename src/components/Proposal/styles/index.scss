@@ -1,10 +1,10 @@
-@import "/src/core/theme";
+@import '/src/core/theme';
 
 .dark {
   .app_container {
     background: unset;
     // background: url("/src/assets/blue-bg.svg");
-    background: url("/src/assets/large-bg.svg");
+    background: url('/src/assets/large-bg.svg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -14,7 +14,7 @@
   .app_container {
     background: unset;
     // background: url("/src/assets/light-bg.svg");
-    background: url("/src/assets/light-bg-pool.svg");
+    background: url('/src/assets/light-bg-pool.svg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;

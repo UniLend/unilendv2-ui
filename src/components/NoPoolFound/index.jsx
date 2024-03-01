@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { Modal, Button, message } from "antd";
-import { WalletFilled } from "@ant-design/icons";
-import downoutline from "../../assets/downoutline.svg";
-import "./styles/index.scss";
-import { useDispatch, useSelector } from "react-redux";
-import { connectWallet } from "../../services/wallet";
-import { setUser } from "../../store/Action";
-import { FaSearch } from "react-icons/fa";
-import { handleCreatePool } from "../../services/pool";
-import { fetchCoinGeckoTokens, fetchGraphQlData } from "../../utils/axios";
-import { useNavigate } from "react-router-dom";
-import { imgError } from "../../utils";
-import { waitForBlockConfirmation } from "../../lib/fun/functions";
-import NotificationMessage from "../Common/NotificationMessage";
-import { fromBigNumber } from "../../helpers/contracts";
-import useWalletHook from "../../lib/hooks/useWallet";
-import { getPoolsGraphQuery, sortByKey } from "../../helpers/dashboard";
+import React, { useEffect, useState } from 'react';
+import { Modal, Button, message } from 'antd';
+import { WalletFilled } from '@ant-design/icons';
+import downoutline from '../../assets/downoutline.svg';
+import './styles/index.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { connectWallet } from '../../services/wallet';
+import { setUser } from '../../store/Action';
+import { FaSearch } from 'react-icons/fa';
+import { handleCreatePool } from '../../services/pool';
+import { fetchCoinGeckoTokens, fetchGraphQlData } from '../../utils/axios';
+import { useNavigate } from 'react-router-dom';
+import { getFromLocalStorage, imgError } from '../../utils';
+import { waitForBlockConfirmation } from '../../lib/fun/functions';
+import NotificationMessage from '../Common/NotificationMessage';
+import { fromBigNumber } from '../../helpers/contracts';
+import useWalletHook from '../../lib/hooks/useWallet';
+import { getPoolsGraphQuery, sortByKey } from '../../helpers/dashboard';
 
 export default function NoPoolFound({ token1, token2, updateToken }) {
   const contracts = useSelector((state) => state?.contracts);
@@ -28,16 +28,18 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
   const query = getPoolsGraphQuery();
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const [isOpenTokenList, setIsOpenTokenList] = React.useState(false);
-  const [currentToken, setCurrentToken] = React.useState("");
+  const [currentToken, setCurrentToken] = React.useState('');
   const [token01, setToken01] = React.useState(token1);
   const [token02, setToken02] = React.useState(token2);
   const [coinGeckoToken, setCoinGeckoToken] = React.useState([]);
   const [tokenBackup, setTokenBackup] = React.useState([]);
-  const [availableToken, setAvailableToken] = React.useState([
-    ...Object.values(tokenList),
-  ]);
+  const customTokensList = getFromLocalStorage('customTokensList') || [];
+  const initialTokens = [
+    ...new Set([...Object.values(tokenList), ...customTokensList]),
+  ];
+  const [availableToken, setAvailableToken] = React.useState(initialTokens);
   const [isFetching, setIsFetching] = React.useState(false);
-  const [serachTokenFromList, setSerachTokenFromList] = React.useState("");
+  const [serachTokenFromList, setSerachTokenFromList] = React.useState('');
   const [fetchFrom, setFetchFrom] = React.useState({
     coinGecko: true,
   });
@@ -58,13 +60,13 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
   const getCreatedPool = () => {
     const fetchedDATA = fetchGraphQlData(chain?.id || 1442, query).then(
       (res) => {
-        const sortBy = sortByKey(res.pools, "blockTimestamp", 1);
+        const sortBy = sortByKey(res.pools, 'blockTimestamp', 1);
         if (poolLength.length > 0 && poolLength.length < sortBy.length) {
           setIsPoolCreated(true);
           setAvailablePool(sortBy[0]);
         }
         setPoolLength(sortBy);
-      }
+      },
     );
   };
 
@@ -74,11 +76,11 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
         const [receipt, currentBlockNumber] = res;
         const trasactionBlock = fromBigNumber(receipt.blockNumber);
         const currentblock = fromBigNumber(currentBlockNumber);
-        if (receipt.status == "success" && currentblock > trasactionBlock) {
+        if (receipt.status == 'success' && currentblock > trasactionBlock) {
           getCreatedPool();
           setIsCreatePoolLoading(false);
           const msg = `Pool is created with ${token01.symbol} and ${token02.symbol}`;
-          NotificationMessage("success", msg);
+          NotificationMessage('success', msg);
         } else {
           setTimeout(function () {
             checkTxnStatus(hash);
@@ -97,12 +99,12 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
     setIsPoolCreated(false);
 
     const errorText = String(error.reason);
-    const data = error?.message ? errorText : "Error: Transaction Error";
+    const data = error?.message ? errorText : 'Error: Transaction Error';
     const msg =
-      error?.code === "ACTION_REJECTED"
-        ? "Transaction Denied"
-        : "Something went wrong";
-    NotificationMessage("error", msg)();
+      error?.code === 'ACTION_REJECTED'
+        ? 'Transaction Denied'
+        : 'Something went wrong';
+    NotificationMessage('error', msg)();
   };
   const handleCreate = async () => {
     // handleCheckIspoolAvailable();
@@ -118,7 +120,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
           token01.address,
           token02.address,
           checkTxnStatus,
-          checkTxnError
+          checkTxnError,
         );
         checkTxnStatus(hash);
       } catch (error) {
@@ -140,7 +142,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
     if (token1.symbol && token2.symbol) {
       setIsCreateModalOpen(true);
     } else {
-      message.info("Please select two tokens");
+      message.info('Please select two tokens');
     }
   };
 
@@ -153,7 +155,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
   const handleCloseModals = () => {
     setIsOpenTokenList(false);
     setCoinGeckoToken(tokenBackup);
-    setSerachTokenFromList("");
+    setSerachTokenFromList('');
   };
 
   const handleSearchToken = (e) => {
@@ -162,7 +164,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
       (el) =>
         // el.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
         el.symbol.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        el.address.toLowerCase().includes(e.target.value.toLowerCase())
+        el.address.toLowerCase().includes(e.target.value.toLowerCase()),
     );
     setAvailableToken(filtered);
   };
@@ -173,7 +175,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
         (item.token0.symbol === token01.symbol &&
           item.token1.symbol === token02.symbol) ||
         (item.token0.symbol === token02.symbol &&
-          item.token1.symbol === token01.symbol)
+          item.token1.symbol === token01.symbol),
     );
     setAvailablePool(filtered.length > 0 ? filtered[0] : {});
   };
@@ -193,30 +195,32 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
         setIsFetching(true);
         fetchCoinGeckoTokens()
           .then((data) => {
-            const tokensArray = Array.isArray(data?.tokens) && data?.tokens
-            setCoinGeckoToken(tokensArray.concat(Object.values(tokenList)));
-            setTokenBackup(tokensArray.concat(Object.values(tokenList))); 
-            setAvailableToken( tokensArray.concat(Object.values(tokenList)) );
+            const tokensArray = Array.isArray(data?.tokens) && data?.tokens;
+            setCoinGeckoToken(tokensArray.concat(initialTokens));
+            setTokenBackup(tokensArray.concat(initialTokens));
+            setAvailableToken(tokensArray.concat(initialTokens));
           })
           .finally(() => setIsFetching(false));
       } else {
         setCoinGeckoToken([]);
+        setAvailableToken(initialTokens);
+        setTokenBackup(initialTokens);
       }
     } else {
       // TODO fetch tokens as per selected chain for non-mainnet
-      setAvailableToken([...Object.values(tokenList)]);
-      setTokenBackup([...Object.values(tokenList)]);
+      setAvailableToken(initialTokens);
+      setTokenBackup(initialTokens);
     }
-  }, [fetchFrom, isMainNet]);
+  }, [fetchFrom, isMainNet, customTokensList.length]);
 
   const TokenCard = React.memo(({ token, index }) => {
     const handleTokensList = () => {
       // setAvailablePool({});
       handleCloseModals();
-      if (currentToken === "1") {
+      if (currentToken === '1') {
         setToken01(token);
         // handleTokens(token, "token1");
-      } else if (currentToken === "2") {
+      } else if (currentToken === '2') {
         setToken02(token);
         // handleTokens(token, "token2");
       }
@@ -238,7 +242,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
     const [page, setPage] = React.useState(1);
 
     React.useEffect(() => {
-      container.current.addEventListener("scroll", () => {
+      container.current.addEventListener('scroll', () => {
         if (
           container.current.scrollTop + container.current.clientHeight >=
           container.current.scrollHeight
@@ -271,7 +275,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
           {isOpenTokenList &&
             availableToken.map(
               (token, i) =>
-                i < page * 100 && <TokenCard key={i} token={token} index={i} />
+                i < page * 100 && <TokenCard key={i} token={token} index={i} />,
             )}
         </div>
       </div>
@@ -289,7 +293,7 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
             DeFi.
           </p>
 
-          {user.address == "0x" ? (
+          {user.address == '0x' ? (
             <Button
               icon={<WalletFilled />}
               size='large'
@@ -299,8 +303,8 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
               Connect Wallet
             </Button>
           ) : (
-            <Button onClick={handleOpenModal} className='btn_class'>
-              Create Pool
+            <Button onClick={handleOpenModal} className='btn_class' disabled>
+              Coming Soon
             </Button>
           )}
         </div>
@@ -320,14 +324,14 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
             {Object.keys(availablePool).length === 0 ? (
               <>
                 <div className='selected_tokens'>
-                  <div onClick={() => handleToken("1")} className='token_div'>
+                  <div onClick={() => handleToken('1')} className='token_div'>
                     <div>
                       <img src={token01.logoURI || token01.logo} alt='logo' />
                       <h3>{token01.symbol}</h3>
                     </div>
                     <img src={downoutline} alt='' />
                   </div>
-                  <div onClick={() => handleToken("2")} className='token_div'>
+                  <div onClick={() => handleToken('2')} className='token_div'>
                     <div>
                       <img src={token02.logoURI || token02.logo} alt='logo' />
                       <h3>{token02.symbol}</h3>
@@ -364,8 +368,8 @@ export default function NoPoolFound({ token1, token2, updateToken }) {
                 </div>
                 <h3 className='paragraph05'>
                   {isPoolCreated
-                    ? "Pool is created"
-                    : "Pool is already available"}
+                    ? 'Pool is created'
+                    : 'Pool is already available'}
                 </h3>
                 <Button
                   onClick={() => handleViewPool(availablePool?.id)}

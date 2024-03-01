@@ -1,57 +1,57 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { useQuery } from "react-query";
-import "antd/dist/antd.css";
-import { Buffer } from "buffer";
+import { useQuery } from 'react-query';
+import 'antd/dist/antd.css';
+import { Buffer } from 'buffer';
 import {
   setUser,
   setContracts,
   setLoading,
   setPools,
   setError,
-} from "./store/Action";
-import MainRoutes from "./routes";
-import { connectWallet } from "./services/wallet";
+} from './store/Action';
+import MainRoutes from './routes';
+import { connectWallet } from './services/wallet';
 import {
   coreAbi,
   helperAbi,
   positionAbi,
   erc20Abi,
-} from "./core/contractData/abi";
-import { contractAddress } from "./core/contractData/contracts";
+} from './core/contractData/abi';
+import { contractAddress } from './core/contractData/contracts';
 // import { getContract } from './services/contracts';
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import "./App.scss";
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import './App.scss';
 import {
   fetchEthRateForAddresses,
   getFromSessionStorage,
   getTokenLogo,
-} from "./utils";
-import { fetchCoinLogo, fetchGraphQlData, getEthToUsd } from "./utils/axios";
+} from './utils';
+import { fetchCoinLogo, fetchGraphQlData, getEthToUsd } from './utils/axios';
 import {
   checkOpenPosition,
   fixedToShort,
   getPoolCreatedGraphQuery,
   getPoolCreatedGraphQueryTestnet,
-} from "./helpers/dashboard";
-import { hidePools } from "./utils/constants";
-import { fetchTokenLib, getPastEvents } from "./lib/fun/functions";
+} from './helpers/dashboard';
+import { hidePools } from './utils/constants';
+import { fetchTokenLib, getPastEvents } from './lib/fun/functions';
 import {
   getEtherContract,
   getEtherContractWithProvider,
-} from "./lib/fun/wagmi";
-import { ethers } from "ethers";
-import { fixed2Decimals, getTokenUSDPrice } from "./helpers/contracts";
-import useWalletHook from "./lib/hooks/useWallet";
-import { supportedNetworks } from "./core/networks/networks";
+} from './lib/fun/wagmi';
+import { ethers } from 'ethers';
+import { fixed2Decimals, getTokenUSDPrice } from './helpers/contracts';
+import useWalletHook from './lib/hooks/useWallet';
+import { supportedNetworks } from './core/networks/networks';
 
 const shardeumPools = [
   {
-    pool: "0x665ACEc556dC92C2E504beFA061d5f65Cd9493e2",
-    token1: "0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1",
-    token0: "0x11f13ad374e79b466a36eb835747e431fbbe3890",
+    pool: '0x665ACEc556dC92C2E504beFA061d5f65Cd9493e2',
+    token1: '0x12685283Aba3e6db74a8A4C493fA61fae2c66Bf1',
+    token0: '0x11f13ad374e79b466a36eb835747e431fbbe3890',
   },
   // {
   //   pool: '0x7BFeca0694616c19ef4DA11DC931b692b38aFf19',
@@ -68,20 +68,23 @@ function App() {
   const { address, isConnected, chain } = useWalletHook();
   const user = useSelector((state) => state.user);
   const query = getPoolCreatedGraphQuery(address);
-  const testnetQuery = getPoolCreatedGraphQueryTestnet(address)
+  const testnetQuery = getPoolCreatedGraphQueryTestnet(address);
   const [tokenPrice, setTokenPrice] = useState({});
 
   const networksWithGraph = Object.values(supportedNetworks)
     .filter((network) => network.graphAvailable && network.chainId)
     .map((net) => net.chainId);
 
-  const { data, loading, error, refetch } = useQuery("pools", async () => {
-    const fetchedDATA = await fetchGraphQlData(chain?.id || 1,  chain?.id == 80001? testnetQuery: query);
+  const { data, loading, error, refetch } = useQuery('pools', async () => {
+    const fetchedDATA = await fetchGraphQlData(
+      chain?.id || 1,
+      chain?.id == 80001 ? testnetQuery : query,
+    );
     return fetchedDATA;
   });
 
   document.body.className = `body ${
-    getFromSessionStorage("unilendV2Theme") || "dark"
+    getFromSessionStorage('unilendV2Theme') || 'dark'
   }`;
 
   useEffect(() => {
@@ -94,7 +97,7 @@ function App() {
   const createContract = async (withProvider = false) => {
     try {
       dispatch(setLoading(true));
-      const walletconnect = JSON.parse(localStorage.getItem("wagmi.connected"));
+      const walletconnect = JSON.parse(localStorage.getItem('wagmi.connected'));
 
       const { coreAddress, helperAddress, positionAddress } =
         contractAddress[chain?.id || user?.network?.id || 1442];
@@ -112,8 +115,8 @@ function App() {
           preparedData.map((item) =>
             withProvider
               ? getEtherContractWithProvider(item.address, item.abi, chain?.id)
-              : getEtherContract(item.address, item.abi, chain?.id)
-          )
+              : getEtherContract(item.address, item.abi, chain?.id),
+          ),
         )
           .then((res) => {
             const payload = {
@@ -122,7 +125,7 @@ function App() {
               positionContract: res[2],
             };
             dispatch(setContracts(payload));
-             //loadPoolsFromContract(payload);
+            //loadPoolsFromContract(payload);
             loadPoolsWithGraph();
           })
           .catch((err) => {
@@ -132,7 +135,7 @@ function App() {
         loadPoolsWithGraph();
       }
     } catch (error) {
-      console.log("ContractError", error);
+      console.log('ContractError', error);
       loadPoolsWithGraph();
       dispatch(setError(error));
     }
@@ -149,7 +152,7 @@ function App() {
         if (networkID == 8081) {
           result = shardeumPools;
         } else {
-          result = await getPastEvents(v2Contracts.coreContract, "PoolCreated");
+          result = await getPastEvents(v2Contracts.coreContract, 'PoolCreated');
 
           result = result.map((item) => item.args);
         }
@@ -164,14 +167,14 @@ function App() {
         if (isConnected) {
           const ercTokens = await Promise.all(
             poolTokens.map((contract, i) =>
-              fetchTokenLib({ address: contract })
-            )
+              fetchTokenLib({ address: contract }),
+            ),
           );
           ercTokens.forEach(
-            (token, i) => (tokenList[poolTokens[i]] = { symbol: token.symbol })
+            (token, i) => (tokenList[poolTokens[i]] = { symbol: token.symbol }),
           );
           const logos = await Promise.all(
-            ercTokens.map((token, i) => fetchCoinLogo(token.symbol))
+            ercTokens.map((token, i) => fetchCoinLogo(token.symbol)),
           );
 
           logos.forEach(
@@ -180,7 +183,7 @@ function App() {
                 ...tokenList[poolTokens[i]],
                 address: poolTokens[i],
                 logo,
-              })
+              }),
           );
 
           const reverseResult = result.reverse();
@@ -220,10 +223,14 @@ function App() {
 
     for (const key in temp) {
       if (temp.hasOwnProperty(key)) {
-        result[key] = (temp[key] / 10 ** 18) * usdPrice;
+        if (supportedNetworks[chain?.id]?.baseCurrency === 'USD') {
+          result[key] = temp[key] / 10 ** 8;
+        } else {
+          result[key] = (temp[key] / 10 ** 18) * usdPrice;
+          result['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'] = usdPrice;
+        }
       }
     }
-    result["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"] = usdPrice;
     setTokenPrice(result);
     return result;
   };
@@ -231,7 +238,7 @@ function App() {
   useEffect(() => {
     if (data?.assetOracles) {
       getTokenPrice();
-    } 
+    }
   }, [data]);
 
   useEffect(() => {
@@ -256,21 +263,28 @@ function App() {
         //   fixedToShort(pool.liquidity0) * Number(pool.token0.priceUSD) +
         //   fixedToShort(pool.liquidity1) * Number(pool.token1.priceUSD);
         const openPosiions = allPositions.filter(
-          (el) => el?.pool?.pool == pool.pool
+          (el) => el?.pool?.pool == pool.pool,
         );
         const poolInfo = {
           ...pool,
           poolAddress: pool?.pool,
           hide: hidePools.includes(pool?.pool),
 
-            totalLiquidity:
-            (fixed2Decimals(pool.liquidity0, pool.token0.decimals ) * tokenPrice[pool?.token0?.id] +
-            fixed2Decimals(pool.liquidity1, pool.token1.decimals ) * tokenPrice[pool?.token1?.id]) + (fixed2Decimals(pool.totalBorrow0, pool.token0.decimals) * tokenPrice[pool?.token0?.id] +
-            fixed2Decimals(pool.totalBorrow1,  pool.token1.decimals) * tokenPrice[pool?.token1?.id]),
+          totalLiquidity:
+            fixed2Decimals(pool.liquidity0, pool.token0.decimals) *
+              tokenPrice[pool?.token0?.id] +
+            fixed2Decimals(pool.liquidity1, pool.token1.decimals) *
+              tokenPrice[pool?.token1?.id] +
+            (fixed2Decimals(pool.totalBorrow0, pool.token0.decimals) *
+              tokenPrice[pool?.token0?.id] +
+              fixed2Decimals(pool.totalBorrow1, pool.token1.decimals) *
+                tokenPrice[pool?.token1?.id]),
 
           totalBorrowed:
-          fixed2Decimals(pool.totalBorrow0, pool.token0.decimals) * tokenPrice[pool?.token0?.id] +
-          fixed2Decimals(pool.totalBorrow1,  pool.token1.decimals) * tokenPrice[pool?.token1?.id],
+            fixed2Decimals(pool.totalBorrow0, pool.token0.decimals) *
+              tokenPrice[pool?.token0?.id] +
+            fixed2Decimals(pool.totalBorrow1, pool.token1.decimals) *
+              tokenPrice[pool?.token1?.id],
 
           openPosition:
             openPosiions.length > 0 && checkOpenPosition(openPosiions[0]),
@@ -278,7 +292,7 @@ function App() {
             ...pool.token0,
             address: pool?.token0?.id,
             logo: getTokenLogo(pool.token0.symbol),
-            priceUSD: tokenPrice[pool?.token0?.id] *  pool.token0.decimals,
+            priceUSD: tokenPrice[pool?.token0?.id] * pool.token0.decimals,
             pricePerToken: tokenPrice[pool?.token0?.id],
           },
           token1: {
@@ -293,7 +307,7 @@ function App() {
           ...pool.token0,
           address: pool?.token0?.id,
           logo: getTokenLogo(pool.token0.symbol),
-          priceUSD: tokenPrice[pool?.token0?.id] *  pool.token0.decimals,
+          priceUSD: tokenPrice[pool?.token0?.id] * pool.token0.decimals,
           pricePerToken: tokenPrice[pool?.token0?.id],
         };
         tokenList[String(pool.token1.id).toUpperCase()] = {
