@@ -25,6 +25,7 @@ import {
   trustWallet,
   coin98Wallet,
   rabbyWallet,
+  phantomWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 
 
@@ -88,6 +89,7 @@ const connectors = connectorsForWallets([
       coin98Wallet({ chains, projectId }),
       okxWallet({ chains, projectId }),
       rabbyWallet({ chains, projectId }),
+      phantomWallet({ chains, projectId }),
       shouldShowInfinityWallet() ? infinityWallet({ chains, projectId }) : null,
     ].filter(wallet => wallet !== null), 
   },
