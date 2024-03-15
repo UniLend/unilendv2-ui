@@ -244,7 +244,7 @@
             .max_btn {
               position: absolute;
               right: -6px;
-              top: 5px;
+              top: 10px;
               width: 52px;
               height: 30px;
               font-size: $font-size-xxsm;
@@ -290,7 +290,7 @@
           button {
             width: 100%;
             margin: 10px;
-            height: 40px;
+            height: 48px;
             border-radius: 5px;
           }
           input {
@@ -299,6 +299,8 @@
             border: none;
             padding: 4px 12px;
             border-radius: 12px;
+            font-size: $font-size-md;
+            // height: 52px;
             &:focus,
             &:hover {
               box-shadow: none;
@@ -325,6 +327,10 @@
             h2 {
               font-size: $font-size-xlg !important;
             }
+          }
+          input,
+          button {
+            height: 40px;
           }
         }
       }
@@ -467,7 +473,7 @@
     display: none;
   }
   .ant-popover-inner-content {
-    padding: 32px;
+    padding: 16px;
     border-radius: 16px;
     border-image-source: var(--popup-border);
     outline: none;
@@ -477,7 +483,6 @@
     background: var(--popup-back-color);
     background-clip: padding-box; /* !importanté */
     border: solid $border transparent; /* !importanté */
-    border-radius: 16px;
 
     &:before {
       content: '';
@@ -540,10 +545,8 @@
       }
 
       p {
-        font-size: $font-size-lg;
+        font-size: $font-size-sm;
         color: var(--light-back-colour);
-        font-weight: $font-weight-bold;
-
         margin: 0;
         letter-spacing: 2px;
         .uft_span {
@@ -551,7 +554,7 @@
         }
 
         .uftg_span {
-          margin-right: 8px;
+          margin-right: 4px;
         }
       }
     }
@@ -567,14 +570,14 @@
         }
 
         p {
-          font-size: $font-size-md;
+          font-size: $font-size-sm;
 
           .uft_span {
             margin-right: 18px;
           }
 
           .uftg_span {
-            margin-right: 8px;
+            margin-right: 2px;
           }
         }
       }

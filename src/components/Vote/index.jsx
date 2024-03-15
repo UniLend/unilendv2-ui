@@ -18,14 +18,14 @@ import {
   handleUpdateDelegate,
   handleWrapAndDelegate,
   setApproval,
-} from "../../services/governance";
-import { fetchUserAddressByDomain, fetchUserDomain } from "../../utils/axios";
-import { Link, useNavigate } from "react-router-dom";
-import { getEtherContract } from "../../lib/fun/wagmi";
-import useWalletHook from "../../lib/hooks/useWallet";
-import { waitForTransactionLib } from "../../lib/fun/functions";
-import NotificationMessage from "../Common/NotificationMessage";
-import useDomainHandling from "./useDomainHandling";
+} from '../../services/governance';
+import { fetchUserAddressByDomain, fetchUserDomain } from '../../utils/axios';
+import { Link, useNavigate } from 'react-router-dom';
+import { getEtherContract } from '../../lib/fun/wagmi';
+import useWalletHook from '../../lib/hooks/useWallet';
+import { waitForTransactionLib } from '../../lib/fun/functions';
+import NotificationMessage from '../Common/NotificationMessage';
+import useDomainHandling from './useDomainHandling';
 
 const wrap = 'wrap';
 const unWrap = 'unWrap';
@@ -36,11 +36,11 @@ export default function VoteComponent() {
   const [userAddress, setUserAddress] = useState(address);
   const [tokenBalance, setTokenBalance] = useState({ uft: '', uftg: '' });
   const [activeTab, setActiveTab] = useState(wrap);
-  const [allowanceValue, setAllowanceValue] = useState("");
+  const [allowanceValue, setAllowanceValue] = useState('');
   const [delegate, setDelegate] = useState(address);
-  const [votingPower, setVotingPower] = useState("");
+  const [votingPower, setVotingPower] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isDataLoading, setIsDataLoading] = useState(false)
+  const [isDataLoading, setIsDataLoading] = useState(false);
   const navigate = useNavigate();
 
   const provider = useMemo(() => {
@@ -111,8 +111,8 @@ export default function VoteComponent() {
   };
 
   const handleAllowance = async () => {
-    setIsDataLoading(true)
-    const contractsAdd = contractAddress[chain?.id || "1"];
+    setIsDataLoading(true);
+    const contractsAdd = contractAddress[chain?.id || '1'];
     getTokenBal();
     const { allowance } = await checkAllowance(
       contractsAdd?.uftToken,
@@ -123,7 +123,7 @@ export default function VoteComponent() {
 
     const valueFromBigNumber = fromBigNumber(allowance);
     setAllowanceValue(valueFromBigNumber);
-     setIsDataLoading(false)
+    setIsDataLoading(false);
   };
 
   const BalancePopover = () => {
@@ -151,7 +151,7 @@ export default function VoteComponent() {
 
   useEffect(() => {
     if (!isConnected) {
-      navigate("/");
+      navigate('/');
     }
     handleDomain(delegate);
   }, [delegate]);
@@ -174,54 +174,61 @@ export default function VoteComponent() {
         {/* User Info */}
         <div className='user_info'>
           <div>
-            {
-              isDataLoading ? <h2 className="heading_loader skeleton"></h2> :  <h2 className="heading05">
-              {Number(tokenBalance.uft + tokenBalance.uftg).toFixed(2)}
-            </h2>
-            }
-        
-            <div className="total_balance">
-              <p className="paragraph03">Total Balance</p>
+            {isDataLoading ? (
+              <h2 className='heading_loader skeleton'></h2>
+            ) : (
+              <h2 className='heading05'>
+                {Number(tokenBalance.uft + tokenBalance.uftg).toFixed(2)}
+              </h2>
+            )}
+
+            <div className='total_balance'>
+              <p className='paragraph03'>Total Balance</p>
               <Popover
                 content={<BalancePopover />}
                 overlayClassName='total_balance_popover'
-                // placement="rightTop"
+                // open={true}
                 placement='bottomLeft'
               >
                 <FiInfo />
               </Popover>
             </div>
           </div>
-          <div >
-           {isDataLoading ? <h2 className="heading_loader skeleton"></h2>: <h2 className="heading05">{Number(votingPower).toFixed(2)}</h2>} 
-            <p className="paragraph03">Voting Power</p>
+          <div>
+            {isDataLoading ? (
+              <h2 className='heading_loader skeleton'></h2>
+            ) : (
+              <h2 className='heading05'>{Number(votingPower).toFixed(2)}</h2>
+            )}
+            <p className='paragraph03'>Voting Power</p>
           </div>
           <div>
-            {
-              isDataLoading ?  <h2 className="heading_loader skeleton"></h2>:       <div
-              onClick={() => {
-                navigator.clipboard.writeText(delegate);
-              }}
-              className='address_with_copy'
-            >
-              
-              <h2 className="heading05">
-                {domainDetail.value
-                  ? domainDetail.value
-                  : shortenAddress(String(delegate))}
-              </h2>
-              <Popover
-                content='copied'
-                overlayClassName='copy_popover'
-                placement='top'
-                trigger='click'
+            {isDataLoading ? (
+              <h2 className='heading_loader skeleton'></h2>
+            ) : (
+              <div
+                onClick={() => {
+                  navigator.clipboard.writeText(delegate);
+                }}
+                className='address_with_copy'
               >
-                <FiCopy />
-              </Popover>
-            </div>
-            }
-      
-            <p className="paragraph03">Delegation address</p>
+                <h2 className='heading05'>
+                  {domainDetail.value
+                    ? domainDetail.value
+                    : shortenAddress(String(delegate))}
+                </h2>
+                <Popover
+                  content='copied'
+                  overlayClassName='copy_popover'
+                  placement='top'
+                  trigger='click'
+                >
+                  <FiCopy />
+                </Popover>
+              </div>
+            )}
+
+            <p className='paragraph03'>Delegation address</p>
           </div>
         </div>
         {/* Operation Section */}
@@ -284,9 +291,8 @@ export default function VoteComponent() {
           <div>
             <h2 className='heading04'>Participate In Governance</h2>
             <p className='paragraph06'>
-              You can either vote on each proposal yourself or delegate your
-              votes to a third party. You can either vote on each proposal
-              yourself or delegate your votes to a third party.
+              You can either create a proposal yourself or delegate your votes
+              to a third party.
             </p>
             <Button
               onClick={() =>
@@ -411,9 +417,8 @@ const WrapAndDelegate = ({
       <div className='info'>
         <h2 className='heading03'>Wrap And Delegate</h2>
         <p className='paragraph06'>
-          You can either vote on each proposal yourself or delegate your votes
-          to a third party. You can either vote on each proposal yourself or
-          delegate your votes to a third party.
+          Wrap $UFT tokens and delegate $UFTG to create or vote on a proposal.
+          You can delegate the voting power to yourself or a third party.
         </p>
       </div>
       <div className='action'>
@@ -545,9 +550,7 @@ const UnWrap = ({
       <div className='info'>
         <h2 className='heading03'>Unwrap</h2>
         <p className='paragraph06'>
-          You can either vote on each proposal yourself or delegate your votes
-          to a third party. You can either vote on each proposal yourself or
-          delegate your votes to a third party.
+          Unwrap your $UFTG to tokens to get back $UFT.
         </p>
       </div>
       <div className='action'>
@@ -651,9 +654,8 @@ const UpdateDelegation = ({
       <div className='info'>
         <h2 className='heading03'>Update Delegation</h2>
         <p className='paragraph06'>
-          You can either vote on each proposal yourself or delegate your votes
-          to a third party. You can either vote on each proposal yourself or
-          delegate your votes to a third party.
+          Delegate your voting power to any address of your choice. You can
+          delegate the voting power to yourself or a third party.
         </p>
       </div>
       <div className='action'>
