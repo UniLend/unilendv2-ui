@@ -375,8 +375,12 @@ const WrapAndDelegate = ({
 
   const handleAmount = (e) => {
     const value = e.target.value;
-    setAmount(value);
-  };
+    const parsedValue = value === '.' ? '0' + value : value;
+
+    if (/^[.]?[0-9]*[.]?[0-9]*$/.test(parsedValue) || parsedValue === '') {
+      setAmount(parsedValue);
+    }
+  }; 
 
   useEffect(() => {
     const isValid = ethers.utils.isAddress(
@@ -466,7 +470,7 @@ const WrapAndDelegate = ({
             type='number'
             placeholder='Amount'
             onChange={handleAmount}
-            value={amount}
+            value={amount !== null ? amount : ''}
           />
           <button
             onClick={() => setAmount(tokenBalance?.uft)}
@@ -535,7 +539,12 @@ const UnWrap = ({
 
   const handleAmount = (e) => {
     const value = e.target.value;
-    setAmount(value);
+    const parsedValue = value === '.' ? '0' + value : value;
+
+    if (/^[.]?[0-9]*[.]?[0-9]*$/.test(parsedValue) || parsedValue === '') {
+      setAmount(parsedValue);
+    }
+    
     if (!userAddress) {
       setButtonText({
         text: "Please Connect",
@@ -609,7 +618,7 @@ const UnWrap = ({
             type='number'
             placeholder='Amount'
             onChange={handleAmount}
-            value={amount}
+            value={amount !== null ? amount : ''}
           />
           <button
             onClick={() => setAmount(tokenBalance?.uftg)}
