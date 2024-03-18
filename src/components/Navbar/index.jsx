@@ -182,7 +182,7 @@ export default function Navbar() {
             <img src={ethlogo} alt='Etherium' />
             <p>Ethereum</p>
           </div>
-          <div onClick={() => handleSwitchNetwork(42161)}>
+          {/* <div onClick={() => handleSwitchNetwork(42161)}>
             <img src={arblogo} alt='Etherium' />
             <p>Arbitrum</p>
           </div> */}
