@@ -25,6 +25,7 @@ import {
   trustWallet,
   coin98Wallet,
   rabbyWallet,
+  phantomWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 
 
@@ -41,16 +42,20 @@ const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID;
 import { mumbaiTestnet, arbitrum } from './core/networks/Chains';
+const approvedHosts = ['https://v2.unilend.finance']
+const isDomainApproved = approvedHosts.includes(window?.location?.origin)
+
+
+
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  [mainnet],
+  isDomainApproved?[mainnet] :[mainnet, arbitrum, polygon, mumbaiTestnet],
   [
     publicProvider(),
     alchemyProvider({ apiKey: alchemyId }),
     infuraProvider({ apiKey: infuraID }),
   ],
 );
-
 //check for the condition if Dapp is Open on web Browser or infinity web3 browser
 function shouldShowInfinityWallet() {
   return window.ethereum && window.ethereum.isInfinityWallet;
@@ -88,6 +93,7 @@ const connectors = connectorsForWallets([
       coin98Wallet({ chains, projectId }),
       okxWallet({ chains, projectId }),
       rabbyWallet({ chains, projectId }),
+      phantomWallet({ chains, projectId }),
       shouldShowInfinityWallet() ? infinityWallet({ chains, projectId }) : null,
     ].filter(wallet => wallet !== null), 
   },

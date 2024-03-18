@@ -61,7 +61,7 @@ export default function Navbar() {
   const [isNavigateAllow, setIsNavigateAllow] = useState(false);
   const dispatch = useDispatch();
   const [currentTheme, setCurrentTheme] = useState(theme);
-  const { chain, isConnected } = useWalletHook();
+  const { chain, isConnected, chains } = useWalletHook();
   const availableChain = Object.values(supportedNetworks).map(
     (net) => net.chainId,
   );
@@ -137,7 +137,7 @@ export default function Navbar() {
     }
     // user.network.id && user.network.id != '11155111' && user.network.id != '80001'
 
-    if (chain?.id && !availableChain.includes(chain?.id)) {
+    if (chain?.id && !chains?.map((c)=> c.id).includes(chain?.id)) {
       setWrongNetworkModal(true);
     } else {
       setWrongNetworkModal(false);
@@ -169,9 +169,16 @@ export default function Navbar() {
     return (
       <div className='walletModel'>
         <h1>Wrong Network</h1>
-        <p>UniLend V2 is on Ethereum Mainnet only. Please Switch Network.</p>
+        <p>UniLend V2 is Available on Below Networks Only. Please Switch Network.</p>
         <div className='networks'>
-          <div onClick={() => handleSwitchNetwork(1)}>
+          {
+            chains?.map(({id})=>    <div onClick={() => handleSwitchNetwork(id)}>
+            <img    src={supportedNetworks[id].logoUrl}
+                alt={`${supportedNetworks[id].chainName} Logo`}  />
+            <p>{supportedNetworks[id].chainName}</p>
+          </div>)
+          }
+          {/* <div onClick={() => handleSwitchNetwork(1)}>
             <img src={ethlogo} alt='Etherium' />
             <p>Ethereum</p>
           </div>
@@ -224,19 +231,19 @@ export default function Navbar() {
     return (
       <div className='sort_popover'>
         <h3>Select a Network</h3>
-        {Object.keys(supportedNetworks).map((chainId) => (
+        {chains.map(({id}) => (
           <div
-            key={chainId}
+            key={id}
             className='network_box'
-            onClick={() => handleSwitchNetwork(chainId)}
+            onClick={() => handleSwitchNetwork(id)}
           >
-            <div className={chain?.id == chainId ? 'activeChain' : ''}>
+            <div className={chain?.id == id ? 'activeChain' : ''}>
               <img
-                src={supportedNetworks[chainId].logoUrl}
-                alt={`${supportedNetworks[chainId].chainName} Logo`}
+                src={supportedNetworks[id].logoUrl}
+                alt={`${supportedNetworks[id].chainName} Logo`}
               />
               <p className='wallet-name'>
-                {supportedNetworks[chainId].chainName}
+                {supportedNetworks[id].chainName}
               </p>
             </div>
           </div>
