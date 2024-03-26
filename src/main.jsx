@@ -81,6 +81,33 @@ const infinityWallet = ({ chains, projectId }) => ({
   },
 });
 
+const newConnector = ({ chains, projectId }) => ({
+  id: 'Infinity',
+  name: 'Infinity Wallet',
+  iconUrl: infinityLogo,
+  iconBackground: '#fff',
+  createConnector: () => {
+    if (window.ethereum && window.ethereum.isInfinityWallet) {
+      console.log("infinity availbale")
+      const connector = new InjectedConnector({
+        chains: chains,
+        options: {
+          name: 'Injected',
+          shimDisconnect: true,
+        },
+      });
+      return {
+        connector,
+      };
+    } else {
+      console.log("infinity not")
+      openInfinityWallet('https://v2.unilend.finance', chains);
+      // Return a default connector or handle the case where Infinity Wallet is not detected
+      return {}; // Return an empty object or a default connector
+    }
+  },
+});
+
 
 const connectors = connectorsForWallets([
   {
@@ -94,6 +121,7 @@ const connectors = connectorsForWallets([
       okxWallet({ chains, projectId }),
       rabbyWallet({ chains, projectId }),
       phantomWallet({ chains, projectId }),
+      newConnector({ chains, projectId }),
       shouldShowInfinityWallet() ? infinityWallet({ chains, projectId }) : null,
     ].filter(wallet => wallet !== null), 
   },
