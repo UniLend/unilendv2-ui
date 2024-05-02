@@ -28,12 +28,9 @@ import {
   phantomWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 
+// wallet connector 
+import { gateWallet, infinityWallet } from './core/walletConnector/walletConnector';
 
-
-//infinity wallet integration 
-import { InfinityWalletConnector, openInfinityWallet } from '@infinitywallet/infinity-connector';
-import { InjectedConnector } from 'wagmi/connectors/injected'
-import infinityLogo from "./assets/infinity-logo.svg"
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { infuraProvider } from 'wagmi/providers/infura';
 
@@ -44,8 +41,6 @@ const infuraID = import.meta.env.VITE_INFURA_ID;
 import { mumbaiTestnet, arbitrum } from './core/networks/Chains';
 const approvedHosts = ['https://v2.unilend.finance']
 const isDomainApproved = approvedHosts.includes(window?.location?.origin)
-
-
 
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
@@ -61,27 +56,6 @@ function shouldShowInfinityWallet() {
   return window.ethereum && window.ethereum.isInfinityWallet;
 }
 
-//connector for infinity wallet
-const infinityWallet = ({ chains, projectId }) => ({
-  id: 'Infinity',
-  name: 'Infinity Wallet',
-  iconUrl: infinityLogo,
-  iconBackground: '#fff',
-  createConnector: () => {
-    const connector = new InjectedConnector({
-      chains: chains,
-      options: {
-        name: 'Injected',
-        shimDisconnect: true,
-      },
-    });
-    return {
-      connector,
-    };
-  },
-});
-
-
 const connectors = connectorsForWallets([
   {
     groupName: 'Recommended',
@@ -90,10 +64,12 @@ const connectors = connectorsForWallets([
       injectedWallet({ chains, projectId }),
       coinbaseWallet({ appName: 'UnilendV2', chains, projectId }),
       walletConnectWallet({ chains, projectId }),
+      gateWallet({ chains, projectId }),
       coin98Wallet({ chains, projectId }),
       okxWallet({ chains, projectId }),
       rabbyWallet({ chains, projectId }),
       phantomWallet({ chains, projectId }),
+      gateWallet({ chains, projectId }),
       shouldShowInfinityWallet() ? infinityWallet({ chains, projectId }) : null,
     ].filter(wallet => wallet !== null), 
   },
@@ -107,7 +83,6 @@ const connectors = connectorsForWallets([
     ],
   },
 ]);
-
 
 
 const wagmiConfig = createConfig({
