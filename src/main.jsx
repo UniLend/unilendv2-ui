@@ -69,7 +69,6 @@ const connectors = connectorsForWallets([
       okxWallet({ chains, projectId }),
       rabbyWallet({ chains, projectId }),
       phantomWallet({ chains, projectId }),
-      gateWallet({ chains, projectId }),
       shouldShowInfinityWallet() ? infinityWallet({ chains, projectId }) : null,
     ].filter(wallet => wallet !== null), 
   },
