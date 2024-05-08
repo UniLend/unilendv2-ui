@@ -37,7 +37,8 @@
     "sass": "^1.55.0",
     "viem": "~1.2.9",
     "wagmi": "^1.4.6",
-    "web3": "^1.8.0"
+    "web3": "^1.8.0",
+    "gatewallet-wagmi-connector": "https://github.com/gatechain/gatewallet-wagmi-connector"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",

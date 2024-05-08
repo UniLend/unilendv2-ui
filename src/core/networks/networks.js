@@ -162,35 +162,35 @@ export const supportedNetworks = {
     graphAvailable: true,
     baseCurrency: 'ETH',
   },
-  // 42161: {
-  //   chainId: 42161,
-  //   chainName: 'Arbitrum One',
-  //   nativeCurrency: {
-  //     name: 'Ether',
-  //     symbol: 'ETH',
-  //     decimals: 18,
-  //   },
-  //   logoUrl: arb,
-  //   rpcUrls: ['https://arb-mainnet.g.alchemy.com/v2/${VITE_ALCHEMY_ID}'],
-  //   blockExplorerUrls: ['https://arbiscan.io'],
-  //   graphAvailable: true,
-  //   baseCurrency: 'USD',
-  // },
+  42161: {
+    chainId: 42161,
+    chainName: 'Arbitrum One',
+    nativeCurrency: {
+      name: 'Ether',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    logoUrl: arb,
+    rpcUrls: ['https://arb-mainnet.g.alchemy.com/v2/${VITE_ALCHEMY_ID}'],
+    blockExplorerUrls: ['https://arbiscan.io'],
+    graphAvailable: true,
+    baseCurrency: 'USD',
+  },
 
-  // 137: {
-  //   chainId: 137,
-  //   chainName: 'Polygon Mainnet',
-  //   nativeCurrency: {
-  //     name: 'MATIC',
-  //     symbol: 'MATIC',
-  //     decimals: 18,
-  //   },
-  //   logoUrl: polygon,
-  //   rpcUrls: ['https://polygon-rpc.com/'],
-  //   blockExplorerUrls: ['https://polygonscan.com/'],
-  //   graphAvailable: true,
-  //   baseCurrency: 'ETH',
-  // },
+  137: {
+    chainId: 137,
+    chainName: 'Polygon Mainnet',
+    nativeCurrency: {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      decimals: 18,
+    },
+    logoUrl: polygon,
+    rpcUrls: ['https://polygon-rpc.com/'],
+    blockExplorerUrls: ['https://polygonscan.com/'],
+    graphAvailable: true,
+    baseCurrency: 'ETH',
+  },
 
   11155111: {
     chainId: 11155111,
