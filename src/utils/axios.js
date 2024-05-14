@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { getToken } from '../utils';
+import { fetchEthRateInUSD, getToken } from '../utils';
+import { supportedNetworks } from '../core/networks/networks';
 
 const API = import.meta.env.VITE_UNSTOPPABLE_API;
 
@@ -94,14 +95,21 @@ export const fetchGraphQlData = async (chainId, FILMS_QUERY) => {
   }
 };
 
-export const getEthToUsd = async () => {
+export const getEthToUsd = async (chainId) => {
   const url = 'https://api.coinbase.com/v2/exchange-rates?currency=ETH';
 
   try {
     const response = await axios.get(url);
     return response.data.data.rates.USD;
   } catch (error) {
-    console.error(`Failed to retrieve USD data. Error: ${error.message}`);
+    console.error(
+      `Failed to retrieve USD data from coinbase: ${error.message}`,
+    );
+    const response = await fetchEthRateInUSD(
+      supportedNetworks[chainId]?.EthUsdAddress,
+      chainId,
+    );
+    return response;
   }
 };
 

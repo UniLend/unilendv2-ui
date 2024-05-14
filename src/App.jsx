@@ -26,6 +26,7 @@ import Footer from './components/Footer';
 import './App.scss';
 import {
   fetchEthRateForAddresses,
+  fetchEthRateInUSD,
   getFromSessionStorage,
   getTokenLogo,
 } from './utils';
@@ -217,7 +218,7 @@ function App() {
   };
 
   const getTokenPrice = async () => {
-    const usdPrice = await getEthToUsd();
+    const usdPrice = await getEthToUsd(chain?.id);
     const temp = await fetchEthRateForAddresses(data?.assetOracles, chain?.id);
     const result = {};
 
@@ -254,7 +255,6 @@ function App() {
       const poolData = {};
       const tokenList = {};
       const poolsData = Array.isArray(data.pools) && data.pools;
-
       for (const pool of poolsData) {
         if (hidePools.includes(pool?.pool)) {
           continue;
