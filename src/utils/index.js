@@ -128,3 +128,26 @@ export const fetchEthRateForAddresses = async (addresses, chainId) => {
     throw error;
   }
 };
+
+export const fetchEthRateInUSD = async (address, chainId) => {
+  const provider = getEthersProvider(chainId);
+  try {
+    const priceFeed = new ethers.Contract(
+      address,
+      aggregatorV3InterfaceABI,
+      provider,
+    );
+
+    const roundData = await priceFeed.latestRoundData();
+    if (!roundData) {
+      console.error(
+        `Error fetching round data for address ${addr}: ${error.message}`,
+      );
+      return null;
+    }
+    return roundData.answer.toString() / 10 ** 8;
+  } catch (error) {
+    console.error('Error fetching ETH/USD price:', error.message);
+    throw error;
+  }
+};
