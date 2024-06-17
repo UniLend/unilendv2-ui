@@ -26,10 +26,14 @@ import {
   coin98Wallet,
   rabbyWallet,
   phantomWallet,
+  bitgetWallet,
 } from '@rainbow-me/rainbowkit/wallets';
 
-// wallet connector 
-import { gateWallet, infinityWallet } from './core/walletConnector/walletConnector';
+// wallet connector
+import {
+  gateWallet,
+  infinityWallet,
+} from './core/walletConnector/walletConnector';
 
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { infuraProvider } from 'wagmi/providers/infura';
@@ -39,12 +43,11 @@ const alchemyId = import.meta.env.VITE_ALCHEMY_ID;
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 const infuraID = import.meta.env.VITE_INFURA_ID;
 import { mumbaiTestnet, arbitrum } from './core/networks/Chains';
-const approvedHosts = ['https://v2.unilend.finance']
-const isDomainApproved = approvedHosts.includes(window?.location?.origin)
-
+const approvedHosts = ['https://v2.unilend.finance'];
+const isDomainApproved = approvedHosts.includes(window?.location?.origin);
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
-  isDomainApproved?[mainnet] :[mainnet, arbitrum, polygon, mumbaiTestnet],
+  isDomainApproved ? [mainnet] : [mainnet, arbitrum, polygon, mumbaiTestnet],
   [
     publicProvider(),
     alchemyProvider({ apiKey: alchemyId }),
@@ -65,12 +68,13 @@ const connectors = connectorsForWallets([
       coinbaseWallet({ appName: 'UnilendV2', chains, projectId }),
       walletConnectWallet({ chains, projectId }),
       gateWallet({ chains, projectId }),
+      bitgetWallet({ chains, projectId }),
       coin98Wallet({ chains, projectId }),
       okxWallet({ chains, projectId }),
       rabbyWallet({ chains, projectId }),
       phantomWallet({ chains, projectId }),
       shouldShowInfinityWallet() ? infinityWallet({ chains, projectId }) : null,
-    ].filter(wallet => wallet !== null), 
+    ].filter((wallet) => wallet !== null),
   },
   {
     groupName: 'Other',
@@ -82,7 +86,6 @@ const connectors = connectorsForWallets([
     ],
   },
 ]);
-
 
 const wagmiConfig = createConfig({
   autoConnect: true,

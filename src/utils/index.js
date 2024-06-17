@@ -3,7 +3,7 @@ import { tokensBYSymbol, tokensByAddress } from './constants';
 import { ethers } from 'ethers';
 import { Avatar } from 'antd';
 import { aggregatorV3InterfaceABI } from '../core/contractData/abi';
-
+import { truncateToDecimals } from '../helpers/contracts';
 export const fromWei = (web3, val) => {
   const result = web3.utils.fromWei(val, 'ether');
   return result;

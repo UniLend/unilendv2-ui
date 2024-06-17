@@ -162,6 +162,7 @@ export const supportedNetworks = {
     graphAvailable: true,
     baseCurrency: 'ETH',
     EthUsdAddress: '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419',
+    minBorrow: 500,
   },
   42161: {
     chainId: 42161,
@@ -177,6 +178,7 @@ export const supportedNetworks = {
     graphAvailable: true,
     baseCurrency: 'USD',
     EthUsdAddress: '0x639Fe6ab55C921f74e7fac1ee960C0B6293ba612',
+    minBorrow: 500,
   },
 
   137: {
@@ -193,6 +195,7 @@ export const supportedNetworks = {
     graphAvailable: true,
     baseCurrency: 'ETH',
     EthUsdAddress: '0xF9680D99D6C9589e2a93a78A04A279e509205945',
+    minBorrow: 5,
   },
 
   11155111: {
@@ -214,6 +217,7 @@ export const supportedNetworks = {
     ],
     blockExplorerUrls: ['https://sepolia.etherscan.io'],
     graphAvailable: false,
+    minBorrow: 500,
   },
 
   80001: {
@@ -228,6 +232,7 @@ export const supportedNetworks = {
     rpcUrls: ['https://polygon-rpc.com/'],
     blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
     graphAvailable: true,
+    minBorrow: 500,
   },
   1442: {
     chainId: 1442,
@@ -241,6 +246,7 @@ export const supportedNetworks = {
     rpcUrls: ['https://polygon-rpc.com/'],
     blockExplorerUrls: ['https://testnet-zkevm.polygonscan.com/'],
     graphAvailable: true,
+    minBorrow: 500,
   },
   8081: {
     chainId: 8081,
@@ -250,6 +256,7 @@ export const supportedNetworks = {
     blockExplorerUrls: ['https://explorer-dapps.shardeum.org/'],
     logoUrl: shardeum,
     graphAvailable: false,
+    minBorrow: 500,
   },
   17000: {
     chainId: 17000,
@@ -259,6 +266,7 @@ export const supportedNetworks = {
     blockExplorerUrls: ['https://holesky.etherscan.io/'],
     logoUrl: eth,
     graphAvailable: false,
+    minBorrow: 500,
   },
 };
 

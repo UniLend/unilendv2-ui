@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js';
 
 import { ethers } from 'ethers';
 
+import { supportedNetworks } from '../core/networks/networks';
 // function timestamp() {
 //     return Math.round(new Date().getTime()/1000);
 // }
@@ -152,9 +153,8 @@ export function fixed2Decimals18(amount, decimals = 18) {
 }
 
 export function reduceLastDecimalByOne(number) {
-
-const a = BigNumber(number).minus(1)
-    return a.toString();
+  const a = BigNumber(number).minus(1);
+  return a.toString();
 }
 
 export function fromBigNumber(bignumber) {
@@ -228,6 +228,28 @@ export function getCurrentLTV(selectedToken, collateralToken) {
   return (prevLTV.toFixed(4) * 100).toFixed(2);
 }
 
+export const calculateBorrowData = (amount, selectedToken, borrowMinUsd) => {
+  const borrowedValueInUsd =
+    selectedToken?.borrowBalanceFixed * selectedToken?.price;
+  const borrowValue = amount * selectedToken?.price;
+  const borrowMin = borrowMinUsd - borrowedValueInUsd;
+  const minQuantityRequired = borrowMinUsd / selectedToken?.price;
+  const totalMinQuantity = truncateToDecimals(minQuantityRequired - amount, 4);
+
+  console.log(
+    'borrow Data',
+    borrowMin,
+    borrowValue,
+    borrowedValueInUsd,
+    minQuantityRequired,
+    totalMinQuantity,
+  );
+
+  const isLowValueBorrowed = borrowValue <= borrowMin;
+
+  return { isLowValueBorrowed, totalMinQuantity };
+};
+
 export const getActionBtn = (
   activeOperation,
   amount,
@@ -235,6 +257,7 @@ export const getActionBtn = (
   collateralToken,
   collateral,
   reFetching,
+  chain,
 ) => {
   let btn = {
     text: `${activeOperation} ${selectedToken?._symbol}`,
@@ -260,20 +283,25 @@ export const getActionBtn = (
 
   const countDecimals = String(amount).split('.')[1]?.length;
 
-
-  if (amount <= minimumValue  && Number(decimalAmount) <= 1 ) {
-    return { text: "Enter Amount", disable: true };
+  if (amount <= minimumValue && Number(decimalAmount) <= 1) {
+    return { text: 'Enter Amount', disable: true };
   } else if (amount && activeOperation === lend) {
     if (
-      Number(fixed2Decimals18(selectedToken?.allowance, selectedToken?._decimals)) <
-      Number(amount)
+      Number(
+        fixed2Decimals18(selectedToken?.allowance, selectedToken?._decimals),
+      ) < Number(amount)
     ) {
- 
-      return { text: "Approve " + selectedToken?._symbol };
+      return { text: 'Approve ' + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.balanceFixed)) {
       return { text: 'Low Balance in Wallet', disable: true };
     }
   } else if (amount && activeOperation === borrow) {
+    const borrowMinUsd = supportedNetworks[chain?.id]?.minBorrow;
+    const { isLowValueBorrowed, totalMinQuantity } = calculateBorrowData(
+      amount,
+      selectedToken,
+      borrowMinUsd,
+    );
     if (
       collateral > 0 &&
       fixed2Decimals18(collateralToken?.allowance, collateralToken._decimals) <=
@@ -285,6 +313,12 @@ export const getActionBtn = (
     } else if (collateral > Number(collateralToken?.balanceFixed)) {
       return {
         text: 'Low Balance in Wallet ' + collateralToken?._symbol,
+        disable: true,
+      };
+    } else if (isLowValueBorrowed) {
+      return {
+        // text: `Min. ${borrowMinUsd} Value (${totalMinQuantity} ${selectedToken}) borrow required`,
+        text: `Min. $ ${borrowMinUsd} (${totalMinQuantity} ${selectedToken._symbol}) borrow required`,
         disable: true,
       };
     }

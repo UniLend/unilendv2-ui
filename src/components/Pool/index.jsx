@@ -115,6 +115,7 @@ export default function PoolComponent() {
     collateralToken,
     colleteral,
     reFetching,
+    chain,
   );
 
   // reload page after creating new pool from create pool method
@@ -894,8 +895,8 @@ export default function PoolComponent() {
                     <span className='skeleton loader'></span>
                   ) : (
                     <span>
-                      1 {poolData.token0._symbol} ={" "}
-                      {Number(poolData.token0.price)} {poolData.token1._symbol}{" "}
+                      1 {poolData.token0._symbol} ={' '}
+                      {Number(poolData.token0.price)} {poolData.token1._symbol}{' '}
                     </span>
                   )}
                 </p>
