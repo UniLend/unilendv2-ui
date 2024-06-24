@@ -229,6 +229,7 @@ export function getCurrentLTV(selectedToken, collateralToken) {
 }
 
 export const calculateBorrowData = (amount, selectedToken, borrowMinUsd) => {
+  let isLowValueBorrowed;
   const borrowedValueInUsd =
     selectedToken?.borrowBalanceFixed * selectedToken?.price;
   const borrowValue = amount * selectedToken?.price;
@@ -244,8 +245,11 @@ export const calculateBorrowData = (amount, selectedToken, borrowMinUsd) => {
     minQuantityRequired,
     totalMinQuantity,
   );
-
-  const isLowValueBorrowed = borrowValue <= borrowMin;
+  if (borrowMin == 0) {
+    isLowValueBorrowed = borrowValue < borrowMin;
+  } else {
+    isLowValueBorrowed = borrowValue <= borrowMin;
+  }
 
   return { isLowValueBorrowed, totalMinQuantity };
 };
@@ -258,6 +262,8 @@ export const getActionBtn = (
   collateral,
   reFetching,
   chain,
+  isLowValueBorrowed,
+  borrowMinUsd,
 ) => {
   let btn = {
     text: `${activeOperation} ${selectedToken?._symbol}`,
@@ -296,12 +302,6 @@ export const getActionBtn = (
       return { text: 'Low Balance in Wallet', disable: true };
     }
   } else if (amount && activeOperation === borrow) {
-    const borrowMinUsd = supportedNetworks[chain?.id]?.minBorrow;
-    const { isLowValueBorrowed, totalMinQuantity } = calculateBorrowData(
-      amount,
-      selectedToken,
-      borrowMinUsd,
-    );
     if (
       collateral > 0 &&
       fixed2Decimals18(collateralToken?.allowance, collateralToken._decimals) <=
@@ -317,8 +317,7 @@ export const getActionBtn = (
       };
     } else if (isLowValueBorrowed) {
       return {
-        // text: `Min. ${borrowMinUsd} Value (${totalMinQuantity} ${selectedToken}) borrow required`,
-        text: `Min. $ ${borrowMinUsd} (${totalMinQuantity} ${selectedToken._symbol}) borrow required`,
+        text: `Min. $${borrowMinUsd} Value Borrow Required`,
         disable: true,
       };
     }

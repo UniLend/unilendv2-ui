@@ -375,6 +375,27 @@
       opacity: 1;
     }
 
+    .borrow_req {
+      //addition colletral text
+      display: flex;
+      justify-content: space-between;
+      transition: all ease-in-out 0.2s;
+      p {
+        margin: 5px;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--light-red);
+      }
+    }
+
+    .hide_borrow_req {
+      opacity: 0;
+    }
+
+    .show_borrow_req {
+      opacity: 1;
+    }
+
     .ltv_container {
       padding: 28px;
       // LTV slider container

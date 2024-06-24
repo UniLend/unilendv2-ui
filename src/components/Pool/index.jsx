@@ -14,6 +14,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { DownOutlined } from '@ant-design/icons';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
+import { supportedNetworks } from '../../core/networks/networks';
 import {
   getPoolBasicData,
   getPoolAllData,
@@ -33,6 +34,7 @@ import {
   getActionBtn,
   fromBigNumber,
   truncateToDecimals,
+  calculateBorrowData,
 } from '../../helpers/contracts';
 import PoolSkeleton from '../Loader/PoolSkeleton';
 import TwitterModal from '../Common/TwitterModal';
@@ -87,6 +89,8 @@ export default function PoolComponent() {
     token0: '',
     token1: '',
   });
+  const [totalQuantity, setTotalQuantity] = useState('');
+  const [isLowBorrow, setIsLowBorrow] = useState(false);
   const [tokensWithCreatedPools, setTokensWithCreatedPools] = useState([]);
   const [helperContractInstance, setHelperContractInstance] = useState(null);
   const { poolAddress } = useParams();
@@ -99,6 +103,8 @@ export default function PoolComponent() {
     borrow: 'Borrowed Amount',
     repay: 'Repay Amount',
   };
+  // borrow value
+  const borrowMinUsd = supportedNetworks[chain?.id]?.minBorrow;
 
   const getLiquidityAmount = {
     lend: selectedToken?.lendBalanceFixed,
@@ -116,6 +122,8 @@ export default function PoolComponent() {
     colleteral,
     reFetching,
     chain,
+    isLowBorrow,
+    borrowMinUsd,
   );
 
   // reload page after creating new pool from create pool method
@@ -142,6 +150,14 @@ export default function PoolComponent() {
       poolData,
     );
 
+    const { isLowValueBorrowed, totalMinQuantity } = calculateBorrowData(
+      e.target.value,
+      selectedToken,
+      borrowMinUsd,
+    );
+    console.log('isLowValueBorrowed', isLowValueBorrowed);
+    setTotalQuantity(totalMinQuantity);
+    setIsLowBorrow(isLowValueBorrowed);
     if (LtvBasedOnAmount > poolData.ltv) {
       setIsMoreThanPoolLTV(true);
     } else {
@@ -152,7 +168,6 @@ export default function PoolComponent() {
       LtvBasedOnAmount > poolData.ltv ? poolData.ltv : LtvBasedOnAmount;
     setSelectLTV(LTV);
   };
-
   const getCollateral = () => {
     let colleteral;
     if (amount > 0) {
@@ -780,6 +795,7 @@ export default function PoolComponent() {
             <div className='token_balance_container'>
               <div className='lable'>
                 <p className='paragraph05'>{activeOperation}</p>
+
                 <div>
                   {' '}
                   <a
@@ -816,7 +832,21 @@ export default function PoolComponent() {
                 MAX
               </button>
             </div>
-            {
+
+            {isLowBorrow ? (
+              <div
+                className={`borrow_req ${
+                  activeOperation === borrow && isLowBorrow
+                    ? 'show_borrow_req'
+                    : 'hide_borrow_req'
+                }`}
+              >
+                <p>
+                  Borrow Amount Must be At Least {totalQuantity}{' '}
+                  {selectedToken?._symbol}{' '}
+                </p>
+              </div>
+            ) : (
               <div
                 className={`colleteral_req ${
                   activeOperation === borrow && colleteral > 0
@@ -833,7 +863,7 @@ export default function PoolComponent() {
                   </div>
                 </Tooltip>
               </div>
-            }
+            )}
 
             {activeOperation === borrow && (
               <div className='ltv_container'>
