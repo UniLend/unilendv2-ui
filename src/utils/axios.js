@@ -76,7 +76,7 @@ export const fetchGraphQlData = async (chainId, FILMS_QUERY) => {
     1442: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-zkevm',
     // 1: 'https://api.thegraph.com/subgraphs/name/shubham-rathod1/mainnet-1',
     // 1: 'https://api.studio.thegraph.com/query/78424/mainnet-1/version/latest',
-    1: 'https://gateway-arbitrum.network.thegraph.com/api/e0902970e4a444dc4b0ae6c08b7ff801/subgraphs/id/FGE3FvB4dzGN2yFgUpVCSCYDwBCn74XLSwgs7mkajAhW',
+    1: 'https://gateway-arbitrum.network.thegraph.com/api/e0902970e4a444dc4b0ae6c08b7ff802/subgraphs/id/FGE3FvB4dzGN2yFgUpVCSCYDwBCn74XLSwgs7mkajAhW',
     // 42161:'https://api.thegraph.com/subgraphs/name/shubham-rathod1/unilend-arbritrum',
     42161:
       'https://api.studio.thegraph.com/query/78424/unilend-arbritrum/version/latest',
