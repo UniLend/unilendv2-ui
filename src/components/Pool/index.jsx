@@ -149,13 +149,13 @@ export default function PoolComponent() {
       e.target.value,
       poolData,
     );
-
     const { isLowValueBorrowed, totalMinQuantity } = calculateBorrowData(
       e.target.value,
       selectedToken,
       borrowMinUsd,
+      chain,
     );
-    console.log('isLowValueBorrowed', isLowValueBorrowed);
+
     setTotalQuantity(totalMinQuantity);
     setIsLowBorrow(isLowValueBorrowed);
     if (LtvBasedOnAmount > poolData.ltv) {
@@ -370,6 +370,7 @@ export default function PoolComponent() {
 
   const fetchPoolDATA = async () => {
     try {
+      console.log('ppoldata', poolData);
       if (!methodLoaded.getPoolData) {
         const pool = await getPoolBasicData(
           contracts,
@@ -377,6 +378,7 @@ export default function PoolComponent() {
           poolData,
           poolList[selectedPool],
         );
+        console.log('getPoolBasicData', pool);
         if (pool?.token0 && pool?.token1) {
           setPoolData(pool);
           setMethodLoaded({ ...methodLoaded, getPoolData: true });
@@ -388,6 +390,7 @@ export default function PoolComponent() {
           selectedPool,
           user.address,
         );
+        console.log('getPoolFullData', pool);
         if (pool?.token0 && pool?.token1) {
           setMethodLoaded({ ...methodLoaded, getPoolFullData: true });
           setPoolData(pool);
@@ -399,6 +402,7 @@ export default function PoolComponent() {
       ) {
         const pool = await getOracleData(contracts, poolData);
         if (pool?.token0 && pool?.token1) {
+          console.log('getOraclePrice', pool);
           setPoolData(pool);
           setMethodLoaded({ ...methodLoaded, getOraclePrice: true });
         }
@@ -408,12 +412,14 @@ export default function PoolComponent() {
         methodLoaded.getOraclePrice &&
         !methodLoaded.getPoolTokensData
       ) {
+        console.log('getPoolTokensData');
         const poolTokensPrice = await getTokenPrice(
           contracts,
           poolData,
           selectedPool,
           user.address,
         );
+        console.log('pooltokenPrice', poolTokensPrice);
         if (poolTokensPrice?.token0 && poolTokensPrice?.token1) {
           setPoolData(poolTokensPrice);
           setMethodLoaded({ ...methodLoaded, getPoolTokensData: true });
@@ -428,13 +434,19 @@ export default function PoolComponent() {
   };
 
   useEffect(() => {
+    if (poolList?.token0?.pricePerToken !== undefined) {
+      console.log('trigger useeffect');
+      setPool(poolList.token0.pricePerToken);
+    }
+  }, [poolList?.token0?.pricePerToken]);
+
+  useEffect(() => {
     if (selectedToken === null) setIsPageLoading(true);
 
     const isAllTrue =
       Object.values(methodLoaded).find((el) => el === false) === undefined
         ? true
         : false;
-
     if (
       contracts.helperContract &&
       contracts.coreContract &&

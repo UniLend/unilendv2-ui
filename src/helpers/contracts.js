@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js';
 
 import { ethers } from 'ethers';
 
-import { supportedNetworks } from '../core/networks/networks';
 // function timestamp() {
 //     return Math.round(new Date().getTime()/1000);
 // }
@@ -227,28 +226,47 @@ export function getCurrentLTV(selectedToken, collateralToken) {
 
   return (prevLTV.toFixed(4) * 100).toFixed(2);
 }
-
-export const calculateBorrowData = (amount, selectedToken, borrowMinUsd) => {
+export const calculateBorrowData = (
+  amount,
+  selectedToken,
+  borrowMinUsd,
+  chain,
+) => {
   let isLowValueBorrowed;
-  const borrowedValueInUsd =
-    selectedToken?.borrowBalanceFixed * selectedToken?.price;
-  const borrowValue = amount * selectedToken?.price;
-  const borrowMin = borrowMinUsd - borrowedValueInUsd;
-  const minQuantityRequired = borrowMinUsd / selectedToken?.price;
-  const totalMinQuantity = truncateToDecimals(minQuantityRequired - amount, 4);
+
+  const currentTotalValue = amount * selectedToken?.pricePerToken;
+
+  // Calculate the Previous borrowed value
+  const prevBorrowValue =
+    selectedToken?.borrowBalanceFixed * selectedToken?.pricePerToken;
+  const neededBorrow = currentTotalValue - prevBorrowValue;
+
+  // Calculate the additional value needed to reach the minimum borrow value
+  const additionalValueNeeded = borrowMinUsd - neededBorrow;
+
+  // Calculate the additional tokens needed
+  const totalMinQuantity =
+    additionalValueNeeded > 0
+      ? truncateToDecimals(
+          additionalValueNeeded / selectedToken?.pricePerToken,
+          6,
+        )
+      : 0;
 
   console.log(
     'borrow Data',
-    borrowMin,
-    borrowValue,
-    borrowedValueInUsd,
-    minQuantityRequired,
+    // price,
+    currentTotalValue,
+    neededBorrow,
+    additionalValueNeeded,
     totalMinQuantity,
   );
-  if (borrowMin == 0) {
-    isLowValueBorrowed = borrowValue < borrowMin;
+
+  // Determine if the borrowed value is below the minimum required value
+  if (additionalValueNeeded <= 0) {
+    isLowValueBorrowed = false;
   } else {
-    isLowValueBorrowed = borrowValue <= borrowMin;
+    isLowValueBorrowed = true;
   }
 
   return { isLowValueBorrowed, totalMinQuantity };

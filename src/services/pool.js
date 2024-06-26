@@ -180,7 +180,6 @@ export const getTokenPrice = async (
         'getPoolTokensData',
         [poolAddress, userAddr],
       );
-
       const pool = { ...poolData };
       pool.token0.balance = fromBigNumber(data[2]);
       pool.token0.balanceFixed = fixed2Decimals(
