@@ -226,12 +226,7 @@ export function getCurrentLTV(selectedToken, collateralToken) {
 
   return (prevLTV.toFixed(4) * 100).toFixed(2);
 }
-export const calculateBorrowData = (
-  amount,
-  selectedToken,
-  borrowMinUsd,
-  chain,
-) => {
+export const calculateBorrowData = (amount, selectedToken, borrowMinUsd) => {
   let isLowValueBorrowed;
 
   const currentTotalValue = amount * selectedToken?.pricePerToken;
@@ -279,7 +274,6 @@ export const getActionBtn = (
   collateralToken,
   collateral,
   reFetching,
-  chain,
   isLowValueBorrowed,
   borrowMinUsd,
 ) => {

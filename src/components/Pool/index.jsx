@@ -121,7 +121,6 @@ export default function PoolComponent() {
     collateralToken,
     colleteral,
     reFetching,
-    chain,
     isLowBorrow,
     borrowMinUsd,
   );
@@ -149,15 +148,7 @@ export default function PoolComponent() {
       e.target.value,
       poolData,
     );
-    const { isLowValueBorrowed, totalMinQuantity } = calculateBorrowData(
-      e.target.value,
-      selectedToken,
-      borrowMinUsd,
-      chain,
-    );
 
-    setTotalQuantity(totalMinQuantity);
-    setIsLowBorrow(isLowValueBorrowed);
     if (LtvBasedOnAmount > poolData.ltv) {
       setIsMoreThanPoolLTV(true);
     } else {
@@ -191,6 +182,16 @@ export default function PoolComponent() {
     }
     if (selectedToken && collateralToken) {
       getCollateral();
+    }
+    if (activeOperation === borrow) {
+      const { isLowValueBorrowed, totalMinQuantity } = calculateBorrowData(
+        amount,
+        selectedToken,
+        borrowMinUsd,
+      );
+
+      setTotalQuantity(totalMinQuantity);
+      setIsLowBorrow(isLowValueBorrowed);
     }
   }, [amount, selectLTV]);
 
@@ -837,7 +838,7 @@ export default function PoolComponent() {
               </button>
             </div>
 
-            {isLowBorrow ? (
+            {isLowBorrow && activeOperation === borrow ? (
               <div
                 className={`borrow_req ${
                   activeOperation === borrow && isLowBorrow
