@@ -87,6 +87,14 @@ function App() {
     return fetchedDATA;
   });
 
+  const getGraphData = (chainId, data, graphData) => {
+    if (chainId === 1) {
+      return data ? data : graphData;
+    } else {
+      return data;
+    }
+  };
+
   document.body.className = `body ${
     getFromSessionStorage('unilendV2Theme') || 'dark'
   }`;
@@ -222,7 +230,7 @@ function App() {
 
   const getTokenPrice = async () => {
     const usdPrice = await getEthToUsd(chain?.id);
-    const graph = data ? data : graphData;
+    let graph = await getGraphData(chain?.id, data, graphData);
 
     const temp = await fetchEthRateForAddresses(graph?.assetOracles, chain?.id);
 
@@ -243,7 +251,7 @@ function App() {
   };
 
   useEffect(() => {
-    const graph = data ? data : graphData;
+    let graph = getGraphData(chain?.id, data, graphData);
 
     if (graph?.assetOracles) {
       getTokenPrice();
@@ -257,7 +265,8 @@ function App() {
   }, [tokenPrice]);
 
   const loadPoolsWithGraph = async () => {
-    const graph = data ? data : graphData;
+    let graph = getGraphData(chain?.id, data, graphData);
+
     const networkID = chain?.id || 1;
     if (graph && networksWithGraph.includes(networkID)) {
       const allPositions = graph?.positions;
