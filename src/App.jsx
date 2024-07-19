@@ -87,13 +87,17 @@ function App() {
     return fetchedDATA;
   });
 
-  const getGraphData = (chainId, data, graphData) => {
-    if (chainId === 1) {
+  function getGraphData(chainId, data, graphData) {
+    if (chainId == null || chainId === 1) {
+      // This checks for both null and undefined
       return data ? data : graphData;
     } else {
       return data;
     }
-  };
+  }
+
+  // Usage
+  let graph = getGraphData(chain?.id, data, graphData);
 
   document.body.className = `body ${
     getFromSessionStorage('unilendV2Theme') || 'dark'
