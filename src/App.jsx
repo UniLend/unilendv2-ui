@@ -48,6 +48,9 @@ import { fixed2Decimals, getTokenUSDPrice } from './helpers/contracts';
 import useWalletHook from './lib/hooks/useWallet';
 import { supportedNetworks } from './core/networks/networks';
 
+// manual graph data
+
+import { graphData } from './constants/graphData';
 const shardeumPools = [
   {
     pool: '0x665ACEc556dC92C2E504beFA061d5f65Cd9493e2',
@@ -219,7 +222,10 @@ function App() {
 
   const getTokenPrice = async () => {
     const usdPrice = await getEthToUsd(chain?.id);
-    const temp = await fetchEthRateForAddresses(data?.assetOracles, chain?.id);
+    const graph = data ? data : graphData;
+
+    const temp = await fetchEthRateForAddresses(graph?.assetOracles, chain?.id);
+
     const result = {};
 
     for (const key in temp) {
@@ -237,7 +243,9 @@ function App() {
   };
 
   useEffect(() => {
-    if (data?.assetOracles) {
+    const graph = data ? data : graphData;
+
+    if (graph?.assetOracles) {
       getTokenPrice();
     }
   }, [data]);
@@ -249,12 +257,13 @@ function App() {
   }, [tokenPrice]);
 
   const loadPoolsWithGraph = async () => {
+    const graph = data ? data : graphData;
     const networkID = chain?.id || 1;
-    if (data && networksWithGraph.includes(networkID)) {
-      const allPositions = data?.positions;
+    if (graph && networksWithGraph.includes(networkID)) {
+      const allPositions = graph?.positions;
       const poolData = {};
       const tokenList = {};
-      const poolsData = Array.isArray(data.pools) && data.pools;
+      const poolsData = Array.isArray(graph.pools) && graph.pools;
       for (const pool of poolsData) {
         if (hidePools.includes(pool?.pool)) {
           continue;
