@@ -178,58 +178,114 @@ export default function PoolComponent() {
     }
   }, [amount, selectLTV]);
 
-  const checkTxnStatus = (hash, txnData) => {
-    // const etherProvider = getEthersProvider()
-    //   etherProvider.getTransactionReceipt(hash)
-    waitForBlockConfirmation(hash)
-      .then((res) => {
-        const [receipt, currentBlockNumber] = res;
-        const trasactionBlock = fromBigNumber(receipt.blockNumber);
-        const currentblock = fromBigNumber(currentBlockNumber);
+  // const checkTxnStatus = (hash, txnData) => {
+  //   // const etherProvider = getEthersProvider()
+  //   //   etherProvider.getTransactionReceipt(hash)
+  //   waitForBlockConfirmation(hash)
+  //     .then((res) => {
+  //       const [receipt, currentBlockNumber] = res;
+  //       const trasactionBlock = fromBigNumber(receipt.blockNumber);
+  //       const currentblock = fromBigNumber(currentBlockNumber);
 
-        if (receipt.status == 'success' && currentblock - trasactionBlock > 2) {
-          setReFetching(true);
-          if (txnData.method !== 'approval') {
-            const msg = `Transaction for ${txnData.method} of ${Number(
-              txnData.amount,
-            ).toFixed(4)} for token ${txnData.tokenSymbol}`;
-            NotificationMessage('success', msg);
-            setAmount('');
-            //setShowTwitterModal(true)
-            setTimeout(() => {
-              setMethodLoaded({
-                getPoolData: false,
-                getPoolFullData: false,
-                getOraclePrice: false,
-                getPoolTokensData: false,
-              });
-            }, 8000);
-          } else {
-            NotificationMessage('success', 'Approval Successfull');
-            setTimeout(() => {
-              setMethodLoaded({
-                getPoolData: true,
-                getPoolFullData: true,
-                getOraclePrice: true,
-                getPoolTokensData: false,
-              });
-            }, 5000);
-            // window.location.reload();
-          }
+  //       if (receipt.status == 'success' && currentblock - trasactionBlock > 0) {
+  //         console.log('wait for transaction status');
+  //         setReFetching(true);
+  //         if (txnData.method !== 'approval') {
+  //           const msg = `Transaction for ${txnData.method} of ${Number(
+  //             txnData.amount,
+  //           ).toFixed(4)} for token ${txnData.tokenSymbol}`;
+  //           NotificationMessage('success', msg);
+  //           setAmount('');
+  //           //setShowTwitterModal(true)
+  //           setTimeout(() => {
+  //             setMethodLoaded({
+  //               getPoolData: false,
+  //               getPoolFullData: false,
+  //               getOraclePrice: false,
+  //               getPoolTokensData: false,
+  //             });
+  //           }, 8000);
+  //         } else {
+  //           NotificationMessage('success', 'Approval Successfull');
+  //           setTimeout(() => {
+  //             setMethodLoaded({
+  //               getPoolData: true,
+  //               getPoolFullData: true,
+  //               getOraclePrice: true,
+  //               getPoolTokensData: false,
+  //             });
+  //           }, 5000);
+  //           // window.location.reload();
+  //         }
 
-          setMax(false);
-          setIsOperationLoading(false);
+  //         setMax(false);
+  //         setIsOperationLoading(false);
+  //       } else {
+  //         setTimeout(function () {
+  //           checkTxnStatus(hash, txnData);
+  //         }, 1000);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setTimeout(function () {
+  //         checkTxnStatus(hash, txnData);
+  //       }, 1000);
+  //     });
+  // };
+  const checkTxnStatus = async (hash, txnData) => {
+    try {
+      const res = await waitForBlockConfirmation(hash);
+      const [receipt, currentBlockNumber] = res;
+      const trasactionBlock = fromBigNumber(receipt.blockNumber);
+      const currentblock = fromBigNumber(currentBlockNumber);
+
+      if (receipt.status === 'success' && currentblock - trasactionBlock > 0) {
+        console.log('wait for transaction status');
+        setReFetching(true);
+        if (txnData.method !== 'approval') {
+          const msg = `Transaction for ${txnData.method} of ${Number(txnData.amount).toFixed(4)} for token ${txnData.tokenSymbol}`;
+          NotificationMessage('success', msg);
+          setAmount('');
+          setTimeout(() => {
+            setMethodLoaded({
+              getPoolData: false,
+              getPoolFullData: false,
+              getOraclePrice: false,
+              getPoolTokensData: false,
+            });
+          }, 8000);
         } else {
-          setTimeout(function () {
-            checkTxnStatus(hash, txnData);
-          }, 1000);
+          NotificationMessage('success', 'Approval Successful');
+          setTimeout(() => {
+            setMethodLoaded({
+              getPoolData: true,
+              getPoolFullData: true,
+              getOraclePrice: true,
+              getPoolTokensData: false,
+            });
+          }, 5000);
         }
-      })
-      .catch((error) => {
-        setTimeout(function () {
+
+        setMax(false);
+        setIsOperationLoading(false);
+      } else {
+        setTimeout(() => {
           checkTxnStatus(hash, txnData);
         }, 1000);
-      });
+      }
+    } catch (error) {
+      if (error.message.includes('TransactionNotFoundError')) {
+        console.error('Transaction not found, retrying...');
+        setTimeout(() => {
+          checkTxnStatus(hash, txnData);
+        }, 1000);
+      } else {
+        console.error('Unexpected error:', error);
+        setTimeout(() => {
+          checkTxnStatus(hash, txnData);
+        }, 1000);
+      }
+    }
   };
 
   const checkTxnError = (error) => {
@@ -894,8 +950,8 @@ export default function PoolComponent() {
                     <span className='skeleton loader'></span>
                   ) : (
                     <span>
-                      1 {poolData.token0._symbol} ={" "}
-                      {Number(poolData.token0.price)} {poolData.token1._symbol}{" "}
+                      1 {poolData.token0._symbol} ={' '}
+                      {Number(poolData.token0.price)} {poolData.token1._symbol}{' '}
                     </span>
                   )}
                 </p>

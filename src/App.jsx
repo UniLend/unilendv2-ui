@@ -87,6 +87,18 @@ function App() {
     return fetchedDATA;
   });
 
+  function getGraphData(chainId, data, graphData) {
+    if (chainId == null || chainId === 1) {
+      // This checks for both null and undefined
+      return data ? data : graphData;
+    } else {
+      return data;
+    }
+  }
+
+  // Usage
+  let graph = getGraphData(chain?.id, data, graphData);
+
   document.body.className = `body ${
     getFromSessionStorage('unilendV2Theme') || 'dark'
   }`;
@@ -222,7 +234,7 @@ function App() {
 
   const getTokenPrice = async () => {
     const usdPrice = await getEthToUsd(chain?.id);
-    const graph = data ? data : graphData;
+    let graph = await getGraphData(chain?.id, data, graphData);
 
     const temp = await fetchEthRateForAddresses(graph?.assetOracles, chain?.id);
 
@@ -243,7 +255,7 @@ function App() {
   };
 
   useEffect(() => {
-    const graph = data ? data : graphData;
+    let graph = getGraphData(chain?.id, data, graphData);
 
     if (graph?.assetOracles) {
       getTokenPrice();
@@ -257,7 +269,8 @@ function App() {
   }, [tokenPrice]);
 
   const loadPoolsWithGraph = async () => {
-    const graph = data ? data : graphData;
+    let graph = getGraphData(chain?.id, data, graphData);
+
     const networkID = chain?.id || 1;
     if (graph && networksWithGraph.includes(networkID)) {
       const allPositions = graph?.positions;
