@@ -232,17 +232,82 @@ export default function PoolComponent() {
   //       }, 1000);
   //     });
   // };
+  // const checkTxnStatus = async (hash, txnData) => {
+  //   try {
+  //     const res = await waitForBlockConfirmation(hash);
+  //     const [receipt, currentBlockNumber] = res;
+  //     const transactionBlock = fromBigNumber(receipt.blockNumber);
+  //     const currentBlock = fromBigNumber(currentBlockNumber);
+
+  //     if (receipt.status === 'success' && currentBlock - transactionBlock > 0) {
+  //       console.log('Transaction confirmed');
+  //       setReFetching(true); // Assume this triggers refetching data
+
+  //       // Display success message based on transaction type
+  //       if (txnData.method === 'revoke') {
+  //         const msg = `Transaction for ${txnData.method} of ${Number(txnData.amount).toFixed(4)} for token ${txnData.tokenSymbol}`;
+  //         NotificationMessage('success', msg);
+
+  //         // Resetting fields and loaders
+  //         setAmount('');
+  //         setTimeout(() => {
+  //           setMethodLoaded({
+  //             getPoolData: false,
+  //             getPoolFullData: false,
+  //             getOraclePrice: false,
+  //             getPoolTokensData: false,
+  //           });
+  //         }, 8000);
+  //       } else if (txnData.method === 'approval') {
+  //         const msg = 'Approval Successful';
+  //         NotificationMessage('success', msg);
+
+  //         // Resetting fields and loaders
+  //         setTimeout(() => {
+  //           setMethodLoaded({
+  //             getPoolData: true,
+  //             getPoolFullData: true,
+  //             getOraclePrice: true,
+  //             getPoolTokensData: false,
+  //           });
+  //         }, 5000);
+  //       }
+
+  //       setMax(false);
+  //       setIsOperationLoading(false);
+  //     } else {
+  //       setTimeout(() => {
+  //         checkTxnStatus(hash, txnData);
+  //       }, 1000);
+  //     }
+  //   } catch (error) {
+  //     if (error.message.includes('TransactionNotFoundError')) {
+  //       console.error('Transaction not found, retrying...');
+  //       setTimeout(() => {
+  //         checkTxnStatus(hash, txnData);
+  //       }, 1000);
+  //     } else {
+  //       console.error('Unexpected error:', error);
+  //       setTimeout(() => {
+  //         checkTxnStatus(hash, txnData);
+  //       }, 1000);
+  //     }
+  //   }
+  // };
+
   const checkTxnStatus = async (hash, txnData) => {
+    setIsOperationLoading(true); // Start the loader when checking the transaction status
     try {
       const res = await waitForBlockConfirmation(hash);
       const [receipt, currentBlockNumber] = res;
-      const trasactionBlock = fromBigNumber(receipt.blockNumber);
-      const currentblock = fromBigNumber(currentBlockNumber);
+      const transactionBlock = fromBigNumber(receipt.blockNumber);
+      const currentBlock = fromBigNumber(currentBlockNumber);
 
-      if (receipt.status === 'success' && currentblock - trasactionBlock > 0) {
-        console.log('wait for transaction status');
+      if (receipt.status === 'success' && currentBlock - transactionBlock > 0) {
+        console.log('Transaction confirmed');
         setReFetching(true);
-        if (txnData.method !== 'approval') {
+
+        if (txnData.method === 'revoke') {
           const msg = `Transaction for ${txnData.method} of ${Number(txnData.amount).toFixed(4)} for token ${txnData.tokenSymbol}`;
           NotificationMessage('success', msg);
           setAmount('');
@@ -254,8 +319,10 @@ export default function PoolComponent() {
               getPoolTokensData: false,
             });
           }, 8000);
-        } else {
-          NotificationMessage('success', 'Approval Successful');
+          setIsOperationLoading(true);
+        } else if (txnData.method === 'approval') {
+          const msg = 'Approval Successful';
+          NotificationMessage('success', msg);
           setTimeout(() => {
             setMethodLoaded({
               getPoolData: true,
@@ -264,16 +331,19 @@ export default function PoolComponent() {
               getPoolTokensData: false,
             });
           }, 5000);
+          setIsOperationLoading(false);
         }
 
         setMax(false);
-        setIsOperationLoading(false);
       } else {
         setTimeout(() => {
           checkTxnStatus(hash, txnData);
         }, 1000);
       }
     } catch (error) {
+      // Stop the loader on error
+      setIsOperationLoading(false);
+
       if (error.message.includes('TransactionNotFoundError')) {
         console.error('Transaction not found, retrying...');
         setTimeout(() => {
@@ -287,7 +357,6 @@ export default function PoolComponent() {
       }
     }
   };
-
   const checkTxnError = (error) => {
     setAmount('');
     setMax(false);
