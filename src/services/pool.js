@@ -135,7 +135,7 @@ export const setAllowance = async (
     if (token._symbol === 'USDT' && allowanceNew > 0 && allowanceNew < Amount) {
       const revokeTx = await instance.approve(
         contracts.coreContract.address,
-        '0',
+        decimal2Fixed('0', token._decimals),
       );
       await revokeTx.wait();
       await checkTxnStatus(revokeTx.hash, {

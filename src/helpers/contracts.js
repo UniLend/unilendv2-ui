@@ -240,7 +240,6 @@ export const getActionBtn = (
     text: `${activeOperation} ${selectedToken?._symbol}`,
     disable: false,
   };
-  console.log('isRevoke', isRevoke);
   if (isRevoke) {
     return { text: 'Approve ' + selectedToken?._symbol, disable: false };
   }
