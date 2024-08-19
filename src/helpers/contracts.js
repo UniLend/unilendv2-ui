@@ -152,9 +152,8 @@ export function fixed2Decimals18(amount, decimals = 18) {
 }
 
 export function reduceLastDecimalByOne(number) {
-
-const a = BigNumber(number).minus(1)
-    return a.toString();
+  const a = BigNumber(number).minus(1);
+  return a.toString();
 }
 
 export function fromBigNumber(bignumber) {
@@ -235,11 +234,16 @@ export const getActionBtn = (
   collateralToken,
   collateral,
   reFetching,
+  isRevoke,
 ) => {
   let btn = {
     text: `${activeOperation} ${selectedToken?._symbol}`,
     disable: false,
   };
+  console.log('isRevoke', isRevoke);
+  if (isRevoke) {
+    return { text: 'Approve ' + selectedToken?._symbol, disable: false };
+  }
   if (reFetching) {
     return { text: 'Fetching Data', disable: false };
   }
@@ -260,16 +264,15 @@ export const getActionBtn = (
 
   const countDecimals = String(amount).split('.')[1]?.length;
 
-
-  if (amount <= minimumValue  && Number(decimalAmount) <= 1 ) {
-    return { text: "Enter Amount", disable: true };
+  if (amount <= minimumValue && Number(decimalAmount) <= 1) {
+    return { text: 'Enter Amount', disable: true };
   } else if (amount && activeOperation === lend) {
     if (
-      Number(fixed2Decimals18(selectedToken?.allowance, selectedToken?._decimals)) <
-      Number(amount)
+      Number(
+        fixed2Decimals18(selectedToken?.allowance, selectedToken?._decimals),
+      ) < Number(amount)
     ) {
- 
-      return { text: "Approve " + selectedToken?._symbol };
+      return { text: 'Approve ' + selectedToken?._symbol };
     } else if (amount > Number(selectedToken.balanceFixed)) {
       return { text: 'Low Balance in Wallet', disable: true };
     }

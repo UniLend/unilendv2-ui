@@ -87,6 +87,7 @@ export default function PoolComponent() {
     token0: '',
     token1: '',
   });
+  const [isRevoke, isSetRevoke] = useState(false);
   const [tokensWithCreatedPools, setTokensWithCreatedPools] = useState([]);
   const [helperContractInstance, setHelperContractInstance] = useState(null);
   const { poolAddress } = useParams();
@@ -115,6 +116,7 @@ export default function PoolComponent() {
     collateralToken,
     colleteral,
     reFetching,
+    isRevoke,
   );
 
   // reload page after creating new pool from create pool method
@@ -320,6 +322,7 @@ export default function PoolComponent() {
             });
           }, 8000);
           setIsOperationLoading(true);
+          isSetRevoke(true);
         } else if (txnData.method === 'approval') {
           const msg = 'Approval Successful';
           NotificationMessage('success', msg);
@@ -332,6 +335,7 @@ export default function PoolComponent() {
             });
           }, 5000);
           setIsOperationLoading(false);
+          isSetRevoke(false);
         }
 
         setMax(false);
