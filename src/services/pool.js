@@ -124,16 +124,13 @@ export const setAllowance = async (
   let Amount = decimal2Fixed(amount, token._decimals);
   try {
     const instance = await getEtherContract(token._address, erc20Abi);
+    const allowanceData = token.allowanceFixed;
+    const fixAmount = fromBigNumber(amount);
 
-    const getAllowance = await instance.allowance(
-      userAddr,
-      contracts.coreContract.address,
-    );
-    const currentAllowance = fromBigNumber(getAllowance);
     if (
       token._symbol === 'USDT' &&
-      currentAllowance > 0 &&
-      Amount > currentAllowance
+      allowanceData > 0 &&
+      Number(fixAmount) > Number(allowanceData)
     ) {
       const revokeTx = await instance.approve(
         contracts.coreContract.address,
