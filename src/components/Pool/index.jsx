@@ -298,7 +298,7 @@ export default function PoolComponent() {
   // };
 
   const checkTxnStatus = async (hash, txnData) => {
-    setIsOperationLoading(true); // Start the loader when checking the transaction status
+    setIsOperationLoading(true);
     try {
       const res = await waitForBlockConfirmation(hash);
       const [receipt, currentBlockNumber] = res;
@@ -320,12 +320,11 @@ export default function PoolComponent() {
               getOraclePrice: false,
               getPoolTokensData: false,
             });
-          }, 8000);
-          setIsOperationLoading(true);
+            setIsOperationLoading(true);
+          }, 3000);
           isSetRevoke(true);
         } else if (txnData.method === 'approval') {
-          const msg = 'Approval Successful';
-          NotificationMessage('success', msg);
+          NotificationMessage('success', 'Approval Successful');
           setTimeout(() => {
             setMethodLoaded({
               getPoolData: true,
@@ -333,13 +332,29 @@ export default function PoolComponent() {
               getOraclePrice: true,
               getPoolTokensData: false,
             });
-          }, 5000);
-          setIsOperationLoading(false);
+            setIsOperationLoading(false);
+          }, 3000);
           isSetRevoke(false);
+        } else {
+          const msg = `Transaction for ${txnData.method} of ${Number(
+            txnData.amount,
+          ).toFixed(4)} for token ${txnData.tokenSymbol}`;
+          NotificationMessage('success', msg);
+          setAmount('');
+          setTimeout(() => {
+            setMethodLoaded({
+              getPoolData: false,
+              getPoolFullData: false,
+              getOraclePrice: false,
+              getPoolTokensData: false,
+            });
+            // setMax(false);
+            setIsOperationLoading(false);
+          }, 3000);
         }
-
         setMax(false);
       } else {
+        // Retry after 1 second if the transaction is not confirmed yet
         setTimeout(() => {
           checkTxnStatus(hash, txnData);
         }, 1000);
@@ -361,6 +376,7 @@ export default function PoolComponent() {
       }
     }
   };
+
   const checkTxnError = (error) => {
     setAmount('');
     setMax(false);
