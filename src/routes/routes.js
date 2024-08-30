@@ -21,24 +21,24 @@ export const openRoutes = [
     exact: true,
     element: lazy(() => import('../pages/pool')),
   },
-  {
-    path: "/dashboard",
-    exact: true,
-    element: lazy(() => import("../pages/userDashboard")),
-  },
+  // {
+  //   path: "/dashboard",
+  //   exact: true,
+  //   element: lazy(() => import("../pages/userDashboard")),
+  // },
   {
     path: '/governance',
     exact: true,
     element: lazy(() => import('../pages/vote')),
   },
-  {
-    path: '/vote',
-    exact: true,
-    element: lazy(() => import('../pages/governance')),
-  },
-  {
-    path: '/vote/:proposalId',
-    exact: true,
-    element: lazy(() => import('../pages/proposal')),
-  },
+  // {
+  //   path: '/vote',
+  //   exact: true,
+  //   element: lazy(() => import('../pages/governance')),
+  // },
+  // {
+  //   path: '/vote/:proposalId',
+  //   exact: true,
+  //   element: lazy(() => import('../pages/proposal')),
+  // },
 ];
