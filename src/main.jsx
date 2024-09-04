@@ -33,6 +33,7 @@ import {
 import {
   gateWallet,
   infinityWallet,
+  exodusWallet,
 } from './core/walletConnector/walletConnector';
 
 import { alchemyProvider } from 'wagmi/providers/alchemy';
@@ -67,6 +68,7 @@ const connectors = connectorsForWallets([
       injectedWallet({ chains, projectId }),
       coinbaseWallet({ appName: 'UnilendV2', chains, projectId }),
       walletConnectWallet({ chains, projectId }),
+      exodusWallet({ chains, projectId }),
       gateWallet({ chains, projectId }),
       bitgetWallet({ chains, projectId }),
       coin98Wallet({ chains, projectId }),
