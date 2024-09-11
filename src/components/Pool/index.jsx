@@ -87,6 +87,7 @@ export default function PoolComponent() {
     token0: '',
     token1: '',
   });
+  const [isRevoke, isSetRevoke] = useState(false);
   const [tokensWithCreatedPools, setTokensWithCreatedPools] = useState([]);
   const [helperContractInstance, setHelperContractInstance] = useState(null);
   const { poolAddress } = useParams();
@@ -115,6 +116,7 @@ export default function PoolComponent() {
     collateralToken,
     colleteral,
     reFetching,
+    isRevoke,
   );
 
   // reload page after creating new pool from create pool method
@@ -232,17 +234,82 @@ export default function PoolComponent() {
   //       }, 1000);
   //     });
   // };
+  // const checkTxnStatus = async (hash, txnData) => {
+  //   try {
+  //     const res = await waitForBlockConfirmation(hash);
+  //     const [receipt, currentBlockNumber] = res;
+  //     const transactionBlock = fromBigNumber(receipt.blockNumber);
+  //     const currentBlock = fromBigNumber(currentBlockNumber);
+
+  //     if (receipt.status === 'success' && currentBlock - transactionBlock > 0) {
+  //       console.log('Transaction confirmed');
+  //       setReFetching(true); // Assume this triggers refetching data
+
+  //       // Display success message based on transaction type
+  //       if (txnData.method === 'revoke') {
+  //         const msg = `Transaction for ${txnData.method} of ${Number(txnData.amount).toFixed(4)} for token ${txnData.tokenSymbol}`;
+  //         NotificationMessage('success', msg);
+
+  //         // Resetting fields and loaders
+  //         setAmount('');
+  //         setTimeout(() => {
+  //           setMethodLoaded({
+  //             getPoolData: false,
+  //             getPoolFullData: false,
+  //             getOraclePrice: false,
+  //             getPoolTokensData: false,
+  //           });
+  //         }, 8000);
+  //       } else if (txnData.method === 'approval') {
+  //         const msg = 'Approval Successful';
+  //         NotificationMessage('success', msg);
+
+  //         // Resetting fields and loaders
+  //         setTimeout(() => {
+  //           setMethodLoaded({
+  //             getPoolData: true,
+  //             getPoolFullData: true,
+  //             getOraclePrice: true,
+  //             getPoolTokensData: false,
+  //           });
+  //         }, 5000);
+  //       }
+
+  //       setMax(false);
+  //       setIsOperationLoading(false);
+  //     } else {
+  //       setTimeout(() => {
+  //         checkTxnStatus(hash, txnData);
+  //       }, 1000);
+  //     }
+  //   } catch (error) {
+  //     if (error.message.includes('TransactionNotFoundError')) {
+  //       console.error('Transaction not found, retrying...');
+  //       setTimeout(() => {
+  //         checkTxnStatus(hash, txnData);
+  //       }, 1000);
+  //     } else {
+  //       console.error('Unexpected error:', error);
+  //       setTimeout(() => {
+  //         checkTxnStatus(hash, txnData);
+  //       }, 1000);
+  //     }
+  //   }
+  // };
+
   const checkTxnStatus = async (hash, txnData) => {
+    setIsOperationLoading(true);
     try {
       const res = await waitForBlockConfirmation(hash);
       const [receipt, currentBlockNumber] = res;
-      const trasactionBlock = fromBigNumber(receipt.blockNumber);
-      const currentblock = fromBigNumber(currentBlockNumber);
+      const transactionBlock = fromBigNumber(receipt.blockNumber);
+      const currentBlock = fromBigNumber(currentBlockNumber);
 
-      if (receipt.status === 'success' && currentblock - trasactionBlock > 0) {
-        console.log('wait for transaction status');
+      if (receipt.status === 'success' && currentBlock - transactionBlock > 0) {
+        console.log('Transaction confirmed');
         setReFetching(true);
-        if (txnData.method !== 'approval') {
+
+        if (txnData.method === 'revoke') {
           const msg = `Transaction for ${txnData.method} of ${Number(txnData.amount).toFixed(4)} for token ${txnData.tokenSymbol}`;
           NotificationMessage('success', msg);
           setAmount('');
@@ -253,8 +320,10 @@ export default function PoolComponent() {
               getOraclePrice: false,
               getPoolTokensData: false,
             });
-          }, 8000);
-        } else {
+            setIsOperationLoading(true);
+          }, 3000);
+          isSetRevoke(true);
+        } else if (txnData.method === 'approval') {
           NotificationMessage('success', 'Approval Successful');
           setTimeout(() => {
             setMethodLoaded({
@@ -263,17 +332,37 @@ export default function PoolComponent() {
               getOraclePrice: true,
               getPoolTokensData: false,
             });
-          }, 5000);
+            setIsOperationLoading(false);
+          }, 3000);
+          isSetRevoke(false);
+        } else {
+          const msg = `Transaction for ${txnData.method} of ${Number(
+            txnData.amount,
+          ).toFixed(4)} for token ${txnData.tokenSymbol}`;
+          NotificationMessage('success', msg);
+          setAmount('');
+          setTimeout(() => {
+            setMethodLoaded({
+              getPoolData: false,
+              getPoolFullData: false,
+              getOraclePrice: false,
+              getPoolTokensData: false,
+            });
+            // setMax(false);
+            setIsOperationLoading(false);
+          }, 3000);
         }
-
         setMax(false);
-        setIsOperationLoading(false);
       } else {
+        // Retry after 1 second if the transaction is not confirmed yet
         setTimeout(() => {
           checkTxnStatus(hash, txnData);
         }, 1000);
       }
     } catch (error) {
+      // Stop the loader on error
+      setIsOperationLoading(false);
+
       if (error.message.includes('TransactionNotFoundError')) {
         console.error('Transaction not found, retrying...');
         setTimeout(() => {

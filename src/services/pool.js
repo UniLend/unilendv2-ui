@@ -119,12 +119,33 @@ export const setAllowance = async (
   checkTxnError,
   contracts,
 ) => {
-  var maxAllow =
+  const maxAllow =
     '115792089237316195423570985008687907853269984665640564039457584007913129639935';
   let Amount = decimal2Fixed(amount, token._decimals);
   try {
     const instance = await getEtherContract(token._address, erc20Abi);
+    const allowanceData = token.allowanceFixed;
+    if (
+      token._symbol === 'USDT' &&
+      allowanceData > 0 &&
+      Number(amount) > Number(allowanceData)
+    ) {
+      const revokeTx = await instance.approve(
+        contracts.coreContract.address,
+        decimal2Fixed('0', token._decimals),
+      );
+      await revokeTx.wait();
+      await checkTxnStatus(revokeTx.hash, {
+        method: 'revoke',
+        amount: '0',
+        tokenAddress: token._address,
+        tokenSymbol: token._symbol,
+        poolAddress: poolAddress,
+        chainId: '',
+      });
+    }
 
+    // Now set the new approval amount
     const { hash } = await instance.approve(
       contracts.coreContract.address,
       Amount,
@@ -138,7 +159,7 @@ export const setAllowance = async (
       poolAddress: poolAddress,
       chainId: '',
     };
-    checkTxnStatus(hash, txn);
+    await checkTxnStatus(hash, txn);
   } catch (error) {
     checkTxnError(error);
     throw error;
