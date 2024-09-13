@@ -134,11 +134,16 @@ export function fixedTrunc(numberString) {
   return truncatedNumber;
 }
 
-//Truncate Number
-export function truncateToDecimals(number, decimal) {
-  const powerOf10 = Math.pow(10, decimal);
-  const truncatedNumber = Math.floor(number * powerOf10) / powerOf10;
-  return truncatedNumber;
+export function truncateToDecimals(value, decimalPlaces) {
+  const bigNumberValue = new BigNumber(value);
+  const factor = new BigNumber(10).pow(decimalPlaces);
+
+  const truncatedValue = bigNumberValue
+    .times(factor)
+    .integerValue(BigNumber.ROUND_FLOOR)
+    .div(factor);
+
+  return truncatedValue.toString();
 }
 
 export function fixed2Decimals(amount, decimals = 18) {
